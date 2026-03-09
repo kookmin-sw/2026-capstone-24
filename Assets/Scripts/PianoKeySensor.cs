@@ -4,6 +4,7 @@ using UnityEngine;
 public class PianoKeySensor : MonoBehaviour
 {
     [SerializeField] Transform targetBone;
+    [SerializeField] Rigidbody targetBody;
     [SerializeField] BoxCollider sensorCollider;
     [SerializeField] Transform ignoredRoot;
     [SerializeField] Vector3 boneLocalAxis = Vector3.right;
@@ -25,6 +26,9 @@ public class PianoKeySensor : MonoBehaviour
         if (sensorCollider == null)
             sensorCollider = GetComponent<BoxCollider>();
 
+        if (targetBody == null && targetBone != null)
+            targetBody = targetBone.GetComponent<Rigidbody>();
+
         if (targetBone != null)
             m_InitialBoneLocalRotation = targetBone.localRotation;
     }
@@ -33,6 +37,9 @@ public class PianoKeySensor : MonoBehaviour
     {
         if (sensorCollider == null)
             sensorCollider = GetComponent<BoxCollider>();
+
+        if (targetBody == null && targetBone != null)
+            targetBody = targetBone.GetComponent<Rigidbody>();
 
         if (!IsFiniteVector(boneLocalAxis) || boneLocalAxis.sqrMagnitude < 0.0001f)
             boneLocalAxis = Vector3.right;
@@ -66,7 +73,7 @@ public class PianoKeySensor : MonoBehaviour
             if (other == null)
                 continue;
 
-            if (ignoredRoot != null && other.transform.IsChildOf(ignoredRoot))
+            if (ShouldIgnoreCollider(other))
                 continue;
 
             Bounds otherBounds = other.bounds;
@@ -87,10 +94,7 @@ public class PianoKeySensor : MonoBehaviour
 
         if (!float.IsFinite(m_CurrentPress))
             m_CurrentPress = 0f;
-    }
 
-    void LateUpdate()
-    {
         if (targetBone == null)
             return;
 
@@ -105,6 +109,13 @@ public class PianoKeySensor : MonoBehaviour
         Quaternion targetRotation = m_InitialBoneLocalRotation * Quaternion.AngleAxis(angle, axis.normalized);
         if (!IsFiniteQuaternion(targetRotation))
             return;
+
+        if (targetBody != null && targetBody.isKinematic)
+        {
+            Quaternion parentRotation = targetBone.parent != null ? targetBone.parent.rotation : Quaternion.identity;
+            targetBody.MoveRotation(parentRotation * targetRotation);
+            return;
+        }
 
         targetBone.localRotation = targetRotation;
     }
@@ -125,5 +136,22 @@ public class PianoKeySensor : MonoBehaviour
     static bool IsFiniteBounds(Bounds value)
     {
         return IsFiniteVector(value.center) && IsFiniteVector(value.size);
+    }
+
+    bool ShouldIgnoreCollider(Collider other)
+    {
+        if (ignoredRoot != null && other.transform.IsChildOf(ignoredRoot))
+            return true;
+
+        if (targetBone != null && other.transform.IsChildOf(targetBone.root))
+            return true;
+
+        if (targetBone != null && other.transform.IsChildOf(targetBone))
+            return true;
+
+        if (targetBody != null && other.attachedRigidbody == targetBody)
+            return true;
+
+        return false;
     }
 }

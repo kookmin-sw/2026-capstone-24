@@ -9,11 +9,9 @@ public static class PianoPhysicsSetup
     const string LegacyPhysicsKeysRootName = "PhysicsKeys";
     const string InteractionRootName = "PianoInteraction";
     const string SensorRootName = "KeySensors";
-    const string KeyboardBedName = "KeyboardBed";
     const int KeyCount = 88;
     const float SensorTopPaddingWorld = 0.01f;
     const float SensorSideMarginWorld = 0.001f;
-    const float KeyboardBedThicknessWorld = 0.01f;
 
     [MenuItem("Tools/Piano/Setup Key Sensors")]
     static void SetupKeySensors()
@@ -26,28 +24,27 @@ public static class PianoPhysicsSetup
         int undoGroup = Undo.GetCurrentGroup();
 
         DestroyIfExists(LegacyPhysicsKeysRootName);
-        DestroyIfExists(InteractionRootName);
-
-        GameObject interactionRoot = new GameObject(InteractionRootName);
-        Undo.RegisterCreatedObjectUndo(interactionRoot, "Create PianoInteraction");
+        GameObject interactionRoot = FindOrCreateRoot(InteractionRootName);
         interactionRoot.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
         interactionRoot.transform.localScale = Vector3.one;
 
-        GameObject sensorRoot = new GameObject(SensorRootName);
-        Undo.RegisterCreatedObjectUndo(sensorRoot, "Create KeySensors");
-        sensorRoot.transform.SetParent(interactionRoot.transform, false);
+        Transform sensorRoot = interactionRoot.transform.Find(SensorRootName);
+        if (sensorRoot != null)
+            Undo.DestroyObjectImmediate(sensorRoot.gameObject);
 
-        Bounds keyboardBounds = sourceColliders[0].bounds;
+        GameObject newSensorRoot = new GameObject(SensorRootName);
+        Undo.RegisterCreatedObjectUndo(newSensorRoot, "Create KeySensors");
+        newSensorRoot.transform.SetParent(interactionRoot.transform, false);
 
         for (int i = 0; i < KeyCount; i++)
         {
             Transform keyBone = keyBones[i];
             BoxCollider sourceCollider = sourceColliders[i];
-            keyboardBounds.Encapsulate(sourceCollider.bounds);
+            Rigidbody keyBody = EnsureKeyRigidbody(keyBone.gameObject);
 
             GameObject sensor = new GameObject($"KeySensor_{i + 1:000}");
             Undo.RegisterCreatedObjectUndo(sensor, "Create KeySensor");
-            sensor.transform.SetParent(sensorRoot.transform, false);
+            sensor.transform.SetParent(newSensorRoot.transform, false);
             sensor.transform.SetPositionAndRotation(keyBone.position, keyBone.rotation);
             sensor.transform.localScale = Vector3.one;
 
@@ -58,6 +55,7 @@ public static class PianoPhysicsSetup
 
             PianoKeySensor keySensor = Undo.AddComponent<PianoKeySensor>(sensor);
             SetSerializedField(keySensor, "targetBone", keyBone);
+            SetSerializedField(keySensor, "targetBody", keyBody);
             SetSerializedField(keySensor, "sensorCollider", sensorCollider);
             SetSerializedField(keySensor, "ignoredRoot", interactionRoot.transform);
             SetSerializedField(keySensor, "boneLocalAxis", Vector3.right);
@@ -67,12 +65,11 @@ public static class PianoPhysicsSetup
             SetSerializedField(keySensor, "releaseSpeed", 30f);
             SetSerializedField(keySensor, "presserLayers", (LayerMask)(1 << 0));
 
-            Undo.RecordObject(sourceCollider, "Disable Source Collider");
-            sourceCollider.enabled = false;
+            Undo.RecordObject(sourceCollider, "Enable Source Collider");
+            sourceCollider.enabled = true;
+            sourceCollider.isTrigger = false;
             EditorUtility.SetDirty(sourceCollider);
         }
-
-        CreateKeyboardBed(interactionRoot.transform, keyboardBounds);
 
         EditorSceneManager.MarkSceneDirty(root.gameObject.scene);
         Undo.CollapseUndoOperations(undoGroup);
@@ -93,7 +90,13 @@ public static class PianoPhysicsSetup
         int undoGroup = Undo.GetCurrentGroup();
 
         DestroyIfExists(LegacyPhysicsKeysRootName);
-        DestroyIfExists(InteractionRootName);
+        GameObject interactionRoot = FindSceneRoot(InteractionRootName);
+        if (interactionRoot != null)
+        {
+            Transform sensorRoot = interactionRoot.transform.Find(SensorRootName);
+            if (sensorRoot != null)
+                Undo.DestroyObjectImmediate(sensorRoot.gameObject);
+        }
 
         Undo.CollapseUndoOperations(undoGroup);
     }
@@ -174,24 +177,31 @@ public static class PianoPhysicsSetup
         return null;
     }
 
-    static void CreateKeyboardBed(Transform parent, Bounds keyboardBounds)
+    static GameObject FindOrCreateRoot(string name)
     {
-        GameObject keyboardBed = new GameObject(KeyboardBedName);
-        Undo.RegisterCreatedObjectUndo(keyboardBed, "Create KeyboardBed");
-        keyboardBed.transform.SetParent(parent, false);
+        GameObject existing = FindSceneRoot(name);
+        if (existing != null)
+            return existing;
 
-        Vector3 size = keyboardBounds.size;
-        size.y = KeyboardBedThicknessWorld;
+        GameObject created = new GameObject(name);
+        Undo.RegisterCreatedObjectUndo(created, $"Create {name}");
+        return created;
+    }
 
-        Vector3 center = keyboardBounds.center;
-        center.y = keyboardBounds.max.y - (KeyboardBedThicknessWorld * 0.5f);
+    static Rigidbody EnsureKeyRigidbody(GameObject keyObject)
+    {
+        Rigidbody body = keyObject.GetComponent<Rigidbody>();
+        if (body == null)
+            body = Undo.AddComponent<Rigidbody>(keyObject);
 
-        keyboardBed.transform.SetPositionAndRotation(center, Quaternion.identity);
-        keyboardBed.transform.localScale = Vector3.one;
-
-        BoxCollider bedCollider = Undo.AddComponent<BoxCollider>(keyboardBed);
-        bedCollider.center = Vector3.zero;
-        bedCollider.size = size;
+        Undo.RecordObject(body, "Configure Key Rigidbody");
+        body.isKinematic = true;
+        body.useGravity = false;
+        body.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+        body.interpolation = RigidbodyInterpolation.Interpolate;
+        body.constraints = RigidbodyConstraints.FreezePosition;
+        EditorUtility.SetDirty(body);
+        return body;
     }
 
     static void CopyCollider(BoxCollider source, Transform targetTransform, BoxCollider target)
