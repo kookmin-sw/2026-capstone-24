@@ -1,0 +1,336 @@
+using System.Collections.Generic;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+
+public static class PianoPhysicsSetup
+{
+    const string SamplePianoName = "Sample Piano";
+    const string LegacyPhysicsKeysRootName = "PhysicsKeys";
+    const string InteractionRootName = "PianoInteraction";
+    const string SensorRootName = "KeySensors";
+    const string KeyboardBedName = "KeyboardBed";
+    const int KeyCount = 88;
+    const float SensorTopPaddingWorld = 0.01f;
+    const float SensorSideMarginWorld = 0.001f;
+    const float KeyboardBedThicknessWorld = 0.01f;
+
+    [MenuItem("Tools/Piano/Setup Key Sensors")]
+    static void SetupKeySensors()
+    {
+        if (!TryCollectKeys(out Transform root, out List<Transform> keyBones, out List<BoxCollider> sourceColliders))
+            return;
+
+        Undo.IncrementCurrentGroup();
+        Undo.SetCurrentGroupName("Setup Piano Key Sensors");
+        int undoGroup = Undo.GetCurrentGroup();
+
+        DestroyIfExists(LegacyPhysicsKeysRootName);
+        DestroyIfExists(InteractionRootName);
+
+        GameObject interactionRoot = new GameObject(InteractionRootName);
+        Undo.RegisterCreatedObjectUndo(interactionRoot, "Create PianoInteraction");
+        interactionRoot.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+        interactionRoot.transform.localScale = Vector3.one;
+
+        GameObject sensorRoot = new GameObject(SensorRootName);
+        Undo.RegisterCreatedObjectUndo(sensorRoot, "Create KeySensors");
+        sensorRoot.transform.SetParent(interactionRoot.transform, false);
+
+        Bounds keyboardBounds = sourceColliders[0].bounds;
+
+        for (int i = 0; i < KeyCount; i++)
+        {
+            Transform keyBone = keyBones[i];
+            BoxCollider sourceCollider = sourceColliders[i];
+            keyboardBounds.Encapsulate(sourceCollider.bounds);
+
+            GameObject sensor = new GameObject($"KeySensor_{i + 1:000}");
+            Undo.RegisterCreatedObjectUndo(sensor, "Create KeySensor");
+            sensor.transform.SetParent(sensorRoot.transform, false);
+            sensor.transform.SetPositionAndRotation(keyBone.position, keyBone.rotation);
+            sensor.transform.localScale = Vector3.one;
+
+            BoxCollider sensorCollider = Undo.AddComponent<BoxCollider>(sensor);
+            CopyCollider(sourceCollider, sensor.transform, sensorCollider);
+            sensorCollider.isTrigger = true;
+            ApplySensorMargins(sensorCollider, sensor.transform);
+
+            PianoKeySensor keySensor = Undo.AddComponent<PianoKeySensor>(sensor);
+            SetSerializedField(keySensor, "targetBone", keyBone);
+            SetSerializedField(keySensor, "sensorCollider", sensorCollider);
+            SetSerializedField(keySensor, "ignoredRoot", interactionRoot.transform);
+            SetSerializedField(keySensor, "boneLocalAxis", Vector3.right);
+            SetSerializedField(keySensor, "maxPressDegrees", 6f);
+            SetSerializedField(keySensor, "pressDistance", 0.01f);
+            SetSerializedField(keySensor, "pressSpeed", 18f);
+            SetSerializedField(keySensor, "releaseSpeed", 30f);
+            SetSerializedField(keySensor, "presserLayers", (LayerMask)(1 << 0));
+
+            Undo.RecordObject(sourceCollider, "Disable Source Collider");
+            sourceCollider.enabled = false;
+            EditorUtility.SetDirty(sourceCollider);
+        }
+
+        CreateKeyboardBed(interactionRoot.transform, keyboardBounds);
+
+        EditorSceneManager.MarkSceneDirty(root.gameObject.scene);
+        Undo.CollapseUndoOperations(undoGroup);
+        Debug.Log($"Created {KeyCount} key sensors under '{InteractionRootName}'.");
+    }
+
+    [MenuItem("Tools/Piano/Setup Physics Proxies")]
+    static void SetupKeySensorsAlias()
+    {
+        SetupKeySensors();
+    }
+
+    [MenuItem("Tools/Piano/Clear Legacy Physics Keys")]
+    static void ClearLegacyPhysicsKeys()
+    {
+        Undo.IncrementCurrentGroup();
+        Undo.SetCurrentGroupName("Clear Legacy Piano Physics");
+        int undoGroup = Undo.GetCurrentGroup();
+
+        DestroyIfExists(LegacyPhysicsKeysRootName);
+        DestroyIfExists(InteractionRootName);
+
+        Undo.CollapseUndoOperations(undoGroup);
+    }
+
+    static bool TryCollectKeys(out Transform root, out List<Transform> keyBones, out List<BoxCollider> sourceColliders)
+    {
+        root = null;
+        keyBones = new List<Transform>(KeyCount);
+        sourceColliders = new List<BoxCollider>(KeyCount);
+
+        GameObject samplePiano = GameObject.Find(SamplePianoName);
+        if (samplePiano == null)
+        {
+            Debug.LogError($"'{SamplePianoName}' not found in scene.");
+            return false;
+        }
+
+        root = samplePiano.transform.Find("Piano_Rig/Root");
+        if (root == null)
+        {
+            Debug.LogError("Sample Piano/Piano_Rig/Root not found.");
+            return false;
+        }
+
+        List<string> missingBones = new List<string>();
+        List<string> missingColliders = new List<string>();
+
+        for (int i = 1; i <= KeyCount; i++)
+        {
+            string boneName = $"key_{i}";
+            Transform keyBone = root.Find(boneName);
+            if (keyBone == null)
+            {
+                missingBones.Add(boneName);
+                continue;
+            }
+
+            BoxCollider sourceCollider = keyBone.GetComponent<BoxCollider>();
+            if (sourceCollider == null)
+            {
+                missingColliders.Add(boneName);
+                continue;
+            }
+
+            keyBones.Add(keyBone);
+            sourceColliders.Add(sourceCollider);
+        }
+
+        if (missingBones.Count > 0 || missingColliders.Count > 0)
+        {
+            if (missingBones.Count > 0)
+                Debug.LogError($"Missing piano key bones: {string.Join(", ", missingBones)}");
+
+            if (missingColliders.Count > 0)
+                Debug.LogError($"Missing source BoxColliders on: {string.Join(", ", missingColliders)}");
+
+            return false;
+        }
+
+        return true;
+    }
+
+    static void DestroyIfExists(string rootName)
+    {
+        GameObject existing = FindSceneRoot(rootName);
+        if (existing != null)
+            Undo.DestroyObjectImmediate(existing);
+    }
+
+    static GameObject FindSceneRoot(string name)
+    {
+        foreach (GameObject rootObject in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects())
+        {
+            if (rootObject.name == name)
+                return rootObject;
+        }
+
+        return null;
+    }
+
+    static void CreateKeyboardBed(Transform parent, Bounds keyboardBounds)
+    {
+        GameObject keyboardBed = new GameObject(KeyboardBedName);
+        Undo.RegisterCreatedObjectUndo(keyboardBed, "Create KeyboardBed");
+        keyboardBed.transform.SetParent(parent, false);
+
+        Vector3 size = keyboardBounds.size;
+        size.y = KeyboardBedThicknessWorld;
+
+        Vector3 center = keyboardBounds.center;
+        center.y = keyboardBounds.max.y - (KeyboardBedThicknessWorld * 0.5f);
+
+        keyboardBed.transform.SetPositionAndRotation(center, Quaternion.identity);
+        keyboardBed.transform.localScale = Vector3.one;
+
+        BoxCollider bedCollider = Undo.AddComponent<BoxCollider>(keyboardBed);
+        bedCollider.center = Vector3.zero;
+        bedCollider.size = size;
+    }
+
+    static void CopyCollider(BoxCollider source, Transform targetTransform, BoxCollider target)
+    {
+        Vector3[] localCorners = GetLocalCorners(source.center, source.size * 0.5f);
+        Vector3 min = new Vector3(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
+        Vector3 max = new Vector3(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
+
+        for (int i = 0; i < localCorners.Length; i++)
+        {
+            Vector3 worldCorner = source.transform.TransformPoint(localCorners[i]);
+            Vector3 targetLocalCorner = targetTransform.InverseTransformPoint(worldCorner);
+            min = Vector3.Min(min, targetLocalCorner);
+            max = Vector3.Max(max, targetLocalCorner);
+        }
+
+        target.center = (min + max) * 0.5f;
+        target.size = max - min;
+    }
+
+    static void ApplySensorMargins(BoxCollider sensorCollider, Transform sensorTransform)
+    {
+        Vector3 size = sensorCollider.size;
+        Vector3 center = sensorCollider.center;
+
+        int verticalAxis = GetDominantVerticalAxis(sensorTransform, out float verticalSign);
+        float[] axisScale = { sensorTransform.lossyScale.x, sensorTransform.lossyScale.y, sensorTransform.lossyScale.z };
+        axisScale[0] = Mathf.Max(axisScale[0], 0.0001f);
+        axisScale[1] = Mathf.Max(axisScale[1], 0.0001f);
+        axisScale[2] = Mathf.Max(axisScale[2], 0.0001f);
+
+        float topPaddingLocal = SensorTopPaddingWorld / axisScale[verticalAxis];
+        AddAxis(ref size, verticalAxis, topPaddingLocal);
+        AddAxis(ref center, verticalAxis, topPaddingLocal * 0.5f * verticalSign);
+
+        for (int axis = 0; axis < 3; axis++)
+        {
+            if (axis == verticalAxis)
+                continue;
+
+            float sideMarginLocal = (SensorSideMarginWorld * 2f) / axisScale[axis];
+            float shrunkSize = GetAxis(size, axis) - sideMarginLocal;
+            SetAxis(ref size, axis, Mathf.Max(0.0005f, shrunkSize));
+        }
+
+        sensorCollider.center = center;
+        sensorCollider.size = size;
+    }
+
+    static int GetDominantVerticalAxis(Transform transform, out float sign)
+    {
+        float xDot = Vector3.Dot(transform.right, Vector3.up);
+        float yDot = Vector3.Dot(transform.up, Vector3.up);
+        float zDot = Vector3.Dot(transform.forward, Vector3.up);
+
+        float absX = Mathf.Abs(xDot);
+        float absY = Mathf.Abs(yDot);
+        float absZ = Mathf.Abs(zDot);
+
+        if (absX > absY && absX > absZ)
+        {
+            sign = Mathf.Sign(xDot);
+            return 0;
+        }
+
+        if (absY > absZ)
+        {
+            sign = Mathf.Sign(yDot);
+            return 1;
+        }
+
+        sign = Mathf.Sign(zDot);
+        return 2;
+    }
+
+    static Vector3[] GetLocalCorners(Vector3 center, Vector3 extents)
+    {
+        return new[]
+        {
+            center + new Vector3(-extents.x, -extents.y, -extents.z),
+            center + new Vector3(-extents.x, -extents.y, extents.z),
+            center + new Vector3(-extents.x, extents.y, -extents.z),
+            center + new Vector3(-extents.x, extents.y, extents.z),
+            center + new Vector3(extents.x, -extents.y, -extents.z),
+            center + new Vector3(extents.x, -extents.y, extents.z),
+            center + new Vector3(extents.x, extents.y, -extents.z),
+            center + new Vector3(extents.x, extents.y, extents.z),
+        };
+    }
+
+    static void SetSerializedField(Object target, string fieldName, Object value)
+    {
+        SerializedObject serializedObject = new SerializedObject(target);
+        SerializedProperty property = serializedObject.FindProperty(fieldName);
+        property.objectReferenceValue = value;
+        serializedObject.ApplyModifiedPropertiesWithoutUndo();
+    }
+
+    static void SetSerializedField(Object target, string fieldName, Vector3 value)
+    {
+        SerializedObject serializedObject = new SerializedObject(target);
+        SerializedProperty property = serializedObject.FindProperty(fieldName);
+        property.vector3Value = value;
+        serializedObject.ApplyModifiedPropertiesWithoutUndo();
+    }
+
+    static void SetSerializedField(Object target, string fieldName, float value)
+    {
+        SerializedObject serializedObject = new SerializedObject(target);
+        SerializedProperty property = serializedObject.FindProperty(fieldName);
+        property.floatValue = value;
+        serializedObject.ApplyModifiedPropertiesWithoutUndo();
+    }
+
+    static void SetSerializedField(Object target, string fieldName, LayerMask value)
+    {
+        SerializedObject serializedObject = new SerializedObject(target);
+        SerializedProperty property = serializedObject.FindProperty(fieldName);
+        property.intValue = value.value;
+        serializedObject.ApplyModifiedPropertiesWithoutUndo();
+    }
+
+    static void AddAxis(ref Vector3 vector, int axis, float value)
+    {
+        SetAxis(ref vector, axis, GetAxis(vector, axis) + value);
+    }
+
+    static float GetAxis(Vector3 vector, int axis)
+    {
+        return axis == 0 ? vector.x : axis == 1 ? vector.y : vector.z;
+    }
+
+    static void SetAxis(ref Vector3 vector, int axis, float value)
+    {
+        if (axis == 0)
+            vector.x = value;
+        else if (axis == 1)
+            vector.y = value;
+        else
+            vector.z = value;
+    }
+}
