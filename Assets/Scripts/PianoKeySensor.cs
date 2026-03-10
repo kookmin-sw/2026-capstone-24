@@ -20,6 +20,10 @@ public class PianoKeySensor : MonoBehaviour
 
     public BoxCollider SensorCollider => sensorCollider;
     public Bounds SensorBounds => sensorCollider != null ? sensorCollider.bounds : new Bounds(transform.position, Vector3.zero);
+    public Transform TargetBone => targetBone;
+    public Rigidbody TargetBody => targetBody;
+    public float CurrentPressNormalized => m_CurrentPress;
+    public float CurrentPressAngleDegrees => m_CurrentPress * maxPressDegrees;
 
     void Awake()
     {

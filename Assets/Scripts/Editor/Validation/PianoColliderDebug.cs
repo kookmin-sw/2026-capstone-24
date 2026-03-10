@@ -7,8 +7,8 @@ public static class PianoColliderDebug
     [MenuItem("Tools/Piano/Log Collider Data")]
     public static void LogColliderData()
     {
-        var root = GameObject.Find("piano_rigging_standFix/Piano_Rig/Root");
-        if (root == null)
+        if (!PianoEditorUtility.TryGetPianoRoot(out GameObject pianoRoot) ||
+            !PianoEditorUtility.TryGetKeyRigRoot(pianoRoot, out Transform root))
         {
             Debug.LogError("Piano Root not found");
             return;
@@ -36,14 +36,14 @@ public static class PianoColliderDebug
     }
 
     [MenuItem("Tools/Piano/Verify Collider Alignment")]
-[MenuItem("Tools/Piano/Verify Collider Alignment")]
     public static void VerifyAlignment()
     {
-        var root = GameObject.Find("piano_rigging_standFix/Piano_Rig/Root");
-        if (root == null) return;
+        if (!PianoEditorUtility.TryGetPianoRoot(out GameObject pianoRoot) ||
+            !PianoEditorUtility.TryGetKeyRigRoot(pianoRoot, out Transform root))
+            return;
 
         int issues = 0;
-        foreach (Transform child in root.transform)
+        foreach (Transform child in root)
         {
             var col = child.GetComponent<BoxCollider>();
             if (col == null)

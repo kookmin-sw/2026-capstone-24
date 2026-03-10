@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public static class PianoPhysicsSetup
 {
-    const string SamplePianoName = "Sample Piano";
     const string LegacyPhysicsKeysRootName = "PhysicsKeys";
     const string InteractionRootName = "PianoInteraction";
     const string SensorRootName = "KeySensors";
@@ -16,7 +16,7 @@ public static class PianoPhysicsSetup
     [MenuItem("Tools/Piano/Setup Key Sensors")]
     static void SetupKeySensors()
     {
-        if (!TryCollectKeys(out Transform root, out List<Transform> keyBones, out List<BoxCollider> sourceColliders))
+        if (!TryCollectKeys(out GameObject pianoRoot, out Transform keyRigRoot, out List<Transform> keyBones, out List<BoxCollider> sourceColliders))
             return;
 
         Undo.IncrementCurrentGroup();
@@ -24,8 +24,11 @@ public static class PianoPhysicsSetup
         int undoGroup = Undo.GetCurrentGroup();
 
         DestroyIfExists(LegacyPhysicsKeysRootName);
-        GameObject interactionRoot = FindOrCreateRoot(InteractionRootName);
-        interactionRoot.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+        RemoveDetachedInteractionRoot(pianoRoot.transform);
+
+        GameObject interactionRoot = FindOrCreateChildRoot(pianoRoot.transform, InteractionRootName);
+        interactionRoot.transform.localPosition = Vector3.zero;
+        interactionRoot.transform.localRotation = Quaternion.identity;
         interactionRoot.transform.localScale = Vector3.one;
 
         Transform sensorRoot = interactionRoot.transform.Find(SensorRootName);
@@ -71,9 +74,9 @@ public static class PianoPhysicsSetup
             EditorUtility.SetDirty(sourceCollider);
         }
 
-        EditorSceneManager.MarkSceneDirty(root.gameObject.scene);
+        EditorSceneManager.MarkSceneDirty(pianoRoot.scene);
         Undo.CollapseUndoOperations(undoGroup);
-        Debug.Log($"Created {KeyCount} key sensors under '{InteractionRootName}'.");
+        Debug.Log($"Created {KeyCount} key sensors under '{pianoRoot.name}/{InteractionRootName}'.");
     }
 
     [MenuItem("Tools/Piano/Setup Physics Proxies")]
@@ -90,10 +93,10 @@ public static class PianoPhysicsSetup
         int undoGroup = Undo.GetCurrentGroup();
 
         DestroyIfExists(LegacyPhysicsKeysRootName);
-        GameObject interactionRoot = FindSceneRoot(InteractionRootName);
-        if (interactionRoot != null)
+        if (PianoEditorUtility.TryGetPianoRoot(out GameObject pianoRoot))
         {
-            Transform sensorRoot = interactionRoot.transform.Find(SensorRootName);
+            Transform interactionRoot = pianoRoot.transform.Find(InteractionRootName);
+            Transform sensorRoot = interactionRoot != null ? interactionRoot.Find(SensorRootName) : null;
             if (sensorRoot != null)
                 Undo.DestroyObjectImmediate(sensorRoot.gameObject);
         }
@@ -101,23 +104,22 @@ public static class PianoPhysicsSetup
         Undo.CollapseUndoOperations(undoGroup);
     }
 
-    static bool TryCollectKeys(out Transform root, out List<Transform> keyBones, out List<BoxCollider> sourceColliders)
+    static bool TryCollectKeys(out GameObject pianoRoot, out Transform root, out List<Transform> keyBones, out List<BoxCollider> sourceColliders)
     {
+        pianoRoot = null;
         root = null;
         keyBones = new List<Transform>(KeyCount);
         sourceColliders = new List<BoxCollider>(KeyCount);
 
-        GameObject samplePiano = GameObject.Find(SamplePianoName);
-        if (samplePiano == null)
+        if (!PianoEditorUtility.TryGetPianoRoot(out pianoRoot))
         {
-            Debug.LogError($"'{SamplePianoName}' not found in scene.");
+            Debug.LogError("No piano root found. Select a piano root or place one in the scene.");
             return false;
         }
 
-        root = samplePiano.transform.Find("Piano_Rig/Root");
-        if (root == null)
+        if (!PianoEditorUtility.TryGetKeyRigRoot(pianoRoot, out root))
         {
-            Debug.LogError("Sample Piano/Piano_Rig/Root not found.");
+            Debug.LogError("Could not resolve Piano_Rig/Root on the selected piano.");
             return false;
         }
 
@@ -166,6 +168,18 @@ public static class PianoPhysicsSetup
             Undo.DestroyObjectImmediate(existing);
     }
 
+    static void RemoveDetachedInteractionRoot(Transform pianoRoot)
+    {
+        GameObject detached = FindSceneRoot(InteractionRootName);
+        if (detached == null)
+            return;
+
+        if (detached.transform.parent == pianoRoot)
+            return;
+
+        Undo.DestroyObjectImmediate(detached);
+    }
+
     static GameObject FindSceneRoot(string name)
     {
         foreach (GameObject rootObject in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects())
@@ -177,14 +191,15 @@ public static class PianoPhysicsSetup
         return null;
     }
 
-    static GameObject FindOrCreateRoot(string name)
+    static GameObject FindOrCreateChildRoot(Transform parent, string name)
     {
-        GameObject existing = FindSceneRoot(name);
+        Transform existing = parent.Find(name);
         if (existing != null)
-            return existing;
+            return existing.gameObject;
 
         GameObject created = new GameObject(name);
         Undo.RegisterCreatedObjectUndo(created, $"Create {name}");
+        created.transform.SetParent(parent, false);
         return created;
     }
 

@@ -6,18 +6,15 @@ public class AddPianoKeyColliders : EditorWindow
     [MenuItem("Tools/Add Piano Key Colliders")]
     static void AddColliders()
     {
-        // Find the Root transform under Sample Piano/Piano_Rig/Root
-        GameObject samplePiano = GameObject.Find("Sample Piano");
-        if (samplePiano == null)
+        if (!PianoEditorUtility.TryGetPianoRoot(out GameObject pianoRoot))
         {
-            Debug.LogError("Sample Piano not found in scene!");
+            Debug.LogError("No piano root found. Select a piano root or place one in the scene.");
             return;
         }
 
-        Transform root = samplePiano.transform.Find("Piano_Rig/Root");
-        if (root == null)
+        if (!PianoEditorUtility.TryGetKeyRigRoot(pianoRoot, out Transform root))
         {
-            Debug.LogError("Piano_Rig/Root not found!");
+            Debug.LogError("Selected object does not contain Piano_Rig/Root with 88 keys.");
             return;
         }
 
@@ -96,7 +93,7 @@ public class AddPianoKeyColliders : EditorWindow
         }
 
         Undo.CollapseUndoOperations(undoGroup);
-        Debug.Log($"Piano Key Colliders: Added {addedCount}, Skipped {skippedCount} (already had collider)");
+        Debug.Log($"Piano Key Colliders on '{pianoRoot.name}': Added {addedCount}, Skipped {skippedCount} (already had collider)");
     }
 
     static bool IsBlackKey(int keyNumber)
