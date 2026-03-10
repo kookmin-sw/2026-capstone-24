@@ -32,6 +32,12 @@ static class PianoEditorUtility
 
         Transform root = pianoRoot.transform.Find("Piano_Rig/Root");
         if (root == null)
+            root = pianoRoot.transform.Find("PianoModel/Piano_Rig/Root");
+
+        if (root == null)
+            root = pianoRoot.transform.Find("Sample Piano/Piano_Rig/Root");
+
+        if (root == null)
             return false;
 
         int keyBoneCount = 0;
