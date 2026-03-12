@@ -2372,6 +2372,11 @@ PhysicsMaterial:
   m_Bounciness: 0
   m_FrictionCombine: 0
   m_BounceCombine: 0
+--- !u!4 &1134671721 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4022724373312149753, guid: 3c5d8768b6de998418a06273bb13841b, type: 3}
+  m_PrefabInstance: {fileID: 9062908577109783417}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1146463879
 GameObject:
   m_ObjectHideFlags: 0
@@ -4345,6 +4350,68 @@ Transform:
   - {fileID: 1408096020}
   m_Father: {fileID: 575831568}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2134423875
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2134423878}
+  - component: {fileID: 2134423877}
+  - component: {fileID: 2134423876}
+  m_Layer: 0
+  m_Name: AudioEngine
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2134423876
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2134423875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9754c1fc3ca394641a556bf8be307913, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PianoMidiBridge
+  pianoRoot: {fileID: 1134671721}
+  audioEngine: {fileID: 2134423877}
+  instrumentId: 0
+  channel: 1
+--- !u!114 &2134423877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2134423875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddde001853bfcae4ab36d2b084e2588f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VRMusicStudio.Audio.UniversalAudioEngine
+  defaultMixerGroup: {fileID: 0}
+--- !u!4 &2134423878
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2134423875}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2135236994
 GameObject:
   m_ObjectHideFlags: 0
@@ -4813,3 +4880,4 @@ SceneRoots:
   - {fileID: 1450132037}
   - {fileID: 809823330}
   - {fileID: 1602320647}
+  - {fileID: 2134423878}
