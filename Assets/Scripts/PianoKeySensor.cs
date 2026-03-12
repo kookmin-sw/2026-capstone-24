@@ -14,9 +14,15 @@ public class PianoKeySensor : MonoBehaviour
     [SerializeField] float releaseSpeed = 26f;
     [SerializeField] LayerMask presserLayers = ~0;
 
+    [Header("MIDI")]
+    [SerializeField] int midiNote = -1;
+    [SerializeField] float noteOnThreshold = 0.3f;
+    [SerializeField] float noteOffThreshold = 0.15f;
+
     readonly Collider[] m_OverlapBuffer = new Collider[12];
     Quaternion m_InitialBoneLocalRotation;
     float m_CurrentPress;
+    bool m_IsNoteOn;
 
     public BoxCollider SensorCollider => sensorCollider;
     public Bounds SensorBounds => sensorCollider != null ? sensorCollider.bounds : new Bounds(transform.position, Vector3.zero);
@@ -24,6 +30,11 @@ public class PianoKeySensor : MonoBehaviour
     public Rigidbody TargetBody => targetBody;
     public float CurrentPressNormalized => m_CurrentPress;
     public float CurrentPressAngleDegrees => m_CurrentPress * maxPressDegrees;
+    public int MidiNote => midiNote;
+    public bool IsNoteOn => m_IsNoteOn;
+
+    public event System.Action<PianoKeySensor> OnNoteOn;
+    public event System.Action<PianoKeySensor> OnNoteOff;
 
     void Awake()
     {
@@ -35,6 +46,9 @@ public class PianoKeySensor : MonoBehaviour
 
         if (targetBone != null)
             m_InitialBoneLocalRotation = targetBone.localRotation;
+
+        if (midiNote < 0)
+            midiNote = ParseMidiNoteFromName(gameObject.name);
     }
 
     void OnValidate()
@@ -99,6 +113,8 @@ public class PianoKeySensor : MonoBehaviour
         if (!float.IsFinite(m_CurrentPress))
             m_CurrentPress = 0f;
 
+        UpdateNoteState();
+
         if (targetBone == null)
             return;
 
@@ -122,6 +138,20 @@ public class PianoKeySensor : MonoBehaviour
         }
 
         targetBone.localRotation = targetRotation;
+    }
+
+    void UpdateNoteState()
+    {
+        if (!m_IsNoteOn && m_CurrentPress >= noteOnThreshold)
+        {
+            m_IsNoteOn = true;
+            OnNoteOn?.Invoke(this);
+        }
+        else if (m_IsNoteOn && m_CurrentPress <= noteOffThreshold)
+        {
+            m_IsNoteOn = false;
+            OnNoteOff?.Invoke(this);
+        }
     }
 
     static bool IsFiniteVector(Vector3 value)
@@ -157,5 +187,13 @@ public class PianoKeySensor : MonoBehaviour
             return true;
 
         return false;
+    }
+
+    static int ParseMidiNoteFromName(string name)
+    {
+        int underscoreIndex = name.LastIndexOf('_');
+        if (underscoreIndex >= 0 && int.TryParse(name.Substring(underscoreIndex + 1), out int sensorNumber))
+            return sensorNumber + 20;
+        return 0;
     }
 }
