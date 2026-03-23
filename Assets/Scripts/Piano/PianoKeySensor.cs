@@ -3,6 +3,8 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class PianoKeySensor : MonoBehaviour
 {
+    const string PianoRigRootPath = "PianoModel/Piano_Rig/Root";
+
     [SerializeField] Transform targetBone;
     [SerializeField] Rigidbody targetBody;
     [SerializeField] BoxCollider sensorCollider;
@@ -14,9 +16,16 @@ public class PianoKeySensor : MonoBehaviour
     [SerializeField] float releaseSpeed = 26f;
     [SerializeField] LayerMask presserLayers = ~0;
 
+    [Header("Piano Input")]
+    [SerializeField] int keyIndex = -1;
+    [SerializeField] float noteOnThreshold = 0.3f;
+    [SerializeField] float noteOffThreshold = 0.15f;
+
     readonly Collider[] m_OverlapBuffer = new Collider[12];
     Quaternion m_InitialBoneLocalRotation;
     float m_CurrentPress;
+    bool m_IsNoteOn;
+    Piano m_Piano;
 
     public BoxCollider SensorCollider => sensorCollider;
     public Bounds SensorBounds => sensorCollider != null ? sensorCollider.bounds : new Bounds(transform.position, Vector3.zero);
@@ -24,14 +33,22 @@ public class PianoKeySensor : MonoBehaviour
     public Rigidbody TargetBody => targetBody;
     public float CurrentPressNormalized => m_CurrentPress;
     public float CurrentPressAngleDegrees => m_CurrentPress * maxPressDegrees;
+    public int KeyIndex => keyIndex;
+    public bool IsNoteOn => m_IsNoteOn;
 
     void Awake()
     {
         if (sensorCollider == null)
             sensorCollider = GetComponent<BoxCollider>();
 
-        if (targetBody == null && targetBone != null)
-            targetBody = targetBone.GetComponent<Rigidbody>();
+        if (keyIndex < 0)
+            keyIndex = ParseKeyIndexFromName(gameObject.name);
+
+        m_Piano = GetComponentInParent<Piano>();
+        if (m_Piano == null)
+            Debug.LogError($"[PianoKeySensor] Piano root was not found for {gameObject.name}.", this);
+
+        TryAutoAssignTargets();
 
         if (targetBone != null)
             m_InitialBoneLocalRotation = targetBone.localRotation;
@@ -42,9 +59,6 @@ public class PianoKeySensor : MonoBehaviour
         if (sensorCollider == null)
             sensorCollider = GetComponent<BoxCollider>();
 
-        if (targetBody == null && targetBone != null)
-            targetBody = targetBone.GetComponent<Rigidbody>();
-
         if (!IsFiniteVector(boneLocalAxis) || boneLocalAxis.sqrMagnitude < 0.0001f)
             boneLocalAxis = Vector3.right;
 
@@ -52,6 +66,11 @@ public class PianoKeySensor : MonoBehaviour
         pressDistance = Mathf.Max(0.0005f, pressDistance);
         pressSpeed = Mathf.Max(0.01f, pressSpeed);
         releaseSpeed = Mathf.Max(0.01f, releaseSpeed);
+
+        if (keyIndex < 0)
+            keyIndex = ParseKeyIndexFromName(gameObject.name);
+
+        TryAutoAssignTargets();
     }
 
     void FixedUpdate()
@@ -99,6 +118,8 @@ public class PianoKeySensor : MonoBehaviour
         if (!float.IsFinite(m_CurrentPress))
             m_CurrentPress = 0f;
 
+        UpdateNoteState();
+
         if (targetBone == null)
             return;
 
@@ -122,6 +143,20 @@ public class PianoKeySensor : MonoBehaviour
         }
 
         targetBone.localRotation = targetRotation;
+    }
+
+    void UpdateNoteState()
+    {
+        if (!m_IsNoteOn && m_CurrentPress >= noteOnThreshold)
+        {
+            m_IsNoteOn = true;
+            m_Piano?.NoteOn(keyIndex, m_CurrentPress);
+        }
+        else if (m_IsNoteOn && m_CurrentPress <= noteOffThreshold)
+        {
+            m_IsNoteOn = false;
+            m_Piano?.NoteOff(keyIndex);
+        }
     }
 
     static bool IsFiniteVector(Vector3 value)
@@ -157,5 +192,41 @@ public class PianoKeySensor : MonoBehaviour
             return true;
 
         return false;
+    }
+
+    static int ParseKeyIndexFromName(string name)
+    {
+        int underscoreIndex = name.LastIndexOf('_');
+        if (underscoreIndex >= 0 && int.TryParse(name.Substring(underscoreIndex + 1), out int sensorNumber))
+            return sensorNumber - 1;
+        return -1;
+    }
+
+    void TryAutoAssignTargets()
+    {
+        if (targetBone != null && targetBody != null)
+            return;
+
+        int resolvedKeyIndex = keyIndex >= 0 ? keyIndex : ParseKeyIndexFromName(gameObject.name);
+        if (resolvedKeyIndex < 0)
+            return;
+
+        Transform pianoRoot = GetComponentInParent<Piano>()?.transform;
+        if (pianoRoot == null)
+            pianoRoot = transform.root;
+
+        if (pianoRoot == null)
+            return;
+
+        string keyPath = $"{PianoRigRootPath}/key_{resolvedKeyIndex + 1}";
+        Transform resolvedBone = pianoRoot.Find(keyPath);
+        if (resolvedBone == null)
+            return;
+
+        if (targetBone == null)
+            targetBone = resolvedBone;
+
+        if (targetBody == null)
+            targetBody = resolvedBone.GetComponent<Rigidbody>();
     }
 }
