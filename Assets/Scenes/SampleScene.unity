@@ -1805,7 +1805,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1809874682966092514, guid: 820263f9759bc794aa21365d8e5410de, type: 3}
       propertyPath: m_Name
-      value: LeftHand_with_colliders
+      value: LeftPhysicsHand
       objectReference: {fileID: 0}
     - target: {fileID: 5112729997121287725, guid: 820263f9759bc794aa21365d8e5410de, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1959,7 +1959,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6766616121731023165, guid: 39719130c2f6f1140895495387291d85, type: 3}
       propertyPath: m_Name
-      value: RightHand_with_colliders
+      value: RightPhysicsHand
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
