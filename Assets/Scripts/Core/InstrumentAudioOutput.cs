@@ -2,8 +2,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
+/// <summary>
+/// 개별 악기 3D 모델에 부착되어 실제로 소리를 입체적으로 출력하는 스피커 역할을 합니다.
+/// 여러 음이 겹쳐서 재생될 수 있도록 보이스 풀(Voice Pool) 기법을 사용합니다.
+/// 기존의 PianoAudioOutput이 범용화 되었습니다.
+/// </summary>
 [DisallowMultipleComponent]
-public class PianoAudioOutput : MonoBehaviour
+public class InstrumentAudioOutput : MonoBehaviour
 {
     enum VoiceState
     {
