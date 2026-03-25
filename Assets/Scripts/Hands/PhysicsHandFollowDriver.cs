@@ -44,6 +44,7 @@ public class PhysicsHandFollowDriver : MonoBehaviour
     XRHandDynamicPoseProvider m_PoseProvider;
     uint m_LastSourceRevision = uint.MaxValue;
     bool m_HasValidTarget;
+    int m_SuppressVelocityDriveFrames;
 
     public HandSide Side => side;
 
@@ -127,6 +128,13 @@ public class PhysicsHandFollowDriver : MonoBehaviour
         Vector3 wristOffset = desiredRootPose.rotation * m_PhysicsWristLocalPosition;
         Vector3 rootLinearVelocity = wristState.linearVelocity - Vector3.Cross(rootAngularVelocity, wristOffset);
 
+        if (m_SuppressVelocityDriveFrames > 0)
+        {
+            rootLinearVelocity = Vector3.zero;
+            rootAngularVelocity = Vector3.zero;
+            m_SuppressVelocityDriveFrames--;
+        }
+
         m_FollowJoint.targetPosition = Vector3.zero;
         m_FollowJoint.targetRotation = Quaternion.identity;
         m_FollowJoint.targetVelocity = rootLinearVelocity - rootBody.linearVelocity;
@@ -159,6 +167,7 @@ public class PhysicsHandFollowDriver : MonoBehaviour
 
         m_TargetBody.position = desiredRootPose.position;
         m_TargetBody.rotation = desiredRootPose.rotation;
+        m_SuppressVelocityDriveFrames = 1;
     }
 
     Pose CalculateDesiredRootPose(Pose wristPose)

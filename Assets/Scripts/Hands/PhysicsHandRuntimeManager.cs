@@ -1,20 +1,27 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit.Inputs;
+using UnityEngine.XR.Interaction.Toolkit.Locomotion;
 
-[DefaultExecutionOrder(-1001)]
+[DefaultExecutionOrder(-1200)]
 public class PhysicsHandRuntimeManager : MonoBehaviour
 {
-    const string VrPlayerName = "VR Player";
-    const string LeftPhysicsHandName = "LeftPhysicsHand";
-    const string RightPhysicsHandName = "RightPhysicsHand";
+    const string RuntimeContainerName = "PhysicsHandsRuntime";
 
     static PhysicsHandRuntimeManager s_Instance;
 
-    XRInputModalityManager m_ModalityManager;
-    PhysicsHandFollowDriver m_LeftHand;
-    PhysicsHandFollowDriver m_RightHand;
-    bool m_InitialSnapDone;
-    bool m_ModalityEventsSubscribed;
+    readonly HashSet<LocomotionProvider> m_SubscribedProviders = new HashSet<LocomotionProvider>();
+    readonly HashSet<LocomotionProvider> m_ActiveLocomotionProviders = new HashSet<LocomotionProvider>();
+
+    [SerializeField] XRInputModalityManager modalityManager;
+    [SerializeField] GameObject leftPhysicsHandPrefab;
+    [SerializeField] GameObject rightPhysicsHandPrefab;
+
+    XRHandDynamicPoseProvider m_PoseProvider;
+    Transform m_RuntimeContainer;
+    PhysicsHandFollowDriver m_LeftRuntimeHand;
+    PhysicsHandFollowDriver m_RightRuntimeHand;
+    bool m_PendingResumeAfterLocomotion;
 
     public static PhysicsHandRuntimeManager GetOrCreate()
     {
@@ -25,7 +32,7 @@ public class PhysicsHandRuntimeManager : MonoBehaviour
         if (s_Instance != null)
             return s_Instance;
 
-        GameObject vrPlayer = GameObject.Find(VrPlayerName);
+        GameObject vrPlayer = GameObject.Find("VR Player");
         GameObject owner = vrPlayer != null ? vrPlayer : new GameObject(nameof(PhysicsHandRuntimeManager));
         s_Instance = owner.GetComponent<PhysicsHandRuntimeManager>();
         if (s_Instance == null)
@@ -45,94 +52,237 @@ public class PhysicsHandRuntimeManager : MonoBehaviour
         s_Instance = this;
         TryAssignReferences();
         SubscribeModalityEvents();
-    }
+        DiscoverLocomotionProviders();
+        EnsureRuntimeHands();
 
-    void Start()
-    {
-        SnapAllToCurrentSource();
+        if (m_ActiveLocomotionProviders.Count == 0)
+            TryActivateRuntimeHands();
     }
 
     void Update()
     {
         TryAssignReferences();
-        SubscribeModalityEvents();
+        DiscoverLocomotionProviders();
+        EnsureRuntimeHands();
 
-        if (!m_InitialSnapDone)
-            m_InitialSnapDone = SnapAllToCurrentSource();
+        if (m_ActiveLocomotionProviders.Count > 0)
+            return;
+
+        if (m_PendingResumeAfterLocomotion)
+        {
+            if (TryResumeRuntimeHands())
+                m_PendingResumeAfterLocomotion = false;
+
+            return;
+        }
+
+        TryActivateRuntimeHands();
+    }
+
+    void OnEnable()
+    {
+        if (s_Instance == this)
+        {
+            SubscribeModalityEvents();
+            DiscoverLocomotionProviders();
+        }
     }
 
     void OnDisable()
     {
         UnsubscribeModalityEvents();
+        UnsubscribeLocomotionProviders();
+
         if (s_Instance == this)
             s_Instance = null;
     }
 
     void TryAssignReferences()
     {
-        if (m_ModalityManager == null)
-            m_ModalityManager = FindFirstObjectByType<XRInputModalityManager>();
+        if (modalityManager == null)
+            modalityManager = GetComponent<XRInputModalityManager>();
 
-        if (m_LeftHand == null)
+        if (modalityManager == null)
+            modalityManager = FindFirstObjectByType<XRInputModalityManager>();
+
+        if (m_PoseProvider == null)
+            m_PoseProvider = XRHandDynamicPoseProvider.GetOrCreate();
+    }
+
+    void EnsureRuntimeHands()
+    {
+        if (m_RuntimeContainer == null)
         {
-            GameObject leftHandObject = GameObject.Find(LeftPhysicsHandName);
-            if (leftHandObject != null)
-                m_LeftHand = leftHandObject.GetComponent<PhysicsHandFollowDriver>();
+            GameObject container = GameObject.Find(RuntimeContainerName);
+            if (container == null)
+                container = new GameObject(RuntimeContainerName);
+
+            m_RuntimeContainer = container.transform;
+            m_RuntimeContainer.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
         }
 
-        if (m_RightHand == null)
+        if (m_LeftRuntimeHand == null && leftPhysicsHandPrefab != null)
+            m_LeftRuntimeHand = InstantiateRuntimeHand(leftPhysicsHandPrefab);
+
+        if (m_RightRuntimeHand == null && rightPhysicsHandPrefab != null)
+            m_RightRuntimeHand = InstantiateRuntimeHand(rightPhysicsHandPrefab);
+    }
+
+    PhysicsHandFollowDriver InstantiateRuntimeHand(GameObject prefab)
+    {
+        GameObject runtimeObject = Instantiate(prefab, m_RuntimeContainer);
+        PhysicsHandFollowDriver runtimeHand = runtimeObject.GetComponent<PhysicsHandFollowDriver>();
+        if (runtimeHand == null)
         {
-            GameObject rightHandObject = GameObject.Find(RightPhysicsHandName);
-            if (rightHandObject != null)
-                m_RightHand = rightHandObject.GetComponent<PhysicsHandFollowDriver>();
+            Destroy(runtimeObject);
+            return null;
         }
+
+        runtimeHand.gameObject.SetActive(false);
+        return runtimeHand;
+    }
+
+    void TryActivateRuntimeHands()
+    {
+        if (m_PoseProvider == null)
+            return;
+
+        m_PoseProvider.RefreshNow();
+        TryActivateRuntimeHand(m_LeftRuntimeHand, true);
+        TryActivateRuntimeHand(m_RightRuntimeHand, false);
+    }
+
+    void TryActivateRuntimeHand(PhysicsHandFollowDriver hand, bool isLeft)
+    {
+        if (hand == null || hand.gameObject.activeSelf)
+            return;
+
+        if (!m_PoseProvider.TryGetWristState(isLeft, out _))
+            return;
+
+        hand.SnapToCurrentSource();
+        hand.gameObject.SetActive(true);
+    }
+
+    void SuspendRuntimeHands()
+    {
+        if (m_LeftRuntimeHand != null)
+            m_LeftRuntimeHand.gameObject.SetActive(false);
+
+        if (m_RightRuntimeHand != null)
+            m_RightRuntimeHand.gameObject.SetActive(false);
+    }
+
+    bool TryResumeRuntimeHands()
+    {
+        if (m_ActiveLocomotionProviders.Count > 0 || m_PoseProvider == null)
+            return false;
+
+        m_PoseProvider.RefreshNow(XRHandDynamicPoseProvider.RefreshReason.LocomotionResume);
+
+        bool leftReady = TryResumeRuntimeHand(m_LeftRuntimeHand, true);
+        bool rightReady = TryResumeRuntimeHand(m_RightRuntimeHand, false);
+
+        return (m_LeftRuntimeHand == null || leftReady) && (m_RightRuntimeHand == null || rightReady);
+    }
+
+    bool TryResumeRuntimeHand(PhysicsHandFollowDriver hand, bool isLeft)
+    {
+        if (hand == null)
+            return true;
+
+        if (!m_PoseProvider.TryGetWristState(isLeft, out _))
+            return false;
+
+        if (!hand.gameObject.activeSelf)
+        {
+            hand.SnapToCurrentSource();
+            hand.gameObject.SetActive(true);
+        }
+
+        return true;
     }
 
     void SubscribeModalityEvents()
     {
-        if (m_ModalityManager == null || m_ModalityEventsSubscribed)
+        if (modalityManager == null)
             return;
 
-        m_ModalityManager.trackedHandModeStarted.AddListener(OnModalityChanged);
-        m_ModalityManager.trackedHandModeEnded.AddListener(OnModalityChanged);
-        m_ModalityManager.motionControllerModeStarted.AddListener(OnModalityChanged);
-        m_ModalityManager.motionControllerModeEnded.AddListener(OnModalityChanged);
-        m_ModalityEventsSubscribed = true;
+        modalityManager.trackedHandModeStarted.RemoveListener(OnModalityChanged);
+        modalityManager.trackedHandModeEnded.RemoveListener(OnModalityChanged);
+        modalityManager.motionControllerModeStarted.RemoveListener(OnModalityChanged);
+        modalityManager.motionControllerModeEnded.RemoveListener(OnModalityChanged);
+
+        modalityManager.trackedHandModeStarted.AddListener(OnModalityChanged);
+        modalityManager.trackedHandModeEnded.AddListener(OnModalityChanged);
+        modalityManager.motionControllerModeStarted.AddListener(OnModalityChanged);
+        modalityManager.motionControllerModeEnded.AddListener(OnModalityChanged);
     }
 
     void UnsubscribeModalityEvents()
     {
-        if (m_ModalityManager == null || !m_ModalityEventsSubscribed)
+        if (modalityManager == null)
             return;
 
-        m_ModalityManager.trackedHandModeStarted.RemoveListener(OnModalityChanged);
-        m_ModalityManager.trackedHandModeEnded.RemoveListener(OnModalityChanged);
-        m_ModalityManager.motionControllerModeStarted.RemoveListener(OnModalityChanged);
-        m_ModalityManager.motionControllerModeEnded.RemoveListener(OnModalityChanged);
-        m_ModalityEventsSubscribed = false;
+        modalityManager.trackedHandModeStarted.RemoveListener(OnModalityChanged);
+        modalityManager.trackedHandModeEnded.RemoveListener(OnModalityChanged);
+        modalityManager.motionControllerModeStarted.RemoveListener(OnModalityChanged);
+        modalityManager.motionControllerModeEnded.RemoveListener(OnModalityChanged);
+    }
+
+    void DiscoverLocomotionProviders()
+    {
+        LocomotionProvider[] providers = FindObjectsByType<LocomotionProvider>(FindObjectsSortMode.None);
+        foreach (LocomotionProvider provider in providers)
+        {
+            if (provider == null || m_SubscribedProviders.Contains(provider))
+                continue;
+
+            provider.locomotionStarted += OnLocomotionStarted;
+            provider.locomotionEnded += OnLocomotionEnded;
+            m_SubscribedProviders.Add(provider);
+
+            if (provider.isLocomotionActive)
+                m_ActiveLocomotionProviders.Add(provider);
+        }
+    }
+
+    void UnsubscribeLocomotionProviders()
+    {
+        foreach (LocomotionProvider provider in m_SubscribedProviders)
+        {
+            if (provider == null)
+                continue;
+
+            provider.locomotionStarted -= OnLocomotionStarted;
+            provider.locomotionEnded -= OnLocomotionEnded;
+        }
+
+        m_SubscribedProviders.Clear();
+        m_ActiveLocomotionProviders.Clear();
     }
 
     void OnModalityChanged()
     {
-        SnapAllToCurrentSource();
+        if (m_ActiveLocomotionProviders.Count == 0)
+            TryActivateRuntimeHands();
     }
 
-    bool SnapAllToCurrentSource()
+    void OnLocomotionStarted(LocomotionProvider provider)
     {
-        bool snapped = false;
+        if (provider != null)
+            m_ActiveLocomotionProviders.Add(provider);
 
-        if (m_LeftHand != null)
-        {
-            m_LeftHand.SnapToCurrentSource();
-            snapped = true;
-        }
+        m_PendingResumeAfterLocomotion = false;
+        SuspendRuntimeHands();
+    }
 
-        if (m_RightHand != null)
-        {
-            m_RightHand.SnapToCurrentSource();
-            snapped = true;
-        }
+    void OnLocomotionEnded(LocomotionProvider provider)
+    {
+        if (provider != null)
+            m_ActiveLocomotionProviders.Remove(provider);
 
-        return snapped;
+        if (m_ActiveLocomotionProviders.Count == 0)
+            m_PendingResumeAfterLocomotion = true;
     }
 }
