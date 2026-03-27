@@ -6,12 +6,6 @@ using UnityEngine.XR.Hands;
 [DefaultExecutionOrder(-1100)]
 public class XRHandDynamicPoseProvider : MonoBehaviour
 {
-    public enum RefreshReason
-    {
-        Default,
-        LocomotionResume,
-    }
-
     public enum PoseSourceKind
     {
         None,
@@ -83,7 +77,12 @@ public class XRHandDynamicPoseProvider : MonoBehaviour
 
     void Update()
     {
-        RefreshNow();
+        TryAssignSceneReferences();
+        EnsureSubsystem();
+        SampleControllerWrist(LeftIndex, m_LeftControllerWrist);
+        SampleControllerWrist(RightIndex, m_RightControllerWrist);
+        ResolveState(LeftIndex);
+        ResolveState(RightIndex);
     }
 
     void OnDisable()
@@ -97,18 +96,6 @@ public class XRHandDynamicPoseProvider : MonoBehaviour
     {
         state = m_ResolvedStates[isLeft ? LeftIndex : RightIndex];
         return state.hasPose;
-    }
-
-    public void RefreshNow(RefreshReason reason = RefreshReason.Default)
-    {
-        TryAssignSceneReferences();
-        EnsureSubsystem();
-
-        bool zeroVelocity = reason == RefreshReason.LocomotionResume;
-        SampleControllerWrist(LeftIndex, m_LeftControllerWrist, zeroVelocity);
-        SampleControllerWrist(RightIndex, m_RightControllerWrist, zeroVelocity);
-        ResolveState(LeftIndex, zeroVelocity, zeroVelocity);
-        ResolveState(RightIndex, zeroVelocity, zeroVelocity);
     }
 
     void TryAssignSceneReferences()
@@ -188,16 +175,19 @@ public class XRHandDynamicPoseProvider : MonoBehaviour
             return;
         }
 
+        Pose wristWorldPose = TransformOriginPoseToWorld(wristOriginPose);
+        Quaternion originRotation = GetOriginRotation();
+
         BufferedWristPose bufferedPose = m_TrackingWristPoses[index];
         bufferedPose.hasPose = true;
-        bufferedPose.pose = wristOriginPose;
-        bufferedPose.linearVelocity = wristJoint.TryGetLinearVelocity(out Vector3 linearVelocity) ? linearVelocity : Vector3.zero;
-        bufferedPose.angularVelocity = wristJoint.TryGetAngularVelocity(out Vector3 angularVelocity) ? angularVelocity : Vector3.zero;
+        bufferedPose.pose = wristWorldPose;
+        bufferedPose.linearVelocity = wristJoint.TryGetLinearVelocity(out Vector3 linearVelocity) ? originRotation * linearVelocity : Vector3.zero;
+        bufferedPose.angularVelocity = wristJoint.TryGetAngularVelocity(out Vector3 angularVelocity) ? originRotation * angularVelocity : Vector3.zero;
         bufferedPose.sampleTime = Time.time;
         m_TrackingWristPoses[index] = bufferedPose;
     }
 
-    void SampleControllerWrist(int index, Transform wrist, bool zeroVelocity = false)
+    void SampleControllerWrist(int index, Transform wrist)
     {
         if (wrist == null || !wrist.gameObject.activeInHierarchy)
         {
@@ -205,13 +195,13 @@ public class XRHandDynamicPoseProvider : MonoBehaviour
             return;
         }
 
-        Pose currentPose = TransformWorldPoseToOrigin(new Pose(wrist.position, wrist.rotation));
+        Pose currentPose = new Pose(wrist.position, wrist.rotation);
         float currentTime = Time.time;
 
         BufferedWristPose previousPose = m_ControllerWristPoses[index];
         Vector3 linearVelocity = Vector3.zero;
         Vector3 angularVelocity = Vector3.zero;
-        if (previousPose.hasPose && !zeroVelocity)
+        if (previousPose.hasPose)
         {
             float deltaTime = currentTime - previousPose.sampleTime;
             if (deltaTime > Mathf.Epsilon)
@@ -229,7 +219,7 @@ public class XRHandDynamicPoseProvider : MonoBehaviour
         m_ControllerWristPoses[index] = previousPose;
     }
 
-    void ResolveState(int index, bool forceRevisionIncrement = false, bool zeroVelocity = false)
+    void ResolveState(int index)
     {
         PoseSourceKind nextSourceKind = PoseSourceKind.None;
         BufferedWristPose sourcePose = default;
@@ -249,23 +239,13 @@ public class XRHandDynamicPoseProvider : MonoBehaviour
         WristPoseState nextState = previousState;
         nextState.hasPose = nextSourceKind != PoseSourceKind.None;
         nextState.sourceKind = nextSourceKind;
-        nextState.wristPose = nextState.hasPose ? TransformOriginPoseToWorld(sourcePose.pose) : default;
-
-        if (zeroVelocity)
-        {
-            nextState.linearVelocity = Vector3.zero;
-            nextState.angularVelocity = Vector3.zero;
-        }
-        else
-        {
-            Quaternion originRotation = GetOriginRotation();
-            nextState.linearVelocity = originRotation * sourcePose.linearVelocity;
-            nextState.angularVelocity = originRotation * sourcePose.angularVelocity;
-        }
+        nextState.wristPose = sourcePose.pose;
+        nextState.linearVelocity = sourcePose.linearVelocity;
+        nextState.angularVelocity = sourcePose.angularVelocity;
 
         bool sourceChanged = previousState.sourceKind != nextSourceKind;
         bool reacquired = !previousState.hasPose && nextState.hasPose;
-        if (sourceChanged || reacquired || forceRevisionIncrement)
+        if (sourceChanged || reacquired)
             nextState.sourceRevision = previousState.sourceRevision + 1;
 
         m_ResolvedStates[index] = nextState;
@@ -279,17 +259,6 @@ public class XRHandDynamicPoseProvider : MonoBehaviour
         Transform originTransform = m_XrOrigin.Origin.transform;
         Pose xrOriginPose = new Pose(originTransform.position, originTransform.rotation);
         return originSpacePose.GetTransformedBy(xrOriginPose);
-    }
-
-    Pose TransformWorldPoseToOrigin(Pose worldPose)
-    {
-        if (m_XrOrigin == null || m_XrOrigin.Origin == null)
-            return worldPose;
-
-        Transform originTransform = m_XrOrigin.Origin.transform;
-        Vector3 localPosition = originTransform.InverseTransformPoint(worldPose.position);
-        Quaternion localRotation = Quaternion.Inverse(originTransform.rotation) * worldPose.rotation;
-        return new Pose(localPosition, localRotation);
     }
 
     Quaternion GetOriginRotation()
