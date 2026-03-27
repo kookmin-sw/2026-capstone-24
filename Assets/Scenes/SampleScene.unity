@@ -622,19 +622,6 @@ PhysicsMaterial:
   m_Bounciness: 0
   m_FrictionCombine: 0
   m_BounceCombine: 0
---- !u!134 &697870652
-PhysicsMaterial:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  serializedVersion: 2
-  m_DynamicFriction: 0.6
-  m_StaticFriction: 0.6
-  m_Bounciness: 0
-  m_FrictionCombine: 0
-  m_BounceCombine: 0
 --- !u!4 &756635717 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2785132225648761816, guid: d37571583c71e5b4e89c9f39cceb8d0f, type: 3}
@@ -1377,11 +1364,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!4 &1500971907 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7075550793841730578, guid: 820263f9759bc794aa21365d8e5410de, type: 3}
-  m_PrefabInstance: {fileID: 5294605370841716636}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1602320642
 GameObject:
   m_ObjectHideFlags: 0
@@ -1698,11 +1680,6 @@ Transform:
   - {fileID: 653496636}
   m_Father: {fileID: 532644963}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &1754029838 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4279708696978963404, guid: 39719130c2f6f1140895495387291d85, type: 3}
-  m_PrefabInstance: {fileID: 6970440385090652832}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1788251882 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7252033496893850818, guid: e0b18bc88d552ef4db3c670a4b265f8d, type: 3}
@@ -1754,10 +1731,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 653496636}
     m_Modifications:
-    - target: {fileID: 5018878769799889461, guid: e0b18bc88d552ef4db3c670a4b265f8d, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 697870652}
     - target: {fileID: 5942557813581089170, guid: e0b18bc88d552ef4db3c670a4b265f8d, type: 3}
       propertyPath: m_Name
       value: RightControllerHandRoot
@@ -1881,10 +1854,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1882962535}
     - target: {fileID: 1483050384353976789, guid: 820263f9759bc794aa21365d8e5410de, type: 3}
-      propertyPath: physicsWristRoot
-      value: 
-      objectReference: {fileID: 1500971907}
-    - target: {fileID: 1483050384353976789, guid: 820263f9759bc794aa21365d8e5410de, type: 3}
       propertyPath: controllerGhostRoot
       value: 
       objectReference: {fileID: 1156038820}
@@ -1943,10 +1912,6 @@ PrefabInstance:
     - target: {fileID: 5112729997121287725, guid: 820263f9759bc794aa21365d8e5410de, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8698102424021435999, guid: 820263f9759bc794aa21365d8e5410de, type: 3}
-      propertyPath: m_IsKinematic
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2023,10 +1988,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 653496636}
     m_Modifications:
-    - target: {fileID: 2495191145559876128, guid: 39719130c2f6f1140895495387291d85, type: 3}
-      propertyPath: m_IsKinematic
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4928560803892189526, guid: 39719130c2f6f1140895495387291d85, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2075,10 +2036,6 @@ PrefabInstance:
       propertyPath: handTrackingRoot
       value: 
       objectReference: {fileID: 1245017882}
-    - target: {fileID: 6465345208694227120, guid: 39719130c2f6f1140895495387291d85, type: 3}
-      propertyPath: physicsWristRoot
-      value: 
-      objectReference: {fileID: 1754029838}
     - target: {fileID: 6465345208694227120, guid: 39719130c2f6f1140895495387291d85, type: 3}
       propertyPath: controllerGhostRoot
       value: 
