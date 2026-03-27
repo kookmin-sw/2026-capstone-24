@@ -35,6 +35,7 @@
 - When editing scenes or prefabs, verify the target object path and component assignments before changing serialized data.
 - Treat user changes as authoritative. The worktree may already be dirty.
 - Validate Unity MCP tool parameter enums against the tool schema before calling them. Do not guess values such as search modes or refresh flags.
+- Write user-facing plans, explanations, and summaries in Korean by default unless the user explicitly requests another language.
 
 ## Scene And Asset Safety
 - Check whether `Assets/Scenes/SampleScene.unity` already contains unsaved or unrelated user edits before making scene changes.

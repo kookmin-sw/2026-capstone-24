@@ -871,7 +871,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Handedness: 1
-  m_UpdateType: 2
+  m_UpdateType: 3
   m_PoseUpdated:
     m_PersistentCalls:
       m_Calls: []

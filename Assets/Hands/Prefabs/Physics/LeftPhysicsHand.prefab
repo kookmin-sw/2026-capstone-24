@@ -660,6 +660,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5112729997121287725}
   - component: {fileID: 8698102424021435999}
+  - component: {fileID: 1483050384353976789}
   m_Layer: 0
   m_Name: LeftPhysicsHand
   m_TagString: Untagged
@@ -707,10 +708,29 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 3
+--- !u!114 &1483050384353976789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1809874682966092514}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a39e69e1441c59941a0b3df4f590271d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PhysicsHandGhostFollower
+  physicsWristRoot: {fileID: 7075550793841730578}
+  handTrackingRoot: {fileID: 0}
+  handTrackingGhostRoot: {fileID: 0}
+  handTrackingGhostWristRoot: {fileID: 0}
+  controllerRoot: {fileID: 0}
+  controllerGhostRoot: {fileID: 0}
+  controllerGhostWristRoot: {fileID: 0}
 --- !u!1 &1902953511045082204
 GameObject:
   m_ObjectHideFlags: 0
