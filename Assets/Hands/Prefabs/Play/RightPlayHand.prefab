@@ -104,6 +104,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1948270346718639762}
+  - component: {fileID: 3141592653589793238}
   m_Layer: 0
   m_Name: RightPlayHand
   m_TagString: Untagged
@@ -128,6 +129,22 @@ Transform:
   - {fileID: 5769261206288712461}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3141592653589793238
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1167667434022393983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b8c6ba1f6c347b0a4d912e3c5f7ab21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayHandPoseDriver
+  sourceRoot: {fileID: 0}
+  sourceWristRoot: {fileID: 0}
+  targetWristRoot: {fileID: 2100601453330043700}
+  syncRootTransform: 1
 --- !u!1 &1190230059351929051
 GameObject:
   m_ObjectHideFlags: 0
