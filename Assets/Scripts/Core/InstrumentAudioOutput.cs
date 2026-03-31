@@ -123,6 +123,35 @@ public class InstrumentAudioOutput : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 보이스 풀 내부의 모든 AudioSource에 동일한 초기 설정을 부여합니다.
+    /// (예: 모든 오디오의 볼륨, 3D 공간 블렌드 값 등)
+    /// </summary>
+    public virtual void InitializePoolSettings()
+    {
+        EnsureVoicePool();
+        for (int i = 0; i < m_Voices.Count; i++)
+        {
+            if (m_Voices[i].Source != null)
+            {
+                // 공통 설정 (현재는 spatialBlend 등 기존 값을 재확인하는 정도로 유지)
+                m_Voices[i].Source.spatialBlend = spatialBlend;
+                m_Voices[i].Source.outputAudioMixerGroup = outputMixerGroup;
+                m_Voices[i].Source.playOnAwake = false;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 동적으로 오디오 믹서 그룹을 할당합니다.
+    /// </summary>
+    /// <param name="group">할당할 AudioMixerGroup</param>
+    public void SetMixerGroup(AudioMixerGroup group)
+    {
+        outputMixerGroup = group;
+        InitializePoolSettings(); // 기존 보이스 풀에도 즉시 적용
+    }
+
     void EnsureVoicePool()
     {
         if (m_Voices.Count == maxVoices && m_VoicePoolRoot != null)

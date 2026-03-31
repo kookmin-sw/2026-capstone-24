@@ -6,18 +6,8 @@ using UnityEngine;
 /// 피아노 악기에 부착되어 각 건반의 MIDI 번호를 자동 계산하여 제어기로 넘깁니다.
 /// </summary>
 [DisallowMultipleComponent]
-public class Piano : MonoBehaviour
+public class Piano : InstrumentBase
 {
-    [Tooltip("이 악기에서 출력될 스피커(Voice Pool) 컴포넌트입니다. 생략 시 자식에서 자동 탐색합니다.")]
-    [SerializeField] InstrumentAudioOutput audioOutput;
-    
-    [Header("Instrument Settings")]
-    [Tooltip("소리 샘플이 위치한 번들/리소스 폴더 상대 경로. (예: Audio/Piano)")]
-    [SerializeField] string resourcePath = "Audio/Piano";
-    
-    [Tooltip("음계(Melodic)인지 타악기(Percussion)인지 설정")]
-    [SerializeField] InstrumentType instrumentType = InstrumentType.Melodic;
-
     readonly HashSet<int> m_ActiveKeys = new HashSet<int>();
     
     // 피아노 건반 수 (0~87 = 총 88건반)
@@ -25,17 +15,15 @@ public class Piano : MonoBehaviour
     // 건반 0번의 기준 MIDI 번호 (A0 음 = 21번)
     const int FirstMidiNote = 21;
 
-    void Awake()
+    protected override void Initialize()
     {
-        if (audioOutput == null)
-            audioOutput = GetComponentInChildren<InstrumentAudioOutput>(true);
-
-        if (audioOutput == null)
-        {
-            Debug.LogError("[Piano] InstrumentAudioOutput child is missing.", this);
-            enabled = false;
-            return;
-        }
+        if (string.IsNullOrEmpty(resourcePath) || resourcePath == "Audio/Default") resourcePath = "Audio/Piano";
+        instrumentType = InstrumentType.Melodic;
+        if (string.IsNullOrEmpty(mixerGroupName)) mixerGroupName = "Piano";
+        base.Initialize(); // Base calls ApplyDefaultAudioSettings()
+        
+        // 피아노 전용 초기화 로직 (필요 시)
+        Debug.Log("[Piano] Specific initialization: Setting up piano keys.");
     }
 
     void OnDisable()

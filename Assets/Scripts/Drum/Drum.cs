@@ -6,29 +6,17 @@ using UnityEngine;
 /// 여러 위치에 있는 센서(킥 페달, 스네어 센서 등)가 이 스크립트에게 타격 이벤트를 위임합니다.
 /// </summary>
 [DisallowMultipleComponent]
-public class Drum : MonoBehaviour
+public class Drum : InstrumentBase
 {
-    [Tooltip("이 드럼 세트에서 출력될 메인 스피커(Voice Pool) 컴포넌트입니다. 할당이 안 되어있으면 자식에서 자동 탐색합니다.")]
-    [SerializeField] InstrumentAudioOutput audioOutput;
-    
-    [Header("Instrument Settings")]
-    [Tooltip("소리 샘플이 위치한 리소스 폴더 상대 경로. (예: Audio/Drum)")]
-    [SerializeField] string resourcePath = "Audio/Drum";
-    
-    [Tooltip("음계(Melodic)인지 타악기(Percussion)인지 설정 (드럼은 Percussion이어야 합니다)")]
-    [SerializeField] InstrumentType instrumentType = InstrumentType.Percussion;
-
-    void Awake()
+    protected override void Initialize()
     {
-        if (audioOutput == null)
-            audioOutput = GetComponentInChildren<InstrumentAudioOutput>(true);
-
-        if (audioOutput == null)
-        {
-            Debug.LogError("[Drum] 자식 혹은 본인에게서 범용 스피커(InstrumentAudioOutput)를 찾을 수 없습니다. 인스펙터를 확인해주세요.", this);
-            enabled = false;
-            return;
-        }
+        if (string.IsNullOrEmpty(resourcePath) || resourcePath == "Audio/Default") resourcePath = "Audio/Drum";
+        instrumentType = InstrumentType.Percussion;
+        if (string.IsNullOrEmpty(mixerGroupName)) mixerGroupName = "Drum";
+        base.Initialize();
+        
+        // 드럼 전용 초기화 로직 (필요 시)
+        Debug.Log("[Drum] Specific initialization: Mapping drum pads.");
     }
 
     void OnDisable()
