@@ -35,6 +35,7 @@
 - When editing scenes or prefabs, verify the target object path and component assignments before changing serialized data.
 - Treat user changes as authoritative. The worktree may already be dirty.
 - Validate Unity MCP tool parameter enums against the tool schema before calling them. Do not guess values such as search modes or refresh flags.
+- Write user-facing plans, explanations, and summaries in Korean by default unless the user explicitly requests another language.
 
 ## Scene And Asset Safety
 - Check whether `Assets/Scenes/SampleScene.unity` already contains unsaved or unrelated user edits before making scene changes.
@@ -48,6 +49,10 @@
 - Use C# for runtime/editor logic under a clear folder such as `Assets/Scripts` when new code is needed.
 - Match existing Unity conventions: serialized fields for inspector wiring, explicit component dependencies, and minimal magic strings.
 - Keep MonoBehaviour responsibilities narrow. Extract reusable logic from scene-bound scripts when complexity grows.
+- Do not treat Inspector-authorable component defaults such as `Rigidbody.isKinematic`, `useGravity`, `interpolation`, `constraints`, `Collider.enabled`, or `Renderer.enabled` as runtime-owned unless the gameplay truly changes them during play.
+- Before changing Inspector-authorable component properties in code, first verify whether the desired behavior should instead live in prefab or scene serialized values.
+- If a component property must be runtime-owned, make that ownership explicit in code with a clear method name or short comment explaining why it cannot stay in Inspector data.
+- Do not add warning, error, or diagnostic state-tracking logic just to improve logs unless the user explicitly asks for richer runtime diagnostics or debugging support.
 - Add brief comments only where Unity behavior or XR wiring is non-obvious.
 - Avoid speculative abstraction in a project that is still sample-heavy.
 
@@ -74,6 +79,7 @@
 ## Agent Workflow
 1. Read this file and inspect the target area before editing.
 2. Confirm scene, asset, and package context that could affect the task.
-3. Make the smallest viable change.
-4. Validate with console checks, scene inspection, or tests as appropriate.
-5. Report changed files, validation performed, and any remaining risk.
+3. For physics, renderer, or collider behavior changes, inspect the prefab and scene Inspector configuration first and treat runtime overrides as a last resort.
+4. Make the smallest viable change.
+5. Validate with console checks, scene inspection, or tests as appropriate.
+6. Report changed files, validation performed, and any remaining risk.
