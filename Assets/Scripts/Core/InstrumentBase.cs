@@ -1,12 +1,14 @@
 using UnityEngine;
 using UnityEngine.Audio;
+using System.Collections;
+using VRMusicStudio.Audio;
 
 /// <summary>
 /// 모든 악기의 공통 속성과 초기화 로직을 관리하는 베이스 클래스입니다.
 /// </summary>
 public abstract class InstrumentBase : MonoBehaviour
 {
-    [Tooltip("이 악기에서 출력될 스피커(Voice Pool) 컴포넌트입니다. 생략 시 자식에서 자동 탐색합니다.")]
+    [Tooltip("이 악기에서 출력될 스피커(Voice Pool) 컴포넌체입니다. 생략 시 자식에서 자동 탐색합니다.")]
     [SerializeField] protected InstrumentAudioOutput audioOutput;
     
     [Header("Instrument Settings")]
@@ -16,9 +18,18 @@ public abstract class InstrumentBase : MonoBehaviour
     [Tooltip("음계(Melodic)인지 타악기(Percussion)인지 설정")]
     [SerializeField] protected InstrumentType instrumentType = InstrumentType.Melodic;
 
-    [Header("Mixer Settings")]
-    [Tooltip("이 악기가 사용할 AudioMixerGroup의 이름입니다. (MasterMixer 내에서 검색)")]
+    [Header("Mixer Pooling")]
+    [Tooltip("체크 시 중앙 MixerPoolManager를 통해 동적으로 믹서 채널을 확보합니다.")]
+    [SerializeField] protected bool usePooling = true;
+
+    [Tooltip("마지막 연주 후 믹서 채널을 반납하기까지의 대기 시간(초)입니다.")]
+    [SerializeField] protected float idleReleaseTime = 30.0f;
+
+    [Tooltip("비풀링 모드일 때 사용할 고정 믹서 그룹 이름입니다.")]
     [SerializeField] protected string mixerGroupName;
+
+    protected AudioMixerGroup currentMixerGroup;
+    private Coroutine _releaseCoroutine;
 
     protected virtual void Awake()
     {
@@ -28,9 +39,6 @@ public abstract class InstrumentBase : MonoBehaviour
         Initialize();
     }
 
-    /// <summary>
-    /// 악기 공통 초기화 및 서브클래스별 특수 초기화 로직을 수행합니다.
-    /// </summary>
     protected virtual void Initialize()
     {
         if (audioOutput == null)
@@ -40,66 +48,121 @@ public abstract class InstrumentBase : MonoBehaviour
             return;
         }
 
-        // 공통 AudioSource/AudioClip 초기화 설정 (추후 유저 요청 시 이곳에 추가)
         ApplyDefaultAudioSettings();
     }
 
-    /// <summary>
-    /// AudioSource와 AudioClip에 대한 기본 설정을 수행합니다.
-    /// 모든 악기에 공통적으로 적용되는 초기 코드가 위치할 곳입니다.
-    /// </summary>
     protected virtual void ApplyDefaultAudioSettings()
     {
-        /* 
-         * [Project Standard AudioClip Import Settings]
-         * 레이턴시 최소화 및 오디오 품질 표준화를 위해 아래 설정을 인스펙터에서 권장합니다:
-         * 
-         * 1. Force To Mono: 체크 (MONO) - 3D 공간 연산 효율화
-         * 2. Normalize: 체크 해제 (사용안함)
-         * 3. Load In Background: 체크 해제 (사용안함) - 재생 시점의 동기적 준비 보장
-         * 4. Ambisonic: 체크 해제 (사용안함)
-         * 5. Load Type: Decompress on Load - 메모리 사용량은 늘지만 재생 시 CPU 부하 및 레이턴시 최소화
-         * 6. Compression Format: PCM - 압축 해제 과정 생략으로 즉각 재생
-         * 7. Sample Rate Setting: Override sample rate (44.1khz) - 오디오 표준 준수
-         * 8. Preload Audio Data: 체크 해제 (사용안함) - (유저 요청에 따라 첫 재생 랙 방지를 위해 사용을 권장할 수 있으나 현재는 '사용안함' 유지)
-         */
-
         if (audioOutput != null)
         {
-            // 1. 보이스 풀 내의 AudioSource들에 공통 설정을 초기화 시점에 적용합니다.
             audioOutput.InitializePoolSettings();
+            
+            if (!usePooling)
+            {
+                TryAssignFixedMixerGroup();
+            }
 
-            // 2. 오디오 믹서 자동 연결
-            TryAssignMixerGroup();
-
-            Debug.Log($"[{gameObject.name}] Standard audio settings documented and pool initialized.");
+            Debug.Log($"[{gameObject.name}] Audio settings initialized. (Pooling: {usePooling}, IdleTimeout: {idleReleaseTime}s)");
         }
     }
 
     /// <summary>
-    /// Resources/MasterMixer 에서 mixerGroupName과 일치하는 그룹을 찾아 오디오 출력에 할당합니다.
+    /// 외부 컨트롤러가 이 악기에 MIDI 이벤트를 전달하는 공식 창구입니다.
+    /// [중요] 테스트를 위해 소리 종류(type)와 경로(path)를 외부에서 덮어쓸 수 있도록 오버로딩을 제공합니다.
     /// </summary>
-    protected virtual void TryAssignMixerGroup()
+    public virtual void TriggerMidi(MidiEvent midiEvent, InstrumentType? typeOverride = null, string pathOverride = null)
+    {
+        // 덮어쓰기 값이 있으면 그것을 사용하고, 없으면 이 악기의 기본 설정값을 사용합니다.
+        InstrumentType finalType = typeOverride ?? instrumentType;
+        string finalPath = pathOverride ?? resourcePath;
+
+        if (midiEvent.IsNoteOn)
+        {
+            AcquireMixerGroup();
+            OnPlayStart(midiEvent);
+        }
+        else
+        {
+            OnPlayEnd(midiEvent);
+        }
+
+        // 실제 소리 재생 로직 위임 (덮어쓰기된 정보 전달)
+        CentralInstrumentController.Instance.ProcessMidiEvent(midiEvent, finalType, finalPath, audioOutput);
+    }
+
+    protected abstract void OnPlayStart(MidiEvent e);
+    protected abstract void OnPlayEnd(MidiEvent e);
+
+    public virtual void AcquireMixerGroup()
+    {
+        if (!usePooling || currentMixerGroup != null) 
+        {
+            if (currentMixerGroup != null) ResetReleaseTimer();
+            return;
+        }
+
+        currentMixerGroup = MixerPoolManager.Instance.RequestGroup();
+        if (currentMixerGroup != null)
+        {
+            audioOutput.SetMixerGroup(currentMixerGroup);
+            Debug.Log($"[{gameObject.name}] Acquired MixerGroup: {currentMixerGroup.name}");
+        }
+        
+        ResetReleaseTimer();
+    }
+
+    public virtual void ReleaseMixerGroup()
+    {
+        if (!usePooling || currentMixerGroup == null) return;
+
+        Debug.Log($"[{gameObject.name}] Releasing MixerGroup: {currentMixerGroup.name}");
+        MixerPoolManager.Instance.ReturnGroup(currentMixerGroup);
+        currentMixerGroup = null;
+        if (audioOutput != null) audioOutput.SetMixerGroup(null);
+        
+        _releaseCoroutine = null;
+    }
+
+    protected void ResetReleaseTimer()
+    {
+        if (_releaseCoroutine != null)
+        {
+            StopCoroutine(_releaseCoroutine);
+            _releaseCoroutine = null;
+        }
+    }
+
+    protected void StartReleaseTimer()
+    {
+        if (!usePooling || currentMixerGroup == null) return;
+        
+        ResetReleaseTimer();
+        _releaseCoroutine = StartCoroutine(ReleaseAfterDelay());
+    }
+
+    private IEnumerator ReleaseAfterDelay()
+    {
+        yield return new WaitForSeconds(idleReleaseTime);
+        ReleaseMixerGroup();
+    }
+
+    protected virtual void TryAssignFixedMixerGroup()
     {
         if (string.IsNullOrEmpty(mixerGroupName)) return;
 
-        // Resources 워크플로우: Resources/MasterMixer.mixer 에셋이 있어야 합니다.
-        var mixer = Resources.Load<UnityEngine.Audio.AudioMixer>("MasterMixer");
-        if (mixer == null)
-        {
-            Debug.LogWarning($"[{gameObject.name}] Resources/MasterMixer 를 찾을 수 없어 믹서 그룹을 자동 할당할 수 없습니다.");
-            return;
-        }
+        var mixer = Resources.Load<AudioMixer>("MasterMixer");
+        if (mixer == null) return;
 
         var groups = mixer.FindMatchingGroups(mixerGroupName);
         if (groups != null && groups.Length > 0)
         {
             audioOutput.SetMixerGroup(groups[0]);
-            Debug.Log($"[{gameObject.name}] '{mixerGroupName}' 믹서 그룹이 자동으로 연결되었습니다.");
         }
-        else
-        {
-            Debug.LogWarning($"[{gameObject.name}] '{mixerGroupName}' 이름과 일치하는 믹서 그룹을 MasterMixer에서 찾을 수 없습니다.");
-        }
+    }
+
+    protected virtual void OnDisable()
+    {
+        ResetReleaseTimer();
+        ReleaseMixerGroup();
     }
 }

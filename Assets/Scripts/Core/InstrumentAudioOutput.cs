@@ -3,9 +3,8 @@ using UnityEngine;
 using UnityEngine.Audio;
 
 /// <summary>
-/// 개별 악기 3D 모델에 부착되어 실제로 소리를 입체적으로 출력하는 스피커 역할을 합니다.
-/// 여러 음이 겹쳐서 재생될 수 있도록 보이스 풀(Voice Pool) 기법을 사용합니다.
-/// 기존의 PianoAudioOutput이 범용화 되었습니다.
+/// 개별 악기 3D 모델에 부착되어 실제 소리를 입체적으로 출력하는 스피커 역할을 합니다.
+/// 여러 음이 겹쳐서 재생될 수 있도록 보이싱 풀(Voice Pool) 기법을 사용합니다.
 /// </summary>
 [DisallowMultipleComponent]
 public class InstrumentAudioOutput : MonoBehaviour
@@ -34,9 +33,13 @@ public class InstrumentAudioOutput : MonoBehaviour
 
     readonly List<Voice> m_Voices = new List<Voice>();
     Transform m_VoicePoolRoot;
+    
+    // 디버깅을 위한 고유 ID (같은 씬 내 여러 악기를 구분하기 위함)
+    private string m_InstanceID;
 
     void Awake()
     {
+        m_InstanceID = $"{gameObject.name}_{System.Guid.NewGuid().ToString().Substring(0, 4)}";
         maxVoices = Mathf.Max(1, maxVoices);
         releaseDuration = Mathf.Max(0f, releaseDuration);
         spatialBlend = Mathf.Clamp01(spatialBlend);
@@ -108,6 +111,9 @@ public class InstrumentAudioOutput : MonoBehaviour
         voice.StartedAt = Time.time;
         voice.ReleaseStartedAt = 0f;
         voice.ReleaseStartVolume = 0f;
+        
+        // 어떤 인스턴스가 연주 중인지 로그를 남겨 중복 체크
+        // Debug.Log($"[{m_InstanceID}] Playing Note: {note} (Mixer: {(outputMixerGroup != null ? outputMixerGroup.name : "None")})");
     }
 
     public void ReleaseNote(int note)
@@ -123,10 +129,6 @@ public class InstrumentAudioOutput : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 보이스 풀 내부의 모든 AudioSource에 동일한 초기 설정을 부여합니다.
-    /// (예: 모든 오디오의 볼륨, 3D 공간 블렌드 값 등)
-    /// </summary>
     public virtual void InitializePoolSettings()
     {
         EnsureVoicePool();
@@ -134,7 +136,6 @@ public class InstrumentAudioOutput : MonoBehaviour
         {
             if (m_Voices[i].Source != null)
             {
-                // 공통 설정 (현재는 spatialBlend 등 기존 값을 재확인하는 정도로 유지)
                 m_Voices[i].Source.spatialBlend = spatialBlend;
                 m_Voices[i].Source.outputAudioMixerGroup = outputMixerGroup;
                 m_Voices[i].Source.playOnAwake = false;
@@ -142,14 +143,11 @@ public class InstrumentAudioOutput : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 동적으로 오디오 믹서 그룹을 할당합니다.
-    /// </summary>
-    /// <param name="group">할당할 AudioMixerGroup</param>
     public void SetMixerGroup(AudioMixerGroup group)
     {
         outputMixerGroup = group;
-        InitializePoolSettings(); // 기존 보이스 풀에도 즉시 적용
+        InitializePoolSettings();
+        Debug.Log($"[{m_InstanceID}] SetMixerGroup: {(group != null ? group.name : "Master (NULL)")}", this);
     }
 
     void EnsureVoicePool()
@@ -159,12 +157,13 @@ public class InstrumentAudioOutput : MonoBehaviour
 
         if (m_VoicePoolRoot == null)
         {
-            var existingRoot = transform.Find("VoicePool");
+            string poolName = $"VoicePool_{gameObject.name}";
+            var existingRoot = transform.Find(poolName);
             if (existingRoot != null)
                 m_VoicePoolRoot = existingRoot;
             else
             {
-                var poolRoot = new GameObject("VoicePool");
+                var poolRoot = new GameObject(poolName);
                 poolRoot.transform.SetParent(transform, false);
                 m_VoicePoolRoot = poolRoot.transform;
             }
@@ -205,78 +204,41 @@ public class InstrumentAudioOutput : MonoBehaviour
         }
     }
 
-    Voice GetBestVoice()
-    {
-        Voice bestIdle = null;
-        Voice bestReleasing = null;
-        Voice bestActive = null;
-
-        for (int i = 0; i < m_Voices.Count; i++)
-        {
-            Voice voice = m_Voices[i];
-            if (voice.Source == null)
-                continue;
-
-            if (!voice.Source.isPlaying)
-            {
-                ResetVoice(voice);
-                if (bestIdle == null)
-                    bestIdle = voice;
-                continue;
-            }
-
-            if (voice.State == VoiceState.Idle)
-            {
-                if (bestIdle == null)
-                    bestIdle = voice;
-                continue;
-            }
-
-            if (voice.State == VoiceState.Releasing)
-            {
-                if (bestReleasing == null || voice.ReleaseStartedAt < bestReleasing.ReleaseStartedAt)
-                    bestReleasing = voice;
-                continue;
-            }
-
-            if (bestActive == null || voice.StartedAt < bestActive.StartedAt)
-                bestActive = voice;
-        }
-
-        if (bestIdle != null)
-            return bestIdle;
-
-        if (bestReleasing != null)
-        {
-            StopVoice(bestReleasing);
-            return bestReleasing;
-        }
-
-        if (bestActive != null)
-        {
-            StopVoice(bestActive);
-            return bestActive;
-        }
-
-        return null;
-    }
-
     void StopVoice(Voice voice)
     {
         if (voice.Source != null)
+        {
             voice.Source.Stop();
-
+        }
         ResetVoice(voice);
     }
 
-    static void ResetVoice(Voice voice)
+    void ResetVoice(Voice voice)
     {
         voice.State = VoiceState.Idle;
         voice.Note = -1;
         voice.StartedAt = 0f;
         voice.ReleaseStartedAt = 0f;
         voice.ReleaseStartVolume = 0f;
-        if (voice.Source != null)
-            voice.Source.volume = 0f;
+    }
+
+    Voice GetBestVoice()
+    {
+        Voice best = null;
+        float oldestTime = float.MaxValue;
+
+        for (int i = 0; i < m_Voices.Count; i++)
+        {
+            Voice v = m_Voices[i];
+            if (v.State == VoiceState.Idle)
+                return v;
+
+            if (v.StartedAt < oldestTime)
+            {
+                oldestTime = v.StartedAt;
+                best = v;
+            }
+        }
+        return best;
     }
 }

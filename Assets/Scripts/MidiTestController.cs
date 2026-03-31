@@ -20,6 +20,8 @@ namespace VRMusicStudio.Test
         [Range(0f, 1f)]
         public float testVelocity = 0.8f;
 
+        private InstrumentBase _cachedInstrument;
+
         [Header("VR Input Settings")]
         public bool enableVRInput = true;
         private UnityEngine.XR.InputDevice _leftController;
@@ -27,7 +29,6 @@ namespace VRMusicStudio.Test
         private bool _leftTriggerPressed = false;
         private bool _rightTriggerPressed = false;
 
-        // 피아노 전용 키 매핑
         private Dictionary<Key, int> _pianoMapping = new Dictionary<Key, int>
         {
             { Key.A, 60 }, { Key.W, 61 }, { Key.S, 62 }, { Key.E, 63 },
@@ -36,28 +37,17 @@ namespace VRMusicStudio.Test
             { Key.K, 72 }
         };
 
-        // 드럼 전용 키 매핑
         private Dictionary<Key, int> _drumMapping = new Dictionary<Key, int>
         {
-            { Key.A, 36 }, // 킥 (Kick)
-            { Key.S, 38 }, // 스네어 (Snare)
-            { Key.D, 42 }, // 클로즈드 하이햇
-            { Key.F, 46 }, // 오픈 하이햇
-            { Key.G, 49 }, // 크래시 1
-            { Key.H, 51 }, // 라이드 1
-            { Key.J, 48 }, // 탐 1
-            { Key.K, 45 }, // 탐 2
-            { Key.L, 43 }  // 탐 3
+            { Key.A, 36 }, { Key.S, 38 }, { Key.D, 42 }, { Key.F, 46 }, 
+            { Key.G, 49 }, { Key.H, 51 }, { Key.J, 48 }, { Key.K, 45 }, { Key.L, 43 }
         };
 
-        // 현재 모드에서 활성화된 키보드 매핑본
         private Dictionary<Key, int> _currentMapping;
 
         void Awake()
         {
             Debug.Log($"[MidiTest] MidiTestController가 {gameObject.name}에서 활성화되었습니다.");
-            
-            // 처음 게임이 시작할 때는 피아노 모드로 세팅합니다.
             SetInstrument(InstrumentType.Melodic, "Audio/Piano", _pianoMapping);
         }
 
@@ -68,6 +58,19 @@ namespace VRMusicStudio.Test
             if (targetAudioOutput == null)
             {
                 targetAudioOutput = GetComponentInChildren<InstrumentAudioOutput>();
+            }
+
+            if (targetAudioOutput != null)
+            {
+                _cachedInstrument = targetAudioOutput.GetComponentInParent<InstrumentBase>();
+                if (_cachedInstrument != null)
+                {
+                    Debug.Log($"[MidiTest] Found Target Instrument: {_cachedInstrument.name}. Pooling will be ACTIVE.");
+                }
+                else
+                {
+                    Debug.LogWarning("[MidiTest] targetAudioOutput에서 InstrumentBase를 찾을 수 없습니다. 풀링 없이 Master로 재생됩니다.");
+                }
             }
         }
 
@@ -83,14 +86,12 @@ namespace VRMusicStudio.Test
             var keyboard = Keyboard.current;
             if (keyboard == null) return;
 
-            // 숫자키 1번 누름: 피아노 모드로 변경
             if (keyboard[Key.Digit1].wasPressedThisFrame)
             {
                 Debug.Log("[MidiTest] 피아노 모드로 스위칭 완료! (A = C4)");
                 SetInstrument(InstrumentType.Melodic, "Audio/Piano", _pianoMapping);
             }
             
-            // 숫자키 2번 누름: 드럼 모드로 변경
             if (keyboard[Key.Digit2].wasPressedThisFrame)
             {
                 Debug.Log("[MidiTest] 드럼 모드로 스위칭 완료! (A = Kick)");
@@ -112,15 +113,8 @@ namespace VRMusicStudio.Test
 
             foreach (var mapping in _currentMapping)
             {
-                if (keyboard[mapping.Key].wasPressedThisFrame)
-                {
-                    SendMidi(mapping.Value, true);
-                }
-
-                if (keyboard[mapping.Key].wasReleasedThisFrame)
-                {
-                    SendMidi(mapping.Value, false);
-                }
+                if (keyboard[mapping.Key].wasPressedThisFrame) SendMidi(mapping.Value, true);
+                if (keyboard[mapping.Key].wasReleasedThisFrame) SendMidi(mapping.Value, false);
             }
         }
 
@@ -143,38 +137,19 @@ namespace VRMusicStudio.Test
                 return;
             }
 
-            // 가상 악기의 형태에 따라 VR 컨트롤러가 테스트할 노트도 동적으로 변경합니다.
             int leftNote = (currentInstrumentType == InstrumentType.Percussion) ? 36 : 60;
             int rightNote = (currentInstrumentType == InstrumentType.Percussion) ? 38 : 67;
 
-            // 왼손
             if (_leftController.TryGetFeatureValue(UnityEngine.XR.CommonUsages.triggerButton, out bool leftPressed))
             {
-                if (leftPressed && !_leftTriggerPressed)
-                {
-                    SendMidi(leftNote, true);
-                    _leftTriggerPressed = true;
-                }
-                else if (!leftPressed && _leftTriggerPressed)
-                {
-                    SendMidi(leftNote, false);
-                    _leftTriggerPressed = false;
-                }
+                if (leftPressed && !_leftTriggerPressed) { SendMidi(leftNote, true); _leftTriggerPressed = true; }
+                else if (!leftPressed && _leftTriggerPressed) { SendMidi(leftNote, false); _leftTriggerPressed = false; }
             }
 
-            // 오른손
             if (_rightController.TryGetFeatureValue(UnityEngine.XR.CommonUsages.triggerButton, out bool rightPressed))
             {
-                if (rightPressed && !_rightTriggerPressed)
-                {
-                    SendMidi(rightNote, true);
-                    _rightTriggerPressed = true;
-                }
-                else if (!rightPressed && _rightTriggerPressed)
-                {
-                    SendMidi(rightNote, false);
-                    _rightTriggerPressed = false;
-                }
+                if (rightPressed && !_rightTriggerPressed) { SendMidi(rightNote, true); _rightTriggerPressed = true; }
+                else if (!rightPressed && _rightTriggerPressed) { SendMidi(rightNote, false); _rightTriggerPressed = false; }
             }
         }
 
@@ -183,7 +158,16 @@ namespace VRMusicStudio.Test
             if (targetAudioOutput == null) return;
 
             MidiEvent midiEvent = new MidiEvent(note, isOn ? testVelocity : 0f, isOn);
-            CentralInstrumentController.Instance.ProcessMidiEvent(midiEvent, currentInstrumentType, currentResourcePath, targetAudioOutput);
+
+            // [핵심 수정] 테스트 컨트롤러가 지시하는 악기 타입과 소리 경로를 오버라이딩하여 전달합니다.
+            if (_cachedInstrument != null)
+            {
+                _cachedInstrument.TriggerMidi(midiEvent, currentInstrumentType, currentResourcePath);
+            }
+            else
+            {
+                CentralInstrumentController.Instance.ProcessMidiEvent(midiEvent, currentInstrumentType, currentResourcePath, targetAudioOutput);
+            }
         }
     }
 }
