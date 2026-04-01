@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using UnityEngine;
 
+[DefaultExecutionOrder(10020)]
 [DisallowMultipleComponent]
 public class PianoKeySensor : MonoBehaviour
 {
@@ -11,18 +13,18 @@ public class PianoKeySensor : MonoBehaviour
     [SerializeField] Transform ignoredRoot;
     [SerializeField] Vector3 boneLocalAxis = Vector3.right;
     [SerializeField] float maxPressDegrees = 6f;
-    [SerializeField] float pressDistance = 0.008f;
-    [SerializeField] float pressSpeed = 18f;
-    [SerializeField] float releaseSpeed = 26f;
     [SerializeField] LayerMask presserLayers = ~0;
 
     [Header("Piano Input")]
     [SerializeField] int keyIndex = -1;
     [SerializeField] float noteOnThreshold = 0.3f;
     [SerializeField] float noteOffThreshold = 0.15f;
+    [SerializeField] float pressStartDepthNormalized = 0.08f;
 
-    readonly Collider[] m_OverlapBuffer = new Collider[12];
-    Quaternion m_InitialBoneLocalRotation;
+    readonly HashSet<Collider> m_ActiveColliders = new HashSet<Collider>();
+    readonly List<Collider> m_RemovalBuffer = new List<Collider>();
+
+    Quaternion m_InitialBoneLocalRotation = Quaternion.identity;
     float m_CurrentPress;
     bool m_IsNoteOn;
     Piano m_Piano;
@@ -63,9 +65,7 @@ public class PianoKeySensor : MonoBehaviour
             boneLocalAxis = Vector3.right;
 
         maxPressDegrees = Mathf.Max(0f, maxPressDegrees);
-        pressDistance = Mathf.Max(0.0005f, pressDistance);
-        pressSpeed = Mathf.Max(0.01f, pressSpeed);
-        releaseSpeed = Mathf.Max(0.01f, releaseSpeed);
+        pressStartDepthNormalized = Mathf.Clamp(pressStartDepthNormalized, 0f, 0.95f);
 
         if (keyIndex < 0)
             keyIndex = ParseKeyIndexFromName(gameObject.name);
@@ -73,53 +73,152 @@ public class PianoKeySensor : MonoBehaviour
         TryAutoAssignTargets();
     }
 
-    void FixedUpdate()
+    void LateUpdate()
     {
         if (sensorCollider == null)
             return;
 
-        Bounds bounds = sensorCollider.bounds;
-        int overlapCount = Physics.OverlapBoxNonAlloc(
-            bounds.center,
-            bounds.extents,
-            m_OverlapBuffer,
-            transform.rotation,
-            presserLayers,
-            QueryTriggerInteraction.Ignore);
-
-        float targetPress = 0f;
-        float sensorTopY = bounds.max.y;
-
-        for (int i = 0; i < overlapCount; i++)
-        {
-            Collider other = m_OverlapBuffer[i];
-            if (other == null)
-                continue;
-
-            if (ShouldIgnoreCollider(other))
-                continue;
-
-            Bounds otherBounds = other.bounds;
-            if (!IsFiniteBounds(otherBounds))
-                continue;
-
-            float penetration = sensorTopY - otherBounds.min.y;
-            if (penetration <= 0f)
-                continue;
-
-            float candidatePress = Mathf.Clamp01(penetration / pressDistance);
-            if (candidatePress > targetPress)
-                targetPress = candidatePress;
-        }
-
-        float speed = targetPress > m_CurrentPress ? pressSpeed : releaseSpeed;
-        m_CurrentPress = Mathf.MoveTowards(m_CurrentPress, targetPress, speed * Time.fixedDeltaTime);
-
+        m_CurrentPress = ComputeTargetPress();
         if (!float.IsFinite(m_CurrentPress))
             m_CurrentPress = 0f;
 
         UpdateNoteState();
+        ApplyBoneRotation();
+    }
 
+    void OnTriggerEnter(Collider other)
+    {
+        RegisterCollider(other);
+    }
+
+    void OnTriggerStay(Collider other)
+    {
+        RegisterCollider(other);
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other == null)
+            return;
+
+        m_ActiveColliders.Remove(other);
+    }
+
+    void OnDisable()
+    {
+        m_ActiveColliders.Clear();
+        m_RemovalBuffer.Clear();
+        m_CurrentPress = 0f;
+
+        if (m_IsNoteOn)
+        {
+            m_IsNoteOn = false;
+            m_Piano?.NoteOff(keyIndex);
+        }
+
+        ApplyBoneRotation();
+    }
+
+    void RegisterCollider(Collider other)
+    {
+        if (!IsAllowedPresser(other))
+            return;
+
+        m_ActiveColliders.Add(other);
+    }
+
+    float ComputeTargetPress()
+    {
+        if (sensorCollider == null || !TryGetSensorDepthRange(out float entranceDepth, out float deepEndDepth))
+            return 0f;
+
+        float targetPress = 0f;
+        m_RemovalBuffer.Clear();
+
+        foreach (Collider other in m_ActiveColliders)
+        {
+            if (!IsTrackedColliderValid(other))
+            {
+                m_RemovalBuffer.Add(other);
+                continue;
+            }
+
+            float candidatePress = ComputeColliderPress(other, entranceDepth, deepEndDepth);
+            if (candidatePress > targetPress)
+                targetPress = candidatePress;
+        }
+
+        for (int i = 0; i < m_RemovalBuffer.Count; i++)
+            m_ActiveColliders.Remove(m_RemovalBuffer[i]);
+
+        return targetPress;
+    }
+
+    float ComputeColliderPress(Collider other, float entranceDepth, float deepEndDepth)
+    {
+        Vector3 size = sensorCollider.size;
+        if (!IsFiniteVector(size) || size.y <= 0f)
+            return 0f;
+
+        Transform sensorTransform = sensorCollider.transform;
+        float probeOffset = Mathf.Max(size.y * 0.02f, 0.001f);
+        Vector3 sensorEntranceLocalPoint = new Vector3(sensorCollider.center.x, entranceDepth - probeOffset, sensorCollider.center.z);
+        Vector3 sensorEntranceWorldPoint = sensorTransform.TransformPoint(sensorEntranceLocalPoint);
+        Vector3 closestWorldPoint = other.ClosestPoint(sensorEntranceWorldPoint);
+        Vector3 closestLocalPoint = sensorTransform.InverseTransformPoint(closestWorldPoint);
+
+        if (!IsFiniteVector(closestLocalPoint))
+            return 0f;
+
+        float startDepth = Mathf.Lerp(entranceDepth, deepEndDepth, pressStartDepthNormalized);
+        float pointDepth = Mathf.Clamp(closestLocalPoint.y, entranceDepth, deepEndDepth);
+        return Mathf.Clamp01(Mathf.InverseLerp(startDepth, deepEndDepth, pointDepth));
+    }
+
+    bool TryGetSensorDepthRange(out float entranceDepth, out float deepEndDepth)
+    {
+        entranceDepth = 0f;
+        deepEndDepth = 0f;
+
+        if (sensorCollider == null)
+            return false;
+
+        Vector3 center = sensorCollider.center;
+        Vector3 size = sensorCollider.size;
+        if (!IsFiniteVector(center) || !IsFiniteVector(size) || size.y <= 0f)
+            return false;
+
+        float halfDepth = size.y * 0.5f;
+        entranceDepth = center.y - halfDepth;
+        deepEndDepth = center.y + halfDepth;
+        return deepEndDepth > entranceDepth;
+    }
+
+    bool IsTrackedColliderValid(Collider other)
+    {
+        if (other == null || !other.enabled)
+            return false;
+
+        GameObject otherObject = other.gameObject;
+        if (otherObject == null || !otherObject.activeInHierarchy)
+            return false;
+
+        return IsAllowedPresser(other);
+    }
+
+    bool IsAllowedPresser(Collider other)
+    {
+        if (other == null)
+            return false;
+
+        if ((presserLayers.value & (1 << other.gameObject.layer)) == 0)
+            return false;
+
+        return !ShouldIgnoreCollider(other);
+    }
+
+    void ApplyBoneRotation()
+    {
         if (targetBone == null)
             return;
 
@@ -138,7 +237,7 @@ public class PianoKeySensor : MonoBehaviour
         if (targetBody != null && targetBody.isKinematic)
         {
             Quaternion parentRotation = targetBone.parent != null ? targetBone.parent.rotation : Quaternion.identity;
-            targetBody.MoveRotation(parentRotation * targetRotation);
+            targetBody.rotation = parentRotation * targetRotation;
             return;
         }
 
@@ -170,11 +269,6 @@ public class PianoKeySensor : MonoBehaviour
             float.IsFinite(value.y) &&
             float.IsFinite(value.z) &&
             float.IsFinite(value.w);
-    }
-
-    static bool IsFiniteBounds(Bounds value)
-    {
-        return IsFiniteVector(value.center) && IsFiniteVector(value.size);
     }
 
     bool ShouldIgnoreCollider(Collider other)
