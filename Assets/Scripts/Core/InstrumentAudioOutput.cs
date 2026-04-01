@@ -26,9 +26,27 @@ public class InstrumentAudioOutput : MonoBehaviour
         public float ReleaseStartVolume;
     }
 
+    /// <summary>
+    /// InstrumentBase에서 전달받아 모든 AudioSource에 일괄 적용할 설정값들입니다.
+    /// </summary>
+    public struct AudioSourceSettings
+    {
+        public AudioMixerGroup OutputMixerGroup;
+        public bool Spatialize;
+        public bool SpatializePostEffects;
+        public float SpatialBlend;
+        public AudioRolloffMode RolloffMode;
+        public float MinDistance;
+        public float MaxDistance;
+        public float DopplerLevel;
+        public float Spread;
+        public float ReverbZoneMix;
+        public float ReleaseDuration;
+    }
+
     [SerializeField] int maxVoices = 32;
-    [SerializeField] float releaseDuration = 0.08f;
-    [SerializeField] float spatialBlend = 1f;
+    [HideInInspector] [SerializeField] float releaseDuration = 0.1f; // OBSOLETE: Now managed by InstrumentBase
+    [HideInInspector] [SerializeField] float spatialBlend = 1f; // OBSOLETE: Now managed by InstrumentBase
     [SerializeField] AudioMixerGroup outputMixerGroup;
 
     readonly List<Voice> m_Voices = new List<Voice>();
@@ -129,24 +147,49 @@ public class InstrumentAudioOutput : MonoBehaviour
         }
     }
 
-    public virtual void InitializePoolSettings()
+    public virtual void InitializePoolSettings(AudioSourceSettings settings)
     {
+        outputMixerGroup = settings.OutputMixerGroup;
+        spatialBlend = settings.SpatialBlend;
+        releaseDuration = settings.ReleaseDuration;
+
         EnsureVoicePool();
         for (int i = 0; i < m_Voices.Count; i++)
         {
-            if (m_Voices[i].Source != null)
-            {
-                m_Voices[i].Source.spatialBlend = spatialBlend;
-                m_Voices[i].Source.outputAudioMixerGroup = outputMixerGroup;
-                m_Voices[i].Source.playOnAwake = false;
-            }
+            ApplySettingsToSource(m_Voices[i].Source, settings);
         }
+    }
+
+    private void ApplySettingsToSource(AudioSource source, AudioSourceSettings settings)
+    {
+        if (source == null) return;
+
+        source.outputAudioMixerGroup = settings.OutputMixerGroup;
+        source.spatialize = settings.Spatialize;
+        source.spatializePostEffects = settings.SpatializePostEffects;
+        source.spatialBlend = settings.SpatialBlend;
+        source.rolloffMode = settings.RolloffMode;
+        source.minDistance = settings.MinDistance;
+        source.maxDistance = settings.MaxDistance;
+        source.dopplerLevel = settings.DopplerLevel;
+        source.spread = settings.Spread;
+        source.reverbZoneMix = settings.ReverbZoneMix;
+        source.playOnAwake = false;
+        source.loop = false;
+
+        Debug.Log($"[{m_InstanceID}] AudioSource '{source.name}' initialized with: Spatialize={settings.Spatialize}, SpatialBlend={settings.SpatialBlend}, Dist={settings.MinDistance}~{settings.MaxDistance}");
     }
 
     public void SetMixerGroup(AudioMixerGroup group)
     {
         outputMixerGroup = group;
-        InitializePoolSettings();
+        // Note: Full pool re-sync usually happens through InstrumentBase calling InitializePoolSettings.
+        // This is kept for backward compatibility if only mixer group changes.
+        for (int i = 0; i < m_Voices.Count; i++)
+        {
+            if (m_Voices[i].Source != null)
+                m_Voices[i].Source.outputAudioMixerGroup = group;
+        }
         Debug.Log($"[{m_InstanceID}] SetMixerGroup: {(group != null ? group.name : "Master (NULL)")}", this);
     }
 
@@ -172,6 +215,8 @@ public class InstrumentAudioOutput : MonoBehaviour
         while (m_Voices.Count < maxVoices)
         {
             AudioSource source = m_VoicePoolRoot.gameObject.AddComponent<AudioSource>();
+            
+            // Apply current settings to new sources
             source.playOnAwake = false;
             source.spatialBlend = spatialBlend;
             source.outputAudioMixerGroup = outputMixerGroup;
