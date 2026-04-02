@@ -1,85 +1,120 @@
 using UnityEngine;
-using VRMusicStudio.Audio;
 using System.Collections.Generic;
 using UnityEngine.XR;
-using UnityEngine.InputSystem; // »õ·Î¿î ÀÎÇ² ½Ã½ºÅÛ »ç¿ë
+using UnityEngine.InputSystem;
 
 namespace VRMusicStudio.Test
 {
     public class MidiTestController : MonoBehaviour
     {
-        [Header("Settings")]
-        public UniversalAudioEngine audioEngine;
-        public int currentInstrumentId = 0; // 0: Piano, 113: Drums
+        [Header("New Architecture Settings")]
+        [Tooltip("ì¬ìƒí•  ëŒ€ìƒ ì˜¤ë””ì˜¤ ìŠ¤í”¼ì»¤ (ì¸ìŠ¤í™í„°ì—ì„œ í• ë‹¹ ì•ˆ ë˜ë©´ ìì‹ì—ì„œ ì°¾ìŠµë‹ˆë‹¤)")]
+        public InstrumentAudioOutput targetAudioOutput;
+        
+        [Tooltip("ê°€ìƒìœ¼ë¡œ í…ŒìŠ¤íŠ¸í•  ì•…ê¸°ë¥¼ í™•ì¸í•  ìˆ˜ ìˆë„ë¡ ì¸ìŠ¤í™í„°ì— ë…¸ì¶œí•©ë‹ˆë‹¤")]
+        public InstrumentType currentInstrumentType = InstrumentType.Melodic;
+        
+        [Tooltip("í˜„ì¬ ë¡œë“œëœ ì˜¤ë””ì˜¤ í´ë¦½ ë””ë ‰í† ë¦¬")]
+        public string currentResourcePath = "Audio/Piano";
+        
         [Range(0f, 1f)]
         public float testVelocity = 0.8f;
 
+        private InstrumentBase _cachedInstrument;
+
         [Header("VR Input Settings")]
         public bool enableVRInput = true;
-        // ¸í½ÃÀûÀ¸·Î UnityEngine.XRÀ» ÁöÁ¤ÇÏ¿© InputSystemÀÇ InputDevice¿Í È¥µ¿µÇÁö ¾Êµµ·Ï ÇÕ´Ï´Ù.
         private UnityEngine.XR.InputDevice _leftController;
         private UnityEngine.XR.InputDevice _rightController;
         private bool _leftTriggerPressed = false;
         private bool _rightTriggerPressed = false;
 
-        // Å°º¸µå Å°¿Í MIDI ³ëÆ® ¹øÈ£ ¸ÅÇÎ
-        private Dictionary<Key, int> _keyMapping = new Dictionary<Key, int>
+        private Dictionary<Key, int> _pianoMapping = new Dictionary<Key, int>
         {
             { Key.A, 60 }, { Key.W, 61 }, { Key.S, 62 }, { Key.E, 63 },
             { Key.D, 64 }, { Key.F, 65 }, { Key.T, 66 }, { Key.G, 67 },
             { Key.Y, 68 }, { Key.H, 69 }, { Key.U, 70 }, { Key.J, 71 },
-            { Key.K, 72 },
-            { Key.Digit1, 36 }, { Key.Digit2, 38 }, { Key.Digit3, 42 }
+            { Key.K, 72 }
         };
+
+        private Dictionary<Key, int> _drumMapping = new Dictionary<Key, int>
+        {
+            { Key.A, 36 }, { Key.S, 38 }, { Key.D, 42 }, { Key.F, 46 }, 
+            { Key.G, 49 }, { Key.H, 51 }, { Key.J, 48 }, { Key.K, 45 }, { Key.L, 43 }
+        };
+
+        private Dictionary<Key, int> _currentMapping;
 
         void Awake()
         {
-            Debug.Log($"[MidiTest] MidiTestController°¡ {gameObject.name}¿¡¼­ È°¼ºÈ­µÇ¾ú½À´Ï´Ù.");
+            Debug.Log($"[MidiTest] MidiTestControllerê°€ {gameObject.name}ì—ì„œ í™œì„±í™”ë˜ì—ˆìŠµë‹ˆë‹¤.");
+            SetInstrument(InstrumentType.Melodic, "Audio/Piano", _pianoMapping);
         }
 
         void Start()
         {
             if (enableVRInput) InitializeVRDevices();
 
-            // ¿Àµğ¿À ¸®½º³Ê Ã¼Å©
-            if (FindObjectOfType<AudioListener>() == null)
+            if (targetAudioOutput == null)
             {
-                Debug.LogError("[MidiTest] ¿Àµğ¿À ¸®½º³Ê ¾øÀ½! ¸ŞÀÎ Ä«¸Ş¶ó¿¡ Audio Listener°¡ ÀÖ´ÂÁö È®ÀÎÇÏ¼¼¿ä.");
+                targetAudioOutput = GetComponentInChildren<InstrumentAudioOutput>();
             }
 
-            if (audioEngine == null)
+            if (targetAudioOutput != null)
             {
-                Debug.LogError("[MidiTest] UniversalAudioEngineÀÌ ÀÎ½ºÆåÅÍ¿¡¼­ ÇÒ´çµÇÁö ¾Ê¾Ò½À´Ï´Ù!");
+                _cachedInstrument = targetAudioOutput.GetComponentInParent<InstrumentBase>();
+                if (_cachedInstrument != null)
+                {
+                    Debug.Log($"[MidiTest] Found Target Instrument: {_cachedInstrument.name}. Pooling will be ACTIVE.");
+                }
+                else
+                {
+                    Debug.LogWarning("[MidiTest] targetAudioOutputì—ì„œ InstrumentBaseë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤. í’€ë§ ì—†ì´ Masterë¡œ ì¬ìƒë©ë‹ˆë‹¤.");
+                }
             }
         }
 
         void Update()
         {
-            if (audioEngine == null) return;
-
+            HandleInstrumentSwitch();
             HandleKeyboardInput();
-
             if (enableVRInput) HandleVRInput();
+        }
+
+        private void HandleInstrumentSwitch()
+        {
+            var keyboard = Keyboard.current;
+            if (keyboard == null) return;
+
+            if (keyboard[Key.Digit1].wasPressedThisFrame)
+            {
+                Debug.Log("[MidiTest] í”¼ì•„ë…¸ ëª¨ë“œë¡œ ìŠ¤ìœ„ì¹­ ì™„ë£Œ! (A = C4)");
+                SetInstrument(InstrumentType.Melodic, "Audio/Piano", _pianoMapping);
+            }
+            
+            if (keyboard[Key.Digit2].wasPressedThisFrame)
+            {
+                Debug.Log("[MidiTest] ë“œëŸ¼ ëª¨ë“œë¡œ ìŠ¤ìœ„ì¹­ ì™„ë£Œ! (A = Kick)");
+                SetInstrument(InstrumentType.Percussion, "Audio/Drum", _drumMapping);
+            }
+        }
+
+        private void SetInstrument(InstrumentType type, string path, Dictionary<Key, int> mapping)
+        {
+            currentInstrumentType = type;
+            currentResourcePath = path;
+            _currentMapping = mapping;
         }
 
         private void HandleKeyboardInput()
         {
-            // »õ·Î¿î ÀÎÇ² ½Ã½ºÅÛÀÇ Å°º¸µå Ã¼Å© ¹æ½Ä
             var keyboard = Keyboard.current;
-            if (keyboard == null) return;
+            if (keyboard == null || _currentMapping == null) return;
 
-            foreach (var mapping in _keyMapping)
+            foreach (var mapping in _currentMapping)
             {
-                if (keyboard[mapping.Key].wasPressedThisFrame)
-                {
-                    Debug.Log($"[MidiTest] Å°º¸µå ÀÔ·Â: {mapping.Key}");
-                    SendMidi(mapping.Value, true);
-                }
-
-                if (keyboard[mapping.Key].wasReleasedThisFrame)
-                {
-                    SendMidi(mapping.Value, false);
-                }
+                if (keyboard[mapping.Key].wasPressedThisFrame) SendMidi(mapping.Value, true);
+                if (keyboard[mapping.Key].wasReleasedThisFrame) SendMidi(mapping.Value, false);
             }
         }
 
@@ -102,49 +137,37 @@ namespace VRMusicStudio.Test
                 return;
             }
 
-            // VR Æ®¸®°Å ÀÔ·Â (XR Interactive Toolkit µî¿¡¼­ ¾²´Â CommonUsages ¹æ½Ä)
+            int leftNote = (currentInstrumentType == InstrumentType.Percussion) ? 36 : 60;
+            int rightNote = (currentInstrumentType == InstrumentType.Percussion) ? 38 : 67;
+
             if (_leftController.TryGetFeatureValue(UnityEngine.XR.CommonUsages.triggerButton, out bool leftPressed))
             {
-                if (leftPressed && !_leftTriggerPressed)
-                {
-                    SendMidi(60, true);
-                    _leftTriggerPressed = true;
-                }
-                else if (!leftPressed && _leftTriggerPressed)
-                {
-                    SendMidi(60, false);
-                    _leftTriggerPressed = false;
-                }
+                if (leftPressed && !_leftTriggerPressed) { SendMidi(leftNote, true); _leftTriggerPressed = true; }
+                else if (!leftPressed && _leftTriggerPressed) { SendMidi(leftNote, false); _leftTriggerPressed = false; }
             }
 
             if (_rightController.TryGetFeatureValue(UnityEngine.XR.CommonUsages.triggerButton, out bool rightPressed))
             {
-                if (rightPressed && !_rightTriggerPressed)
-                {
-                    SendMidi(67, true);
-                    _rightTriggerPressed = true;
-                }
-                else if (!rightPressed && _rightTriggerPressed)
-                {
-                    SendMidi(67, false);
-                    _rightTriggerPressed = false;
-                }
+                if (rightPressed && !_rightTriggerPressed) { SendMidi(rightNote, true); _rightTriggerPressed = true; }
+                else if (!rightPressed && _rightTriggerPressed) { SendMidi(rightNote, false); _rightTriggerPressed = false; }
             }
         }
 
         private void SendMidi(int note, bool isOn)
         {
-            MidiData data = new MidiData
-            {
-                instrumentId = currentInstrumentId,
-                channel = 1,
-                note = note,
-                velocity = isOn ? testVelocity : 0f,
-                isOn = isOn
-            };
+            if (targetAudioOutput == null) return;
 
-            audioEngine.OnReceiveMidi(data);
-            Debug.Log($"[MIDI Sent] Note: {note} | Status: {(isOn ? "ON" : "OFF")}");
+            MidiEvent midiEvent = new MidiEvent(note, isOn ? testVelocity : 0f, isOn);
+
+            // [í•µì‹¬ ìˆ˜ì •] í…ŒìŠ¤íŠ¸ ì»¨íŠ¸ë¡¤ëŸ¬ê°€ ì§€ì‹œí•˜ëŠ” ì•…ê¸° íƒ€ì…ê³¼ ì†Œë¦¬ ê²½ë¡œë¥¼ ì˜¤ë²„ë¼ì´ë”©í•˜ì—¬ ì „ë‹¬í•©ë‹ˆë‹¤.
+            if (_cachedInstrument != null)
+            {
+                _cachedInstrument.TriggerMidi(midiEvent, currentInstrumentType, currentResourcePath);
+            }
+            else
+            {
+                CentralInstrumentController.Instance.ProcessMidiEvent(midiEvent, currentInstrumentType, currentResourcePath, targetAudioOutput);
+            }
         }
     }
 }

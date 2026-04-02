@@ -1,68 +1,63 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 피아노 악기에 부착되어 각 건반 입력을 처리하고 중앙 제어기로 전달합니다.
+/// </summary>
 [DisallowMultipleComponent]
-public class Piano : MonoBehaviour
+public class Piano : InstrumentBase
 {
-    [SerializeField] PianoAudioOutput audioOutput;
+    private readonly HashSet<int> m_ActiveKeys = new HashSet<int>();
+    private const int KeyCount = 88;
+    private const int FirstMidiNote = 21;
 
-    readonly HashSet<int> m_ActiveKeys = new HashSet<int>();
-    PianoMidiMapper m_MidiMapper;
-    PianoSoundEngine m_SoundEngine;
-
-    void Awake()
+    protected override void Initialize()
     {
-        if (audioOutput == null)
-            audioOutput = GetComponentInChildren<PianoAudioOutput>(true);
-
-        if (audioOutput == null)
-        {
-            Debug.LogError("[Piano] PianoAudioOutput child is missing.", this);
-            enabled = false;
-            return;
-        }
-
-        m_MidiMapper = new PianoMidiMapper();
-        m_SoundEngine = new PianoSoundEngine(audioOutput);
+        if (string.IsNullOrEmpty(resourcePath) || resourcePath == "Audio/Default") resourcePath = "Audio/Piano";
+        instrumentType = InstrumentType.Melodic;
+        if (string.IsNullOrEmpty(mixerGroupName)) mixerGroupName = "Piano";
+        base.Initialize();
+        
+        Debug.Log("[Piano] Initialized with unified TriggerMidi support.");
     }
 
-    void OnDisable()
+    protected override void OnDisable()
     {
+        base.OnDisable(); 
         m_ActiveKeys.Clear();
         if (audioOutput != null)
             audioOutput.StopAllVoices();
     }
 
-    public void NoteOn(int keyIndex, float velocity)
+    // 물리 건반 센서 등에서 호출하는 기존 API 유지
+    public void NoteOn(int keyIndex, float velocity) => TriggerMidi(new MidiEvent(FirstMidiNote + keyIndex, velocity, true));
+    public void NoteOff(int keyIndex) => TriggerMidi(new MidiEvent(FirstMidiNote + keyIndex, 0f, false));
+
+    protected override void OnPlayStart(MidiEvent e)
     {
-        if (!IsValidKeyIndex(keyIndex))
-            return;
-
-        if (!m_ActiveKeys.Add(keyIndex))
-            return;
-
-        m_SoundEngine?.Handle(m_MidiMapper.CreateNoteOn(keyIndex, velocity));
-        // Send Data to Server to BroadCast Sounds Here
+        int keyIndex = e.Note - FirstMidiNote;
+        m_ActiveKeys.Add(keyIndex);
+        // Pooling 확보는 Base.TriggerMidi에서 이미 수행됩니다.
     }
 
-    public void NoteOff(int keyIndex)
+    protected override void OnPlayEnd(MidiEvent e)
     {
-        if (!IsValidKeyIndex(keyIndex))
-            return;
+        int keyIndex = e.Note - FirstMidiNote;
+        m_ActiveKeys.Remove(keyIndex);
 
-        if (!m_ActiveKeys.Remove(keyIndex))
-            return;
-
-        m_SoundEngine?.Handle(m_MidiMapper.CreateNoteOff(keyIndex));
-        // Send Data to Server to BroadCast Sounds Here
+        // 더 이상 눌린 건반이 없으면 30초 타이머 시작
+        if (m_ActiveKeys.Count == 0)
+        {
+            StartReleaseTimer();
+        }
     }
 
-    bool IsValidKeyIndex(int keyIndex)
+    private bool IsValidKeyIndex(int keyIndex)
     {
-        if (keyIndex >= 0 && keyIndex < PianoMidiMapper.KeyCount)
+        if (keyIndex >= 0 && keyIndex < KeyCount)
             return true;
 
-        Debug.LogWarning($"[Piano] Ignoring invalid key index {keyIndex}.", this);
+        Debug.LogWarning($"[Piano] 유효하지 않은 건반 인덱스가 전달되었습니다: {keyIndex}", this);
         return false;
     }
 }
