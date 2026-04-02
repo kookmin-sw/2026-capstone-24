@@ -10,8 +10,6 @@ public class Piano : InstrumentBase
     const int KeyCount = 88;
     const int FirstMidiNote = 21;
 
-    protected override string DefaultResourcePath => "Audio/Piano";
-
     // 물리 건반 센서 등에서 호출하는 기존 API 유지
     public void NoteOn(int keyIndex, float velocity)
     {

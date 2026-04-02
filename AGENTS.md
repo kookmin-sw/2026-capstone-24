@@ -12,17 +12,21 @@
 - Prefer updating this file instead of duplicating the same rules in multiple places.
 
 ## Project Layout
-- `Assets/Scenes`: scene assets. `SampleScene.unity` is currently the only build scene.
-- `Assets/Samples`: imported Unity sample content for XR Hands and XR Interaction Toolkit.
-- `Assets/XR`, `Assets/XRI`, `Assets/Settings`: XR-related assets and configuration.
-- `Packages/manifest.json`: package dependencies.
-- `ProjectSettings/`: Unity editor, render pipeline, input, and XR configuration.
-- `.claude/settings.local.json`: Claude local permissions for this repository.
+- `Assets/Characters`: VR 플레이어 캐릭터 도메인 (Prefabs/).
+- `Assets/Hands`: 손 도메인 (Editor/, Materials/, Models/, Prefabs/, Scripts/).
+- `Assets/Instruments`: 악기 도메인. `_Core/`(공유 인프라), `Piano/`, `Drum/`, `Test/` 하위 도메인. 각 악기 폴더에 `Sound/` 서브폴더로 오디오 클립 포함.
+- `Assets/Scenes`: 씬 에셋. `SampleScene.unity`가 유일한 빌드 씬.
+- `Assets/Settings/Input`: Input System 액션 에셋.
+- `Assets/Samples`: XR Hands, XR Interaction Toolkit 임포트된 샘플.
+- `Assets/XR`, `Assets/XRI`: XR 관련 에셋 및 설정 (패키지 자동 생성).
+- `Packages/manifest.json`: 패키지 의존성.
+- `ProjectSettings/`: Unity 에디터, 렌더 파이프라인, 입력, XR 설정.
+- `.claude/settings.local.json`: Claude 로컬 권한 설정.
 
 ## Environment Facts
 - Unity version: `6000.3.10f1`.
 - Render pipeline: URP.
-- Input stack: Input System with `Assets/InputSystem_Actions.inputactions`.
+- Input stack: Input System with `Assets/Settings/Input/InputSystem_Actions.inputactions`.
 - XR stack: OpenXR + XR Interaction Toolkit + XR Hands.
 - Test package is installed via `com.unity.test-framework`.
 - Unity MCP is installed via `com.coplaydev.unity-mcp`.

@@ -13591,6 +13591,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Piano
   audioOutput: {fileID: 9012345678901234569}
+  soundClips:
+  - {fileID: 8300000, guid: 8279893f0f2a2b04da2be6c48bc1f78e, type: 3}
+  - {fileID: 8300000, guid: 6285799bf80fc7542a3fcdecabfc668a, type: 3}
+  - {fileID: 8300000, guid: 43eba8eafa7ffbb4a80f70a8244dc76d, type: 3}
+  - {fileID: 8300000, guid: cfe83411cf442ef4a9b029cbbea842a9, type: 3}
+  - {fileID: 8300000, guid: 356621e93bcfb5d42a3d1d939c633490, type: 3}
+  - {fileID: 8300000, guid: c220ee0bbfb46e14ebc6fd284694b755, type: 3}
+  - {fileID: 8300000, guid: 0849ca2cc0799654695bac9ac6cbd235, type: 3}
+  - {fileID: 8300000, guid: 1bdd1abc0b6ee1248957eb05aae7658f, type: 3}
+  - {fileID: 8300000, guid: a9d5a93267fd535449804b04d7b999f5, type: 3}
+  - {fileID: 8300000, guid: 22277dcbceb13ce4d96a409f5cdfb1f6, type: 3}
+  - {fileID: 8300000, guid: a4855cb3bed116b4f88712a315d1e21f, type: 3}
+  - {fileID: 8300000, guid: 47a4ac61770a77a44a1f8fe3ede364c5, type: 3}
+  - {fileID: 8300000, guid: 615cd34b2872b1041a61bdf2549d8311, type: 3}
+  - {fileID: 8300000, guid: dba845c25f0abb74f9a649ebd34a056e, type: 3}
+  - {fileID: 8300000, guid: af152ec87c747b64bbc8d20833b1c11d, type: 3}
 --- !u!1 &7135172043663807626
 GameObject:
   m_ObjectHideFlags: 0

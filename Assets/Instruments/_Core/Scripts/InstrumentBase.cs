@@ -23,9 +23,10 @@ public abstract class InstrumentBase : MonoBehaviour
     [Tooltip("이 악기에서 출력될 스피커(Voice Pool) 컴포넌트입니다. 생략 시 자식에서 자동 탐색합니다.")]
     [SerializeField] protected InstrumentAudioOutput audioOutput;
 
-    static readonly Dictionary<string, Dictionary<string, AudioClip>> s_AudioBanks = new Dictionary<string, Dictionary<string, AudioClip>>();
+    [Tooltip("이 악기에서 사용할 오디오 클립 목록입니다.")]
+    [SerializeField] AudioClip[] soundClips = System.Array.Empty<AudioClip>();
 
-    protected abstract string DefaultResourcePath { get; }
+    Dictionary<string, AudioClip> audioBank;
 
     protected virtual void Awake()
     {
@@ -96,26 +97,22 @@ public abstract class InstrumentBase : MonoBehaviour
     {
     }
 
-    protected string GetResourcePath()
-    {
-        return DefaultResourcePath;
-    }
-
     protected bool TryGetAudioBank(out Dictionary<string, AudioClip> bank)
     {
-        string resourcePath = GetResourcePath();
-        if (string.IsNullOrEmpty(resourcePath))
+        if (audioBank == null)
         {
-            bank = null;
-            return false;
+            audioBank = new Dictionary<string, AudioClip>();
+            foreach (AudioClip clip in soundClips)
+            {
+                if (clip != null)
+                    audioBank[clip.name] = clip;
+            }
+
+            if (audioBank.Count == 0)
+                Debug.LogWarning($"[{GetType().Name}] soundClips가 비어 있습니다. Inspector에서 오디오 클립을 할당해 주세요.", this);
         }
 
-        if (!s_AudioBanks.TryGetValue(resourcePath, out bank))
-        {
-            bank = LoadAudioBank(resourcePath);
-            s_AudioBanks[resourcePath] = bank;
-        }
-
+        bank = audioBank;
         return bank.Count > 0;
     }
 
@@ -132,25 +129,6 @@ public abstract class InstrumentBase : MonoBehaviour
 
         clip = null;
         return false;
-    }
-
-    Dictionary<string, AudioClip> LoadAudioBank(string path)
-    {
-        AudioClip[] clips = Resources.LoadAll<AudioClip>(path);
-        Dictionary<string, AudioClip> bank = new Dictionary<string, AudioClip>();
-
-        foreach (AudioClip clip in clips)
-        {
-            if (clip != null)
-                bank[clip.name] = clip;
-        }
-
-        if (clips.Length == 0)
-        {
-            Debug.LogWarning($"[{GetType().Name}] 경로에 오디오가 존재하지 않습니다: Resources/{path}", this);
-        }
-
-        return bank;
     }
 
     protected virtual void OnDisable()

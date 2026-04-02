@@ -6,8 +6,6 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class Drum : InstrumentBase
 {
-    protected override string DefaultResourcePath => "Audio/Drum";
-
     // 물리 타격 센서 등에서 호출하는 기존 API 유지
     public void Hit(int midiNote, float velocity) => TriggerMidi(new MidiEvent(midiNote, velocity, true));
     public void Choke(int midiNote) => TriggerMidi(new MidiEvent(midiNote, 0f, false));
