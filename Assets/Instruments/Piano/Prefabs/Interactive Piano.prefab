@@ -63,9 +63,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 16779495497371931}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 2591996151091081126}
   targetBody: {fileID: 142345775300314786}
   sensorCollider: {fileID: 668849120467831744}
@@ -78,7 +78,7 @@ MonoBehaviour:
   keyIndex: 44
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &23191697222814568
 GameObject:
   m_ObjectHideFlags: 0
@@ -142,9 +142,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 23191697222814568}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 7192166479273570556}
   targetBody: {fileID: 3897759618083048897}
   sensorCollider: {fileID: 1080923116282560603}
@@ -157,7 +157,7 @@ MonoBehaviour:
   keyIndex: 87
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &27266568665882468
 GameObject:
   m_ObjectHideFlags: 0
@@ -221,9 +221,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 27266568665882468}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 373581381636270780}
   targetBody: {fileID: 2724909554924369704}
   sensorCollider: {fileID: 7466922641750449404}
@@ -236,7 +236,7 @@ MonoBehaviour:
   keyIndex: 27
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &30088106765810063
 GameObject:
   m_ObjectHideFlags: 0
@@ -300,9 +300,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 30088106765810063}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 8603610365079009320}
   targetBody: {fileID: 7807768919375455504}
   sensorCollider: {fileID: 3062559710006284298}
@@ -315,7 +315,7 @@ MonoBehaviour:
   keyIndex: 72
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &40191093619836354
 GameObject:
   m_ObjectHideFlags: 0
@@ -543,9 +543,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 50423540190650355}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 3085449479569164664}
   targetBody: {fileID: 8505599410751550520}
   sensorCollider: {fileID: 521261348810161532}
@@ -558,7 +558,7 @@ MonoBehaviour:
   keyIndex: 38
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &66357672348484635
 GameObject:
   m_ObjectHideFlags: 0
@@ -684,9 +684,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 184011478521472195}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 1496883841878542745}
   targetBody: {fileID: 3756839422810683572}
   sensorCollider: {fileID: 5403412231844255915}
@@ -699,7 +699,7 @@ MonoBehaviour:
   keyIndex: 4
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &194856271359030032
 GameObject:
   m_ObjectHideFlags: 0
@@ -876,9 +876,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 267837872556596093}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 600973983359095256}
   targetBody: {fileID: 2498384119086031366}
   sensorCollider: {fileID: 6580753104678177329}
@@ -891,7 +891,7 @@ MonoBehaviour:
   keyIndex: 5
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &321291069041435234
 GameObject:
   m_ObjectHideFlags: 0
@@ -1294,9 +1294,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 629884540745103442}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 4848709996913893307}
   targetBody: {fileID: 3211303889265518170}
   sensorCollider: {fileID: 1393355156396885681}
@@ -1309,7 +1309,7 @@ MonoBehaviour:
   keyIndex: 11
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &633631811606229851
 GameObject:
   m_ObjectHideFlags: 0
@@ -1568,9 +1568,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 682079457225970031}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 9110251800872986977}
   targetBody: {fileID: 1183474757732009556}
   sensorCollider: {fileID: 5402142275455722270}
@@ -1583,7 +1583,7 @@ MonoBehaviour:
   keyIndex: 79
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &688714602141767242
 GameObject:
   m_ObjectHideFlags: 0
@@ -1729,9 +1729,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 720181677578568219}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 4836146465880402189}
   targetBody: {fileID: 1587865006828625821}
   sensorCollider: {fileID: 8156193846284213041}
@@ -1744,7 +1744,7 @@ MonoBehaviour:
   keyIndex: 10
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &729718157627791162
 GameObject:
   m_ObjectHideFlags: 0
@@ -1890,9 +1890,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 737664045139250121}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 5298066346163992759}
   targetBody: {fileID: 5610507446166760724}
   sensorCollider: {fileID: 5872352513273271450}
@@ -1905,7 +1905,7 @@ MonoBehaviour:
   keyIndex: 2
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &746246199251079676
 GameObject:
   m_ObjectHideFlags: 0
@@ -2082,9 +2082,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 772146854273910252}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 6397492003498770751}
   targetBody: {fileID: 6395585705667947423}
   sensorCollider: {fileID: 3329620629481820573}
@@ -2097,7 +2097,7 @@ MonoBehaviour:
   keyIndex: 50
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &784930347738075659
 GameObject:
   m_ObjectHideFlags: 0
@@ -2325,9 +2325,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 849824530741905790}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 2224483254764284870}
   targetBody: {fileID: 287350647815081146}
   sensorCollider: {fileID: 724392781987226723}
@@ -2340,7 +2340,7 @@ MonoBehaviour:
   keyIndex: 48
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &871765704858676713
 GameObject:
   m_ObjectHideFlags: 0
@@ -2692,9 +2692,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1018339517889845537}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 3618387064131657397}
   targetBody: {fileID: 8233384624971414477}
   sensorCollider: {fileID: 2508697745249329700}
@@ -2707,7 +2707,7 @@ MonoBehaviour:
   keyIndex: 78
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &1094203207360145731
 GameObject:
   m_ObjectHideFlags: 0
@@ -2853,9 +2853,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1126524326723422607}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 2783737250349375189}
   targetBody: {fileID: 8277002535351892884}
   sensorCollider: {fileID: 6631911895165292868}
@@ -2868,7 +2868,7 @@ MonoBehaviour:
   keyIndex: 20
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &1307303612045773156
 GameObject:
   m_ObjectHideFlags: 0
@@ -2932,9 +2932,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1307303612045773156}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 1110240848413876278}
   targetBody: {fileID: 930171951007880243}
   sensorCollider: {fileID: 6703694106724824425}
@@ -2947,7 +2947,7 @@ MonoBehaviour:
   keyIndex: 57
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &1337489104661776735
 GameObject:
   m_ObjectHideFlags: 0
@@ -3011,9 +3011,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1337489104661776735}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 2513467277774932248}
   targetBody: {fileID: 8470573176985870142}
   sensorCollider: {fileID: 1035412283880664473}
@@ -3026,7 +3026,7 @@ MonoBehaviour:
   keyIndex: 60
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &1397248877805221685
 GameObject:
   m_ObjectHideFlags: 0
@@ -3172,9 +3172,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1412552944775877008}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 5364031247475827969}
   targetBody: {fileID: 8524295177980563500}
   sensorCollider: {fileID: 6154065385916607025}
@@ -3187,7 +3187,7 @@ MonoBehaviour:
   keyIndex: 69
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &1446696955342568967
 GameObject:
   m_ObjectHideFlags: 0
@@ -3415,9 +3415,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1507070641613218334}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 5208182203794189018}
   targetBody: {fileID: 4706012741450156431}
   sensorCollider: {fileID: 7008448349861092032}
@@ -3430,7 +3430,7 @@ MonoBehaviour:
   keyIndex: 28
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &1536723690847746660
 GameObject:
   m_ObjectHideFlags: 0
@@ -3782,9 +3782,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1699002081331369730}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 3203534924936492196}
   targetBody: {fileID: 125530728235475268}
   sensorCollider: {fileID: 5103410277846217860}
@@ -3797,7 +3797,7 @@ MonoBehaviour:
   keyIndex: 85
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &1772816753451444621
 GameObject:
   m_ObjectHideFlags: 0
@@ -4231,9 +4231,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1998861825079744430}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 2519958854052708841}
   targetBody: {fileID: 3227598912335072126}
   sensorCollider: {fileID: 7381083686459293957}
@@ -4246,7 +4246,7 @@ MonoBehaviour:
   keyIndex: 51
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &2016900950493649237
 GameObject:
   m_ObjectHideFlags: 0
@@ -4691,9 +4691,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2544119605255557299}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 535574007209472488}
   targetBody: {fileID: 8762952140249768454}
   sensorCollider: {fileID: 6406078002189167975}
@@ -4706,7 +4706,7 @@ MonoBehaviour:
   keyIndex: 30
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &2556562243423187462
 GameObject:
   m_ObjectHideFlags: 0
@@ -4801,9 +4801,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2565787490903684382}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 1479860998548695954}
   targetBody: {fileID: 8662433408305168534}
   sensorCollider: {fileID: 6345353830339476266}
@@ -4816,7 +4816,7 @@ MonoBehaviour:
   keyIndex: 80
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &2570196832733983972
 GameObject:
   m_ObjectHideFlags: 0
@@ -5075,9 +5075,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2696287049350088240}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 5395594764635526533}
   targetBody: {fileID: 6580084715798989637}
   sensorCollider: {fileID: 3045355032957262650}
@@ -5090,7 +5090,7 @@ MonoBehaviour:
   keyIndex: 58
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &2730881131807126550
 GameObject:
   m_ObjectHideFlags: 0
@@ -5154,9 +5154,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2730881131807126550}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 814275734753183705}
   targetBody: {fileID: 6023581924048895984}
   sensorCollider: {fileID: 7605092780772991028}
@@ -5169,7 +5169,7 @@ MonoBehaviour:
   keyIndex: 62
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &2740830933257190138
 GameObject:
   m_ObjectHideFlags: 0
@@ -5233,9 +5233,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2740830933257190138}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 6532408432124128573}
   targetBody: {fileID: 5994428469095942421}
   sensorCollider: {fileID: 938900044904917613}
@@ -5248,7 +5248,7 @@ MonoBehaviour:
   keyIndex: 47
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &2781702124811250256
 GameObject:
   m_ObjectHideFlags: 0
@@ -5513,9 +5513,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2924109380636174783}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 6419427791025399282}
   targetBody: {fileID: 2759097114575252237}
   sensorCollider: {fileID: 5681768862550508504}
@@ -5528,7 +5528,7 @@ MonoBehaviour:
   keyIndex: 86
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &2951822161183745920
 GameObject:
   m_ObjectHideFlags: 0
@@ -5592,9 +5592,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2951822161183745920}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 6254079888710161937}
   targetBody: {fileID: 1076653134934073086}
   sensorCollider: {fileID: 7433453233933058711}
@@ -5607,7 +5607,7 @@ MonoBehaviour:
   keyIndex: 55
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &2971917911118487434
 GameObject:
   m_ObjectHideFlags: 0
@@ -5671,9 +5671,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2971917911118487434}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 8683331041351922547}
   targetBody: {fileID: 1328274401402230937}
   sensorCollider: {fileID: 3803934427322890729}
@@ -5686,7 +5686,7 @@ MonoBehaviour:
   keyIndex: 36
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &2996787477207024460
 GameObject:
   m_ObjectHideFlags: 0
@@ -5783,9 +5783,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 3065148076136609510}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 131447104007946548}
   targetBody: {fileID: 6803680460315486829}
   sensorCollider: {fileID: 1860324136829159464}
@@ -5798,7 +5798,7 @@ MonoBehaviour:
   keyIndex: 14
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &3217795894578938820
 GameObject:
   m_ObjectHideFlags: 0
@@ -5862,9 +5862,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 3217795894578938820}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 6494749073684257144}
   targetBody: {fileID: 7737597880477976299}
   sensorCollider: {fileID: 3537543299191758246}
@@ -5877,7 +5877,7 @@ MonoBehaviour:
   keyIndex: 81
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &3241666185087559175
 GameObject:
   m_ObjectHideFlags: 0
@@ -6136,9 +6136,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 3417787254394507174}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 8357115274527448816}
   targetBody: {fileID: 7352013806678277353}
   sensorCollider: {fileID: 3610613564486383602}
@@ -6151,7 +6151,7 @@ MonoBehaviour:
   keyIndex: 56
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &3492240812606197928
 GameObject:
   m_ObjectHideFlags: 0
@@ -6215,9 +6215,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 3492240812606197928}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 6882199525331632103}
   targetBody: {fileID: 6107439879263428230}
   sensorCollider: {fileID: 9084453034753895517}
@@ -6230,7 +6230,7 @@ MonoBehaviour:
   keyIndex: 64
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &3528999494810632490
 GameObject:
   m_ObjectHideFlags: 0
@@ -6294,9 +6294,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 3528999494810632490}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 9151465520414905646}
   targetBody: {fileID: 352282233713996693}
   sensorCollider: {fileID: 3677078951909850440}
@@ -6309,7 +6309,7 @@ MonoBehaviour:
   keyIndex: 53
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &3531289822454941447
 GameObject:
   m_ObjectHideFlags: 0
@@ -6373,9 +6373,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 3531289822454941447}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 5712501131220387065}
   targetBody: {fileID: 226145893138831822}
   sensorCollider: {fileID: 2560193933352943769}
@@ -6388,7 +6388,7 @@ MonoBehaviour:
   keyIndex: 0
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &3556393560371548454
 GameObject:
   m_ObjectHideFlags: 0
@@ -6534,9 +6534,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 3580195656157200027}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 5356589082581190186}
   targetBody: {fileID: 8253287166850136681}
   sensorCollider: {fileID: 1798023166691256488}
@@ -6549,7 +6549,7 @@ MonoBehaviour:
   keyIndex: 22
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &3588109702913996150
 GameObject:
   m_ObjectHideFlags: 0
@@ -6777,9 +6777,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 3677191307429640050}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 4447017764061369723}
   targetBody: {fileID: 2455486268213918259}
   sensorCollider: {fileID: 5912602294330913185}
@@ -6792,7 +6792,7 @@ MonoBehaviour:
   keyIndex: 13
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &3708806323317278741
 GameObject:
   m_ObjectHideFlags: 0
@@ -7082,9 +7082,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 3897374715787148474}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 7397767821561130730}
   targetBody: {fileID: 6980868643549166356}
   sensorCollider: {fileID: 5957194558115275552}
@@ -7097,7 +7097,7 @@ MonoBehaviour:
   keyIndex: 49
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &3928322214183085376
 GameObject:
   m_ObjectHideFlags: 0
@@ -7243,9 +7243,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 3932117461305750918}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 1847738075504622728}
   targetBody: {fileID: 2864942830354641028}
   sensorCollider: {fileID: 501017562750463180}
@@ -7258,7 +7258,7 @@ MonoBehaviour:
   keyIndex: 16
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &3941532266900526935
 GameObject:
   m_ObjectHideFlags: 0
@@ -7353,9 +7353,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 3961131224755198490}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 7278049131407037685}
   targetBody: {fileID: 5893246362088299325}
   sensorCollider: {fileID: 2866160434932438610}
@@ -7368,7 +7368,7 @@ MonoBehaviour:
   keyIndex: 65
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &3997133366825585181
 GameObject:
   m_ObjectHideFlags: 0
@@ -7432,9 +7432,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 3997133366825585181}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 7668258759723129768}
   targetBody: {fileID: 5826893681956674451}
   sensorCollider: {fileID: 5280100583201014870}
@@ -7447,7 +7447,7 @@ MonoBehaviour:
   keyIndex: 52
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &4015044967036118496
 GameObject:
   m_ObjectHideFlags: 0
@@ -7593,9 +7593,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4028866380649033666}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 7639876438043559298}
   targetBody: {fileID: 7941129405252985002}
   sensorCollider: {fileID: 7998389368014895522}
@@ -7608,7 +7608,7 @@ MonoBehaviour:
   keyIndex: 75
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &4057124238587829014
 GameObject:
   m_ObjectHideFlags: 0
@@ -7672,9 +7672,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4057124238587829014}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 4373202283505895238}
   targetBody: {fileID: 2292417579418249719}
   sensorCollider: {fileID: 8539815416302325261}
@@ -7687,7 +7687,7 @@ MonoBehaviour:
   keyIndex: 15
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &4057778794228327826
 GameObject:
   m_ObjectHideFlags: 0
@@ -7782,9 +7782,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4082492702113607396}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 1676711041726576561}
   targetBody: {fileID: 7586720985652575058}
   sensorCollider: {fileID: 9204864136620589620}
@@ -7797,7 +7797,7 @@ MonoBehaviour:
   keyIndex: 45
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &4122975455428756064
 GameObject:
   m_ObjectHideFlags: 0
@@ -7861,9 +7861,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4122975455428756064}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 8879538068726384921}
   targetBody: {fileID: 5337954144522731627}
   sensorCollider: {fileID: 3956085852352146657}
@@ -7876,7 +7876,7 @@ MonoBehaviour:
   keyIndex: 41
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &4128014443609024652
 GameObject:
   m_ObjectHideFlags: 0
@@ -8279,9 +8279,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4265977426671154189}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 2790766786925213410}
   targetBody: {fileID: 1268247244808620646}
   sensorCollider: {fileID: 8410199274806834409}
@@ -8294,7 +8294,7 @@ MonoBehaviour:
   keyIndex: 21
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &4329770512917794315
 GameObject:
   m_ObjectHideFlags: 0
@@ -8358,9 +8358,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4329770512917794315}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 642626752746222498}
   targetBody: {fileID: 5248722997683929163}
   sensorCollider: {fileID: 4483628711054757908}
@@ -8373,7 +8373,7 @@ MonoBehaviour:
   keyIndex: 3
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &4330531082526747908
 GameObject:
   m_ObjectHideFlags: 0
@@ -8519,9 +8519,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4357385956578426676}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 1946763779448712753}
   targetBody: {fileID: 2371414488678383581}
   sensorCollider: {fileID: 2110871965827319324}
@@ -8534,7 +8534,7 @@ MonoBehaviour:
   keyIndex: 82
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &4368235184853855613
 GameObject:
   m_ObjectHideFlags: 0
@@ -8762,9 +8762,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4472984647502435950}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 7211065088960287485}
   targetBody: {fileID: 5017382805091888053}
   sensorCollider: {fileID: 1676499908818067624}
@@ -8777,7 +8777,7 @@ MonoBehaviour:
   keyIndex: 68
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &4477443833144950059
 GameObject:
   m_ObjectHideFlags: 0
@@ -8923,9 +8923,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4515835999309872269}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 8562668061376327043}
   targetBody: {fileID: 7279201393326991659}
   sensorCollider: {fileID: 564483905636993596}
@@ -8938,7 +8938,7 @@ MonoBehaviour:
   keyIndex: 31
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &4545300988752737743
 GameObject:
   m_ObjectHideFlags: 0
@@ -9064,9 +9064,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4715804034479752109}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 5724294199114856726}
   targetBody: {fileID: 5979980280164349234}
   sensorCollider: {fileID: 2703156126098292058}
@@ -9079,7 +9079,7 @@ MonoBehaviour:
   keyIndex: 76
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &4755281060265454360
 GameObject:
   m_ObjectHideFlags: 0
@@ -9369,9 +9369,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4834511726745380763}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 7364791765451277110}
   targetBody: {fileID: 5733860285968826419}
   sensorCollider: {fileID: 5391767803752999998}
@@ -9384,7 +9384,7 @@ MonoBehaviour:
   keyIndex: 63
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &4861048992615959432
 GameObject:
   m_ObjectHideFlags: 0
@@ -9561,9 +9561,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4939341404801275668}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 4377457406074643893}
   targetBody: {fileID: 4536369314529282215}
   sensorCollider: {fileID: 1727924557596348518}
@@ -9576,7 +9576,7 @@ MonoBehaviour:
   keyIndex: 24
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &4940925508209829489
 GameObject:
   m_ObjectHideFlags: 0
@@ -9640,9 +9640,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4940925508209829489}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 7770926893668731590}
   targetBody: {fileID: 6192778115436314836}
   sensorCollider: {fileID: 2793700671126007218}
@@ -9655,7 +9655,7 @@ MonoBehaviour:
   keyIndex: 59
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &4950894403634734122
 GameObject:
   m_ObjectHideFlags: 0
@@ -9801,9 +9801,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4982207647274003978}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 8188941001185056346}
   targetBody: {fileID: 476333153629447306}
   sensorCollider: {fileID: 3895610967016973693}
@@ -9816,7 +9816,7 @@ MonoBehaviour:
   keyIndex: 7
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &4989381680603644543
 GameObject:
   m_ObjectHideFlags: 0
@@ -10363,9 +10363,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 5307350273145400800}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 7329542003376010968}
   targetBody: {fileID: 3593566409353323034}
   sensorCollider: {fileID: 6924428535752489630}
@@ -10378,7 +10378,7 @@ MonoBehaviour:
   keyIndex: 84
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &5338874964268506857
 GameObject:
   m_ObjectHideFlags: 0
@@ -10506,9 +10506,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 5413099291455731417}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 7237911241522254909}
   targetBody: {fileID: 3312350754958767058}
   sensorCollider: {fileID: 2715546508950958267}
@@ -10521,7 +10521,7 @@ MonoBehaviour:
   keyIndex: 19
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &5413178435110183508
 GameObject:
   m_ObjectHideFlags: 0
@@ -10698,9 +10698,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 5449643490371792303}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 7005077875889732536}
   targetBody: {fileID: 27116546284569180}
   sensorCollider: {fileID: 1938791273476174466}
@@ -10713,7 +10713,7 @@ MonoBehaviour:
   keyIndex: 83
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &5459974555222701990
 GameObject:
   m_ObjectHideFlags: 0
@@ -11076,9 +11076,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 5575353990486522551}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 5334380059778987855}
   targetBody: {fileID: 8001505737032428914}
   sensorCollider: {fileID: 7518310997950292859}
@@ -11091,7 +11091,7 @@ MonoBehaviour:
   keyIndex: 43
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &5624763619386383932
 GameObject:
   m_ObjectHideFlags: 0
@@ -11248,9 +11248,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 5793418540745625306}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 3675113769332402763}
   targetBody: {fileID: 5072854141120467634}
   sensorCollider: {fileID: 7116786733328829839}
@@ -11263,7 +11263,7 @@ MonoBehaviour:
   keyIndex: 34
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &5869709785420652322
 GameObject:
   m_ObjectHideFlags: 0
@@ -11440,9 +11440,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 5936815467272117066}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 7369452289815807546}
   targetBody: {fileID: 3911863035731105240}
   sensorCollider: {fileID: 6883208366035552251}
@@ -11455,7 +11455,7 @@ MonoBehaviour:
   keyIndex: 8
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &5969970626551587407
 GameObject:
   m_ObjectHideFlags: 0
@@ -11632,9 +11632,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 6079255883570969195}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 1095800818703938773}
   targetBody: {fileID: 1908510447878976205}
   sensorCollider: {fileID: 882194760222846139}
@@ -11647,7 +11647,7 @@ MonoBehaviour:
   keyIndex: 9
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &6118642475577419143
 GameObject:
   m_ObjectHideFlags: 0
@@ -11711,9 +11711,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 6118642475577419143}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 2700365871608619534}
   targetBody: {fileID: 7750357738895403984}
   sensorCollider: {fileID: 4692549031555926338}
@@ -11726,7 +11726,7 @@ MonoBehaviour:
   keyIndex: 6
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &6137658027958722314
 GameObject:
   m_ObjectHideFlags: 0
@@ -11903,9 +11903,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 6295123233276662906}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 7204146376317480979}
   targetBody: {fileID: 8266718017684060084}
   sensorCollider: {fileID: 9081387791068408298}
@@ -11918,7 +11918,7 @@ MonoBehaviour:
   keyIndex: 40
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &6299363278660323988
 GameObject:
   m_ObjectHideFlags: 0
@@ -11982,9 +11982,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 6299363278660323988}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 4335045872473131402}
   targetBody: {fileID: 6059366646059534729}
   sensorCollider: {fileID: 7439216361099523396}
@@ -11997,7 +11997,7 @@ MonoBehaviour:
   keyIndex: 12
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &6330751038691812756
 GameObject:
   m_ObjectHideFlags: 0
@@ -12225,9 +12225,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 6425057866583524728}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 4349254440680948864}
   targetBody: {fileID: 1838025484958826148}
   sensorCollider: {fileID: 1146885103260936428}
@@ -12240,7 +12240,7 @@ MonoBehaviour:
   keyIndex: 26
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &6545183655305047963
 GameObject:
   m_ObjectHideFlags: 0
@@ -12530,9 +12530,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 6666327364509638577}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 5496857004334736004}
   targetBody: {fileID: 5332424282505742073}
   sensorCollider: {fileID: 3248390954313311704}
@@ -12545,7 +12545,7 @@ MonoBehaviour:
   keyIndex: 73
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &6775994900477213918
 GameObject:
   m_ObjectHideFlags: 0
@@ -12640,9 +12640,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 6809862819987010849}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 1562227379689818397}
   targetBody: {fileID: 3842727758164361837}
   sensorCollider: {fileID: 6370104480990675030}
@@ -12655,7 +12655,7 @@ MonoBehaviour:
   keyIndex: 32
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &6845637509549549255
 GameObject:
   m_ObjectHideFlags: 0
@@ -12750,9 +12750,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 6850068672306449736}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 4250174444588683101}
   targetBody: {fileID: 4798985328474290462}
   sensorCollider: {fileID: 2623503050816288279}
@@ -12765,7 +12765,7 @@ MonoBehaviour:
   keyIndex: 17
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &6853717524564767681
 GameObject:
   m_ObjectHideFlags: 0
@@ -12942,9 +12942,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 7003688191237027149}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 3007551657927688654}
   targetBody: {fileID: 8028961750698390784}
   sensorCollider: {fileID: 8231671154661305306}
@@ -12957,7 +12957,7 @@ MonoBehaviour:
   keyIndex: 33
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &7022419254535905009
 GameObject:
   m_ObjectHideFlags: 0
@@ -13561,9 +13561,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 7136343168060758737}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 6526740599350607024}
   targetBody: {fileID: 2764729407140024193}
   sensorCollider: {fileID: 3487627297349649603}
@@ -13576,7 +13576,7 @@ MonoBehaviour:
   keyIndex: 74
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &7143849084991391797
 GameObject:
   m_ObjectHideFlags: 0
@@ -13671,9 +13671,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 7171217552753996331}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 262030588102471989}
   targetBody: {fileID: 2527630664012991330}
   sensorCollider: {fileID: 5041612106354914816}
@@ -13686,7 +13686,7 @@ MonoBehaviour:
   keyIndex: 42
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &7233208235164399309
 GameObject:
   m_ObjectHideFlags: 0
@@ -13863,9 +13863,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 7303802426695548663}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 7892159384081309553}
   targetBody: {fileID: 5291120838356910009}
   sensorCollider: {fileID: 2492881450111211930}
@@ -13878,7 +13878,7 @@ MonoBehaviour:
   keyIndex: 23
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &7304454096599947149
 GameObject:
   m_ObjectHideFlags: 0
@@ -14312,9 +14312,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 7665892151316017392}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 4695508153451219437}
   targetBody: {fileID: 1028825435694370895}
   sensorCollider: {fileID: 2062157164588470416}
@@ -14327,7 +14327,7 @@ MonoBehaviour:
   keyIndex: 77
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &7670042550885543698
 GameObject:
   m_ObjectHideFlags: 0
@@ -14668,9 +14668,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 7692538500609928907}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 5766955777932804024}
   targetBody: {fileID: 1946996778807907729}
   sensorCollider: {fileID: 422629725969544633}
@@ -14683,7 +14683,7 @@ MonoBehaviour:
   keyIndex: 1
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &7694681156167820453
 GameObject:
   m_ObjectHideFlags: 0
@@ -15024,9 +15024,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 7836037567134579918}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 4814037421068211612}
   targetBody: {fileID: 1882574135721623168}
   sensorCollider: {fileID: 1922978260115246941}
@@ -15039,7 +15039,7 @@ MonoBehaviour:
   keyIndex: 67
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &7912481686523951622
 GameObject:
   m_ObjectHideFlags: 0
@@ -15402,9 +15402,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 8188130123561849306}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 4462426031516752429}
   targetBody: {fileID: 1150956205575720557}
   sensorCollider: {fileID: 9078099471639672763}
@@ -15417,7 +15417,7 @@ MonoBehaviour:
   keyIndex: 37
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &8233798041159023419
 GameObject:
   m_ObjectHideFlags: 0
@@ -15758,9 +15758,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 8343136300891545696}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 1470248221291036637}
   targetBody: {fileID: 2146605575366554431}
   sensorCollider: {fileID: 1558330861053518557}
@@ -15773,7 +15773,7 @@ MonoBehaviour:
   keyIndex: 29
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &8377727338785081585
 GameObject:
   m_ObjectHideFlags: 0
@@ -16083,9 +16083,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 8440407830780486862}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 2540304177995506438}
   targetBody: {fileID: 8799209783573458418}
   sensorCollider: {fileID: 7534028813102270530}
@@ -16098,7 +16098,7 @@ MonoBehaviour:
   keyIndex: 18
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &8451831478463518016
 GameObject:
   m_ObjectHideFlags: 0
@@ -16193,9 +16193,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 8524349494943181289}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 2543628107581443214}
   targetBody: {fileID: 320674021184197335}
   sensorCollider: {fileID: 5592059503783433478}
@@ -16208,7 +16208,7 @@ MonoBehaviour:
   keyIndex: 70
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &8527663488319905981
 GameObject:
   m_ObjectHideFlags: 0
@@ -16484,9 +16484,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 8647914296111131757}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 3778760279302422372}
   targetBody: {fileID: 4026483990596442527}
   sensorCollider: {fileID: 2377835378741186139}
@@ -16499,7 +16499,7 @@ MonoBehaviour:
   keyIndex: 46
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &8670238810460591950
 GameObject:
   m_ObjectHideFlags: 0
@@ -16625,9 +16625,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 8687886064654314687}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 7597832251356615451}
   targetBody: {fileID: 9042027225301155564}
   sensorCollider: {fileID: 6940447670122731587}
@@ -16640,7 +16640,7 @@ MonoBehaviour:
   keyIndex: 54
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &8696291272402099482
 GameObject:
   m_ObjectHideFlags: 0
@@ -16899,9 +16899,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 8832368150148837818}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 2478478896501452183}
   targetBody: {fileID: 2658318393296297433}
   sensorCollider: {fileID: 7308888950634666864}
@@ -16914,7 +16914,7 @@ MonoBehaviour:
   keyIndex: 39
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &8837284542627680042
 GameObject:
   m_ObjectHideFlags: 0
@@ -16978,9 +16978,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 8837284542627680042}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 4160070918635055022}
   targetBody: {fileID: 5026723078519258264}
   sensorCollider: {fileID: 5901491526383090831}
@@ -16993,7 +16993,7 @@ MonoBehaviour:
   keyIndex: 25
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &8883130656918783332
 GameObject:
   m_ObjectHideFlags: 0
@@ -17139,9 +17139,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 8935675354399472647}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 4057018262624537271}
   targetBody: {fileID: 2958960387519647616}
   sensorCollider: {fileID: 3115938738721229282}
@@ -17154,7 +17154,7 @@ MonoBehaviour:
   keyIndex: 71
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &8943328167319323884
 GameObject:
   m_ObjectHideFlags: 0
@@ -17218,9 +17218,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 8943328167319323884}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 672070398866282038}
   targetBody: {fileID: 2968198047304478593}
   sensorCollider: {fileID: 8440723085619672448}
@@ -17233,7 +17233,7 @@ MonoBehaviour:
   keyIndex: 35
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &9012345678901234567
 GameObject:
   m_ObjectHideFlags: 0
@@ -17341,9 +17341,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 9036559523368620435}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 7670404660958296662}
   targetBody: {fileID: 243265338567000669}
   sensorCollider: {fileID: 2624125150750940476}
@@ -17356,7 +17356,7 @@ MonoBehaviour:
   keyIndex: 61
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0
 --- !u!1 &9093083824513421152
 GameObject:
   m_ObjectHideFlags: 0
@@ -17564,9 +17564,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 9180105450944880444}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 5356127873000148173}
   targetBody: {fileID: 2826790606341675520}
   sensorCollider: {fileID: 7340559291045351408}
@@ -17579,4 +17579,4 @@ MonoBehaviour:
   keyIndex: 66
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
-  pressStartDepthNormalized: 0.08
+  pressStartDepthNormalized: 0

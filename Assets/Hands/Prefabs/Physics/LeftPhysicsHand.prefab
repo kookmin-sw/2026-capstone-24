@@ -97,6 +97,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7767982242166750075}
+  - component: {fileID: 2552777496658257519}
   m_Layer: 0
   m_Name: L_LittleDistal
   m_TagString: Untagged
@@ -121,6 +122,20 @@ Transform:
   - {fileID: 4123633442657841371}
   m_Father: {fileID: 8610138476694244344}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2552777496658257519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 467114037301678335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b58db09da790ab94595e4d9f1cf4155e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Fingertip
+  handedness: 0
+  finger: 4
 --- !u!1 &471474443453269358
 GameObject:
   m_ObjectHideFlags: 0
@@ -626,6 +641,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2108372376525063780}
+  - component: {fileID: 965606232219152090}
   m_Layer: 0
   m_Name: L_RingDistal
   m_TagString: Untagged
@@ -650,6 +666,20 @@ Transform:
   - {fileID: 4276915936044910841}
   m_Father: {fileID: 2819064558549296094}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &965606232219152090
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1656215303968958654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b58db09da790ab94595e4d9f1cf4155e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Fingertip
+  handedness: 0
+  finger: 3
 --- !u!1 &1809874682966092514
 GameObject:
   m_ObjectHideFlags: 0
@@ -923,6 +953,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1624264846960792261}
+  - component: {fileID: 6896007967238227644}
   m_Layer: 0
   m_Name: L_MiddleDistal
   m_TagString: Untagged
@@ -947,6 +978,20 @@ Transform:
   - {fileID: 121387364345445557}
   m_Father: {fileID: 3614360688095838297}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6896007967238227644
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2740803643243038226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b58db09da790ab94595e4d9f1cf4155e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Fingertip
+  handedness: 0
+  finger: 2
 --- !u!1 &2869948908540310529
 GameObject:
   m_ObjectHideFlags: 0
@@ -1197,6 +1242,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3945881562315456082}
+  - component: {fileID: 7073486516994026787}
   m_Layer: 0
   m_Name: L_IndexDistal
   m_TagString: Untagged
@@ -1221,6 +1267,20 @@ Transform:
   - {fileID: 3984891365751016216}
   m_Father: {fileID: 4429893213481729715}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7073486516994026787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4276696760052064269}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b58db09da790ab94595e4d9f1cf4155e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Fingertip
+  handedness: 0
+  finger: 1
 --- !u!1 &4606803610867552482
 GameObject:
   m_ObjectHideFlags: 0
@@ -1285,6 +1345,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3878466293522450897}
+  - component: {fileID: 7329057299846714324}
   m_Layer: 0
   m_Name: L_ThumbDistal
   m_TagString: Untagged
@@ -1309,6 +1370,20 @@ Transform:
   - {fileID: 7814957823385893780}
   m_Father: {fileID: 6158666219558319348}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7329057299846714324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5175699499688659073}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b58db09da790ab94595e4d9f1cf4155e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Fingertip
+  handedness: 0
+  finger: 0
 --- !u!1 &5179714545701562070
 GameObject:
   m_ObjectHideFlags: 0

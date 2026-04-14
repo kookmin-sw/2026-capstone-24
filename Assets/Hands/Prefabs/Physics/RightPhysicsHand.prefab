@@ -659,6 +659,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6894623065025238111}
+  - component: {fileID: 8199635409044270078}
   m_Layer: 0
   m_Name: R_RingDistal
   m_TagString: Untagged
@@ -683,6 +684,20 @@ Transform:
   - {fileID: 8206946730452809603}
   m_Father: {fileID: 5419345985447637326}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8199635409044270078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2581722170734961783}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b58db09da790ab94595e4d9f1cf4155e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Fingertip
+  handedness: 1
+  finger: 3
 --- !u!1 &2587365966457859968
 GameObject:
   m_ObjectHideFlags: 0
@@ -725,6 +740,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7498478321275337489}
+  - component: {fileID: 7700675911385144227}
   m_Layer: 0
   m_Name: R_MiddleDistal
   m_TagString: Untagged
@@ -749,6 +765,20 @@ Transform:
   - {fileID: 561360724467312313}
   m_Father: {fileID: 1916187271418831324}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7700675911385144227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2764365528573071209}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b58db09da790ab94595e4d9f1cf4155e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Fingertip
+  handedness: 1
+  finger: 2
 --- !u!1 &2912413836846982296
 GameObject:
   m_ObjectHideFlags: 0
@@ -1402,6 +1432,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3021399161331332182}
+  - component: {fileID: 8457655163262720260}
   m_Layer: 0
   m_Name: R_IndexDistal
   m_TagString: Untagged
@@ -1426,6 +1457,20 @@ Transform:
   - {fileID: 2661902082699996742}
   m_Father: {fileID: 2105026673558804998}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8457655163262720260
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6635286398541053514}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b58db09da790ab94595e4d9f1cf4155e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Fingertip
+  handedness: 1
+  finger: 1
 --- !u!1 &6766616121731023165
 GameObject:
   m_ObjectHideFlags: 0
@@ -1832,6 +1877,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3981805499031815560}
+  - component: {fileID: 1624091503908538409}
   m_Layer: 0
   m_Name: R_ThumbDistal
   m_TagString: Untagged
@@ -1856,6 +1902,20 @@ Transform:
   - {fileID: 4423836237933862358}
   m_Father: {fileID: 2327661698659453683}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1624091503908538409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8148379095254446554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b58db09da790ab94595e4d9f1cf4155e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Fingertip
+  handedness: 1
+  finger: 0
 --- !u!1 &8590437230324039968
 GameObject:
   m_ObjectHideFlags: 0
@@ -2182,6 +2242,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2407849624255285082}
+  - component: {fileID: 5322296652121326633}
   m_Layer: 0
   m_Name: R_LittleDistal
   m_TagString: Untagged
@@ -2206,3 +2267,17 @@ Transform:
   - {fileID: 6089067108692004932}
   m_Father: {fileID: 2708674847194286957}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5322296652121326633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212008024725162217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b58db09da790ab94595e4d9f1cf4155e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Fingertip
+  handedness: 1
+  finger: 4
