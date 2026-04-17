@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 16779495497371931}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.17074707, y: 0.73082614, z: 1.0645906}
+  m_LocalPosition: {x: -0.1707471, y: 0.7308261, z: 1.0645905}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -52,8 +52,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868268, y: 0.14459135, z: 0.029936444}
-  m_Center: {x: 0.0000000088475645, y: 0.073295675, z: 0.0050000004}
+  m_Size: {x: 0.02286825, y: 0.14659137, z: 0.02293643}
+  m_Center: {x: 0, y: 0.07329568, z: 0.0015}
 --- !u!114 &7026316516166026783
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63,24 +63,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 16779495497371931}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 2591996151091081126}
   targetBody: {fileID: 142345775300314786}
   sensorCollider: {fileID: 668849120467831744}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 44
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &23191697222814568
 GameObject:
   m_ObjectHideFlags: 0
@@ -108,7 +106,7 @@ Transform:
   m_GameObject: {fileID: 23191697222814568}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: 0.41135412, y: 0.7303152, z: 1.0645906}
+  m_LocalPosition: {x: 0.411354, y: 0.7303152, z: 1.0645906}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -133,8 +131,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868246, y: 0.14459129, z: 0.02993647}
-  m_Center: {x: 0.000000016763806, y: 0.073295645, z: 0.004999984}
+  m_Size: {x: 0.02286826, y: 0.1465914, z: 0.02293643}
+  m_Center: {x: 0, y: 0.0732957, z: 0.0015}
 --- !u!114 &6662119387926830218
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -144,24 +142,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 23191697222814568}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 7192166479273570556}
   targetBody: {fileID: 3897759618083048897}
   sensorCollider: {fileID: 1080923116282560603}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 87
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &27266568665882468
 GameObject:
   m_ObjectHideFlags: 0
@@ -189,7 +185,7 @@ Transform:
   m_GameObject: {fileID: 27266568665882468}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.40412927, y: 0.73082614, z: 1.0645905}
+  m_LocalPosition: {x: -0.4041292, y: 0.7308261, z: 1.0645905}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -214,8 +210,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868283, y: 0.14459129, z: 0.029936444}
-  m_Center: {x: 0.0000000013969839, y: 0.073295645, z: 0.0050000004}
+  m_Size: {x: 0.02286825, y: 0.14659137, z: 0.02293643}
+  m_Center: {x: 0, y: 0.07329568, z: 0.0015}
 --- !u!114 &1927746087881104248
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -225,24 +221,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 27266568665882468}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 373581381636270780}
   targetBody: {fileID: 2724909554924369704}
   sensorCollider: {fileID: 7466922641750449404}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 27
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &30088106765810063
 GameObject:
   m_ObjectHideFlags: 0
@@ -270,7 +264,7 @@ Transform:
   m_GameObject: {fileID: 30088106765810063}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000116605335, z: -0.000000009835187, w: 0.7071068}
-  m_LocalPosition: {x: 0.20187363, y: 0.7307401, z: 1.0645893}
+  m_LocalPosition: {x: 0.2018736, y: 0.7307401, z: 1.0645893}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -295,8 +289,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868253, y: 0.14459129, z: 0.029936504}
-  m_Center: {x: -0.000000013504177, y: 0.073295526, z: 0.0049999706}
+  m_Size: {x: 0.02286824, y: 0.14659126, z: 0.02293642}
+  m_Center: {x: 0, y: 0.07329563, z: 0.0015}
 --- !u!114 &1993380694811387309
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -306,24 +300,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 30088106765810063}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 8603610365079009320}
   targetBody: {fileID: 7807768919375455504}
   sensorCollider: {fileID: 3062559710006284298}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 72
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &40191093619836354
 GameObject:
   m_ObjectHideFlags: 0
@@ -515,7 +507,7 @@ Transform:
   m_GameObject: {fileID: 50423540190650355}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.26498127, y: 0.73082614, z: 1.0645905}
+  m_LocalPosition: {x: -0.2649812, y: 0.7308261, z: 1.0645905}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -540,8 +532,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868253, y: 0.14459123, z: 0.029936444}
-  m_Center: {x: 0.000000016298145, y: 0.073295616, z: 0.0050000004}
+  m_Size: {x: 0.02286825, y: 0.14659137, z: 0.02293643}
+  m_Center: {x: 0, y: 0.07329568, z: 0.0015}
 --- !u!114 &729819682909812877
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -551,24 +543,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 50423540190650355}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 3085449479569164664}
   targetBody: {fileID: 8505599410751550520}
   sensorCollider: {fileID: 521261348810161532}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 38
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &66357672348484635
 GameObject:
   m_ObjectHideFlags: 0
@@ -658,7 +648,7 @@ Transform:
   m_GameObject: {fileID: 184011478521472195}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.72150534, y: 0.7414717, z: 1.0643135}
+  m_LocalPosition: {x: -0.7215052, y: 0.7432, z: 1.0643135}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -683,8 +673,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.0075096413, y: 0.093096346, z: 0.02426448}
-  m_Center: {x: 0.000000021187589, y: 0.04754817, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &2582292376977227121
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -694,24 +684,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 184011478521472195}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 1496883841878542745}
   targetBody: {fileID: 3756839422810683572}
   sensorCollider: {fileID: 5403412231844255915}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 4
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &194856271359030032
 GameObject:
   m_ObjectHideFlags: 0
@@ -852,7 +840,7 @@ Transform:
   m_GameObject: {fileID: 267837872556596093}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000116605335, z: -0.000000009835187, w: 0.7071068}
-  m_LocalPosition: {x: -0.7072584, y: 0.7307401, z: 1.0645891}
+  m_LocalPosition: {x: -0.7072583, y: 0.7307401, z: 1.0645891}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -877,8 +865,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868246, y: 0.14459123, z: 0.029936504}
-  m_Center: {x: -0.00000004284084, y: 0.073295616, z: 0.0049999706}
+  m_Size: {x: 0.02286824, y: 0.14659126, z: 0.02293642}
+  m_Center: {x: 0, y: 0.07329563, z: 0.0015}
 --- !u!114 &7265050565585407939
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -888,24 +876,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 267837872556596093}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 600973983359095256}
   targetBody: {fileID: 2498384119086031366}
   sensorCollider: {fileID: 6580753104678177329}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 5
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &321291069041435234
 GameObject:
   m_ObjectHideFlags: 0
@@ -1272,7 +1258,7 @@ Transform:
   m_GameObject: {fileID: 629884540745103442}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.6273273, y: 0.7414717, z: 1.0643135}
+  m_LocalPosition: {x: -0.6273273, y: 0.7432, z: 1.0643135}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1297,8 +1283,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.0075096413, y: 0.093096286, z: 0.02426448}
-  m_Center: {x: -0.000000038417056, y: 0.04754814, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &8080814661256491009
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1308,24 +1294,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 629884540745103442}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 4848709996913893307}
   targetBody: {fileID: 3211303889265518170}
   sensorCollider: {fileID: 1393355156396885681}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 11
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &633631811606229851
 GameObject:
   m_ObjectHideFlags: 0
@@ -1548,7 +1532,7 @@ Transform:
   m_GameObject: {fileID: 682079457225970031}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: 0.2943423, y: 0.73082614, z: 1.0645906}
+  m_LocalPosition: {x: 0.2943422, y: 0.7308261, z: 1.0645906}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1573,8 +1557,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.02086822, y: 0.14459129, z: 0.029936444}
-  m_Center: {x: 0, y: 0.073295645, z: 0.0050000004}
+  m_Size: {x: 0.02286825, y: 0.14659137, z: 0.02293643}
+  m_Center: {x: 0, y: 0.07329568, z: 0.0015}
 --- !u!114 &8741175300407795828
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1584,24 +1568,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 682079457225970031}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 9110251800872986977}
   targetBody: {fileID: 1183474757732009556}
   sensorCollider: {fileID: 5402142275455722270}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 79
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &688714602141767242
 GameObject:
   m_ObjectHideFlags: 0
@@ -1711,7 +1693,7 @@ Transform:
   m_GameObject: {fileID: 720181677578568219}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000116605335, z: -0.000000009835187, w: 0.7071068}
-  m_LocalPosition: {x: -0.6378418, y: 0.7307401, z: 1.0645891}
+  m_LocalPosition: {x: -0.6378417, y: 0.7307401, z: 1.0645891}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1736,8 +1718,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868305, y: 0.14459117, z: 0.029936504}
-  m_Center: {x: 0.00000004656613, y: 0.073295586, z: 0.0049999706}
+  m_Size: {x: 0.02286824, y: 0.14659126, z: 0.02293642}
+  m_Center: {x: 0, y: 0.07329563, z: 0.0015}
 --- !u!114 &1928267503483080227
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1747,24 +1729,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 720181677578568219}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 4836146465880402189}
   targetBody: {fileID: 1587865006828625821}
   sensorCollider: {fileID: 8156193846284213041}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 10
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &729718157627791162
 GameObject:
   m_ObjectHideFlags: 0
@@ -1874,7 +1854,7 @@ Transform:
   m_GameObject: {fileID: 737664045139250121}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.7543674, y: 0.73082614, z: 1.0645905}
+  m_LocalPosition: {x: -0.7543673, y: 0.7308261, z: 1.0621}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1899,8 +1879,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868305, y: 0.14459135, z: 0.029936444}
-  m_Center: {x: -0.000000013038516, y: 0.073295675, z: 0.0050000004}
+  m_Size: {x: 0.02286825, y: 0.14659137, z: 0.02293643}
+  m_Center: {x: 0, y: 0.07329568, z: 0.0015}
 --- !u!114 &584425354217615256
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1910,24 +1890,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 737664045139250121}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 5298066346163992759}
   targetBody: {fileID: 5610507446166760724}
   sensorCollider: {fileID: 5872352513273271450}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 2
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &746246199251079676
 GameObject:
   m_ObjectHideFlags: 0
@@ -2068,7 +2046,7 @@ Transform:
   m_GameObject: {fileID: 772146854273910252}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.10177263, y: 0.73082614, z: 1.0645906}
+  m_LocalPosition: {x: -0.1017726, y: 0.7308261, z: 1.0645905}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2093,8 +2071,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868253, y: 0.14459135, z: 0.029936444}
-  m_Center: {x: -0.0000000018626451, y: 0.073295675, z: 0.0050000004}
+  m_Size: {x: 0.02286825, y: 0.14659137, z: 0.02293643}
+  m_Center: {x: 0, y: 0.07329568, z: 0.0015}
 --- !u!114 &49357961812961247
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2104,24 +2082,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 772146854273910252}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 6397492003498770751}
   targetBody: {fileID: 6395585705667947423}
   sensorCollider: {fileID: 3329620629481820573}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 50
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &784930347738075659
 GameObject:
   m_ObjectHideFlags: 0
@@ -2313,7 +2289,7 @@ Transform:
   m_GameObject: {fileID: 849824530741905790}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000116605335, z: -0.000000009835187, w: 0.7071068}
-  m_LocalPosition: {x: -0.12446812, y: 0.7307401, z: 1.0645893}
+  m_LocalPosition: {x: -0.1244681, y: 0.7307401, z: 1.0645891}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2338,8 +2314,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.02086825, y: 0.14459123, z: 0.029936504}
-  m_Center: {x: 0, y: 0.073295616, z: 0.0049999706}
+  m_Size: {x: 0.02286824, y: 0.14659126, z: 0.02293642}
+  m_Center: {x: 0, y: 0.07329563, z: 0.0015}
 --- !u!114 &5799564817001395248
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2349,24 +2325,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 849824530741905790}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 2224483254764284870}
   targetBody: {fileID: 287350647815081146}
   sensorCollider: {fileID: 724392781987226723}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 48
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &871765704858676713
 GameObject:
   m_ObjectHideFlags: 0
@@ -2682,7 +2656,7 @@ Transform:
   m_GameObject: {fileID: 1018339517889845537}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: 0.28326592, y: 0.7414717, z: 1.0643137}
+  m_LocalPosition: {x: 0.2832658, y: 0.7432, z: 1.0643137}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2707,8 +2681,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.007509671, y: 0.093096286, z: 0.02426448}
-  m_Center: {x: -0.000000023515895, y: 0.04754814, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &894636066255000770
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2718,24 +2692,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 1018339517889845537}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 3618387064131657397}
   targetBody: {fileID: 8233384624971414477}
   sensorCollider: {fileID: 2508697745249329700}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 78
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &1094203207360145731
 GameObject:
   m_ObjectHideFlags: 0
@@ -2845,7 +2817,7 @@ Transform:
   m_GameObject: {fileID: 1126524326723422607}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.49720746, y: 0.73082614, z: 1.0645905}
+  m_LocalPosition: {x: -0.4972074, y: 0.7308261, z: 1.0645905}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2870,8 +2842,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868309, y: 0.14459129, z: 0.029936444}
-  m_Center: {x: -0.000000011641532, y: 0.073295645, z: 0.0050000004}
+  m_Size: {x: 0.02286825, y: 0.14659137, z: 0.02293643}
+  m_Center: {x: 0, y: 0.07329568, z: 0.0015}
 --- !u!114 &663923067784903137
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2881,24 +2853,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 1126524326723422607}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 2783737250349375189}
   targetBody: {fileID: 8277002535351892884}
   sensorCollider: {fileID: 6631911895165292868}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 20
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &1307303612045773156
 GameObject:
   m_ObjectHideFlags: 0
@@ -2926,7 +2896,7 @@ Transform:
   m_GameObject: {fileID: 1307303612045773156}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: 0.0011172444, y: 0.7414717, z: 1.0643137}
+  m_LocalPosition: {x: 0.0011172, y: 0.7432, z: 1.0643137}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2951,8 +2921,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.0075096507, y: 0.093096286, z: 0.02426448}
-  m_Center: {x: 0.000000012805685, y: 0.04754814, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &260985802199674882
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2962,24 +2932,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 1307303612045773156}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 1110240848413876278}
   targetBody: {fileID: 930171951007880243}
   sensorCollider: {fileID: 6703694106724824425}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 57
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &1337489104661776735
 GameObject:
   m_ObjectHideFlags: 0
@@ -3007,7 +2975,7 @@ Transform:
   m_GameObject: {fileID: 1337489104661776735}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000116605335, z: -0.000000009835187, w: 0.7071068}
-  m_LocalPosition: {x: 0.038670734, y: 0.7307401, z: 1.0645893}
+  m_LocalPosition: {x: 0.0386707, y: 0.7307401, z: 1.0645893}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3032,8 +3000,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868253, y: 0.14459117, z: 0.029936504}
-  m_Center: {x: 0.0000000013969839, y: 0.073295586, z: 0.0049999706}
+  m_Size: {x: 0.02286824, y: 0.14659126, z: 0.02293642}
+  m_Center: {x: 0, y: 0.07329563, z: 0.0015}
 --- !u!114 &6885860495386206358
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3043,24 +3011,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 1337489104661776735}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 2513467277774932248}
   targetBody: {fileID: 8470573176985870142}
   sensorCollider: {fileID: 1035412283880664473}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 60
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &1397248877805221685
 GameObject:
   m_ObjectHideFlags: 0
@@ -3170,7 +3136,7 @@ Transform:
   m_GameObject: {fileID: 1412552944775877008}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: 0.16350785, y: 0.7414717, z: 1.0643137}
+  m_LocalPosition: {x: 0.1635078, y: 0.7432, z: 1.0643137}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3195,8 +3161,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.007509671, y: 0.093096286, z: 0.02426448}
-  m_Center: {x: 0.0000000062864274, y: 0.04754814, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &7182238867240226783
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3206,24 +3172,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 1412552944775877008}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 5364031247475827969}
   targetBody: {fileID: 8524295177980563500}
   sensorCollider: {fileID: 6154065385916607025}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 69
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &1446696955342568967
 GameObject:
   m_ObjectHideFlags: 0
@@ -3415,7 +3379,7 @@ Transform:
   m_GameObject: {fileID: 1507070641613218334}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.39670533, y: 0.7414717, z: 1.0643135}
+  m_LocalPosition: {x: -0.3967053, y: 0.7432, z: 1.0643137}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3440,8 +3404,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.0075096674, y: 0.093096286, z: 0.02426448}
-  m_Center: {x: 0.00000002142042, y: 0.04754814, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &8291629281857673421
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3451,24 +3415,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 1507070641613218334}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 5208182203794189018}
   targetBody: {fileID: 4706012741450156431}
   sensorCollider: {fileID: 7008448349861092032}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 28
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &1536723690847746660
 GameObject:
   m_ObjectHideFlags: 0
@@ -3784,7 +3746,7 @@ Transform:
   m_GameObject: {fileID: 1699002081331369730}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: 0.3779167, y: 0.7414717, z: 1.0643137}
+  m_LocalPosition: {x: 0.3779166, y: 0.7432, z: 1.0643137}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3809,8 +3771,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.007509701, y: 0.09309623, z: 0.02426448}
-  m_Center: {x: -0.000000008614734, y: 0.04754811, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &287578042645426759
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3820,24 +3782,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 1699002081331369730}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 3203534924936492196}
   targetBody: {fileID: 125530728235475268}
   sensorCollider: {fileID: 5103410277846217860}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 85
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &1772816753451444621
 GameObject:
   m_ObjectHideFlags: 0
@@ -4235,7 +4195,7 @@ Transform:
   m_GameObject: {fileID: 1998861825079744430}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.077800676, y: 0.73082614, z: 1.0645906}
+  m_LocalPosition: {x: -0.0778007, y: 0.7308261, z: 1.0645905}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4260,8 +4220,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868264, y: 0.14459135, z: 0.029936444}
-  m_Center: {x: -0.0000000041909516, y: 0.073295675, z: 0.0050000004}
+  m_Size: {x: 0.02286825, y: 0.14659137, z: 0.02293643}
+  m_Center: {x: 0, y: 0.07329568, z: 0.0015}
 --- !u!114 &533772473148729320
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4271,24 +4231,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 1998861825079744430}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 2519958854052708841}
   targetBody: {fileID: 3227598912335072126}
   sensorCollider: {fileID: 7381083686459293957}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 51
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &2016900950493649237
 GameObject:
   m_ObjectHideFlags: 0
@@ -4697,7 +4655,7 @@ Transform:
   m_GameObject: {fileID: 2544119605255557299}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.3694739, y: 0.7414717, z: 1.0643135}
+  m_LocalPosition: {x: -0.3694739, y: 0.7432, z: 1.0643137}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4722,8 +4680,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.0075096525, y: 0.093096286, z: 0.02426448}
-  m_Center: {x: -9.313226e-10, y: 0.04754814, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &6626291189444192249
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4733,24 +4691,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 2544119605255557299}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 535574007209472488}
   targetBody: {fileID: 8762952140249768454}
   sensorCollider: {fileID: 6406078002189167975}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 30
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &2556562243423187462
 GameObject:
   m_ObjectHideFlags: 0
@@ -4809,7 +4765,7 @@ Transform:
   m_GameObject: {fileID: 2565787490903684382}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: 0.3187645, y: 0.73082614, z: 1.0645906}
+  m_LocalPosition: {x: 0.3187645, y: 0.7308261, z: 1.0645906}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4834,8 +4790,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868305, y: 0.14459129, z: 0.029936444}
-  m_Center: {x: -0.000000013038516, y: 0.073295645, z: 0.0050000004}
+  m_Size: {x: 0.02286825, y: 0.14659137, z: 0.02293643}
+  m_Center: {x: 0, y: 0.07329568, z: 0.0015}
 --- !u!114 &2529520276181855791
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4845,24 +4801,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 2565787490903684382}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 1479860998548695954}
   targetBody: {fileID: 8662433408305168534}
   sensorCollider: {fileID: 6345353830339476266}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 80
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &2570196832733983972
 GameObject:
   m_ObjectHideFlags: 0
@@ -5085,7 +5039,7 @@ Transform:
   m_GameObject: {fileID: 2696287049350088240}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000116605335, z: -0.000000009835187, w: 0.7071068}
-  m_LocalPosition: {x: 0.01498048, y: 0.7307401, z: 1.0645893}
+  m_LocalPosition: {x: 0.0149805, y: 0.7307401, z: 1.0645893}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5110,8 +5064,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868264, y: 0.14459117, z: 0.029936504}
-  m_Center: {x: -0.0000000041909516, y: 0.073295586, z: 0.0049999706}
+  m_Size: {x: 0.02286824, y: 0.14659126, z: 0.02293642}
+  m_Center: {x: 0, y: 0.07329563, z: 0.0015}
 --- !u!114 &6125550569900633505
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5121,24 +5075,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 2696287049350088240}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 5395594764635526533}
   targetBody: {fileID: 6580084715798989637}
   sensorCollider: {fileID: 3045355032957262650}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 58
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &2730881131807126550
 GameObject:
   m_ObjectHideFlags: 0
@@ -5166,7 +5118,7 @@ Transform:
   m_GameObject: {fileID: 2730881131807126550}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: 0.061356157, y: 0.73082614, z: 1.0645906}
+  m_LocalPosition: {x: 0.0613561, y: 0.7308261, z: 1.0645905}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5191,8 +5143,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868283, y: 0.14459129, z: 0.029936444}
-  m_Center: {x: 0.0000000013969839, y: 0.073295645, z: 0.0050000004}
+  m_Size: {x: 0.02286825, y: 0.14659137, z: 0.02293643}
+  m_Center: {x: 0, y: 0.07329568, z: 0.0015}
 --- !u!114 &6614595612718661397
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5202,24 +5154,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 2730881131807126550}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 814275734753183705}
   targetBody: {fileID: 6023581924048895984}
   sensorCollider: {fileID: 7605092780772991028}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 62
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &2740830933257190138
 GameObject:
   m_ObjectHideFlags: 0
@@ -5247,7 +5197,7 @@ Transform:
   m_GameObject: {fileID: 2740830933257190138}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.1375929, y: 0.7414717, z: 1.0643137}
+  m_LocalPosition: {x: -0.1375929, y: 0.7432, z: 1.0643137}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5272,8 +5222,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.0075096264, y: 0.093096346, z: 0.02426448}
-  m_Center: {x: -0.0000000011641532, y: 0.04754817, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &5446042143496273973
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5283,24 +5233,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 2740830933257190138}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 6532408432124128573}
   targetBody: {fileID: 5994428469095942421}
   sensorCollider: {fileID: 938900044904917613}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 47
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &2781702124811250256
 GameObject:
   m_ObjectHideFlags: 0
@@ -5529,7 +5477,7 @@ Transform:
   m_GameObject: {fileID: 2924109380636174783}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: 0.38771087, y: 0.73082614, z: 1.0645906}
+  m_LocalPosition: {x: 0.3877108, y: 0.7308261, z: 1.0645906}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5554,8 +5502,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868246, y: 0.14459123, z: 0.029936444}
-  m_Center: {x: 0.000000016763806, y: 0.073295616, z: 0.0050000004}
+  m_Size: {x: 0.02286825, y: 0.14659137, z: 0.02293643}
+  m_Center: {x: 0, y: 0.07329568, z: 0.0015}
 --- !u!114 &5533120451759446689
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5565,24 +5513,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 2924109380636174783}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 6419427791025399282}
   targetBody: {fileID: 2759097114575252237}
   sensorCollider: {fileID: 5681768862550508504}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 86
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &2951822161183745920
 GameObject:
   m_ObjectHideFlags: 0
@@ -5610,7 +5556,7 @@ Transform:
   m_GameObject: {fileID: 2951822161183745920}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.031972572, y: 0.73082614, z: 1.0645906}
+  m_LocalPosition: {x: -0.0319726, y: 0.7308261, z: 1.0645905}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5635,8 +5581,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868253, y: 0.14459129, z: 0.029936444}
-  m_Center: {x: 0.0000000013969839, y: 0.073295645, z: 0.0050000004}
+  m_Size: {x: 0.02286825, y: 0.14659137, z: 0.02293643}
+  m_Center: {x: 0, y: 0.07329568, z: 0.0015}
 --- !u!114 &6247126829454300811
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5646,24 +5592,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 2951822161183745920}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 6254079888710161937}
   targetBody: {fileID: 1076653134934073086}
   sensorCollider: {fileID: 7433453233933058711}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 55
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &2971917911118487434
 GameObject:
   m_ObjectHideFlags: 0
@@ -5691,7 +5635,7 @@ Transform:
   m_GameObject: {fileID: 2971917911118487434}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000116605335, z: -0.000000009835187, w: 0.7071068}
-  m_LocalPosition: {x: -0.28769115, y: 0.7307401, z: 1.0645891}
+  m_LocalPosition: {x: -0.2876911, y: 0.7307401, z: 1.0645891}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5716,8 +5660,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868275, y: 0.14459123, z: 0.029936504}
-  m_Center: {x: 0.000000004656613, y: 0.0732955, z: 0.0049999706}
+  m_Size: {x: 0.02286824, y: 0.14659126, z: 0.02293642}
+  m_Center: {x: 0, y: 0.07329563, z: 0.0015}
 --- !u!114 &6298700090381354135
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5727,24 +5671,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 2971917911118487434}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 8683331041351922547}
   targetBody: {fileID: 1328274401402230937}
   sensorCollider: {fileID: 3803934427322890729}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 36
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &2996787477207024460
 GameObject:
   m_ObjectHideFlags: 0
@@ -5805,7 +5747,7 @@ Transform:
   m_GameObject: {fileID: 3065148076136609510}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.59133995, y: 0.73082614, z: 1.0645905}
+  m_LocalPosition: {x: -0.5913399, y: 0.7308261, z: 1.0645905}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5830,8 +5772,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868253, y: 0.14459129, z: 0.029936444}
-  m_Center: {x: -0.000000013504177, y: 0.073295645, z: 0.0050000004}
+  m_Size: {x: 0.02286825, y: 0.14659137, z: 0.02293643}
+  m_Center: {x: 0, y: 0.07329568, z: 0.0015}
 --- !u!114 &1269202616290958163
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5841,24 +5783,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 3065148076136609510}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 131447104007946548}
   targetBody: {fileID: 6803680460315486829}
   sensorCollider: {fileID: 1860324136829159464}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 14
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &3217795894578938820
 GameObject:
   m_ObjectHideFlags: 0
@@ -5886,7 +5826,7 @@ Transform:
   m_GameObject: {fileID: 3217795894578938820}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: 0.3265971, y: 0.7414717, z: 1.0643137}
+  m_LocalPosition: {x: 0.326597, y: 0.7432, z: 1.0643137}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5911,8 +5851,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.007509701, y: 0.09309623, z: 0.02426448}
-  m_Center: {x: -0.000000008614734, y: 0.04754811, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &509990404827443972
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5922,24 +5862,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 3217795894578938820}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 6494749073684257144}
   targetBody: {fileID: 7737597880477976299}
   sensorCollider: {fileID: 3537543299191758246}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 81
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &3241666185087559175
 GameObject:
   m_ObjectHideFlags: 0
@@ -6162,7 +6100,7 @@ Transform:
   m_GameObject: {fileID: 3417787254394507174}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.0074745268, y: 0.73082614, z: 1.0645906}
+  m_LocalPosition: {x: -0.0074746, y: 0.7308261, z: 1.0645905}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6187,8 +6125,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868253, y: 0.14459129, z: 0.029936444}
-  m_Center: {x: 0.0000000013969839, y: 0.073295645, z: 0.0050000004}
+  m_Size: {x: 0.02286825, y: 0.14659137, z: 0.02293643}
+  m_Center: {x: 0, y: 0.07329568, z: 0.0015}
 --- !u!114 &703258908326611273
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6198,24 +6136,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 3417787254394507174}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 8357115274527448816}
   targetBody: {fileID: 7352013806678277353}
   sensorCollider: {fileID: 3610613564486383602}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 56
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &3492240812606197928
 GameObject:
   m_ObjectHideFlags: 0
@@ -6243,7 +6179,7 @@ Transform:
   m_GameObject: {fileID: 3492240812606197928}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: 0.09427655, y: 0.7414717, z: 1.0643137}
+  m_LocalPosition: {x: 0.0942765, y: 0.7432, z: 1.0643137}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6268,8 +6204,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.0075096413, y: 0.093096286, z: 0.02426448}
-  m_Center: {x: -0.000000008614734, y: 0.04754814, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &4578173503766309688
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6279,24 +6215,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 3492240812606197928}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 6882199525331632103}
   targetBody: {fileID: 6107439879263428230}
   sensorCollider: {fileID: 9084453034753895517}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 64
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &3528999494810632490
 GameObject:
   m_ObjectHideFlags: 0
@@ -6324,7 +6258,7 @@ Transform:
   m_GameObject: {fileID: 3528999494810632490}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000116605335, z: -0.000000009835187, w: 0.7071068}
-  m_LocalPosition: {x: -0.055051565, y: 0.7307401, z: 1.0645893}
+  m_LocalPosition: {x: -0.0550516, y: 0.7307401, z: 1.0645891}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6349,8 +6283,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.02086825, y: 0.14459123, z: 0.029936504}
-  m_Center: {x: 0.000000003259629, y: 0.073295616, z: 0.0049999706}
+  m_Size: {x: 0.02286824, y: 0.14659126, z: 0.02293642}
+  m_Center: {x: 0, y: 0.07329563, z: 0.0015}
 --- !u!114 &5792153286786168698
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6360,24 +6294,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 3528999494810632490}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 9151465520414905646}
   targetBody: {fileID: 352282233713996693}
   sensorCollider: {fileID: 3677078951909850440}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 53
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &3531289822454941447
 GameObject:
   m_ObjectHideFlags: 0
@@ -6405,7 +6337,7 @@ Transform:
   m_GameObject: {fileID: 3531289822454941447}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.77603126, y: 0.73082614, z: 1.0645905}
+  m_LocalPosition: {x: -0.777, y: 0.7293, z: 1.0615}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6430,8 +6362,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868305, y: 0.14459135, z: 0.029936474}
-  m_Center: {x: -0.000000013038516, y: 0.073295675, z: 0.004999986}
+  m_Size: {x: 0.02286825, y: 0.14659137, z: 0.02293643}
+  m_Center: {x: 0, y: 0.07329568, z: 0.0015}
 --- !u!114 &8386698274375345621
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6441,24 +6373,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 3531289822454941447}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 5712501131220387065}
   targetBody: {fileID: 226145893138831822}
   sensorCollider: {fileID: 2560193933352943769}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 0
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &3556393560371548454
 GameObject:
   m_ObjectHideFlags: 0
@@ -6568,7 +6498,7 @@ Transform:
   m_GameObject: {fileID: 3580195656157200027}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000116605335, z: -0.000000009835187, w: 0.7071068}
-  m_LocalPosition: {x: -0.47475228, y: 0.7307401, z: 1.0645891}
+  m_LocalPosition: {x: -0.4747522, y: 0.7307401, z: 1.0645891}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6593,8 +6523,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868283, y: 0.14459129, z: 0.029936504}
-  m_Center: {x: 0.0000000013969839, y: 0.073295526, z: 0.0049999706}
+  m_Size: {x: 0.02286824, y: 0.14659126, z: 0.02293642}
+  m_Center: {x: 0, y: 0.07329563, z: 0.0015}
 --- !u!114 &5687304899744475937
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6604,24 +6534,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 3580195656157200027}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 5356589082581190186}
   targetBody: {fileID: 8253287166850136681}
   sensorCollider: {fileID: 1798023166691256488}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 22
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &3588109702913996150
 GameObject:
   m_ObjectHideFlags: 0
@@ -6813,7 +6741,7 @@ Transform:
   m_GameObject: {fileID: 3677191307429640050}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.60053027, y: 0.7414717, z: 1.0643135}
+  m_LocalPosition: {x: -0.6005302, y: 0.7432, z: 1.0643135}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6838,8 +6766,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.0075096413, y: 0.093096286, z: 0.02426448}
-  m_Center: {x: -0.000000038417056, y: 0.04754814, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &4341297769079323375
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6849,24 +6777,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 3677191307429640050}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 4447017764061369723}
   targetBody: {fileID: 2455486268213918259}
   sensorCollider: {fileID: 5912602294330913185}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 13
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &3708806323317278741
 GameObject:
   m_ObjectHideFlags: 0
@@ -7120,7 +7046,7 @@ Transform:
   m_GameObject: {fileID: 3897374715787148474}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.11140882, y: 0.7414717, z: 1.0643137}
+  m_LocalPosition: {x: -0.1114088, y: 0.7432, z: 1.0643137}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7145,8 +7071,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.0075096264, y: 0.093096346, z: 0.02426448}
-  m_Center: {x: -0.0000000011641532, y: 0.04754817, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &3104398086737838691
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7156,24 +7082,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 3897374715787148474}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 7397767821561130730}
   targetBody: {fileID: 6980868643549166356}
   sensorCollider: {fileID: 5957194558115275552}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 49
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &3928322214183085376
 GameObject:
   m_ObjectHideFlags: 0
@@ -7283,7 +7207,7 @@ Transform:
   m_GameObject: {fileID: 3932117461305750918}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.5588468, y: 0.7414717, z: 1.0643135}
+  m_LocalPosition: {x: -0.5588467, y: 0.7432, z: 1.0643135}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7308,8 +7232,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.007509701, y: 0.093096286, z: 0.02426448}
-  m_Center: {x: -0.000000008614734, y: 0.04754814, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &3283582934467820010
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7319,24 +7243,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 3932117461305750918}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 1847738075504622728}
   targetBody: {fileID: 2864942830354641028}
   sensorCollider: {fileID: 501017562750463180}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 16
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &3941532266900526935
 GameObject:
   m_ObjectHideFlags: 0
@@ -7395,7 +7317,7 @@ Transform:
   m_GameObject: {fileID: 3961131224755198490}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000116605335, z: -0.000000009835187, w: 0.7071068}
-  m_LocalPosition: {x: 0.10822868, y: 0.7307401, z: 1.0645893}
+  m_LocalPosition: {x: 0.1082287, y: 0.7307401, z: 1.0645893}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7420,8 +7342,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868253, y: 0.14459117, z: 0.029936504}
-  m_Center: {x: 0.000000016298145, y: 0.073295586, z: 0.0049999706}
+  m_Size: {x: 0.02286824, y: 0.14659126, z: 0.02293642}
+  m_Center: {x: 0, y: 0.07329563, z: 0.0015}
 --- !u!114 &6150765261062427714
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7431,24 +7353,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 3961131224755198490}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 7278049131407037685}
   targetBody: {fileID: 5893246362088299325}
   sensorCollider: {fileID: 2866160434932438610}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 65
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &3997133366825585181
 GameObject:
   m_ObjectHideFlags: 0
@@ -7476,7 +7396,7 @@ Transform:
   m_GameObject: {fileID: 3997133366825585181}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.0704489, y: 0.7414717, z: 1.0643137}
+  m_LocalPosition: {x: -0.0704489, y: 0.7432, z: 1.0643137}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7501,8 +7421,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.007509645, y: 0.093096346, z: 0.02426448}
-  m_Center: {x: -0.000000004656613, y: 0.04754817, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &462247406075230364
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7512,24 +7432,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 3997133366825585181}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 7668258759723129768}
   targetBody: {fileID: 5826893681956674451}
   sensorCollider: {fileID: 5280100583201014870}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 52
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &4015044967036118496
 GameObject:
   m_ObjectHideFlags: 0
@@ -7639,7 +7557,7 @@ Transform:
   m_GameObject: {fileID: 4028866380649033666}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: 0.24866745, y: 0.73082614, z: 1.0645906}
+  m_LocalPosition: {x: 0.2486674, y: 0.7308261, z: 1.0645906}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7664,8 +7582,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868253, y: 0.14459129, z: 0.029936444}
-  m_Center: {x: 0.000000016298145, y: 0.073295645, z: 0.0050000004}
+  m_Size: {x: 0.02286825, y: 0.14659137, z: 0.02293643}
+  m_Center: {x: 0, y: 0.07329568, z: 0.0015}
 --- !u!114 &6157864409695896021
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7675,24 +7593,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 4028866380649033666}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 7639876438043559298}
   targetBody: {fileID: 7941129405252985002}
   sensorCollider: {fileID: 7998389368014895522}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 75
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &4057124238587829014
 GameObject:
   m_ObjectHideFlags: 0
@@ -7720,7 +7636,7 @@ Transform:
   m_GameObject: {fileID: 4057124238587829014}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.5672045, y: 0.73082614, z: 1.0645905}
+  m_LocalPosition: {x: -0.5672044, y: 0.7308261, z: 1.0645905}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7745,8 +7661,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868313, y: 0.14459129, z: 0.029936444}
-  m_Center: {x: -0.0000000433065, y: 0.073295645, z: 0.0050000004}
+  m_Size: {x: 0.02286825, y: 0.14659137, z: 0.02293643}
+  m_Center: {x: 0, y: 0.07329568, z: 0.0015}
 --- !u!114 &6009516496070222760
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7756,24 +7672,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 4057124238587829014}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 4373202283505895238}
   targetBody: {fileID: 2292417579418249719}
   sensorCollider: {fileID: 8539815416302325261}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 15
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &4057778794228327826
 GameObject:
   m_ObjectHideFlags: 0
@@ -7832,7 +7746,7 @@ Transform:
   m_GameObject: {fileID: 4082492702113607396}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.16292357, y: 0.7414717, z: 1.0643137}
+  m_LocalPosition: {x: -0.1629236, y: 0.7432, z: 1.0643137}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7857,8 +7771,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.0075096395, y: 0.093096346, z: 0.02426448}
-  m_Center: {x: -0.000000007450581, y: 0.04754817, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &2326783212343394567
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7868,24 +7782,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 4082492702113607396}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 1676711041726576561}
   targetBody: {fileID: 7586720985652575058}
   sensorCollider: {fileID: 9204864136620589620}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 45
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &4122975455428756064
 GameObject:
   m_ObjectHideFlags: 0
@@ -7913,7 +7825,7 @@ Transform:
   m_GameObject: {fileID: 4122975455428756064}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000116605335, z: -0.000000009835187, w: 0.7071068}
-  m_LocalPosition: {x: -0.21813719, y: 0.7307401, z: 1.0645891}
+  m_LocalPosition: {x: -0.2181372, y: 0.7307401, z: 1.0645891}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7938,8 +7850,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868253, y: 0.14459123, z: 0.029936504}
-  m_Center: {x: 0.0000000013969839, y: 0.0732955, z: 0.0049999706}
+  m_Size: {x: 0.02286824, y: 0.14659126, z: 0.02293642}
+  m_Center: {x: 0, y: 0.07329563, z: 0.0015}
 --- !u!114 &992260584133874959
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7949,24 +7861,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 4122975455428756064}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 8879538068726384921}
   targetBody: {fileID: 5337954144522731627}
   sensorCollider: {fileID: 3956085852352146657}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 41
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &4128014443609024652
 GameObject:
   m_ObjectHideFlags: 0
@@ -8333,7 +8243,7 @@ Transform:
   m_GameObject: {fileID: 4265977426671154189}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.48963898, y: 0.7414717, z: 1.0643135}
+  m_LocalPosition: {x: -0.4896389, y: 0.7432, z: 1.0643135}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8358,8 +8268,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.007509671, y: 0.093096286, z: 0.02426448}
-  m_Center: {x: 0.0000000062864274, y: 0.04754814, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &8155708102456574939
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8369,24 +8279,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 4265977426671154189}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 2790766786925213410}
   targetBody: {fileID: 1268247244808620646}
   sensorCollider: {fileID: 8410199274806834409}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 21
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &4329770512917794315
 GameObject:
   m_ObjectHideFlags: 0
@@ -8414,7 +8322,7 @@ Transform:
   m_GameObject: {fileID: 4329770512917794315}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.7302308, y: 0.73082614, z: 1.0645905}
+  m_LocalPosition: {x: -0.7302307, y: 0.7295, z: 1.061}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8439,8 +8347,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868305, y: 0.14459135, z: 0.029936444}
-  m_Center: {x: -0.000000013038516, y: 0.073295675, z: 0.0050000004}
+  m_Size: {x: 0.02286825, y: 0.14659137, z: 0.02293643}
+  m_Center: {x: 0, y: 0.07329568, z: 0.0015}
 --- !u!114 &9174983136939752835
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8450,24 +8358,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 4329770512917794315}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 642626752746222498}
   targetBody: {fileID: 5248722997683929163}
   sensorCollider: {fileID: 4483628711054757908}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 3
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &4330531082526747908
 GameObject:
   m_ObjectHideFlags: 0
@@ -8577,7 +8483,7 @@ Transform:
   m_GameObject: {fileID: 4357385956578426676}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000116605335, z: -0.000000009835187, w: 0.7071068}
-  m_LocalPosition: {x: 0.3412227, y: 0.7307401, z: 1.0645893}
+  m_LocalPosition: {x: 0.3412226, y: 0.7307401, z: 1.0645893}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8602,8 +8508,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868305, y: 0.14459123, z: 0.029936504}
-  m_Center: {x: -0.000000013038516, y: 0.0732955, z: 0.0049999706}
+  m_Size: {x: 0.02286824, y: 0.14659126, z: 0.02293642}
+  m_Center: {x: 0, y: 0.07329563, z: 0.0015}
 --- !u!114 &4629239053496882330
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8613,24 +8519,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 4357385956578426676}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 1946763779448712753}
   targetBody: {fileID: 2371414488678383581}
   sensorCollider: {fileID: 2110871965827319324}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 82
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &4368235184853855613
 GameObject:
   m_ObjectHideFlags: 0
@@ -8822,7 +8726,7 @@ Transform:
   m_GameObject: {fileID: 4472984647502435950}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: 0.15562549, y: 0.73082614, z: 1.0645906}
+  m_LocalPosition: {x: 0.1556254, y: 0.7308261, z: 1.0645906}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8847,8 +8751,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868283, y: 0.14459129, z: 0.029936444}
-  m_Center: {x: 0.0000000013969839, y: 0.073295645, z: 0.0050000004}
+  m_Size: {x: 0.02286825, y: 0.14659137, z: 0.02293643}
+  m_Center: {x: 0, y: 0.07329568, z: 0.0015}
 --- !u!114 &8974648356639669433
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8858,24 +8762,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 4472984647502435950}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 7211065088960287485}
   targetBody: {fileID: 5017382805091888053}
   sensorCollider: {fileID: 1676499908818067624}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 68
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &4477443833144950059
 GameObject:
   m_ObjectHideFlags: 0
@@ -8985,7 +8887,7 @@ Transform:
   m_GameObject: {fileID: 4515835999309872269}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.35843825, y: 0.73082614, z: 1.0645905}
+  m_LocalPosition: {x: -0.3584382, y: 0.7308261, z: 1.0645905}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9010,8 +8912,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868283, y: 0.14459129, z: 0.029936444}
-  m_Center: {x: 0.0000000013969839, y: 0.073295645, z: 0.0050000004}
+  m_Size: {x: 0.02286825, y: 0.14659137, z: 0.02293643}
+  m_Center: {x: 0, y: 0.07329568, z: 0.0015}
 --- !u!114 &1148171807089700412
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9021,24 +8923,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 4515835999309872269}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 8562668061376327043}
   targetBody: {fileID: 7279201393326991659}
   sensorCollider: {fileID: 564483905636993596}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 31
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &4545300988752737743
 GameObject:
   m_ObjectHideFlags: 0
@@ -9128,7 +9028,7 @@ Transform:
   m_GameObject: {fileID: 4715804034479752109}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: 0.2561137, y: 0.7414717, z: 1.0643137}
+  m_LocalPosition: {x: 0.2561136, y: 0.7432, z: 1.0643137}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9153,8 +9053,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.0075096413, y: 0.093096286, z: 0.02426448}
-  m_Center: {x: -0.000000008614734, y: 0.04754814, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &2462500499073750040
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9164,24 +9064,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 4715804034479752109}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 5724294199114856726}
   targetBody: {fileID: 5979980280164349234}
   sensorCollider: {fileID: 2703156126098292058}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 76
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &4755281060265454360
 GameObject:
   m_ObjectHideFlags: 0
@@ -9435,7 +9333,7 @@ Transform:
   m_GameObject: {fileID: 4834511726745380763}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: 0.085636616, y: 0.73082614, z: 1.0645906}
+  m_LocalPosition: {x: 0.0856366, y: 0.7308261, z: 1.0645906}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9460,8 +9358,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868253, y: 0.14459129, z: 0.029936444}
-  m_Center: {x: 0.000000016298145, y: 0.073295645, z: 0.0050000004}
+  m_Size: {x: 0.02286825, y: 0.14659137, z: 0.02293643}
+  m_Center: {x: 0, y: 0.07329568, z: 0.0015}
 --- !u!114 &3142181255640756985
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9471,24 +9369,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 4834511726745380763}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 7364791765451277110}
   targetBody: {fileID: 5733860285968826419}
   sensorCollider: {fileID: 5391767803752999998}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 63
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &4861048992615959432
 GameObject:
   m_ObjectHideFlags: 0
@@ -9629,7 +9525,7 @@ Transform:
   m_GameObject: {fileID: 4939341404801275668}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000116605335, z: -0.000000009835187, w: 0.7071068}
-  m_LocalPosition: {x: -0.45085216, y: 0.7307401, z: 1.0645891}
+  m_LocalPosition: {x: -0.4508521, y: 0.7307401, z: 1.0645891}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9654,8 +9550,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868253, y: 0.14459129, z: 0.029936504}
-  m_Center: {x: -0.000000013504177, y: 0.073295526, z: 0.0049999706}
+  m_Size: {x: 0.02286824, y: 0.14659126, z: 0.02293642}
+  m_Center: {x: 0, y: 0.07329563, z: 0.0015}
 --- !u!114 &4502037086409528493
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9665,24 +9561,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 4939341404801275668}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 4377457406074643893}
   targetBody: {fileID: 4536369314529282215}
   sensorCollider: {fileID: 1727924557596348518}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 24
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &4940925508209829489
 GameObject:
   m_ObjectHideFlags: 0
@@ -9710,7 +9604,7 @@ Transform:
   m_GameObject: {fileID: 4940925508209829489}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: 0.025595367, y: 0.7414717, z: 1.0643137}
+  m_LocalPosition: {x: 0.0255953, y: 0.7432, z: 1.0643137}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9735,8 +9629,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.0075096525, y: 0.093096286, z: 0.02426448}
-  m_Center: {x: -9.313226e-10, y: 0.04754814, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &1644609444821395819
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9746,24 +9640,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 4940925508209829489}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 7770926893668731590}
   targetBody: {fileID: 6192778115436314836}
   sensorCollider: {fileID: 2793700671126007218}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 59
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &4950894403634734122
 GameObject:
   m_ObjectHideFlags: 0
@@ -9873,7 +9765,7 @@ Transform:
   m_GameObject: {fileID: 4982207647274003978}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.68434, y: 0.73082614, z: 1.0645905}
+  m_LocalPosition: {x: -0.6843399, y: 0.7308261, z: 1.0645905}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9898,8 +9790,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868279, y: 0.14459129, z: 0.029936444}
-  m_Center: {x: -0.000000026542693, y: 0.073295645, z: 0.0050000004}
+  m_Size: {x: 0.02286825, y: 0.14659137, z: 0.02293643}
+  m_Center: {x: 0, y: 0.07329568, z: 0.0015}
 --- !u!114 &7909779486254543588
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9909,24 +9801,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 4982207647274003978}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 8188941001185056346}
   targetBody: {fileID: 476333153629447306}
   sensorCollider: {fileID: 3895610967016973693}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 7
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &4989381680603644543
 GameObject:
   m_ObjectHideFlags: 0
@@ -10437,7 +10327,7 @@ Transform:
   m_GameObject: {fileID: 5307350273145400800}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000116605335, z: -0.000000009835187, w: 0.7071068}
-  m_LocalPosition: {x: 0.36501604, y: 0.7307401, z: 1.0645893}
+  m_LocalPosition: {x: 0.3650159, y: 0.7307401, z: 1.0645893}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -10462,8 +10352,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868305, y: 0.14459123, z: 0.029936504}
-  m_Center: {x: -0.000000013038516, y: 0.0732955, z: 0.0049999706}
+  m_Size: {x: 0.02286824, y: 0.14659126, z: 0.02293642}
+  m_Center: {x: 0, y: 0.07329563, z: 0.0015}
 --- !u!114 &3374568524992780725
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10473,24 +10363,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 5307350273145400800}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 7329542003376010968}
   targetBody: {fileID: 3593566409353323034}
   sensorCollider: {fileID: 6924428535752489630}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 84
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &5338874964268506857
 GameObject:
   m_ObjectHideFlags: 0
@@ -10582,7 +10470,7 @@ Transform:
   m_GameObject: {fileID: 5413099291455731417}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.52163255, y: 0.73082614, z: 1.0645905}
+  m_LocalPosition: {x: -0.5216325, y: 0.7308261, z: 1.0645905}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -10607,8 +10495,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868253, y: 0.14459129, z: 0.029936444}
-  m_Center: {x: -0.000000013504177, y: 0.073295645, z: 0.0050000004}
+  m_Size: {x: 0.02286825, y: 0.14659137, z: 0.02293643}
+  m_Center: {x: 0, y: 0.07329568, z: 0.0015}
 --- !u!114 &8279517921880622662
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10618,24 +10506,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 5413099291455731417}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 7237911241522254909}
   targetBody: {fileID: 3312350754958767058}
   sensorCollider: {fileID: 2715546508950958267}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 19
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &5413178435110183508
 GameObject:
   m_ObjectHideFlags: 0
@@ -10776,7 +10662,7 @@ Transform:
   m_GameObject: {fileID: 5449643490371792303}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: 0.35192364, y: 0.7414717, z: 1.0643137}
+  m_LocalPosition: {x: 0.3519235, y: 0.7432, z: 1.0643137}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -10801,8 +10687,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.0075096413, y: 0.09309623, z: 0.02426448}
-  m_Center: {x: 0.000000021187589, y: 0.04754811, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &7911290454312440494
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10812,24 +10698,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 5449643490371792303}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 7005077875889732536}
   targetBody: {fileID: 27116546284569180}
   sensorCollider: {fileID: 1938791273476174466}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 83
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &5459974555222701990
 GameObject:
   m_ObjectHideFlags: 0
@@ -11156,7 +11040,7 @@ Transform:
   m_GameObject: {fileID: 5575353990486522551}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.19522884, y: 0.73082614, z: 1.0645905}
+  m_LocalPosition: {x: -0.1952288, y: 0.7308261, z: 1.0645905}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11181,8 +11065,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868268, y: 0.14459135, z: 0.029936444}
-  m_Center: {x: -0.0000000060535967, y: 0.073295556, z: 0.0050000004}
+  m_Size: {x: 0.02286825, y: 0.14659137, z: 0.02293643}
+  m_Center: {x: 0, y: 0.07329568, z: 0.0015}
 --- !u!114 &732510076854508015
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11192,24 +11076,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 5575353990486522551}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 5334380059778987855}
   targetBody: {fileID: 8001505737032428914}
   sensorCollider: {fileID: 7518310997950292859}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 43
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &5624763619386383932
 GameObject:
   m_ObjectHideFlags: 0
@@ -11330,7 +11212,7 @@ Transform:
   m_GameObject: {fileID: 5793418540745625306}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000116605335, z: -0.000000009835187, w: 0.7071068}
-  m_LocalPosition: {x: -0.31140187, y: 0.7307401, z: 1.0645891}
+  m_LocalPosition: {x: -0.3114018, y: 0.7307401, z: 1.0645891}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11355,8 +11237,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868272, y: 0.14459123, z: 0.029936504}
-  m_Center: {x: 0.000000003259629, y: 0.0732955, z: 0.0049999706}
+  m_Size: {x: 0.02286824, y: 0.14659126, z: 0.02293642}
+  m_Center: {x: 0, y: 0.07329563, z: 0.0015}
 --- !u!114 &8322216375012216179
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11366,24 +11248,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 5793418540745625306}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 3675113769332402763}
   targetBody: {fileID: 5072854141120467634}
   sensorCollider: {fileID: 7116786733328829839}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 34
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &5869709785420652322
 GameObject:
   m_ObjectHideFlags: 0
@@ -11524,7 +11404,7 @@ Transform:
   m_GameObject: {fileID: 5936815467272117066}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.66030574, y: 0.73082614, z: 1.0645905}
+  m_LocalPosition: {x: -0.6603057, y: 0.7308261, z: 1.0645905}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11549,8 +11429,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868253, y: 0.14459129, z: 0.029936444}
-  m_Center: {x: -0.000000013504177, y: 0.073295645, z: 0.0050000004}
+  m_Size: {x: 0.02286825, y: 0.14659137, z: 0.02293643}
+  m_Center: {x: 0, y: 0.07329568, z: 0.0015}
 --- !u!114 &1646165083818860680
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11560,24 +11440,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 5936815467272117066}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 7369452289815807546}
   targetBody: {fileID: 3911863035731105240}
   sensorCollider: {fileID: 6883208366035552251}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 8
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &5969970626551587407
 GameObject:
   m_ObjectHideFlags: 0
@@ -11718,7 +11596,7 @@ Transform:
   m_GameObject: {fileID: 6079255883570969195}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.65186304, y: 0.7414717, z: 1.0643135}
+  m_LocalPosition: {x: -0.6518629, y: 0.7432, z: 1.0643135}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11743,8 +11621,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.007509701, y: 0.093096286, z: 0.02426448}
-  m_Center: {x: -0.000000008614734, y: 0.04754814, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &4780992921876671878
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11754,24 +11632,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 6079255883570969195}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 1095800818703938773}
   targetBody: {fileID: 1908510447878976205}
   sensorCollider: {fileID: 882194760222846139}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 9
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &6118642475577419143
 GameObject:
   m_ObjectHideFlags: 0
@@ -11799,7 +11675,7 @@ Transform:
   m_GameObject: {fileID: 6118642475577419143}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.69280803, y: 0.7414717, z: 1.0643135}
+  m_LocalPosition: {x: -0.6928079, y: 0.7432, z: 1.0643135}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11824,8 +11700,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.0075096413, y: 0.093096346, z: 0.02426448}
-  m_Center: {x: 0.000000021187589, y: 0.04754817, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &5626472188333884579
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11835,24 +11711,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 6118642475577419143}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 2700365871608619534}
   targetBody: {fileID: 7750357738895403984}
   sensorCollider: {fileID: 4692549031555926338}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 6
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &6137658027958722314
 GameObject:
   m_ObjectHideFlags: 0
@@ -11993,7 +11867,7 @@ Transform:
   m_GameObject: {fileID: 6295123233276662906}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.2320915, y: 0.7414717, z: 1.0643135}
+  m_LocalPosition: {x: -0.2320915, y: 0.7432, z: 1.0643137}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -12018,8 +11892,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.0075096376, y: 0.09309623, z: 0.02426448}
-  m_Center: {x: -0.000000006519258, y: 0.04754811, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &4720474892980801354
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12029,24 +11903,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 6295123233276662906}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 7204146376317480979}
   targetBody: {fileID: 8266718017684060084}
   sensorCollider: {fileID: 9081387791068408298}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 40
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &6299363278660323988
 GameObject:
   m_ObjectHideFlags: 0
@@ -12074,7 +11946,7 @@ Transform:
   m_GameObject: {fileID: 6299363278660323988}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000116605335, z: -0.000000009835187, w: 0.7071068}
-  m_LocalPosition: {x: -0.6140418, y: 0.7307401, z: 1.0645891}
+  m_LocalPosition: {x: -0.6140417, y: 0.7307401, z: 1.0645891}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -12099,8 +11971,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868279, y: 0.14459117, z: 0.029936504}
-  m_Center: {x: 0.00000003306195, y: 0.073295586, z: 0.0049999706}
+  m_Size: {x: 0.02286824, y: 0.14659126, z: 0.02293642}
+  m_Center: {x: 0, y: 0.07329563, z: 0.0015}
 --- !u!114 &6706507878055667766
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12110,24 +11982,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 6299363278660323988}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 4335045872473131402}
   targetBody: {fileID: 6059366646059534729}
   sensorCollider: {fileID: 7439216361099523396}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 12
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &6330751038691812756
 GameObject:
   m_ObjectHideFlags: 0
@@ -12319,7 +12189,7 @@ Transform:
   m_GameObject: {fileID: 6425057866583524728}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.42817205, y: 0.73082614, z: 1.0645905}
+  m_LocalPosition: {x: -0.428172, y: 0.7308261, z: 1.0645905}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -12344,8 +12214,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868279, y: 0.14459129, z: 0.029936444}
-  m_Center: {x: 0, y: 0.073295645, z: 0.0050000004}
+  m_Size: {x: 0.02286825, y: 0.14659137, z: 0.02293643}
+  m_Center: {x: 0, y: 0.07329568, z: 0.0015}
 --- !u!114 &2973892479436106893
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12355,24 +12225,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 6425057866583524728}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 4349254440680948864}
   targetBody: {fileID: 1838025484958826148}
   sensorCollider: {fileID: 1146885103260936428}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 26
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &6545183655305047963
 GameObject:
   m_ObjectHideFlags: 0
@@ -12626,7 +12494,7 @@ Transform:
   m_GameObject: {fileID: 6666327364509638577}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: 0.21461844, y: 0.7414717, z: 1.0643137}
+  m_LocalPosition: {x: 0.2146184, y: 0.7432, z: 1.0643137}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -12651,8 +12519,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.0075096413, y: 0.093096286, z: 0.02426448}
-  m_Center: {x: -0.000000008614734, y: 0.04754814, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &8456015183155892548
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12662,24 +12530,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 6666327364509638577}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 5496857004334736004}
   targetBody: {fileID: 5332424282505742073}
   sensorCollider: {fileID: 3248390954313311704}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 73
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &6775994900477213918
 GameObject:
   m_ObjectHideFlags: 0
@@ -12738,7 +12604,7 @@ Transform:
   m_GameObject: {fileID: 6809862819987010849}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.33385953, y: 0.73082614, z: 1.0645905}
+  m_LocalPosition: {x: -0.3338595, y: 0.7308261, z: 1.0645905}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -12763,8 +12629,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868283, y: 0.14459129, z: 0.029936444}
-  m_Center: {x: 0.0000000013969839, y: 0.073295645, z: 0.0050000004}
+  m_Size: {x: 0.02286825, y: 0.14659137, z: 0.02293643}
+  m_Center: {x: 0, y: 0.07329568, z: 0.0015}
 --- !u!114 &3437026967005044528
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12774,24 +12640,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 6809862819987010849}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 1562227379689818397}
   targetBody: {fileID: 3842727758164361837}
   sensorCollider: {fileID: 6370104480990675030}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 32
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &6845637509549549255
 GameObject:
   m_ObjectHideFlags: 0
@@ -12875,8 +12739,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868305, y: 0.14459129, z: 0.029936504}
-  m_Center: {x: -0.000000013038516, y: 0.073295526, z: 0.0049999706}
+  m_Size: {x: 0.02286824, y: 0.14659126, z: 0.02293642}
+  m_Center: {x: 0, y: 0.07329563, z: 0.0015}
 --- !u!114 &8990231811518518496
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12886,24 +12750,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 6850068672306449736}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 4250174444588683101}
   targetBody: {fileID: 4798985328474290462}
   sensorCollider: {fileID: 2623503050816288279}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 17
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &6853717524564767681
 GameObject:
   m_ObjectHideFlags: 0
@@ -13044,7 +12906,7 @@ Transform:
   m_GameObject: {fileID: 7003688191237027149}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.32537732, y: 0.7414717, z: 1.0643135}
+  m_LocalPosition: {x: -0.3253773, y: 0.7432, z: 1.0643137}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -13069,8 +12931,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.0075096656, y: 0.09309623, z: 0.02426448}
-  m_Center: {x: 0.000000020256266, y: 0.04754811, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &963398843349316477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13080,24 +12942,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 7003688191237027149}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 3007551657927688654}
   targetBody: {fileID: 8028961750698390784}
   sensorCollider: {fileID: 8231671154661305306}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 33
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &7022419254535905009
 GameObject:
   m_ObjectHideFlags: 0
@@ -13665,7 +13525,7 @@ Transform:
   m_GameObject: {fileID: 7136343168060758737}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: 0.22454095, y: 0.73082614, z: 1.0645906}
+  m_LocalPosition: {x: 0.2245409, y: 0.7308261, z: 1.0645906}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -13690,8 +13550,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868253, y: 0.14459129, z: 0.029936444}
-  m_Center: {x: -0.000000013504177, y: 0.073295645, z: 0.0050000004}
+  m_Size: {x: 0.02286825, y: 0.14659137, z: 0.02293643}
+  m_Center: {x: 0, y: 0.07329568, z: 0.0015}
 --- !u!114 &244727210471049237
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13701,24 +13561,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 7136343168060758737}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 6526740599350607024}
   targetBody: {fileID: 2764729407140024193}
   sensorCollider: {fileID: 3487627297349649603}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 74
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &7143849084991391797
 GameObject:
   m_ObjectHideFlags: 0
@@ -13777,7 +13635,7 @@ Transform:
   m_GameObject: {fileID: 7171217552753996331}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.20643696, y: 0.7414717, z: 1.0643135}
+  m_LocalPosition: {x: -0.206437, y: 0.7432, z: 1.0643137}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -13802,8 +13660,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.0075096264, y: 0.093096346, z: 0.02426448}
-  m_Center: {x: -0.0000000011641532, y: 0.047548052, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &3156154259376360639
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13813,24 +13671,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 7171217552753996331}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 262030588102471989}
   targetBody: {fileID: 2527630664012991330}
   sensorCollider: {fileID: 5041612106354914816}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 42
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &7233208235164399309
 GameObject:
   m_ObjectHideFlags: 0
@@ -13971,7 +13827,7 @@ Transform:
   m_GameObject: {fileID: 7303802426695548663}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.46404836, y: 0.7414717, z: 1.0643135}
+  m_LocalPosition: {x: -0.4640483, y: 0.7432, z: 1.0643135}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -13996,8 +13852,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.0075096413, y: 0.093096286, z: 0.02426448}
-  m_Center: {x: -0.000000008614734, y: 0.04754814, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &8113573554825350202
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14007,24 +13863,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 7303802426695548663}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 7892159384081309553}
   targetBody: {fileID: 5291120838356910009}
   sensorCollider: {fileID: 2492881450111211930}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 23
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &7304454096599947149
 GameObject:
   m_ObjectHideFlags: 0
@@ -14447,8 +14301,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868253, y: 0.14459129, z: 0.029936504}
-  m_Center: {x: 0.000000016298145, y: 0.073295526, z: 0.0049999706}
+  m_Size: {x: 0.02286824, y: 0.14659126, z: 0.02293642}
+  m_Center: {x: 0, y: 0.07329563, z: 0.0015}
 --- !u!114 &5621193923410653547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14458,24 +14312,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 7665892151316017392}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 4695508153451219437}
   targetBody: {fileID: 1028825435694370895}
   sensorCollider: {fileID: 2062157164588470416}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 77
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &7670042550885543698
 GameObject:
   m_ObjectHideFlags: 0
@@ -14780,7 +14632,7 @@ Transform:
   m_GameObject: {fileID: 7692538500609928907}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.7626543, y: 0.7414717, z: 1.0643135}
+  m_LocalPosition: {x: -0.7626542, y: 0.7429, z: 1.0613}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -14805,8 +14657,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.0075096413, y: 0.093096346, z: 0.02426448}
-  m_Center: {x: -0.000000038417056, y: 0.04754817, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &37016763528567004
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14816,24 +14668,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 7692538500609928907}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 5766955777932804024}
   targetBody: {fileID: 1946996778807907729}
   sensorCollider: {fileID: 422629725969544633}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 1
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &7694681156167820453
 GameObject:
   m_ObjectHideFlags: 0
@@ -15138,7 +14988,7 @@ Transform:
   m_GameObject: {fileID: 7836037567134579918}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: 0.13112742, y: 0.73082614, z: 1.0645906}
+  m_LocalPosition: {x: 0.1311273, y: 0.7308261, z: 1.0645906}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -15163,8 +15013,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868253, y: 0.14459129, z: 0.029936444}
-  m_Center: {x: -0.000000013504177, y: 0.073295645, z: 0.0050000004}
+  m_Size: {x: 0.02286825, y: 0.14659137, z: 0.02293643}
+  m_Center: {x: 0, y: 0.07329568, z: 0.0015}
 --- !u!114 &2429235195125494458
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15174,24 +15024,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 7836037567134579918}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 4814037421068211612}
   targetBody: {fileID: 1882574135721623168}
   sensorCollider: {fileID: 1922978260115246941}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 67
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &7912481686523951622
 GameObject:
   m_ObjectHideFlags: 0
@@ -15518,7 +15366,7 @@ Transform:
   m_GameObject: {fileID: 8188130123561849306}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.2746734, y: 0.7414717, z: 1.0643135}
+  m_LocalPosition: {x: -0.2746734, y: 0.7432, z: 1.0643137}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -15543,8 +15391,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.0075096544, y: 0.09309623, z: 0.02426448}
-  m_Center: {x: -0.0000000020954758, y: 0.04754811, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &1355138497392403508
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15554,24 +15402,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 8188130123561849306}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 4462426031516752429}
   targetBody: {fileID: 1150956205575720557}
   sensorCollider: {fileID: 9078099471639672763}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 37
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &8233798041159023419
 GameObject:
   m_ObjectHideFlags: 0
@@ -15876,7 +15722,7 @@ Transform:
   m_GameObject: {fileID: 8343136300891545696}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000116605335, z: -0.000000009835187, w: 0.7071068}
-  m_LocalPosition: {x: -0.38149107, y: 0.7307401, z: 1.0645891}
+  m_LocalPosition: {x: -0.381491, y: 0.7307401, z: 1.0645891}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -15901,8 +15747,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868279, y: 0.14459129, z: 0.029936504}
-  m_Center: {x: 0, y: 0.073295526, z: 0.0049999706}
+  m_Size: {x: 0.02286824, y: 0.14659126, z: 0.02293642}
+  m_Center: {x: 0, y: 0.07329563, z: 0.0015}
 --- !u!114 &4455168571762211439
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15912,24 +15758,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 8343136300891545696}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 1470248221291036637}
   targetBody: {fileID: 2146605575366554431}
   sensorCollider: {fileID: 1558330861053518557}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 29
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &8377727338785081585
 GameObject:
   m_ObjectHideFlags: 0
@@ -16203,7 +16047,7 @@ Transform:
   m_GameObject: {fileID: 8440407830780486862}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.53264546, y: 0.7414717, z: 1.0643135}
+  m_LocalPosition: {x: -0.5326454, y: 0.7432, z: 1.0643135}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -16228,8 +16072,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.007509701, y: 0.093096286, z: 0.02426448}
-  m_Center: {x: 0.00000005098991, y: 0.04754814, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &7332184506667229645
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16239,24 +16083,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 8440407830780486862}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 2540304177995506438}
   targetBody: {fileID: 8799209783573458418}
   sensorCollider: {fileID: 7534028813102270530}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 18
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &8451831478463518016
 GameObject:
   m_ObjectHideFlags: 0
@@ -16315,7 +16157,7 @@ Transform:
   m_GameObject: {fileID: 8524349494943181289}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000116605335, z: -0.000000009835187, w: 0.7071068}
-  m_LocalPosition: {x: 0.17811394, y: 0.7307401, z: 1.0645893}
+  m_LocalPosition: {x: 0.1781139, y: 0.7307401, z: 1.0645893}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -16340,8 +16182,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.020868253, y: 0.14459129, z: 0.029936504}
-  m_Center: {x: -0.000000013504177, y: 0.073295526, z: 0.0049999706}
+  m_Size: {x: 0.02286824, y: 0.14659126, z: 0.02293642}
+  m_Center: {x: 0, y: 0.07329563, z: 0.0015}
 --- !u!114 &5408967286699575289
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16351,24 +16193,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 8524349494943181289}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 2543628107581443214}
   targetBody: {fileID: 320674021184197335}
   sensorCollider: {fileID: 5592059503783433478}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 70
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &8527663488319905981
 GameObject:
   m_ObjectHideFlags: 0
@@ -16425,7 +16265,7 @@ Transform:
   m_GameObject: {fileID: 8542694450101748726}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -16608,7 +16448,7 @@ Transform:
   m_GameObject: {fileID: 8647914296111131757}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000116605335, z: -0.000000009835187, w: 0.7071068}
-  m_LocalPosition: {x: -0.14829242, y: 0.7307401, z: 1.0645893}
+  m_LocalPosition: {x: -0.1482924, y: 0.7307401, z: 1.0645891}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -16633,8 +16473,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.02086826, y: 0.14459123, z: 0.029936504}
-  m_Center: {x: 0.000000009313226, y: 0.073295616, z: 0.0049999706}
+  m_Size: {x: 0.02286824, y: 0.14659126, z: 0.02293642}
+  m_Center: {x: 0, y: 0.07329563, z: 0.0015}
 --- !u!114 &832933782586993164
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16644,24 +16484,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 8647914296111131757}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 3778760279302422372}
   targetBody: {fileID: 4026483990596442527}
   sensorCollider: {fileID: 2377835378741186139}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 46
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &8670238810460591950
 GameObject:
   m_ObjectHideFlags: 0
@@ -16751,7 +16589,7 @@ Transform:
   m_GameObject: {fileID: 8687886064654314687}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.042826295, y: 0.7414717, z: 1.0643137}
+  m_LocalPosition: {x: -0.0428263, y: 0.7432, z: 1.0643137}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -16776,8 +16614,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.0075096507, y: 0.093096346, z: 0.02426448}
-  m_Center: {x: 0, y: 0.04754817, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &3522147684966777200
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16787,24 +16625,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 8687886064654314687}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 7597832251356615451}
   targetBody: {fileID: 9042027225301155564}
   sensorCollider: {fileID: 6940447670122731587}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 54
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &8696291272402099482
 GameObject:
   m_ObjectHideFlags: 0
@@ -17027,7 +16863,7 @@ Transform:
   m_GameObject: {fileID: 8832368150148837818}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.24073027, y: 0.73082614, z: 1.0645905}
+  m_LocalPosition: {x: -0.2407303, y: 0.7308261, z: 1.0645905}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -17052,8 +16888,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.02100002, y: 0.145, z: 0.030000012}
-  m_Center: {x: -0.000000007450581, y: 0.07299992, z: 0.004999986}
+  m_Size: {x: 0.023, y: 0.147, z: 0.023}
+  m_Center: {x: 0, y: 0.073, z: 0.0015}
 --- !u!114 &7248780355184310704
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17063,24 +16899,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 8832368150148837818}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 2478478896501452183}
   targetBody: {fileID: 2658318393296297433}
   sensorCollider: {fileID: 7308888950634666864}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 39
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &8837284542627680042
 GameObject:
   m_ObjectHideFlags: 0
@@ -17108,7 +16942,7 @@ Transform:
   m_GameObject: {fileID: 8837284542627680042}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.43759125, y: 0.7414717, z: 1.0643135}
+  m_LocalPosition: {x: -0.4375912, y: 0.7432, z: 1.0643135}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -17133,8 +16967,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.0075096544, y: 0.093096286, z: 0.02426448}
-  m_Center: {x: 0.000000027706847, y: 0.04754814, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &3211702441875989614
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17144,24 +16978,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 8837284542627680042}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 4160070918635055022}
   targetBody: {fileID: 5026723078519258264}
   sensorCollider: {fileID: 5901491526383090831}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 25
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &8883130656918783332
 GameObject:
   m_ObjectHideFlags: 0
@@ -17271,7 +17103,7 @@ Transform:
   m_GameObject: {fileID: 8935675354399472647}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: 0.18906173, y: 0.7414717, z: 1.0643137}
+  m_LocalPosition: {x: 0.1890617, y: 0.7432, z: 1.0643137}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -17296,8 +17128,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.007509671, y: 0.093096286, z: 0.02426448}
-  m_Center: {x: 0.0000000062864274, y: 0.04754814, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &6755981661804873878
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17307,24 +17139,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 8935675354399472647}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 4057018262624537271}
   targetBody: {fileID: 2958960387519647616}
   sensorCollider: {fileID: 3115938738721229282}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 71
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &8943328167319323884
 GameObject:
   m_ObjectHideFlags: 0
@@ -17352,7 +17182,7 @@ Transform:
   m_GameObject: {fileID: 8943328167319323884}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: -0.3007977, y: 0.7414717, z: 1.0643135}
+  m_LocalPosition: {x: -0.3007977, y: 0.7432, z: 1.0643137}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -17377,8 +17207,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.0075096525, y: 0.09309623, z: 0.02426448}
-  m_Center: {x: 0.000000015832484, y: 0.04754811, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &4674010496486766837
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17388,24 +17218,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 8943328167319323884}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 672070398866282038}
   targetBody: {fileID: 2968198047304478593}
   sensorCollider: {fileID: 8440723085619672448}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 35
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &9012345678901234567
 GameObject:
   m_ObjectHideFlags: 0
@@ -17450,10 +17278,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6c799792358da843a6dc90a15159a01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PianoAudioOutput
-  maxVoices: 32
-  releaseDuration: 0.08
-  spatialBlend: 1
-  outputMixerGroup: {fileID: 0}
 --- !u!1 &9036559523368620435
 GameObject:
   m_ObjectHideFlags: 0
@@ -17481,7 +17305,7 @@ Transform:
   m_GameObject: {fileID: 9036559523368620435}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: 0.051548317, y: 0.7414717, z: 1.0643137}
+  m_LocalPosition: {x: 0.0515483, y: 0.7432, z: 1.0643137}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -17506,8 +17330,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.0075096395, y: 0.093096286, z: 0.02426448}
-  m_Center: {x: 0.000000007450581, y: 0.04754814, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &4624613262242991005
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17517,24 +17341,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 9036559523368620435}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 7670404660958296662}
   targetBody: {fileID: 243265338567000669}
   sensorCollider: {fileID: 2624125150750940476}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 61
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
 --- !u!1 &9093083824513421152
 GameObject:
   m_ObjectHideFlags: 0
@@ -17706,7 +17528,7 @@ Transform:
   m_GameObject: {fileID: 9180105450944880444}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071067, y: -0.000000009835201, z: -0.000000116605335, w: 0.7071068}
-  m_LocalPosition: {x: 0.12000167, y: 0.7414717, z: 1.0643137}
+  m_LocalPosition: {x: 0.1200016, y: 0.7432, z: 1.0643137}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -17731,8 +17553,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.007509671, y: 0.093096286, z: 0.02426448}
-  m_Center: {x: -0.000000023515895, y: 0.04754814, z: 0.0049999338}
+  m_Size: {x: 0.00950963, y: 0.09509629, z: 0.01726444}
+  m_Center: {x: 0, y: 0.04754814, z: 0.0015}
 --- !u!114 &5333640951122679100
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17742,21 +17564,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 9180105450944880444}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76468d74b981cb446be432ebd90be7fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 31d63440f774490d969aa74d4daffa10, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PianoKeySensor
+  m_EditorClassIdentifier: Assembly-CSharp::PianoKeyPressSensor
   targetBone: {fileID: 5356127873000148173}
   targetBody: {fileID: 2826790606341675520}
   sensorCollider: {fileID: 7340559291045351408}
   ignoredRoot: {fileID: 0}
   boneLocalAxis: {x: 1, y: 0, z: 0}
   maxPressDegrees: 6
-  pressDistance: 0.008
-  pressSpeed: 18
-  releaseSpeed: 26
   presserLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   keyIndex: 66
   noteOnThreshold: 0.3
   noteOffThreshold: 0.15
+  pressStartDepthNormalized: 0
