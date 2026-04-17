@@ -10,6 +10,14 @@ public sealed class PianoKeyPressSensor : MonoBehaviour
     const string PianoRigRootPath = "PianoModel/Piano_Rig/Root";
     const float PressSmoothTime = 0.01f;
     const float ReleaseSmoothTime = 0.03f;
+    const float CaptureTolerance = 1e-4f;
+
+    enum PressLocalAxis
+    {
+        X,
+        Y,
+        Z
+    }
 
     [SerializeField] int keyIndex = -1;
     [FormerlySerializedAs("targetBone")]
@@ -22,6 +30,8 @@ public sealed class PianoKeyPressSensor : MonoBehaviour
     [SerializeField] Transform ignoredRoot;
     [SerializeField] Vector3 boneLocalAxis = Vector3.right;
     [SerializeField] float maxPressDegrees = 6f;
+    [SerializeField] PressLocalAxis pressLocalAxis = PressLocalAxis.Z;
+    [SerializeField] bool pressAxisPositive;
     [FormerlySerializedAs("pressStartDepthNormalized")]
     [SerializeField, Range(0f, 0.95f)] float pressStartDepthNormalized = 0.08f;
     [SerializeField, Range(0.05f, 1f)] float fullPressDepthNormalized = 0.85f;
@@ -46,14 +56,7 @@ public sealed class PianoKeyPressSensor : MonoBehaviour
 
     void Awake()
     {
-        if (triggerCollider == null)
-            triggerCollider = GetComponent<BoxCollider>();
-
-        if (keyIndex < 0)
-            keyIndex = ParseKeyIndexFromName(gameObject.name);
-
-        m_Piano = GetComponentInParent<Piano>();
-        AutoAssignBone();
+        ResolveReferences();
 
         if (keyBone != null)
             m_RestRotation = keyBone.localRotation;
@@ -61,22 +64,8 @@ public sealed class PianoKeyPressSensor : MonoBehaviour
 
     void OnValidate()
     {
-        if (triggerCollider == null)
-            triggerCollider = GetComponent<BoxCollider>();
-
-        if (keyIndex < 0)
-            keyIndex = ParseKeyIndexFromName(gameObject.name);
-
-        if (boneLocalAxis.sqrMagnitude < 0.0001f)
-            boneLocalAxis = Vector3.right;
-
-        maxPressDegrees = Mathf.Max(0f, maxPressDegrees);
-        pressStartDepthNormalized = Mathf.Clamp(pressStartDepthNormalized, 0f, 0.95f);
-        fullPressDepthNormalized = Mathf.Clamp(fullPressDepthNormalized, pressStartDepthNormalized + 0.01f, 1f);
-        noteOnThreshold = Mathf.Clamp01(noteOnThreshold);
-        noteOffThreshold = Mathf.Clamp(noteOffThreshold, 0f, noteOnThreshold);
-
-        AutoAssignBone();
+        SanitizeSerializedFields();
+        ResolveReferences();
     }
 
     void LateUpdate()
@@ -102,8 +91,7 @@ public sealed class PianoKeyPressSensor : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
-        if (other != null)
-            m_Active.Remove(other);
+        // Removal is handled in ComputePress so colliders remain captured while pressing through the key.
     }
 
     void OnDisable()
@@ -123,6 +111,30 @@ public sealed class PianoKeyPressSensor : MonoBehaviour
         ApplyRotation();
     }
 
+    void ResolveReferences()
+    {
+        if (triggerCollider == null)
+            triggerCollider = GetComponent<BoxCollider>();
+
+        if (keyIndex < 0)
+            keyIndex = ParseKeyIndexFromName(gameObject.name);
+
+        m_Piano = GetComponentInParent<Piano>();
+        AutoAssignBone();
+    }
+
+    void SanitizeSerializedFields()
+    {
+        if (boneLocalAxis.sqrMagnitude < 0.0001f)
+            boneLocalAxis = Vector3.right;
+
+        maxPressDegrees = Mathf.Max(0f, maxPressDegrees);
+        pressStartDepthNormalized = Mathf.Clamp(pressStartDepthNormalized, 0f, 0.95f);
+        fullPressDepthNormalized = Mathf.Clamp(fullPressDepthNormalized, pressStartDepthNormalized + 0.01f, 1f);
+        noteOnThreshold = Mathf.Clamp01(noteOnThreshold);
+        noteOffThreshold = Mathf.Clamp(noteOffThreshold, 0f, noteOnThreshold);
+    }
+
     void RegisterCollider(Collider other)
     {
         if (!IsAllowedPresser(other))
@@ -138,10 +150,19 @@ public sealed class PianoKeyPressSensor : MonoBehaviour
         if (m_Active.Count == 0)
             return;
 
+        if (!TryGetSensorDepthRange(out float entranceDepth, out float fullDepth))
+            return;
+
         m_RemovalScratch.Clear();
         foreach (Collider other in m_Active)
         {
             if (!IsTrackedColliderValid(other))
+            {
+                m_RemovalScratch.Add(other);
+                continue;
+            }
+
+            if (!IsStillCapturedByBox(other, entranceDepth))
                 m_RemovalScratch.Add(other);
         }
 
@@ -149,7 +170,7 @@ public sealed class PianoKeyPressSensor : MonoBehaviour
             m_Active.Remove(m_RemovalScratch[i]);
         m_RemovalScratch.Clear();
 
-        if (m_Active.Count == 0 || !TryGetSensorDepthRange(out float entranceDepth, out float fullDepth))
+        if (m_Active.Count == 0)
             return;
 
         float maxPress = 0f;
@@ -252,26 +273,21 @@ public sealed class PianoKeyPressSensor : MonoBehaviour
 
     float ComputeColliderPress(Collider other, float entranceDepth, float fullDepth)
     {
-        if (triggerCollider == null || other == null)
+        if (!TryGetLocalSphereData(other, out Vector3 localCenter, out Vector3 localRadii))
             return 0f;
 
-        Vector3 size = triggerCollider.size;
-        if (!IsFiniteVector(size) || size.y <= 0f)
-            return 0f;
-
-        Transform triggerTransform = triggerCollider.transform;
-        float probeOffset = Mathf.Max(size.y * 0.02f, 0.001f);
-        Vector3 entranceLocalPoint = new Vector3(triggerCollider.center.x, entranceDepth - probeOffset, triggerCollider.center.z);
-        Vector3 entranceWorldPoint = triggerTransform.TransformPoint(entranceLocalPoint);
-        Vector3 closestWorldPoint = other.ClosestPoint(entranceWorldPoint);
-        Vector3 closestLocalPoint = triggerTransform.InverseTransformPoint(closestWorldPoint);
-
-        if (!IsFiniteVector(closestLocalPoint))
-            return 0f;
-
+        float localDepth = GetAxisComponent(localCenter, pressLocalAxis);
+        float localRadius = GetAxisComponent(localRadii, pressLocalAxis);
+        float deepestDepth = pressAxisPositive
+            ? localDepth + localRadius
+            : localDepth - localRadius;
         float startDepth = Mathf.Lerp(entranceDepth, fullDepth, pressStartDepthNormalized);
-        float pointDepth = Mathf.Clamp(closestLocalPoint.y, entranceDepth, fullDepth);
-        return Mathf.Clamp01(Mathf.InverseLerp(startDepth, fullDepth, pointDepth));
+        float depthRange = fullDepth - startDepth;
+        if (Mathf.Abs(depthRange) < Mathf.Epsilon)
+            return 0f;
+
+        float pointDepth = ClampBetween(deepestDepth, entranceDepth, fullDepth);
+        return Mathf.Clamp01((pointDepth - startDepth) / depthRange);
     }
 
     bool TryGetSensorDepthRange(out float entranceDepth, out float fullDepth)
@@ -284,14 +300,112 @@ public sealed class PianoKeyPressSensor : MonoBehaviour
 
         Vector3 center = triggerCollider.center;
         Vector3 size = triggerCollider.size;
-        if (!IsFiniteVector(center) || !IsFiniteVector(size) || size.y <= 0f)
+        float axisCenter = GetAxisComponent(center, pressLocalAxis);
+        float axisSize = GetAxisComponent(size, pressLocalAxis);
+        if (!IsFiniteVector(center) || !IsFiniteVector(size) || axisSize <= 0f)
             return false;
 
-        float halfDepth = size.y * 0.5f;
-        entranceDepth = center.y - halfDepth;
-        float deepEndDepth = center.y + halfDepth;
+        float halfDepth = axisSize * 0.5f;
+        float negativeEndDepth = axisCenter - halfDepth;
+        float positiveEndDepth = axisCenter + halfDepth;
+        entranceDepth = pressAxisPositive ? negativeEndDepth : positiveEndDepth;
+        float deepEndDepth = pressAxisPositive ? positiveEndDepth : negativeEndDepth;
         fullDepth = Mathf.Lerp(entranceDepth, deepEndDepth, fullPressDepthNormalized);
-        return fullDepth > entranceDepth;
+        return !Mathf.Approximately(fullDepth, entranceDepth);
+    }
+
+    bool IsStillCapturedByBox(Collider other, float entranceDepth)
+    {
+        if (!TryGetLocalSphereData(other, out Vector3 localCenter, out Vector3 localRadii))
+            return false;
+
+        float localDepth = GetAxisComponent(localCenter, pressLocalAxis);
+        float localRadius = GetAxisComponent(localRadii, pressLocalAxis);
+        float shallowestDepth = pressAxisPositive
+            ? localDepth - localRadius
+            : localDepth + localRadius;
+        if (pressAxisPositive)
+        {
+            if (shallowestDepth < entranceDepth - CaptureTolerance)
+                return false;
+        }
+        else if (shallowestDepth > entranceDepth + CaptureTolerance)
+        {
+            return false;
+        }
+
+        Vector3 boxCenter = triggerCollider.center;
+        Vector3 boxHalfSize = triggerCollider.size * 0.5f;
+        for (int axisIndex = 0; axisIndex < 3; axisIndex++)
+        {
+            PressLocalAxis axis = (PressLocalAxis)axisIndex;
+            if (axis == pressLocalAxis)
+                continue;
+
+            float localOffset = Mathf.Abs(GetAxisComponent(localCenter, axis) - GetAxisComponent(boxCenter, axis));
+            float maxOffset = GetAxisComponent(boxHalfSize, axis) + GetAxisComponent(localRadii, axis) + CaptureTolerance;
+            if (localOffset > maxOffset)
+                return false;
+        }
+
+        return true;
+    }
+
+    bool TryGetLocalSphereData(Collider other, out Vector3 localCenter, out Vector3 localRadii)
+    {
+        localCenter = Vector3.zero;
+        localRadii = Vector3.zero;
+
+        if (triggerCollider == null || other == null)
+            return false;
+
+        SphereCollider sphere = other as SphereCollider;
+        if (sphere == null)
+            return false;
+
+        Transform triggerTransform = triggerCollider.transform;
+        Transform sphereTransform = sphere.transform;
+        Vector3 sphereScale = sphereTransform.lossyScale;
+        float worldRadius = sphere.radius * Mathf.Max(Mathf.Abs(sphereScale.x), Mathf.Abs(sphereScale.y), Mathf.Abs(sphereScale.z));
+        if (!float.IsFinite(worldRadius))
+            return false;
+
+        Vector3 worldCenter = sphereTransform.TransformPoint(sphere.center);
+        localCenter = triggerTransform.InverseTransformPoint(worldCenter);
+        if (!IsFiniteVector(localCenter))
+            return false;
+
+        Vector3 triggerScale = triggerTransform.lossyScale;
+        float scaleX = Mathf.Abs(triggerScale.x);
+        float scaleY = Mathf.Abs(triggerScale.y);
+        float scaleZ = Mathf.Abs(triggerScale.z);
+        if (scaleX < Mathf.Epsilon || scaleY < Mathf.Epsilon || scaleZ < Mathf.Epsilon)
+            return false;
+
+        localRadii = new Vector3(
+            worldRadius / scaleX,
+            worldRadius / scaleY,
+            worldRadius / scaleZ);
+
+        return IsFiniteVector(localRadii);
+    }
+
+    static float GetAxisComponent(Vector3 value, PressLocalAxis axis)
+    {
+        switch (axis)
+        {
+            case PressLocalAxis.X:
+                return value.x;
+            case PressLocalAxis.Y:
+                return value.y;
+            default:
+                return value.z;
+        }
+    }
+
+    static float ClampBetween(float value, float a, float b)
+    {
+        return Mathf.Clamp(value, Mathf.Min(a, b), Mathf.Max(a, b));
     }
 
     bool IsTrackedColliderValid(Collider other)
@@ -309,6 +423,9 @@ public sealed class PianoKeyPressSensor : MonoBehaviour
     bool IsAllowedPresser(Collider other)
     {
         if (other == null)
+            return false;
+
+        if (!(other is SphereCollider))
             return false;
 
         if (other.GetComponentInParent<Fingertip>() == null)
