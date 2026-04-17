@@ -1,6 +1,6 @@
 ---
 name: unity-agent-orchestration
-description: `unity-scene-reader`와 `unity-scene-writer` 두 개의 특화된 서브 에이전트로 Unity 씬 작업을 조율합니다. 변경 전 점검, 씬 변경 적용/검증, 읽기와 쓰기를 분리해야 할 때 사용합니다.
+description: "`unity-scene-reader`와 `unity-scene-writer` 두 개의 특화된 서브 에이전트로 Unity 씬 작업을 조율합니다. 변경 전 점검, 씬 변경 적용/검증, 읽기와 쓰기를 분리해야 할 때 사용합니다."
 ---
 
 # Unity 에이전트 오케스트레이션
