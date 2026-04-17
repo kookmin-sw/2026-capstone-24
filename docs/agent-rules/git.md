@@ -71,7 +71,22 @@ PR 제목은 커밋과 동일한 포맷을 권장한다.
 <type>(<scope>): <description>
 ```
 
-PR 본문은 `## Summary` + `## Test plan` 형식을 유지한다.
+PR 본문은 반드시 루트의 `pull_request_template.md`를 따른다.
+
+현재 기준 템플릿은 아래 순서를 사용한다.
+
+```md
+## 이슈 번호 #1
+- close #1
+
+## 작업 사항
+
+## 기타
+```
+
+- PR 작성 시 템플릿의 섹션 제목과 구조를 유지한다.
+- 이슈 번호와 `close #번호`는 실제 작업 이슈에 맞게 채운다.
+- 템플릿이 변경되면 `pull_request_template.md`를 최신 기준으로 간주한다.
 
 ## 주의사항
 
