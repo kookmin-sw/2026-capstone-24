@@ -54,6 +54,24 @@ public sealed class PianoKeyPressSensor : MonoBehaviour
     public float PressValue => m_SmoothPress;
     public bool IsNoteOn => m_NoteOn;
 
+    public readonly struct PressCandidate
+    {
+        public PressCandidate(PianoKeyPressSensor sensor, Fingertip fingertip, float press, float lateralOverlap, int keyIndex)
+        {
+            Sensor = sensor;
+            Fingertip = fingertip;
+            Press = press;
+            LateralOverlap = lateralOverlap;
+            KeyIndex = keyIndex;
+        }
+
+        public PianoKeyPressSensor Sensor { get; }
+        public Fingertip Fingertip { get; }
+        public float Press { get; }
+        public float LateralOverlap { get; }
+        public int KeyIndex { get; }
+    }
+
     void Awake()
     {
         ResolveReferences();
@@ -70,13 +88,10 @@ public sealed class PianoKeyPressSensor : MonoBehaviour
 
     void LateUpdate()
     {
-        ComputePress();
+        if (m_Piano != null && m_Piano.enabled)
+            return;
 
-        float smoothTime = m_RawPress >= m_SmoothPress ? PressSmoothTime : ReleaseSmoothTime;
-        m_SmoothPress = Mathf.SmoothDamp(m_SmoothPress, m_RawPress, ref m_SmoothVelocity, smoothTime);
-
-        UpdateNote();
-        ApplyRotation();
+        ApplyResolvedPress(ComputeSelfPress());
     }
 
     void OnTriggerEnter(Collider other)
@@ -91,7 +106,7 @@ public sealed class PianoKeyPressSensor : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
-        // Removal is handled in ComputePress so colliders remain captured while pressing through the key.
+        // Removal is handled during candidate/self-press refresh so colliders remain captured while pressing through the key.
     }
 
     void OnDisable()
@@ -143,16 +158,69 @@ public sealed class PianoKeyPressSensor : MonoBehaviour
         m_Active.Add(other);
     }
 
-    void ComputePress()
+    public void CollectPressCandidates(List<PressCandidate> results)
     {
-        m_RawPress = 0f;
-
-        if (m_Active.Count == 0)
+        if (results == null || m_Active.Count == 0)
             return;
 
         if (!TryGetSensorDepthRange(out float entranceDepth, out float fullDepth))
             return;
 
+        RefreshTrackedColliders(entranceDepth);
+        if (m_Active.Count == 0)
+            return;
+
+        foreach (Collider other in m_Active)
+        {
+            Fingertip fingertip = other.GetComponentInParent<Fingertip>();
+            if (fingertip == null)
+                continue;
+
+            float press = ComputeColliderPress(other, entranceDepth, fullDepth);
+            if (press <= 0f)
+                continue;
+
+            float lateralOverlap = ComputeColliderLateralOverlap(other);
+            results.Add(new PressCandidate(this, fingertip, press, lateralOverlap, keyIndex));
+        }
+    }
+
+    public void ApplyResolvedPress(float rawPress)
+    {
+        m_RawPress = Mathf.Clamp01(rawPress);
+
+        float smoothTime = m_RawPress >= m_SmoothPress ? PressSmoothTime : ReleaseSmoothTime;
+        m_SmoothPress = Mathf.SmoothDamp(m_SmoothPress, m_RawPress, ref m_SmoothVelocity, smoothTime);
+
+        UpdateNote();
+        ApplyRotation();
+    }
+
+    float ComputeSelfPress()
+    {
+        if (m_Active.Count == 0)
+            return 0f;
+
+        if (!TryGetSensorDepthRange(out float entranceDepth, out float fullDepth))
+            return 0f;
+
+        RefreshTrackedColliders(entranceDepth);
+        if (m_Active.Count == 0)
+            return 0f;
+
+        float maxPress = 0f;
+        foreach (Collider other in m_Active)
+        {
+            float press = ComputeColliderPress(other, entranceDepth, fullDepth);
+            if (press > maxPress)
+                maxPress = press;
+        }
+
+        return maxPress;
+    }
+
+    void RefreshTrackedColliders(float entranceDepth)
+    {
         m_RemovalScratch.Clear();
         foreach (Collider other in m_Active)
         {
@@ -169,19 +237,6 @@ public sealed class PianoKeyPressSensor : MonoBehaviour
         for (int i = 0; i < m_RemovalScratch.Count; i++)
             m_Active.Remove(m_RemovalScratch[i]);
         m_RemovalScratch.Clear();
-
-        if (m_Active.Count == 0)
-            return;
-
-        float maxPress = 0f;
-        foreach (Collider other in m_Active)
-        {
-            float press = ComputeColliderPress(other, entranceDepth, fullDepth);
-            if (press > maxPress)
-                maxPress = press;
-        }
-
-        m_RawPress = maxPress;
     }
 
     void UpdateNote()
@@ -288,6 +343,34 @@ public sealed class PianoKeyPressSensor : MonoBehaviour
 
         float pointDepth = ClampBetween(deepestDepth, entranceDepth, fullDepth);
         return Mathf.Clamp01((pointDepth - startDepth) / depthRange);
+    }
+
+    float ComputeColliderLateralOverlap(Collider other)
+    {
+        if (triggerCollider == null || !TryGetLocalSphereData(other, out Vector3 localCenter, out Vector3 localRadii))
+            return 0f;
+
+        Vector3 boxCenter = triggerCollider.center;
+        Vector3 boxHalfSize = triggerCollider.size * 0.5f;
+        float overlap = 1f;
+
+        for (int axisIndex = 0; axisIndex < 3; axisIndex++)
+        {
+            PressLocalAxis axis = (PressLocalAxis)axisIndex;
+            if (axis == pressLocalAxis)
+                continue;
+
+            float sphereRadius = GetAxisComponent(localRadii, axis);
+            if (sphereRadius <= Mathf.Epsilon)
+                return 0f;
+
+            float localOffset = Mathf.Abs(GetAxisComponent(localCenter, axis) - GetAxisComponent(boxCenter, axis));
+            float overlapDepth = GetAxisComponent(boxHalfSize, axis) + sphereRadius - localOffset;
+            float normalizedOverlap = Mathf.Clamp01(overlapDepth / (sphereRadius * 2f));
+            overlap *= normalizedOverlap;
+        }
+
+        return overlap;
     }
 
     bool TryGetSensorDepthRange(out float entranceDepth, out float fullDepth)
