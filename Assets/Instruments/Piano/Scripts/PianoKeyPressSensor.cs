@@ -33,7 +33,7 @@ public sealed class PianoKeyPressSensor : MonoBehaviour
     [SerializeField] PressLocalAxis pressLocalAxis = PressLocalAxis.Z;
     [SerializeField] bool pressAxisPositive;
     [FormerlySerializedAs("pressStartDepthNormalized")]
-    [SerializeField, Range(0f, 0.95f)] float pressStartDepthNormalized = 0.08f;
+    [SerializeField, Range(0f, 0.95f)] float pressStartDepthNormalized = 0.0f;
     [SerializeField, Range(0.05f, 1f)] float fullPressDepthNormalized = 0.85f;
     [SerializeField] float noteOnThreshold = 0.3f;
     [SerializeField] float noteOffThreshold = 0.15f;
