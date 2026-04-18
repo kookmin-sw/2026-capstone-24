@@ -6,6 +6,7 @@
 
 ## 상시 규칙
 - 기본적으로 한국어로 답한다.
+- 정합 대상이 씬/프리팹 같은 Unity 직렬화 자산이면 `docs/agent-rules/alignment.md`와 `docs/agent-rules/serialized-assets.md`를 함께 읽고 작업한다.
 
 ## Plan 파일 규칙
 - 사용자가 **plan을 저장해달라고 명시한 경우에만** 계획 전체를 `docs/plans/PLAN.md`에 저장한다. 저장 요청이 없으면 이 파일을 건드리지 않는다.
@@ -17,4 +18,6 @@
 | 작업 유형 | 규칙 파일 |
 |---|---|
 | C# 스크립트 작성/수정 | @docs/agent-rules/coding.md |
+| 정합 작업 | @docs/agent-rules/alignment.md |
+| 씬/프리팹/직렬화 자산 수정 | @docs/agent-rules/serialized-assets.md |
 | Git 커밋/PR 작업 | @docs/agent-rules/git.md |
