@@ -152,6 +152,16 @@ public class InstrumentAudioOutput : MonoBehaviour
         voice.ReleaseStartVolume = voice.Source.volume;
     }
 
+    public void StopNoteImmediate(int note)
+    {
+        for (int i = 0; i < m_Voices.Count; i++)
+        {
+            Voice voice = m_Voices[i];
+            if (voice.Note == note && voice.State != VoiceState.Idle)
+                StopVoice(voice);
+        }
+    }
+
     public void StopAllVoices()
     {
         for (int i = 0; i < m_Voices.Count; i++)

@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 /// 모든 악기의 공통 속성과 초기화 로직을 관리하는 베이스 클래스입니다.
 /// </summary>
-public abstract class InstrumentBase : MonoBehaviour
+public abstract class InstrumentBase : MonoBehaviour, IPlayable
 {
     protected readonly struct NotePlayback
     {
@@ -77,24 +77,37 @@ public abstract class InstrumentBase : MonoBehaviour
         if (audioOutput == null)
             return;
 
-        if (midiEvent.IsNoteOn)
+        switch (midiEvent.Type)
         {
-            if (TryResolveNoteOn(midiEvent, out NotePlayback playback))
-            {
-                audioOutput.PlayNote(midiEvent.Note, playback.Clip, playback.Pitch, playback.Volume);
-            }
+            case MidiEventType.NoteOn:
+                if (TryResolveNoteOn(midiEvent, out NotePlayback playback))
+                    audioOutput.PlayNote(midiEvent.Note, playback.Clip, playback.Pitch, playback.Volume);
+                break;
 
-            return;
+            case MidiEventType.NoteOff:
+                OnNoteOff(midiEvent);
+                audioOutput.StopNote(midiEvent.Note);
+                break;
+
+            case MidiEventType.Choke:
+                OnChoke(midiEvent);
+                break;
         }
-
-        OnNoteOff(midiEvent);
-        audioOutput.StopNote(midiEvent.Note);
     }
 
     protected abstract bool TryResolveNoteOn(MidiEvent midiEvent, out NotePlayback playback);
 
     protected virtual void OnNoteOff(MidiEvent midiEvent)
     {
+    }
+
+    /// <summary>
+    /// 사운드를 즉시 정지합니다. 드럼 심벌 뮤트 등 즉각 컷이 필요한 경우 오버라이드하세요.
+    /// 기본 동작은 NoteOff와 동일합니다.
+    /// </summary>
+    protected virtual void OnChoke(MidiEvent midiEvent)
+    {
+        audioOutput.StopNote(midiEvent.Note);
     }
 
     protected bool TryGetAudioBank(out Dictionary<string, AudioClip> bank)
