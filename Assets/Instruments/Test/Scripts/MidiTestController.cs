@@ -146,7 +146,7 @@ namespace VRMusicStudio.Test
 
         bool UsesDrumLayout()
         {
-            return _cachedInstrument is Drum;
+            return _cachedInstrument is DrumKit;
         }
     }
 }

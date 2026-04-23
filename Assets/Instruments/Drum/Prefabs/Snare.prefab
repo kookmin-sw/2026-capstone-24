@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8648529258213501258}
-  - component: {fileID: 7173694727154037778}
+  - component: {fileID: 4660191757230314556}
   m_Layer: 0
   m_Name: Snare
   m_TagString: Untagged
@@ -32,11 +32,10 @@ Transform:
   m_Children:
   - {fileID: 4029338123769797671}
   - {fileID: 523078913713408728}
-  - {fileID: 7810295401626523729}
   - {fileID: 261591370256165751}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7173694727154037778
+--- !u!114 &4660191757230314556
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -45,67 +44,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 24558755500863635}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f042541e404149f4b650763850d448d, type: 3}
+  m_Script: {fileID: 11500000, guid: 2d1b908c8d869c64eaaea8f2f1d813ff, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Drum
-  audioOutput: {fileID: 0}
-  soundClips:
-  - {fileID: 8300000, guid: 688e1543fc4f4d74db84e5756f97c95d, type: 3}
-  maxVoices: 4
-  spatialize: 1
-  spatializePostEffects: 1
-  spatialBlend: 1
-  rolloffMode: 0
-  minDistance: 0.8
-  maxDistance: 10
-  dopplerLevel: 0
-  spread: 0
-  reverbZoneMix: 1
-  releaseDuration: 0.05
---- !u!1 &1852442847160995271
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7810295401626523729}
-  - component: {fileID: 5495068489532644183}
-  m_Layer: 0
-  m_Name: AudioOutput
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &7810295401626523729
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1852442847160995271}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 8648529258213501258}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5495068489532644183
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1852442847160995271}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b6c799792358da843a6dc90a15159a01, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InstrumentAudioOutput
+  m_EditorClassIdentifier: Assembly-CSharp::DrumPiece
 --- !u!1 &2803902027732693205
 GameObject:
   m_ObjectHideFlags: 0
@@ -406,7 +347,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c223de5ab44e29146a54163dad9b6c7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DrumHitZone
-  targetDrum: {fileID: 7173694727154037778}
+  targetPiece: {fileID: 0}
   midiNote: 38
   triggerCollider: {fileID: 7179719225880315969}
   allowedLayers:

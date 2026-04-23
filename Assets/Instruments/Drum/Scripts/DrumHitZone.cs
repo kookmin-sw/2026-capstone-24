@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider))]
 public sealed class DrumHitZone : MonoBehaviour
 {
-    [SerializeField] Drum targetDrum;
+    [SerializeField] DrumPiece targetPiece;
     [SerializeField] int midiNote = 36;
     [SerializeField] BoxCollider triggerCollider;
     [SerializeField] LayerMask allowedLayers = ~0;
@@ -36,7 +36,7 @@ public sealed class DrumHitZone : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (targetDrum == null || other == null)
+        if (targetPiece == null || other == null)
             return;
 
         if ((allowedLayers.value & (1 << other.gameObject.layer)) == 0)
@@ -62,7 +62,7 @@ public sealed class DrumHitZone : MonoBehaviour
             ? 1f
             : Mathf.InverseLerp(minImpactSpeed, maxImpactSpeed, impactSpeed);
 
-        targetDrum.Hit(midiNote, Mathf.Clamp01(velocity));
+        targetPiece.ReportHit(midiNote, Mathf.Clamp01(velocity));
     }
 
     void ResolveReferences()
@@ -73,8 +73,8 @@ public sealed class DrumHitZone : MonoBehaviour
         if (triggerCollider != null)
             triggerCollider.isTrigger = true;
 
-        if (targetDrum == null)
-            targetDrum = GetComponentInParent<Drum>();
+        if (targetPiece == null)
+            targetPiece = GetComponentInParent<DrumPiece>();
     }
 
     bool TryGetSourceVelocity(Collider other, out Vector3 sourceVelocity)

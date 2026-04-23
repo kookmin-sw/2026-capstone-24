@@ -1,10 +1,7 @@
 using UnityEngine;
 
-/// <summary>
-/// 드럼 세트의 NoteOn/Off를 처리하고 고정 드럼 샘플을 재생합니다.
-/// </summary>
 [DisallowMultipleComponent]
-public class Drum : InstrumentBase
+public class DrumKit : InstrumentBase
 {
     [Header("Piece Audio Settings")]
     [SerializeField, Min(1)] int maxVoices = 4;
@@ -19,9 +16,11 @@ public class Drum : InstrumentBase
     [SerializeField, Min(0f)] float reverbZoneMix = 1f;
     [SerializeField, Min(0f)] float releaseDuration = 0.05f;
 
-    // 물리 타격 센서 등에서 호출하는 기존 API 유지
-    public void Hit(int midiNote, float velocity) => TriggerMidi(new MidiEvent(midiNote, velocity, MidiEventType.NoteOn));
-    public void Choke(int midiNote) => TriggerMidi(new MidiEvent(midiNote, 0f, MidiEventType.Choke));
+    public void OnPieceHit(int midiNote, float velocity) =>
+        TriggerMidi(new MidiEvent(midiNote, velocity, MidiEventType.NoteOn));
+
+    public void Choke(int midiNote) =>
+        TriggerMidi(new MidiEvent(midiNote, 0f, MidiEventType.Choke));
 
     protected override InstrumentAudioOutput.AudioSourceSettings GetAudioSourceSettings()
     {

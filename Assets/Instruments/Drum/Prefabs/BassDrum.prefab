@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2234559292386458669}
-  - component: {fileID: 8697831898145497870}
+  - component: {fileID: 3377130962745792782}
   m_Layer: 0
   m_Name: BassDrum
   m_TagString: Untagged
@@ -31,11 +31,10 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5593871467335067807}
-  - {fileID: 5461747072923753074}
   - {fileID: 889685227990885094}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8697831898145497870
+--- !u!114 &3377130962745792782
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -44,23 +43,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1055056541254304700}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f042541e404149f4b650763850d448d, type: 3}
+  m_Script: {fileID: 11500000, guid: 2d1b908c8d869c64eaaea8f2f1d813ff, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Drum
-  audioOutput: {fileID: 0}
-  soundClips:
-  - {fileID: 8300000, guid: 4eb4795b6b73dc643858ffc5caf503b4, type: 3}
-  maxVoices: 4
-  spatialize: 1
-  spatializePostEffects: 1
-  spatialBlend: 1
-  rolloffMode: 0
-  minDistance: 0.8
-  maxDistance: 10
-  dopplerLevel: 0
-  spread: 0
-  reverbZoneMix: 1
-  releaseDuration: 0.05
+  m_EditorClassIdentifier: Assembly-CSharp::DrumPiece
 --- !u!1 &1803318639314391520
 GameObject:
   m_ObjectHideFlags: 0
@@ -127,7 +112,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c223de5ab44e29146a54163dad9b6c7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DrumHitZone
-  targetDrum: {fileID: 8697831898145497870}
+  targetPiece: {fileID: 0}
   midiNote: 36
   triggerCollider: {fileID: 6230816100603143877}
   allowedLayers:
@@ -281,47 +266,3 @@ Transform:
   - {fileID: 5430836517624309398}
   m_Father: {fileID: 2234559292386458669}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &8397122552132372058
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5461747072923753074}
-  - component: {fileID: 5047723245792470081}
-  m_Layer: 0
-  m_Name: AudioOutput
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5461747072923753074
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8397122552132372058}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.2094602, z: 0.34}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2234559292386458669}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5047723245792470081
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8397122552132372058}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b6c799792358da843a6dc90a15159a01, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InstrumentAudioOutput
