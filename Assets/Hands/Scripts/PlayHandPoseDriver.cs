@@ -36,8 +36,46 @@ public sealed class PlayHandPoseDriver : MonoBehaviour
 
     bool m_IsInitialized;
 
+    Transform m_OverrideSourceRoot;
+    Transform m_OverrideSourceWristRoot;
+    Transform m_ActiveSourceRoot;
+    Transform m_ActiveSourceWristRoot;
+
+    // Switches the bone source to the given grip pose root for the duration of a grab.
+    // The override is applied immediately in the same frame so there is no one-frame jump.
+    public void PushSourceOverride(Transform newRoot, Transform newWristRoot)
+    {
+        m_OverrideSourceRoot = newRoot;
+        m_OverrideSourceWristRoot = newWristRoot;
+        RefreshActiveSource();
+    }
+
+    // Restores the default bone source after a grab ends.
+    public void PopSourceOverride()
+    {
+        m_OverrideSourceRoot = null;
+        m_OverrideSourceWristRoot = null;
+        RefreshActiveSource();
+    }
+
+    void RefreshActiveSource()
+    {
+        var nextRoot  = m_OverrideSourceRoot  != null ? m_OverrideSourceRoot  : sourceRoot;
+        var nextWrist = m_OverrideSourceWristRoot != null ? m_OverrideSourceWristRoot : sourceWristRoot;
+
+        if (nextRoot == m_ActiveSourceRoot && nextWrist == m_ActiveSourceWristRoot)
+            return;
+
+        m_ActiveSourceRoot  = nextRoot;
+        m_ActiveSourceWristRoot = nextWrist;
+        ResetInitialization();
+        TryEnsureInitialized();
+    }
+
     void OnEnable()
     {
+        m_ActiveSourceRoot  = sourceRoot;
+        m_ActiveSourceWristRoot = sourceWristRoot;
         Application.onBeforeRender += OnBeforeRender;
     }
 
@@ -72,10 +110,10 @@ public sealed class PlayHandPoseDriver : MonoBehaviour
         if (m_IsInitialized)
             return true;
 
-        if (sourceRoot == null || sourceWristRoot == null || targetWristRoot == null)
+        if (m_ActiveSourceRoot == null || m_ActiveSourceWristRoot == null || targetWristRoot == null)
             return false;
 
-        var sourceMap = BuildJointMap(sourceWristRoot, ignoreColliderTransforms: true);
+        var sourceMap = BuildJointMap(m_ActiveSourceWristRoot, ignoreColliderTransforms: true);
         var targetMap = BuildJointMap(targetWristRoot, ignoreColliderTransforms: false);
 
         if (sourceMap.Count == 0 || targetMap.Count == 0)
@@ -114,7 +152,7 @@ public sealed class PlayHandPoseDriver : MonoBehaviour
 
     void SyncRootTransform()
     {
-        transform.SetPositionAndRotation(sourceRoot.position, sourceRoot.rotation);
+        transform.SetPositionAndRotation(m_ActiveSourceRoot.position, m_ActiveSourceRoot.rotation);
     }
 
     void ReadSourcePoseBuffer()

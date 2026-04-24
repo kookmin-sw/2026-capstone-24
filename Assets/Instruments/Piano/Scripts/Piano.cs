@@ -57,7 +57,7 @@ public class Piano : InstrumentBase
         if (!IsValidKeyIndex(keyIndex))
             return;
 
-        TriggerMidi(new MidiEvent(FirstMidiNote + keyIndex, velocity, true));
+        TriggerMidi(new MidiEvent(FirstMidiNote + keyIndex, velocity, MidiEventType.NoteOn));
     }
 
     public void NoteOff(int keyIndex)
@@ -65,7 +65,7 @@ public class Piano : InstrumentBase
         if (!IsValidKeyIndex(keyIndex))
             return;
 
-        TriggerMidi(new MidiEvent(FirstMidiNote + keyIndex, 0f, false));
+        TriggerMidi(new MidiEvent(FirstMidiNote + keyIndex, 0f, MidiEventType.NoteOff));
     }
 
     protected override bool TryResolveNoteOn(MidiEvent midiEvent, out NotePlayback playback)

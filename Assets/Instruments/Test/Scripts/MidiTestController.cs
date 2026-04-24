@@ -140,13 +140,13 @@ namespace VRMusicStudio.Test
 
         void SendMidi(int note, bool isOn)
         {
-            MidiEvent midiEvent = new MidiEvent(note, isOn ? testVelocity : 0f, isOn);
+            MidiEvent midiEvent = new MidiEvent(note, isOn ? testVelocity : 0f, isOn ? MidiEventType.NoteOn : MidiEventType.NoteOff);
             _cachedInstrument?.TriggerMidi(midiEvent);
         }
 
         bool UsesDrumLayout()
         {
-            return _cachedInstrument is Drum;
+            return _cachedInstrument is DrumKit;
         }
     }
 }

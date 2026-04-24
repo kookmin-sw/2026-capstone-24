@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3984891365751016216}
   - component: {fileID: 1670328528051329200}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: __Collider_L_IndexDistal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -211,7 +211,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4693771757827746965}
   - component: {fileID: 6237519035832919927}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: __Collider_L_RingProximal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -313,7 +313,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7814957823385893780}
   - component: {fileID: 8639472535719334507}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: __Collider_L_ThumbDistal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -368,7 +368,7 @@ GameObject:
   m_Component:
   - component: {fileID: 121387364345445557}
   - component: {fileID: 6346958616954971072}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: __Collider_L_MiddleDistal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -423,7 +423,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8058184894615489780}
   - component: {fileID: 4323982509184463251}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: __Collider_L_RingIntermediate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -511,7 +511,7 @@ GameObject:
   m_Component:
   - component: {fileID: 153455761962402079}
   - component: {fileID: 2418780429277285994}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: __Collider_L_IndexIntermediate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -566,7 +566,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6570312452851690068}
   - component: {fileID: 99540816389982977}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: __Collider_L_Wrist
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -853,7 +853,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8779882599906059758}
   - component: {fileID: 5372356237708296894}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: __Collider_L_ThumbProximal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1053,7 +1053,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8506989562235921841}
   - component: {fileID: 6577812234835357394}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: __Collider_L_Thumb_Tip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1106,7 +1106,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4276915936044910841}
   - component: {fileID: 807121779805140727}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: __Collider_L_RingDistal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1227,7 +1227,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4726517549804487857}
   - component: {fileID: 4863850209749733533}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: __Collider_L_RingMetacarpal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1348,7 +1348,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2507242955792655594}
   - component: {fileID: 6505633619514221902}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: __Collider_L_Little_Tip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1401,7 +1401,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2889704959565759426}
   - component: {fileID: 2783535956668273442}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: __Collider_L_Middle_Tip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1454,7 +1454,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5717840013132628141}
   - component: {fileID: 6617662050824080202}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: __Collider_L_IndexProximal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1542,7 +1542,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8109751143690318706}
   - component: {fileID: 9194206257618004307}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: __Collider_L_IndexMetacarpal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1597,7 +1597,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3103353804360835393}
   - component: {fileID: 7780775228283187120}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: __Collider_L_MiddleMetacarpal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1685,7 +1685,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4274234368617934453}
   - component: {fileID: 8085335719197267848}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: __Collider_L_Palm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1773,7 +1773,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4487843500477605549}
   - component: {fileID: 5792564824984562424}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: __Collider_L_Ring_Tip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1826,7 +1826,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3686059605020798828}
   - component: {fileID: 8638166526878069676}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: __Collider_L_LittleIntermediate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1881,7 +1881,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2980560905929461132}
   - component: {fileID: 4222585610260638606}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: __Collider_L_Index_Tip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1981,7 +1981,7 @@ GameObject:
   m_Component:
   - component: {fileID: 263304185615753806}
   - component: {fileID: 342014332009832022}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: __Collider_L_LittleMetacarpal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2036,7 +2036,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4023463863961686628}
   - component: {fileID: 4580249251435807984}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: __Collider_L_MiddleProximal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2275,7 +2275,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8429217588481954927}
   - component: {fileID: 8373747596566530035}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: __Collider_L_ThumbMetacarpal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2363,7 +2363,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4123633442657841371}
   - component: {fileID: 5646008098696725124}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: __Collider_L_LittleDistal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2451,7 +2451,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1196498052514503635}
   - component: {fileID: 463862997068430969}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: __Collider_L_MiddleIntermediate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2506,7 +2506,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2281309896368301769}
   - component: {fileID: 4469643034912820253}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: __Collider_L_LittleProximal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
