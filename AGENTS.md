@@ -18,6 +18,5 @@
 | 작업 유형 | 규칙 파일 |
 |---|---|
 | C# 스크립트 작성/수정 | @docs/agent-rules/coding.md |
-| 정합 작업 | @docs/agent-rules/alignment.md |
 | 씬/프리팹/직렬화 자산 수정 | @docs/agent-rules/serialized-assets.md |
 | Git 관련 작업(브랜치명 추천/생성, 커밋, PR) | @docs/agent-rules/git.md |
