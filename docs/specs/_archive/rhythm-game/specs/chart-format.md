@@ -1,6 +1,6 @@
 # Chart Format
 
-**Parent:** [`_index.md`](../_index.md)
+**Parent:** [`_index.md`](../../../rhythm-game/_index.md)
 
 ## Why
 
@@ -46,8 +46,8 @@
 
 | 번호 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| 001 | `.vmsong` Syntax & Runtime Data Model | Done | [001-chart-syntax-and-data-model.md](../../_archive/rhythm-game/plans/001-chart-syntax-and-data-model.md) |
-| 002 | `.vmsong` Parser & Tick→Seconds Resolver | Done | [002-chart-parser-and-time-resolver.md](../../_archive/rhythm-game/plans/002-chart-parser-and-time-resolver.md) |
+| 001 | `.vmsong` Syntax & Runtime Data Model | Done | [001-chart-syntax-and-data-model.md](../plans/001-chart-syntax-and-data-model.md) |
+| 002 | `.vmsong` Parser & Tick→Seconds Resolver | Done | [002-chart-parser-and-time-resolver.md](../plans/002-chart-parser-and-time-resolver.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/plan-new` 사용. 번호는 전역 일련번호.

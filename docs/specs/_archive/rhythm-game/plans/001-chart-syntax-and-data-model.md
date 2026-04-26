@@ -1,6 +1,6 @@
 # `.vmsong` Syntax & Runtime Data Model
 
-**Linked Spec:** [`chart-format.md`](../../../rhythm-game/specs/chart-format.md)
+**Linked Spec:** [`chart-format.md`](../specs/chart-format.md)
 **Status:** `Done`
 
 ## Goal
