@@ -1,0 +1,52 @@
+[Meta]
+title   = Test
+songid  = test_001
+
+[Resolution]
+ticksPerQuarter = 480
+
+[Tempo]
+tick=0  bpm=120  beats=4  beatUnit=4
+
+[Channels]
+channel=1   instrument=piano
+channel=10  instrument=drum
+
+[Track:1]
+# C4 D4 E4 F4 G4 A4 B4 C5
+tick=0     note=60  len=460  vel=90
+tick=480   note=62  len=460  vel=85
+tick=960   note=64  len=460  vel=88
+tick=1440  note=65  len=460  vel=85
+tick=1920  note=67  len=460  vel=90
+tick=2400  note=69  len=460  vel=85
+tick=2880  note=71  len=460  vel=88
+tick=3360  note=72  len=460  vel=95
+
+[Track:10]
+# Kick(36) 1·3박, Snare(38) 2·4박
+tick=0     note=36  len=60   vel=100
+tick=480   note=38  len=60   vel=90
+tick=960   note=36  len=60   vel=100
+tick=1440  note=38  len=60   vel=90
+tick=1920  note=36  len=60   vel=100
+tick=2400  note=38  len=60   vel=90
+tick=2880  note=36  len=60   vel=100
+tick=3360  note=38  len=60   vel=90
+# HiHat(42) 8분음표
+tick=0     note=42  len=40   vel=65
+tick=240   note=42  len=40   vel=55
+tick=480   note=42  len=40   vel=65
+tick=720   note=42  len=40   vel=55
+tick=960   note=42  len=40   vel=65
+tick=1200  note=42  len=40   vel=55
+tick=1440  note=42  len=40   vel=65
+tick=1680  note=42  len=40   vel=55
+tick=1920  note=42  len=40   vel=65
+tick=2160  note=42  len=40   vel=55
+tick=2400  note=42  len=40   vel=65
+tick=2640  note=42  len=40   vel=55
+tick=2880  note=42  len=40   vel=65
+tick=3120  note=42  len=40   vel=55
+tick=3360  note=42  len=40   vel=65
+tick=3600  note=42  len=40   vel=55
