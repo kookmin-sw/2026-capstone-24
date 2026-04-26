@@ -4,7 +4,9 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "RhythmGame.Data"
+        "RhythmGame.Data",
+        "RhythmGame.Runtime.Clock",
+        "Assembly-CSharp"
     ],
     "includePlatforms": [
         "Editor"
