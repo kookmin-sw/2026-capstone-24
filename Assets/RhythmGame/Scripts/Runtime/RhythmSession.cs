@@ -3,20 +3,18 @@ using UnityEngine;
 
 public class RhythmSession
 {
-    public event Action<RhythmNote> OnNoteWindow;
+    public event Action OnNoteWindow;
 
     readonly InstrumentBase instrument;
     readonly RhythmSong song;
-    readonly RhythmDifficulty difficulty;
 
     float elapsedTime;
     bool running;
 
-    public RhythmSession(InstrumentBase instrument, RhythmSong song, RhythmDifficulty difficulty)
+    public RhythmSession(InstrumentBase instrument, RhythmSong song)
     {
         this.instrument = instrument;
         this.song = song;
-        this.difficulty = difficulty;
     }
 
     public float ElapsedTime => elapsedTime;

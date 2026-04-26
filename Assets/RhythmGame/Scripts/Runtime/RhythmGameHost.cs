@@ -18,10 +18,10 @@ public class RhythmGameHost : MonoBehaviour
         activeSession?.Tick(Time.deltaTime);
     }
 
-    public RhythmSession StartSession(RhythmSong song, RhythmDifficulty difficulty)
+    public RhythmSession StartSession(RhythmSong song)
     {
         StopSession();
-        activeSession = new RhythmSession(instrument, song, difficulty);
+        activeSession = new RhythmSession(instrument, song);
         activeSession.Start();
         return activeSession;
     }
