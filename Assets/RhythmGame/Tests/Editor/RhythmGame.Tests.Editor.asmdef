@@ -6,7 +6,8 @@
         "UnityEditor.TestRunner",
         "RhythmGame.Data",
         "RhythmGame.Runtime.Clock",
-        "Assembly-CSharp"
+        "RhythmGame.Runtime",
+        "Instruments"
     ],
     "includePlatforms": [
         "Editor"
