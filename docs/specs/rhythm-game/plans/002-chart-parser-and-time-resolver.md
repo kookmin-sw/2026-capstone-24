@@ -1,7 +1,7 @@
 # `.vmsong` Parser & Tick→Seconds Resolver
 
 **Linked Spec:** [`chart-format.md`](../specs/chart-format.md)
-**Status:** `Ready`
+**Status:** `Done`
 
 ## Goal
 

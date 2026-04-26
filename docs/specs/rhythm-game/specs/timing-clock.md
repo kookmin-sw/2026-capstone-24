@@ -43,13 +43,14 @@
 
 | 번호 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| _아직 없음_ | — | — | — |
+| 003 | Rhythm Clock — Master Time Source | Done | [003-rhythm-clock.md](../plans/003-rhythm-clock.md) |
+| 005 | DSP Clock Provider 전환 | Done | [005-dsp-clock-provider.md](../plans/005-dsp-clock-provider.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/plan-new` 사용. 번호는 전역 일련번호.
 
 ## Open Questions
 
-- [ ] 시계의 정밀도 진실원 (오디오 dsp 시계 / 엔진 프레임 시계 / 별도 고해상도 타이머).
-- [ ] 일시정지 / 시간 신축(연습 모드 슬로우다운 등)을 이번 sub-spec 범위에 포함할지, 후속으로 미룰지.
-- [ ] 곡 시작 전 카운트인(빈 마디 또는 클릭) 처리 위치 — 시계의 0 이전 영역으로 둘지, `session-flow` 책임으로 둘지.
+- [x] 시계의 정밀도 진실원 → **`AudioSettings.dspTime` (DSP 시계) 채택.** Plan 005에서 `DspTimeProvider`로 구현 완료.
+- [x] 일시정지 / 시간 신축(연습 모드 슬로우다운 등) → **이번 피처 스코프 제외.** 일시정지(Pause/Resume)는 Plan 003에서 구현됨. 슬로우다운은 다루지 않음.
+- [x] 곡 시작 전 카운트인 처리 위치 → **`session-flow` 책임으로 위임.** `RhythmClock`은 `Start()` 호출 시점을 0초로 두고 단조 증가만 유지.

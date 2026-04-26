@@ -1,7 +1,7 @@
 # `.vmsong` Syntax & Runtime Data Model
 
 **Linked Spec:** [`chart-format.md`](../specs/chart-format.md)
-**Status:** `Ready`
+**Status:** `Done`
 
 ## Goal
 

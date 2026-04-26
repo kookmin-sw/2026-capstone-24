@@ -41,7 +41,7 @@ docs/specs/
 
 | Feature | Status | Sub-Specs | Plans (Done/Total) | 비고 |
 |---|---|---|---|---|
-| _아직 없음_ | — | — | — | — |
+| [rhythm-game](rhythm-game/_index.md) | Active | 6 | 5/5 | |
 
 > Status 값: `Draft` / `Active` / `Done` / `Abandoned`
 > 새 피처 추가 시 이 표에 행을 직접 갱신한다.
