@@ -1,6 +1,6 @@
 # Timing Clock
 
-**Parent:** [`_index.md`](../_index.md)
+**Parent:** [`_index.md`](../../../rhythm-game/_index.md)
 
 ## Why
 

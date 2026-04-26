@@ -46,3 +46,11 @@ Plan 구현을 완료하면 다음 네 곳을 반드시 갱신한다.
 | 1개 이상 plan 완료, 추가 plan이 남아 있거나 Open Questions 미결 | `Active` |
 | 모든 plan이 Done이고 Open Questions가 없음 | `Done` |
 | 작업 중단 결정 | `Abandoned` |
+
+## 5. 완료된 파일 아카이브
+
+Plan 파일은 `Status: Done` 처리 직후 `docs/specs/_archive/<feature>/plans/`로 이동하고, 해당 sub-spec의 `Implementation Plans` 표 링크를 새 경로로 갱신한다.
+
+해당 sub-spec의 모든 plan이 Done이고 Open Questions가 없어 Status가 `Done`이면, sub-spec 파일도 `docs/specs/_archive/<feature>/specs/`로 이동하고 `_index.md`의 `Sub-Specs` 표 링크를 새 경로로 갱신한다.
+
+전체 sub-spec이 Done이고 Open Questions가 없으면, feature 폴더 전체를 `docs/specs/_archive/<feature>/` 아래로 이동한다.

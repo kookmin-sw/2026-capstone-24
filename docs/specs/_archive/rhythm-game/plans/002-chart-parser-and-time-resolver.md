@@ -1,6 +1,6 @@
 # `.vmsong` Parser & Tick→Seconds Resolver
 
-**Linked Spec:** [`chart-format.md`](../specs/chart-format.md)
+**Linked Spec:** [`chart-format.md`](../../../rhythm-game/specs/chart-format.md)
 **Status:** `Done`
 
 ## Goal

@@ -12,6 +12,10 @@ docs/specs/
 │   ├── root-spec.md                # 큰 피처의 _index.md 템플릿
 │   ├── sub-spec.md                 # 하위 spec 템플릿
 │   └── plan.md                     # 구현 plan 템플릿
+├── _archive/                       # 완료된 spec·plan 보관
+│   └── <feature-kebab>/
+│       ├── specs/
+│       └── plans/
 └── <feature-kebab>/                # 큰 피처 = 폴더 하나
     ├── _index.md                   # 루트 spec (What/Why + 하위 spec 링크)
     ├── specs/
