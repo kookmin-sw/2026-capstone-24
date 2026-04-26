@@ -1,38 +1,31 @@
 using System;
-using UnityEngine;
 
 public class RhythmSession
 {
     public event Action OnNoteWindow;
 
     readonly InstrumentBase instrument;
-    readonly RhythmSong song;
+    readonly RhythmSong     song;
+    readonly IRhythmClock   clock;
+    readonly RhythmJudge    judge;
 
-    float elapsedTime;
     bool running;
 
-    public RhythmSession(InstrumentBase instrument, RhythmSong song)
+    public RhythmSession(InstrumentBase instrument, RhythmSong song, IRhythmClock clock, RhythmJudge judge)
     {
         this.instrument = instrument;
-        this.song = song;
+        this.song       = song;
+        this.clock      = clock;
+        this.judge      = judge;
     }
 
-    public float ElapsedTime => elapsedTime;
-    public bool IsRunning => running;
+    public double ElapsedTime => clock.CurrentTime;
+    public bool   IsRunning   => running;
 
     public void Start()
     {
-        elapsedTime = 0f;
         running = true;
         instrument.MidiTriggered += OnMidiTriggered;
-    }
-
-    public void Tick(float deltaTime)
-    {
-        if (!running)
-            return;
-
-        elapsedTime += deltaTime;
     }
 
     public void Stop()
@@ -43,6 +36,6 @@ public class RhythmSession
 
     void OnMidiTriggered(MidiEvent midiEvent)
     {
-        Debug.Log($"[RhythmSession] MidiTriggered note={midiEvent.Note} velocity={midiEvent.Velocity:F2} t={elapsedTime:F3}s");
+        judge.OnInput(midiEvent);
     }
 }

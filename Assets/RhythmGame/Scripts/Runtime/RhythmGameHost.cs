@@ -6,29 +6,41 @@ public class RhythmGameHost : MonoBehaviour
     [SerializeField] Transform uiRoot;
 
     InstrumentBase instrument;
-    RhythmSession activeSession;
+    RhythmClock    clock;
+    RhythmJudge    judge;
+    RhythmSession  activeSession;
 
     void Awake()
     {
         instrument = GetComponentInParent<InstrumentBase>();
+        clock = new RhythmClock(new DspTimeProvider());
+        judge = new RhythmJudge(clock);
     }
 
     void Update()
     {
-        activeSession?.Tick(Time.deltaTime);
+        if (activeSession != null)
+            judge.Tick();
     }
 
-    public RhythmSession StartSession(RhythmSong song)
+    public RhythmSession StartSession(VmSongChart chart, RhythmSong song, int judgedChannel)
     {
         StopSession();
-        activeSession = new RhythmSession(instrument, song);
+        clock.Start(chart);
+        judge.Start(chart, judgedChannel);
+        activeSession = new RhythmSession(instrument, song, clock, judge);
         activeSession.Start();
         return activeSession;
     }
 
     public void StopSession()
     {
-        activeSession?.Stop();
-        activeSession = null;
+        if (activeSession != null)
+        {
+            activeSession.Stop();
+            judge.Stop();
+            clock.Stop();
+            activeSession = null;
+        }
     }
 }
