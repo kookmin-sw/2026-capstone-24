@@ -23,6 +23,7 @@
 | 씬/프리팹/직렬화 자산 수정 | @docs/agent-rules/serialized-assets.md |
 | Git 관련 작업(브랜치명 추천/생성, 커밋, PR) | @docs/agent-rules/git.md |
 | Spec/Plan 문서 작성·수정 | @docs/specs/README.md, `.claude/commands/spec-new.md`, `.claude/commands/spec-resolve.md`, `.claude/commands/plan-new.md` |
+| Plan 구현 완료 후 상태 갱신 | @docs/agent-rules/plan-lifecycle.md |
 
 ## Spec 시스템
 
