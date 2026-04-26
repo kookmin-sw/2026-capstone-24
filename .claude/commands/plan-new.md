@@ -17,9 +17,33 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion
 
 ## 입력
 
-- `$ARGUMENTS` — 대상 spec 파일 경로 (예: `docs/specs/rhythm-game/specs/scoring.md`). 비어 있으면 사용자에게 묻는다.
+- `$ARGUMENTS` — 대상 spec 파일 경로 (예: `docs/specs/rhythm-game/specs/scoring.md`). 비어 있으면 단계 0을 수행한다.
 
 ## 워크플로우
+
+### 0. 인수가 없을 때: 현황 파악 및 추천
+
+`$ARGUMENTS`가 비어 있으면 사용자에게 즉시 묻기 전에 다음을 먼저 수행한다.
+
+1. `docs/specs/README.md` 상태 보드를 읽어 Active/Draft 피처 목록을 파악한다.
+2. 각 피처의 `_index.md`를 읽어 sub-spec 목록과 의존성 힌트를 파악한다.
+3. 각 sub-spec 파일을 읽어 `Implementation Plans` 표를 확인한다:
+   - 표가 없거나 `_아직 없음_` 행만 있으면 → plan 미작성
+   - 행이 있고 Status가 모두 `Done`이면 → 완료
+   - 행이 있고 하나라도 `Ready` / `In Progress`이면 → 진행 중
+4. 위 결과를 다음 형식으로 정리해 출력한다:
+
+   **[feature] 현황**
+   | Sub-Spec | Plan 상태 |
+   |---|---|
+   | chart-format | ✅ 완료 (2/2 Done) |
+   | timing-clock | ⏳ plan 미작성 |
+   | … | … |
+
+   **추천 다음 구현:**
+   > `<spec-name>` — 한 줄 이유 (예: "런타임 클락. Accompaniment·Judgment 모두 이 컴포넌트에 의존하므로 선행 필수.")
+
+5. `AskUserQuestion`으로 진행할 spec을 확정한다. 추천 항목을 첫 번째 옵션으로, 레이블 끝에 "(추천)" 표시.
 
 ### 1. Spec 컨텍스트 적재
 
