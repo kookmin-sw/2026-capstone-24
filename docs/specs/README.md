@@ -19,7 +19,7 @@ docs/specs/
 └── <feature-kebab>/                # 큰 피처 = 폴더 하나
     ├── _index.md                   # 루트 spec (What/Why + 하위 spec 링크)
     ├── specs/
-    │   └── <sub-name>.md           # 하위 spec (각자 독립적인 What 단위)
+    │   └── <NN>-<sub-name>.md      # 하위 spec (NN: 구현 순서 zero-pad 2자리)
     └── plans/
         └── <YYYY-MM-DD>-<author>-<slug>.md  # 구현 plan (날짜·작성자·slug 기반 파일명)
 ```
@@ -36,6 +36,7 @@ docs/specs/
 
 - **Spec은 얇게.** What/Why만. 함수명·파일 경로·자료구조 같은 구현 디테일 금지.
 - **방대하면 쪼갠다.** 한 spec에 무관한 피처를 섞지 않는다.
+- **Sub-spec은 구현 순서대로 번호.** 파일명은 `<NN>-<sub-name>.md` (예: `01-foo.md`, `02-bar.md`). 사이에 끼울 때는 영향받는 sub-spec 전체를 재번호하고 모든 링크를 함께 갱신한다.
 - **Plan은 self-contained.** 다른 plan이나 이전 세션 컨텍스트를 가정하지 않는다.
 - **링크 양방향 유지.** sub-spec ↔ plan은 서로 링크되어야 한다.
 

@@ -38,7 +38,7 @@
 
 ## Out of Scope
 
-- Physics 핸드를 non-kinematic으로 바꾸는 본격 물리 동작은 다루지 않는다. → [`instrument-no-penetration.md`](instrument-no-penetration.md)에서 다룸.
+- Physics 핸드를 non-kinematic으로 바꾸는 본격 물리 동작은 다루지 않는다. → [`02-instrument-no-penetration.md`](02-instrument-no-penetration.md)에서 다룸.
 - Physics 핸드를 **언제·어떤 조건**에서 비활성화할지(트리거 정책)는 본 sub-spec의 책임이 아니다. 본 sub-spec은 "비활성화된 상태에서 Play가 Ghost로 전환된다"는 동작만 보장한다.
 - 손 메쉬 형태 등 머터리얼 외의 시각 디테일은 다루지 않는다. 본 sub-spec은 색·투명도와 렌더링 on/off만 정의한다.
 

@@ -61,7 +61,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion
 
 - Feature 이름 (kebab-case 폴더명).
 - 새 root-spec(`_index.md`)을 만들지, 기존 피처에 sub-spec을 추가할지.
-- Sub-spec이 여러 개라면 각자의 이름과 책임 한 줄.
+- Sub-spec이 여러 개라면 각자의 이름과 책임 한 줄, 그리고 권장 구현 순서(파일명 prefix `NN`을 결정하는 근거).
 - 작성될 파일 경로 목록.
 
 승인 전에는 어떤 파일도 만들지 않는다.
@@ -71,7 +71,11 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion
 승인 후에만 진행:
 
 - 새 root-spec: `docs/specs/<feature-kebab>/_index.md` — `_templates/root-spec.md`를 베이스로.
-- Sub-spec: `docs/specs/<feature-kebab>/specs/<sub-name>.md` — `_templates/sub-spec.md`를 베이스로. 헤더의 `Parent` 링크를 정확히 채운다.
+- Sub-spec: `docs/specs/<feature-kebab>/specs/<NN>-<sub-name>.md` — `_templates/sub-spec.md`를 베이스로. 헤더의 `Parent` 링크를 정확히 채운다.
+  - **`NN`(구현 순서 prefix) 발급 절차**:
+    1. 같은 피처에 이미 등록된 sub-spec들의 가장 큰 번호 + 1 을 새 prefix로 부여한다 (zero-pad 2자리, 예: `01`, `02`, …).
+    2. 사용자가 명시적으로 사이 삽입(예: 기존 `02` 앞)을 요청하면 영향받는 sub-spec과 그 모든 링크(상호 참조 + `_index.md` Sub-Specs 표)를 함께 재번호한다.
+    3. 새 root-spec과 함께 sub-spec 여러 개를 동시에 만들 때는 사용자가 결정한 순서대로 `01`, `02`, … 부여.
 - Root-spec의 `Sub-Specs` 표에 신규 sub-spec 행을 추가한다 (둘 다 만든 경우).
 - **`docs/specs/README.md` 상태 보드 갱신은 필수.** 새 root-spec을 만든 경우 행을 추가하고, 기존 피처에 sub-spec만 추가한 경우 해당 행의 `Sub-Specs` 카운트를 갱신한다.
 - Plan은 만들지 않는다. (`plans/` 디렉토리는 비어 있어도 된다. 필요해지면 `/plan-new` 호출.)

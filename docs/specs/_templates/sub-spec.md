@@ -1,5 +1,5 @@
 <!--
-하위 spec 템플릿. 이 파일은 docs/specs/<feature>/specs/<sub-name>.md로 복사해서 사용한다.
+하위 spec 템플릿. 이 파일은 docs/specs/<feature>/specs/<NN>-<sub-name>.md로 복사해서 사용한다 (NN: 구현 순서 zero-pad 2자리).
 
 작성 지침:
 - 이 sub-spec은 "독립적으로 What이 성립하는 단위"여야 한다. 다른 sub-spec에 강하게 의존하면 합치거나 재분해.

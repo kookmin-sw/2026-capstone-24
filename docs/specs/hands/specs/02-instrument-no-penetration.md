@@ -38,7 +38,7 @@
 
 ## Out of Scope
 
-- 3-hand 구조 자체와 그 검증은 다루지 않는다. → [`three-hand-architecture-validation.md`](three-hand-architecture-validation.md)에서 다룸.
+- 3-hand 구조 자체와 그 검증은 다루지 않는다. → [`01-three-hand-architecture-validation.md`](01-three-hand-architecture-validation.md)에서 다룸.
 - 악기별 입력 인식 로직(어떤 깊이/속도에서 노트가 트리거되는가)은 다루지 않는다.
 - 컨트롤러 햅틱 피드백 정책은 다루지 않는다.
 - 손이 객체를 **잡는** 상호작용(grab/grip)은 다루지 않는다. 본 sub-spec은 "통과하지 않음"이라는 충돌 동작만 책임진다.

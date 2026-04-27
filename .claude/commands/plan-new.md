@@ -91,7 +91,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash
 
 - 경로: `docs/specs/<feature>/plans/<date>-<author>-<slug>.md`.
 - `_templates/plan.md`를 베이스로 채운다.
-- `Linked Spec`은 대상 spec 파일을 상대경로로 정확히 가리킨다 (`../specs/<sub>.md` 형태).
+- `Linked Spec`은 대상 spec 파일을 상대경로로 정확히 가리킨다 (`../specs/<NN>-<sub>.md` 형태).
 - `Status`는 `Ready`로 시작.
 - `Context` 섹션은 다른 세션에서 이 파일만 읽고도 작업을 시작할 수 있을 만큼 충분한 배경을 담는다 (Linked Spec 핵심 요약, 현재 코드 상태, 제약, 의사결정 근거).
 - `Approach`는 단계별로. `Deliverables`는 생성/수정될 파일 경로 목록.

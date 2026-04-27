@@ -8,6 +8,10 @@
 - 기본적으로 한국어로 답한다.
 - 정합 대상이 씬/프리팹 같은 Unity 직렬화 자산이면 `docs/agent-rules/serialized-assets.md`를 읽고 작업한다.
 
+## Sub-Spec 파일명 규칙
+- 공식 sub-spec은 `docs/specs/<feature>/specs/<NN>-<sub-name>.md` 형식으로 관리한다. `NN`은 구현 순서를 나타내는 zero-pad 2자리 숫자.
+- 새 sub-spec 추가 시 같은 피처에 등록된 가장 큰 번호 + 1을 부여한다. 사이 삽입이 필요하면 영향받는 sub-spec 전체를 재번호하고 `_index.md`의 Sub-Specs 표 및 sub-spec 본문의 상호 참조 링크를 함께 갱신한다.
+
 ## Plan 파일 규칙
 - 공식 plan은 `docs/specs/<feature>/plans/<YYYY-MM-DD>-<author>-<slug>.md` 형식으로 관리한다. 새 plan 작성은 `/plan-new`를 사용한다.
 - Plan 작성 전 대상 spec의 `Open Questions`가 많이 남아 있으면 `/spec-resolve`로 먼저 닫기를 권장한다 (포맷 결정 같은 핵심 질문이 미결이면 plan을 다시 써야 할 가능성이 큼).
@@ -40,7 +44,7 @@ docs/specs/
 │   └── plan.md
 └── <feature-kebab>/
     ├── _index.md                   # 루트 spec
-    ├── specs/<sub-name>.md         # 하위 spec
+    ├── specs/<NN>-<sub-name>.md    # 하위 spec (NN: 구현 순서 zero-pad 2자리)
     └── plans/<YYYY-MM-DD>-<author>-<slug>.md  # 구현 plan (날짜·작성자·slug 기반 파일명)
 ```
 
