@@ -1,0 +1,18 @@
+{
+    "name": "RhythmGame.Runtime",
+    "rootNamespace": "",
+    "references": [
+        "RhythmGame.Data",
+        "RhythmGame.Runtime.Clock",
+        "Instruments"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

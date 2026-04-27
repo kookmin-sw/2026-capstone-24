@@ -119,6 +119,56 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &46134113
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 46134115}
+  - component: {fileID: 46134114}
+  m_Layer: 0
+  m_Name: ChartAutoPlayer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &46134114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 46134113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91536b08564f18e4fbff7c734eb2d2b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChartAutoPlayer
+  songRelativePath: Songs/test.vmsong
+  channelBindings:
+  - channel: 1
+    instrument: {fileID: 1530775798}
+  - channel: 10
+    instrument: {fileID: 233044943}
+--- !u!4 &46134115
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 46134113}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!134 &200605284
 PhysicsMaterial:
   m_ObjectHideFlags: 0
@@ -132,6 +182,17 @@ PhysicsMaterial:
   m_Bounciness: 0
   m_FrictionCombine: 0
   m_BounceCombine: 0
+--- !u!114 &233044943 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1181393932831831023, guid: 5d113da57d1dd5342847ea83b2ec3383, type: 3}
+  m_PrefabInstance: {fileID: 2757961452950761299}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc0b7437a354a5f48900fdf7aadfdca5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DrumKit
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -859,6 +920,17 @@ PhysicsMaterial:
   m_Bounciness: 0
   m_FrictionCombine: 0
   m_BounceCombine: 0
+--- !u!114 &1530775798 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5428658257290346933, guid: 20c3ebc0d8a60954b9bf428c65c948ce, type: 3}
+  m_PrefabInstance: {fileID: 447916926}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d5e2008528f8b94f91ce13d060d01a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Piano
 --- !u!134 &1780661520
 PhysicsMaterial:
   m_ObjectHideFlags: 0
@@ -1092,3 +1164,4 @@ SceneRoots:
   - {fileID: 2757961452950761299}
   - {fileID: 518375365}
   - {fileID: 729704993}
+  - {fileID: 46134115}

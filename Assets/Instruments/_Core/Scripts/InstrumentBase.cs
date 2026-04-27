@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -25,6 +26,8 @@ public abstract class InstrumentBase : MonoBehaviour, IPlayable
 
     [Tooltip("이 악기에서 사용할 오디오 클립 목록입니다.")]
     [SerializeField] AudioClip[] soundClips = System.Array.Empty<AudioClip>();
+
+    public event Action<MidiEvent> MidiTriggered;
 
     Dictionary<string, AudioClip> audioBank;
 
@@ -93,6 +96,8 @@ public abstract class InstrumentBase : MonoBehaviour, IPlayable
                 OnChoke(midiEvent);
                 break;
         }
+
+        MidiTriggered?.Invoke(midiEvent);
     }
 
     protected abstract bool TryResolveNoteOn(MidiEvent midiEvent, out NotePlayback playback);
