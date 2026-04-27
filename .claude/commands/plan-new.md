@@ -72,18 +72,13 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash
 
 ### 3. 파일명 발급
 
-승인 후, 각 plan의 파일명을 다음 알고리즘으로 발급한다.
+파일명 규칙(`<YYYY-MM-DD>-<author>-<slug>.md`)의 정의는 [`docs/specs/README.md`](../../docs/specs/README.md)의 "Plan 파일명" 섹션을 단일 진실원으로 한다. 실행 알고리즘은 다음과 같다.
 
-1. **작성자 슬러그** 산출
-   - `git config user.name`을 `Bash`로 한 번만 호출 (read-only).
-   - 결과를 소문자화, 비-영숫자(공백·특수문자)는 `-`로 치환, 양끝 `-` 제거.
-   - 빈 문자열이면 사용자에게 보고하고 멈춘다.
-2. **날짜** 산출: `YYYY-MM-DD` (시스템 로컬 기준).
-3. **slug** 산출: 사용자가 승인한 plan 제목을 kebab-case로 변환. 한국어 제목이면 영문 slug 후보를 사용자에게 제안하고 확인받는다 (자동 변환 신뢰 금지).
-4. **후보 파일명** 조립: `<date>-<author>-<slug>.md`.
-5. **충돌 검사:** 대상 `docs/specs/<feature>/plans/` 안에 같은 이름 파일이 있는지 `Glob`으로 확인.
-6. 있으면 slug 끝에 `-2`, `-3`, … 접미사를 붙여 가며 첫 번째 비어 있는 후보를 사용한다.
-7. 한 번의 `/plan-new` 실행 안에서 여러 plan을 만들 때는 같은 날짜·작성자를 공유하므로 slug만 각각 다르면 된다.
+1. **작성자 슬러그** 산출 — `git config user.name`을 `Bash`로 한 번만 호출(read-only)한 뒤 README 규칙에 따라 정규화. 빈 문자열이면 사용자에게 보고하고 멈춘다.
+2. **날짜** 산출 — `YYYY-MM-DD` (시스템 로컬 기준).
+3. **slug** 산출 — 사용자가 승인한 plan 제목을 kebab-case로 변환. 한국어 제목이면 영문 slug 후보를 사용자에게 제안하고 확인받는다 (자동 변환 신뢰 금지).
+4. **충돌 검사** — 대상 `docs/specs/<feature>/plans/` 안에 같은 이름 파일이 있는지 `Glob`으로 확인. 충돌 시 slug 끝에 `-2`, `-3`, … 접미사를 붙여 첫 번째 비어 있는 후보를 사용한다.
+5. 한 번의 `/plan-new` 실행 안에서 여러 plan을 만들 때는 같은 날짜·작성자를 공유하므로 slug만 각각 다르면 된다.
 
 ### 4. 파일 작성
 
@@ -107,7 +102,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash
 ### 6. 마무리
 
 - 작성된 plan 파일 경로 목록과 권장 실행 순서를 사용자에게 짧게 안내한다.
-- "각 plan을 실행하려면 plan 파일 경로를 새 세션의 Claude에게 전달하면 된다 (Linked Spec과 parent `_index.md`까지 자동으로 읽도록 AGENTS.md에 규칙이 적혀 있음)"는 안내를 한 번 추가한다.
+- "각 plan을 실행하려면 plan 파일 경로를 새 세션의 Claude에게 전달하면 된다 (Linked Spec과 parent `_index.md`까지 자동으로 읽도록 `docs/specs/README.md` 'Plan 실행 시 읽기 순서'에 규칙이 적혀 있음)"는 안내를 한 번 추가한다.
 
 ## 출력 형식
 

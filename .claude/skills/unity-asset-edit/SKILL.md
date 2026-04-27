@@ -1,3 +1,9 @@
+---
+name: unity-asset-edit
+description: Unity 직렬화 자산(.prefab, .unity 씬, .asset, ScriptableObject 등)을 수정하기 직전에 사용한다. 수정 범위 고정(prefab asset / scene instance / 둘 다), 동명 오브젝트 식별, prefab vs scene instance 값 차이 확인, 수정 전후 재확인, YAML 헤더·구조 보존, AssetDatabase.FindAssets 인수 같은 안전 절차를 안내한다. 사용자가 프리팹/씬/asset 수정·생성·삭제, GameObject 컴포넌트 변경, MCP를 통한 씬 조작을 요청할 때 트리거한다.
+allowed-tools: Read, Edit, Glob, Grep, mcp__unityMCP__manage_asset, mcp__unityMCP__manage_components, mcp__unityMCP__manage_gameobject, mcp__unityMCP__manage_scene, mcp__unityMCP__find_gameobjects, mcp__unityMCP__refresh_unity, mcp__unityMCP__read_console
+---
+
 # Unity 직렬화 자산 수정 규칙
 
 - `.prefab`, `.unity`, `.asset` 같은 Unity 직렬화 자산은 기본적으로 Unity API, Unity MCP, 에디터 기능을 통한 수정이 우선이다.

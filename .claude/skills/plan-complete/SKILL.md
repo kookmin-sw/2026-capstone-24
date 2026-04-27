@@ -1,3 +1,9 @@
+---
+name: plan-complete
+description: docs/specs/<feature>/plans/ 아래 plan 파일의 구현이 끝났을 때 사용. plan Status를 Done으로 갱신하고 docs/specs/README.md 상태 보드, 해당 sub-spec의 Implementation Plans 표, parent _index.md의 Sub-Specs 표를 동기화한 뒤, 완료된 plan/sub-spec 파일을 docs/specs/_archive/ 아래로 이동한다. 사용자가 "plan 끝났어", "이 plan 구현 완료", "plan Done 처리", "아카이브 정리" 같은 요청을 할 때 트리거한다.
+allowed-tools: Read, Edit, Write, Glob, Grep, Bash
+---
+
 # Plan 라이프사이클 규칙
 
 Plan 구현을 완료하면 다음 네 곳을 반드시 갱신한다.
