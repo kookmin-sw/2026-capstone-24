@@ -60,12 +60,12 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion
 - 새 root-spec: `docs/specs/<feature-kebab>/_index.md` — `_templates/root-spec.md`를 베이스로.
 - Sub-spec: `docs/specs/<feature-kebab>/specs/<sub-name>.md` — `_templates/sub-spec.md`를 베이스로. 헤더의 `Parent` 링크를 정확히 채운다.
 - Root-spec의 `Sub-Specs` 표에 신규 sub-spec 행을 추가한다 (둘 다 만든 경우).
+- **`docs/specs/README.md` 상태 보드 갱신은 필수.** 새 root-spec을 만든 경우 행을 추가하고, 기존 피처에 sub-spec만 추가한 경우 해당 행의 `Sub-Specs` 카운트를 갱신한다.
 - Plan은 만들지 않는다. (`plans/` 디렉토리는 비어 있어도 된다. 필요해지면 `/plan-new` 호출.)
 
 ### 5. 마무리
 
-- `docs/specs/README.md`의 상태 보드에 행 추가가 필요한지 사용자에게 보고한다 (자동 갱신은 하지 않는다 — 사용자가 직접 결정).
-- 작성된 파일 경로 목록과 다음 권장 액션(`/plan-new <spec-path>`)을 짧게 안내한다.
+- 작성·갱신된 파일 경로 목록과 다음 권장 액션(`/plan-new <spec-path>`)을 짧게 안내한다.
 
 ## 출력 형식
 
