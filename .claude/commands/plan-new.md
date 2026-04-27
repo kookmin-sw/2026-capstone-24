@@ -1,7 +1,7 @@
 ---
-description: 기존 spec을 받아 self-contained한 구현 plan을 작성한다. 전역 일련번호를 자동 부여하고 spec과 양방향 링크를 맺는다.
+description: 기존 spec을 받아 self-contained한 구현 plan을 작성한다. 날짜·작성자·slug 기반 파일명을 자동 부여하고 spec과 양방향 링크를 맺는다.
 argument-hint: "<spec 파일 경로>"
-allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion
+allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash
 ---
 
 # /plan-new — Plan 작성 워크플로우
@@ -10,10 +10,10 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion
 
 ## 절대 규칙
 
-1. **수정 허용 경로는 `docs/specs/**`뿐.** 그 외는 읽기 전용.
+1. **수정 허용 경로는 `docs/specs/**`뿐.** 그 외는 읽기 전용. 단, `Bash`는 `git config user.name` 호출 한 가지에만 사용한다.
 2. **Plan은 self-contained.** 다른 plan이나 이전 세션 컨텍스트를 가정하지 않는다. 필요한 배경은 `Context` 섹션에 적어 넣는다.
 3. **사용자 승인 없이 plan 파일을 만들지 않는다.** 분할안 제안 → 승인 → 작성 순서를 지킨다.
-4. **번호 충돌 시 사용자에게 보고하고 멈춘다.** 임의 재발급 금지.
+4. **파일명 충돌 시 `-2`, `-3` 접미사로 자동 디스앰비.** 그래도 해소되지 않으면 사용자에게 보고하고 멈춘다.
 
 ## 입력
 
@@ -21,17 +21,13 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion
 
 ## 워크플로우
 
-### 0. 인수가 없을 때: 현황 파악 및 추천
+### 0. 인수가 없을 때: 피처 → sub-spec 단계적 선택
 
-`$ARGUMENTS`가 비어 있으면 사용자에게 즉시 묻기 전에 다음을 먼저 수행한다.
+`$ARGUMENTS`가 비어 있으면 **lazy 모드**로 진행한다. 모든 `_index.md`/sub-spec을 선제 적재하지 않는다.
 
-1. `docs/specs/README.md` 상태 보드를 읽어 Active/Draft 피처 목록을 파악한다.
-2. 각 피처의 `_index.md`를 읽어 sub-spec 목록과 의존성 힌트를 파악한다.
-3. 각 sub-spec 파일을 읽어 `Implementation Plans` 표를 확인한다:
-   - 표가 없거나 `_아직 없음_` 행만 있으면 → plan 미작성
-   - 행이 있고 Status가 모두 `Done`이면 → 완료
-   - 행이 있고 하나라도 `Ready` / `In Progress`이면 → 진행 중
-4. 위 결과를 다음 형식으로 정리해 출력한다:
+1. `docs/specs/README.md` 상태 보드만 읽어 `Active`/`Draft` 피처명 목록을 추출한다. (이 단계에서 `_index.md`나 sub-spec 본문은 읽지 않는다.)
+2. 사용자에게 **어느 피처의 plan을 작성할지** 묻는다 (`AskUserQuestion` 권장, 자유 텍스트 응답도 허용). 사용자가 sub-spec 경로까지 직접 짚어주면 즉시 step 1로 진입한다.
+3. 사용자가 피처를 지정하면 그제서야 해당 피처의 `_index.md`를 읽고, 거기 등록된 sub-spec 파일들의 `Implementation Plans` 표만 가볍게 훑어 다음 형식으로 정리해 출력한다:
 
    **[feature] 현황**
    | Sub-Spec | Plan 상태 |
@@ -40,10 +36,15 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion
    | timing-clock | ⏳ plan 미작성 |
    | … | … |
 
+   판단 기준:
+   - 표가 없거나 `_아직 없음_` 행만 있으면 → plan 미작성
+   - 행이 있고 Status가 모두 `Done`이면 → 완료
+   - 행이 있고 하나라도 `Ready` / `In Progress`이면 → 진행 중
+
    **추천 다음 구현:**
    > `<spec-name>` — 한 줄 이유 (예: "런타임 클락. Accompaniment·Judgment 모두 이 컴포넌트에 의존하므로 선행 필수.")
 
-5. `AskUserQuestion`으로 진행할 spec을 확정한다. 추천 항목을 첫 번째 옵션으로, 레이블 끝에 "(추천)" 표시.
+4. 진행할 sub-spec을 묻는다. `AskUserQuestion` 권장(추천 항목을 첫 옵션으로, 레이블 끝에 "(추천)"). 자유 응답도 허용.
 
 ### 1. Spec 컨텍스트 적재
 
@@ -54,7 +55,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion
 3. 같은 sub-spec의 `Implementation Plans` 표에 이미 등록된 plan들 (있으면 모두 읽어 중복/연속성 파악).
 4. `_templates/plan.md` (작성 형식 확인).
 
-필요하면 관련 코드/문서를 *읽기만* 한다.
+필요하면 관련 코드/문서를 *읽기만* 한다. Step 0에서 이미 읽은 파일은 다시 읽지 않는다.
 
 ### 2. 분할 제안
 
@@ -69,21 +70,26 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion
 - 자연스러운 의존성(예: 데이터 → 로직 → UI)이 있으면 그 경계로 자른다.
 - 검증 가능한 Acceptance Criteria가 plan 단위로 나오는지 확인.
 
-### 3. 번호 발급
+### 3. 파일명 발급
 
-승인 후, 각 plan에 전역 일련번호를 부여:
+승인 후, 각 plan의 파일명을 다음 알고리즘으로 발급한다.
 
-1. `Glob "docs/specs/**/plans/*.md"`로 기존 plan 전부 수집.
-2. 파일명 prefix(예: `042-foo.md`)에서 숫자만 추출. 추출 실패하는 파일이 있으면 사용자에게 보고하고 멈춘다.
-3. 최댓값 + 1부터 순서대로 부여. 없으면 `001`부터.
-4. 한 번의 `/plan-new` 실행 안에서 여러 plan을 만들 때는 **연속 번호**를 쓴다 (예: 042, 043, 044).
-5. 충돌(같은 번호 파일이 이미 있음)이 감지되면 즉시 멈추고 사용자에게 보고.
+1. **작성자 슬러그** 산출
+   - `git config user.name`을 `Bash`로 한 번만 호출 (read-only).
+   - 결과를 소문자화, 비-영숫자(공백·특수문자)는 `-`로 치환, 양끝 `-` 제거.
+   - 빈 문자열이면 사용자에게 보고하고 멈춘다.
+2. **날짜** 산출: `YYYY-MM-DD` (시스템 로컬 기준).
+3. **slug** 산출: 사용자가 승인한 plan 제목을 kebab-case로 변환. 한국어 제목이면 영문 slug 후보를 사용자에게 제안하고 확인받는다 (자동 변환 신뢰 금지).
+4. **후보 파일명** 조립: `<date>-<author>-<slug>.md`.
+5. **충돌 검사:** 대상 `docs/specs/<feature>/plans/` 안에 같은 이름 파일이 있는지 `Glob`으로 확인.
+6. 있으면 slug 끝에 `-2`, `-3`, … 접미사를 붙여 가며 첫 번째 비어 있는 후보를 사용한다.
+7. 한 번의 `/plan-new` 실행 안에서 여러 plan을 만들 때는 같은 날짜·작성자를 공유하므로 slug만 각각 다르면 된다.
 
 ### 4. 파일 작성
 
 승인 후에만 진행:
 
-- 경로: `docs/specs/<feature>/plans/NNN-<kebab>.md`.
+- 경로: `docs/specs/<feature>/plans/<date>-<author>-<slug>.md`.
 - `_templates/plan.md`를 베이스로 채운다.
 - `Linked Spec`은 대상 spec 파일을 상대경로로 정확히 가리킨다 (`../specs/<sub>.md` 형태).
 - `Status`는 `Ready`로 시작.
@@ -94,7 +100,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion
 ### 5. 역링크 갱신
 
 - 대상 sub-spec 파일의 `Implementation Plans` 표에 새 plan 행을 **Edit**로 추가한다.
-  - 행 형식: `| NNN | <Plan Title> | Ready | [NNN-<kebab>.md](../plans/NNN-<kebab>.md) |`
+  - 행 형식: `| <YYYY-MM-DD> | <Plan Title> | Ready | [<filename>.md](../plans/<filename>.md) |`
   - 기존 표가 `_아직 없음_` 행만 갖고 있다면 그 행을 새 행으로 대체한다.
 - 여러 plan을 한 번에 만든 경우 모두 추가.
 
@@ -105,4 +111,4 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion
 
 ## 출력 형식
 
-진행 메시지는 한국어, 짧게. 질문은 `AskUserQuestion`으로만 묶는다.
+진행 메시지는 한국어, 짧게. 질문은 기본적으로 `AskUserQuestion`을 쓴다. 단순 확인이나 자유 형식 응답이 자연스러우면 일반 텍스트 질문도 허용한다.

@@ -31,7 +31,7 @@ Plan 구현을 완료하면 다음 네 곳을 반드시 갱신한다.
 `Implementation Plans` 표에서 해당 plan 행의 Status 열을 `Done`으로 변경한다.
 
 ```
-| NNN | <Plan Title> | Done | [NNN-<kebab>.md](…) |
+| <YYYY-MM-DD> | <Plan Title> | Done | [<filename>.md](…) |
 ```
 
 ## 4. `_index.md` Sub-Specs 표 상태 갱신

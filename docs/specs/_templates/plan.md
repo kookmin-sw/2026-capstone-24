@@ -1,8 +1,8 @@
 <!--
-구현 plan 템플릿. 이 파일은 docs/specs/<feature>/plans/NNN-<kebab>.md로 복사해서 사용한다.
+구현 plan 템플릿. 이 파일은 docs/specs/<feature>/plans/<YYYY-MM-DD>-<author>-<slug>.md로 복사해서 사용한다.
 
 작성 지침:
-- 파일명 규칙: NNN-kebab-case-name.md (NNN은 docs/specs/ 전체에서 유일한 전역 일련번호. /plan-new가 자동 발급).
+- 파일명 규칙: `YYYY-MM-DD-<author>-<slug>.md` (`/plan-new`가 자동 발급. 작성자는 `git config user.name` 슬러그).
 - self-contained: 이 plan 파일과 Linked Spec만 읽고도 다른 세션에서 작업을 시작할 수 있어야 한다.
 - "한 plan = 한 세션 분량" 기준. 너무 크면 쪼개고, 너무 작으면 합친다.
 - Approach에는 어떻게 구현할지 적는다. 의사코드/파일 경로/주요 함수 단위까지 OK. (Spec과의 차이는 여기서 발생)

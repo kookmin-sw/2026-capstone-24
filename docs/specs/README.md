@@ -21,7 +21,7 @@ docs/specs/
     ├── specs/
     │   └── <sub-name>.md           # 하위 spec (각자 독립적인 What 단위)
     └── plans/
-        └── NNN-<kebab>.md          # 구현 plan (전역 일련번호 NNN)
+        └── <YYYY-MM-DD>-<author>-<slug>.md  # 구현 plan (날짜·작성자·slug 기반 파일명)
 ```
 
 ## 워크플로우

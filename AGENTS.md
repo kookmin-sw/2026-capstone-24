@@ -9,7 +9,7 @@
 - 정합 대상이 씬/프리팹 같은 Unity 직렬화 자산이면 `docs/agent-rules/serialized-assets.md`를 읽고 작업한다.
 
 ## Plan 파일 규칙
-- 공식 plan은 `docs/specs/<feature>/plans/NNN-<kebab>.md` 형식으로 관리한다. 새 plan 작성은 `/plan-new`를 사용한다.
+- 공식 plan은 `docs/specs/<feature>/plans/<YYYY-MM-DD>-<author>-<slug>.md` 형식으로 관리한다. 새 plan 작성은 `/plan-new`를 사용한다.
 - Plan 작성 전 대상 spec의 `Open Questions`가 많이 남아 있으면 `/spec-resolve`로 먼저 닫기를 권장한다 (포맷 결정 같은 핵심 질문이 미결이면 plan을 다시 써야 할 가능성이 큼).
 - 사용자가 **저장된 plan대로 구현해달라고 요청**하면, 먼저 해당 plan 파일을 읽고 → `Linked Spec` → parent `_index.md` 순으로 컨텍스트를 적재한 뒤 작업을 진행한다.
 - `docs/plans/PLAN.md` 같은 ad-hoc 임시 plan 노트는 더 이상 권장하지 않는다. 1회성 메모가 필요하면 대화 안에서 처리한다.
@@ -41,7 +41,7 @@ docs/specs/
 └── <feature-kebab>/
     ├── _index.md                   # 루트 spec
     ├── specs/<sub-name>.md         # 하위 spec
-    └── plans/NNN-<kebab>.md        # 구현 plan (전역 일련번호)
+    └── plans/<YYYY-MM-DD>-<author>-<slug>.md  # 구현 plan (날짜·작성자·slug 기반 파일명)
 ```
 
 ### Plan 실행 시 읽기 순서

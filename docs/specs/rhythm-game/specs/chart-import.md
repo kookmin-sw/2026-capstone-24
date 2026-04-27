@@ -36,12 +36,12 @@
 
 ## Implementation Plans
 
-| 번호 | 제목 | 상태 | 링크 |
+| 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
 | _아직 없음_ | — | — | — |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
-> Plan 추가는 `/plan-new` 사용. 번호는 전역 일련번호.
+> Plan 추가는 `/plan-new` 사용. 파일명은 날짜·작성자·slug 기반.
 
 ## Open Questions
 
