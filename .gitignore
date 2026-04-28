@@ -30,6 +30,9 @@
 # Claude plan docs (local working notes)
 /docs/plans/
 
+# /spec-implement orchestrator 진행 상태 캐시 (로컬 전용)
+/docs/specs/**/.orchestrator-state.json
+
 # Uncomment this line if you wish to ignore the asset store tools plugin
 # /[Aa]ssets/AssetStoreTools*
 

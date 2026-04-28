@@ -91,6 +91,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash
 - `Context` 섹션은 다른 세션에서 이 파일만 읽고도 작업을 시작할 수 있을 만큼 충분한 배경을 담는다 (Linked Spec 핵심 요약, 현재 코드 상태, 제약, 의사결정 근거).
 - `Approach`는 단계별로. `Deliverables`는 생성/수정될 파일 경로 목록.
 - `Acceptance Criteria`는 검증 가능한 항목만 적는다 (모호한 표현 금지).
+- `Acceptance Criteria` 각 항목은 `[auto-hard]` / `[auto-soft]` / `[manual-hard]` 중 하나의 라벨을 인라인 코드로 부여한다 (`- [ ] \`[auto-hard]\` <항목>` 형태). 라벨이 빠진 항목이 하나라도 있으면 `/spec-implement`가 plan 실행을 거부하므로, 본문 작성 직후 라벨 부여 여부를 한 번 검증하고 누락분은 사용자에게 분류를 묻는다. 라벨은 위 3종으로만 한정 — 사람이 직접 검증하는 항목은 항상 중단 사유로 처리한다.
 
 ### 5. 역링크 갱신
 

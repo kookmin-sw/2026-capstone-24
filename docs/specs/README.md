@@ -31,7 +31,7 @@ docs/specs/
 | 새 피처의 spec 시작 | `/spec-new` |
 | 기존 spec의 Open Questions 닫기 | `/spec-resolve <spec-path>` |
 | 기존 spec에 plan 추가 | `/plan-new <spec-path>` |
-| 작성된 plan대로 구현 | plan 파일 경로를 Claude에게 전달 (Linked Spec → parent `_index.md` 순으로 자동 컨텍스트 적재) |
+| 작성된 plan대로 구현 | `/spec-implement <plan-path>` (기본 dry-run, `--apply`로 실제 실행) |
 | 구현 완료 후 상태 갱신·아카이브 | `plan-complete` skill (자동 트리거) |
 
 ## 파일명 규칙
@@ -58,6 +58,7 @@ docs/specs/
 - **Plan은 self-contained.** 다른 plan이나 이전 세션 컨텍스트를 가정하지 않는다. 필요한 배경은 `Context` 섹션에 모두 담는다.
 - **링크 양방향 유지.** sub-spec ↔ plan은 서로 링크되어야 한다.
 - **Plan 작성 전 Open Questions 정리.** 핵심 질문(예: 포맷 결정)이 미결이면 plan을 다시 써야 할 가능성이 높으므로 `/spec-resolve`로 먼저 닫는 것을 권장.
+- **Acceptance Criteria 라벨 부여.** plan의 각 Acceptance Criteria 항목은 `[auto-hard]`(자동 검증·실패시 plan 중단) / `[auto-soft]`(자동 검증·실패시 노트 기록 후 진행) / `[manual-hard]`(사용자 직접 검증·실패시 plan 중단) 중 하나를 인라인 코드로 붙인다. 라벨 미부여 항목이 있으면 `/spec-implement`가 실행을 거부한다. 라벨은 이 3종으로 한정 — 사람이 직접 검증하는 항목은 항상 중단 사유로 처리한다.
 
 ## Plan 실행 시 읽기 순서
 
@@ -67,6 +68,8 @@ docs/specs/
 2. **Linked Spec** — 해당 sub-spec 또는 root-spec.
 3. **parent `_index.md`** — 피처 전체의 Why / What / 다른 sub-spec들과의 관계.
 4. 그 후 구현 시작.
+
+> 정식 진입점은 `/spec-implement <plan-path>` slash command다. 사람이 plan을 직접 실행하더라도 위 순서를 따른다.
 
 ## 작성 anti-pattern (금지)
 

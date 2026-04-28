@@ -23,4 +23,4 @@
 
 What/Why를 담는 얇은 **spec**과 How를 담는 실행 가능한 **plan**을 분리해 관리한다. 폴더 구조, 파일명 규칙(sub-spec NN-prefix, plan `<YYYY-MM-DD>-<author>-<slug>`), Plan 실행 시 읽기 순서, 작성 anti-pattern, 상태 보드는 모두 [`docs/specs/README.md`](docs/specs/README.md)에 단일 진실원으로 관리한다.
 
-사용자가 **저장된 plan대로 구현해달라고 요청**하면, 먼저 해당 plan 파일을 읽고 → `Linked Spec` → parent `_index.md` 순으로 컨텍스트를 적재한 뒤 작업을 진행한다.
+사용자가 **저장된 plan대로 구현해달라고 요청**하면 정식 진입점은 `/spec-implement <plan-path>` slash command다 (기본 dry-run, `--apply`로 실제 실행). 사람이 직접 진행하더라도 plan 파일 → `Linked Spec` → parent `_index.md` 순으로 컨텍스트를 적재한 뒤 작업을 진행한다.
