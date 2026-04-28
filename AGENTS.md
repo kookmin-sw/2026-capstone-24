@@ -19,19 +19,6 @@
   - Play 모드 동작 검증
 - 위 작업이 필요한데 Unity MCP 도구가 세션에 노출되어 있지 않으면, **작업을 중단하고 사용자에게 "MCP 없이 진행할지" 묻는다.** 임의로 우회하거나 추측으로 진행하지 않는다.
 
-## 작업 유형별 트리거
-
-아래 상황에 들어가면 해당 skill이 자동 트리거되어 필요한 절차를 함께 로드한다. 항상 모든 절차를 컨텍스트에 들고 다니지 않는다.
-
-| 상황 | 트리거되는 skill |
-|---|---|
-| 씬·프리팹·`.asset` 등 Unity 직렬화 자산을 수정 | `unity-asset-edit` |
-| 커밋·브랜치·PR·push 같은 git/GitHub 작업 | `git-workflow` |
-| Plan 구현 완료 후 Status·아카이브 갱신 | `plan-complete` |
-| 새 spec 작성 / Open Questions 닫기 / plan 작성 | `/spec-new`, `/spec-resolve`, `/plan-new` (slash command) |
-
-자동 트리거가 안 들어오면 사용자가 명시적으로 요청하거나, 메인 에이전트가 의도를 인식해 호출한다.
-
 ## Spec 시스템
 
 What/Why를 담는 얇은 **spec**과 How를 담는 실행 가능한 **plan**을 분리해 관리한다. 폴더 구조, 파일명 규칙(sub-spec NN-prefix, plan `<YYYY-MM-DD>-<author>-<slug>`), Plan 실행 시 읽기 순서, 작성 anti-pattern, 상태 보드는 모두 [`docs/specs/README.md`](docs/specs/README.md)에 단일 진실원으로 관리한다.
