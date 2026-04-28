@@ -1,7 +1,7 @@
 # Physics 핸드 비통과 동작 전환 (non-kinematic 콘택트 추종)
 
 **Linked Spec:** [`02-instrument-no-penetration.md`](../specs/02-instrument-no-penetration.md)
-**Status:** `Ready`
+**Status:** `In Progress`
 
 ## Goal
 
