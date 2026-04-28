@@ -186,6 +186,9 @@ SampleScene에서 다음을 확인:
 - OneEuro 권장 시작값(`mincutoff = 1.0`, `beta = 0.05`, `dcutoff = 1.0`)은 손 트래킹 일반 사례에서 출발점이며, 본 코드베이스 / 헤드셋의 트래킹 노이즈 특성에 따라 시나리오 E에서 튜닝한다.
 - 본 plan에서 root 추종이 안정되면 손가락 본 transform copy도 자연히 안정화될 것으로 예상하나, 만약 본 단위 떨림이 별도로 관찰되면 그 케이스는 후속 plan으로 분리한다 (책임 경계).
 - 본 plan 통과 확인 후에 plan 2(locomotion)로 진입하는 것이 안전. plan 2의 SetActive 토글 경로는 본 plan의 `OnEnable` 필터 reset에 의존한다.
+- 2026-04-28: 검증 실패에서 파생된 후속 plan `2026-04-28-sanyoentertain-physics-hand-critical-damping-and-source-sync.md` 추가. 완료 후 본 plan의 `[manual-hard]` "HandTracking 모드에서 정상 연주 속도(빠른 트릴, 양손 16분음표 연타)에서 떨림이 점진 누적되는 패턴이 사라" 항목 재검증 필요.
+- 2026-04-28: 동 후속 plan에서 `[manual-hard]` "HandTracking ↔ Controller 자동 전환(컨트롤러 들었다 놓기) 시 Physics 핸드 root 위치가 크게 튕" 항목 재검증 필요.
+- 2026-04-28: 동 후속 plan에서 `[manual-hard]` "선행 plan `2026-04-28-sanyoentertain-physics-hand-non-kinematic-contact-tracking.md`의 실패 AC" 항목 재검증 필요.
 
 ## Handoff
 
