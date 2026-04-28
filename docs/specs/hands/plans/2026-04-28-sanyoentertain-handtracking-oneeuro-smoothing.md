@@ -2,7 +2,7 @@
 
 **Linked Spec:** [`02-instrument-no-penetration.md`](../specs/02-instrument-no-penetration.md)
 **Caused By:** [`2026-04-28-sanyoentertain-physics-hand-non-kinematic-contact-tracking.md`](./2026-04-28-sanyoentertain-physics-hand-non-kinematic-contact-tracking.md)
-**Status:** `In Progress`
+**Status:** `Ready`
 
 ## Goal
 
