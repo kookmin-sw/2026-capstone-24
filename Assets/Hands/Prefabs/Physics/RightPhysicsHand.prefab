@@ -1318,6 +1318,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6733711737633425285}
   - component: {fileID: 1257989773844624458}
+  - component: {fileID: 2051299536960810249}
   m_Layer: 0
   m_Name: RightHand
   m_TagString: Untagged
@@ -1347,7 +1348,7 @@ SkinnedMeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5137310651407513917}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -1426,6 +1427,18 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.013066735, y: -0.015430748, z: 0.0781125}
     m_Extent: {x: 0.0867995, y: 0.05515723, z: 0.10162346}
   m_DirtyAABB: 0
+--- !u!114 &2051299536960810249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5137310651407513917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81b49635a9c18db4084e7a10e9637b12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Hands::HidePhysicsHandInPlayMode
 --- !u!1 &5768073532664586398
 GameObject:
   m_ObjectHideFlags: 0
