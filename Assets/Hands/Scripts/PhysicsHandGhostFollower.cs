@@ -35,12 +35,6 @@ public sealed class PhysicsHandGhostFollower : MonoBehaviour
     [SerializeField]
     Transform controllerGhostWristRoot;
 
-    [SerializeField]
-    float maxLinearSpeed = 20f;
-
-    [SerializeField]
-    float maxAngularSpeed = 50f;
-
     readonly List<Transform> m_PhysicsJoints = new List<Transform>();
     readonly List<Transform> m_HandTrackingJoints = new List<Transform>();
     readonly List<Transform> m_ControllerJoints = new List<Transform>();
@@ -52,14 +46,6 @@ public sealed class PhysicsHandGhostFollower : MonoBehaviour
     {
         CacheComponents();
         Application.onBeforeRender += OnBeforeRender;
-
-        // 첫 프레임 점프 흡수: rigidbody를 ghost 위치로 즉시 동기화
-        var sourceRoot = ResolveSourceRoot();
-        if (sourceRoot != null && m_Rigidbody != null)
-        {
-            m_Rigidbody.position = sourceRoot.position;
-            m_Rigidbody.rotation = sourceRoot.rotation;
-        }
     }
 
     void OnDisable()
@@ -67,33 +53,12 @@ public sealed class PhysicsHandGhostFollower : MonoBehaviour
         Application.onBeforeRender -= OnBeforeRender;
     }
 
-    void FixedUpdate()
-    {
-        if (!TryEnsureInitialized())
-            return;
-
-        var sourceRoot = ResolveSourceRoot();
-        if (sourceRoot == null)
-            return;
-
-        // root 위치 추종 — velocity 기반
-        var deltaPos = sourceRoot.position - m_Rigidbody.position;
-        m_Rigidbody.linearVelocity = Vector3.ClampMagnitude(deltaPos / Time.fixedDeltaTime, maxLinearSpeed);
-
-        // root 회전 추종 — angularVelocity 기반
-        var deltaRot = sourceRoot.rotation * Quaternion.Inverse(m_Rigidbody.rotation);
-        deltaRot.ToAngleAxis(out float angleDeg, out Vector3 axis);
-        if (angleDeg > 180f) angleDeg -= 360f;
-        var angularVel = axis.normalized * (angleDeg * Mathf.Deg2Rad / Time.fixedDeltaTime);
-        m_Rigidbody.angularVelocity = Vector3.ClampMagnitude(angularVel, maxAngularSpeed);
-    }
-
     void LateUpdate()
     {
         if (!TryEnsureInitialized())
             return;
 
-        if (SyncFingersFromActiveSource())
+        if (SyncFromActiveSource())
             Physics.SyncTransforms();
     }
 
@@ -102,7 +67,7 @@ public sealed class PhysicsHandGhostFollower : MonoBehaviour
         if (!isActiveAndEnabled || !TryEnsureInitialized())
             return;
 
-        SyncFingersFromActiveSource();
+        SyncFromActiveSource();
     }
 
     void CacheComponents()
@@ -163,14 +128,16 @@ public sealed class PhysicsHandGhostFollower : MonoBehaviour
             && controllerGhostWristRoot != null;
     }
 
-    // 손가락 본만 ghost로부터 transform copy. root는 rigidbody가 관리하므로 건드리지 않는다.
-    bool SyncFingersFromActiveSource()
+    bool SyncFromActiveSource()
     {
         var sourceMode = ResolveSourceMode();
         if (sourceMode == GhostSourceMode.None)
             return false;
 
+        var sourceRoot = sourceMode == GhostSourceMode.HandTracking ? handTrackingGhostRoot : controllerGhostRoot;
         var sourceJoints = sourceMode == GhostSourceMode.HandTracking ? m_HandTrackingJoints : m_ControllerJoints;
+
+        transform.SetPositionAndRotation(sourceRoot.position, sourceRoot.rotation);
 
         for (var i = 0; i < m_PhysicsJoints.Count; i++)
         {
@@ -183,19 +150,10 @@ public sealed class PhysicsHandGhostFollower : MonoBehaviour
         return true;
     }
 
-    // OnEnable 및 FixedUpdate에서 source root를 구하기 위한 헬퍼
-    Transform ResolveSourceRoot()
-    {
-        var sourceMode = ResolveSourceMode();
-        if (sourceMode == GhostSourceMode.None)
-            return null;
-        return sourceMode == GhostSourceMode.HandTracking ? handTrackingGhostRoot : controllerGhostRoot;
-    }
-
     GhostSourceMode ResolveSourceMode()
     {
-        var isHandTrackingActive = handTrackingRoot != null && handTrackingRoot.activeInHierarchy;
-        var isControllerActive = controllerRoot != null && controllerRoot.activeInHierarchy;
+        var isHandTrackingActive = handTrackingRoot.activeInHierarchy;
+        var isControllerActive = controllerRoot.activeInHierarchy;
 
         if (isHandTrackingActive)
             return GhostSourceMode.HandTracking;
