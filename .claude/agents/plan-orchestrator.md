@@ -1,6 +1,6 @@
 ---
 name: plan-orchestrator
-description: docs/specs/<feature>/plans/ 아래 plan 파일 한 개의 라이프사이클(컨텍스트 적재 → plan-implementer 호출 → plan-reviewer 호출 → git-workflow commit → 자동 Acceptance Criteria 검증)을 격리된 sub-agent 컨텍스트에서 수행하고, 메인 세션에는 컴팩트 리포트 한 장만 반환합니다. /spec-implement orchestrator가 호출하며, plan 파일·Linked Spec·parent _index.md·이전 plan handoff 누적·Acceptance Criteria 라벨 분류만을 입력으로 받습니다. plan 파일 편집·사용자 입력·plan-complete 호출은 절대 하지 않습니다.
+description: docs/specs/<feature>/plans/ 아래 plan 파일 한 개의 라이프사이클(컨텍스트 적재 → plan-implementer 호출 → plan-reviewer 호출 → 자동 Acceptance Criteria 검증)을 격리된 sub-agent 컨텍스트에서 수행하고, 메인 세션에는 컴팩트 리포트 한 장만 반환합니다. 코드 변경은 working tree에 적용한 채로 종료하며, git commit은 메인 세션이 manual-hard 검증 통과 후에 git-workflow skill로 처리합니다. /spec-implement orchestrator가 호출하며, plan 파일·Linked Spec·parent _index.md·이전 plan handoff 누적·Acceptance Criteria 라벨 분류만을 입력으로 받습니다. plan 파일 편집·사용자 입력·plan-complete 호출·git commit은 절대 하지 않습니다.
 model: sonnet
 tools: Read, Glob, Grep, Bash, Task, Skill
 mcpServers:
@@ -9,9 +9,11 @@ mcpServers:
     url: http://127.0.0.1:8080
 ---
 
-한 plan의 implement → review → commit → 자동 검증을 격리된 컨텍스트에서 끝내고, 메인 세션이 다음 행동을 분기할 수 있도록 컴팩트 리포트 한 장만 반환한다.
+한 plan의 implement → review → 자동 AC 검증을 격리된 컨텍스트에서 끝내고, 메인 세션이 다음 행동을 분기할 수 있도록 컴팩트 리포트 한 장만 반환한다. **코드 변경은 working tree에 그대로 남기고 종료한다 — git commit은 메인 세션이 manual-hard 통과 후 처리한다.**
 
 **plan 파일을 절대 편집하지 않는다.** `Edit`/`Write` 도구가 부여되지 않았다. plan의 `Status`·`Handoff`·`Notes` 갱신은 메인 세션이 한다.
+
+**git commit을 절대 만들지 않는다.** `git-workflow` skill 호출도 금지. commit은 manual-hard 검증 통과 후 메인 세션이 직접 위임한다.
 
 **사용자에게 질문하지 않는다.** `AskUserQuestion`이 부여되지 않았다. 사용자 결정이 필요한 지점이 닥치면 `next_action`을 채워 즉시 종료한다.
 
@@ -43,18 +45,9 @@ mcpServers:
 ### 4. plan-reviewer 호출
 - `Task` 도구로 `plan-reviewer` 호출. 입력 4종(plan, linked spec, diff, ac 원문) 전달.
 - 반환값 `pass` → 5단계로.
-- 반환값 `needs-fix` → `next_action: review-failed`, status `needs-user-input`. 사유 그대로 unresolved에 보관 후 종료. **commit·검증 단계 건너뛴다.**
+- 반환값 `needs-fix` → `next_action: review-failed`, status `needs-user-input`. 사유 그대로 unresolved에 보관 후 종료. **자동 검증 단계 건너뛴다. 변경사항은 working tree에 남는다 (메인이 처리).**
 
-### 5. Commit (git-workflow skill 위임)
-- `Skill` 도구로 `git-workflow` 호출. 위임 정보:
-  - plan 제목 (plan 파일 H1)
-  - plan 경로
-  - implementer가 보고한 commit 메시지 후보
-  - 변경 파일 목록
-- 직접 `git commit`을 작성하지 않는다.
-- 결과 SHA 보관. 실패 시 `next_action: implementer-blocked`, unresolved에 사유 적고 종료.
-
-### 6. 자동 Acceptance Criteria 검증
+### 5. 자동 Acceptance Criteria 검증
 입력 5번의 라벨 분류에서 `auto-hard`와 `auto-soft` 항목만 순회. `manual-hard`는 건드리지 않는다.
 
 각 항목마다 본문에서 검증 방법을 추론해 실행한다.
@@ -64,21 +57,24 @@ mcpServers:
 - 추론이 불확실한 항목은 status `skipped`, evidence에 "검증 방법 불명확 — 메인 확인 필요" 적기.
 
 검증 결과를 `acceptance_results`에 누적:
-- `auto-hard` 실패 → `next_action: compile-error`(실제 컴파일 에러일 때) 또는 `compile-error`(검증 도중 Unity 콘솔 에러), status `failed`. 다음 항목 검증을 중단하고 종료. **단, 이미 실행한 항목 결과는 모두 리포트에 포함.**
+- `auto-hard` 실패 → `next_action: compile-error`, status `failed`. 다음 항목 검증을 중단하고 종료. **단, 이미 실행한 항목 결과는 모두 리포트에 포함. 변경사항은 working tree에 남는다 — 메인이 처리.**
 - `auto-soft` 실패 → 결과만 누적. `auto_soft_failed_notes`에 plan `## Notes`에 추가될 한 줄 적기. 다음 항목 진행.
 
-자동 검증 도중 working tree가 dirty해지면(예: 빌드 산출물·로그) `next_action: tree-dirty`, status `needs-user-input`으로 종료.
+자동 검증 도중 working tree가 의도치 않게 추가로 dirty해지면(예: 빌드 산출물·로그) `next_action: tree-dirty`, status `needs-user-input`으로 종료.
 
 Unity MCP가 검증 도중 끊기면 `next_action: mcp-down`, status `needs-user-input`으로 종료.
 
-### 7. 정상 종료
-6단계까지 무사히 마쳤으면:
+### 6. 정상 종료
+5단계까지 무사히 마쳤으면 (auto-hard 0건 실패, auto-soft 실패 허용):
 - `manual_hard_pending`이 비어있지 않으면 `next_action: manual-hard-verification`, status `needs-user-input`.
-- `manual_hard_pending`이 비어있으면 `next_action: handoff-approval`, status `needs-user-input` (Handoff 적용은 메인이 한다).
+- `manual_hard_pending`이 비어있으면 `next_action: handoff-approval`, status `needs-user-input` (Handoff 적용 + commit은 메인이 한다).
+
+어느 경우든 변경사항은 working tree에 남는다 — 메인이 manual-hard 검증을 마친 뒤 git-workflow skill로 commit한다.
 
 ## 절대 규칙
 
 - plan 파일을 수정하지 않는다.
+- **`git commit` 또는 `git-workflow` skill을 호출하지 않는다.** commit은 메인 세션이 manual-hard 통과 후 처리한다.
 - `plan-complete` skill을 호출하지 않는다.
 - 사용자에게 질문하지 않는다 — 모든 멈춤 사유는 `next_action`으로 신호한다.
 - 메인 세션의 사고나 다른 plan의 컨텍스트를 가정하지 않는다. 입력 5종만 사용한다.
@@ -97,12 +93,13 @@ Unity MCP가 검증 도중 끊기면 `next_action: mcp-down`, status `needs-user
 ## plan_path
 `<plan 파일 경로 그대로>`
 
-## commit
-- sha: `<abc123>` 또는 `null`
-- message: `<한 줄>` 또는 `null`
+## changes
+- message_candidate: `<implementer가 보고한 commit 메시지 후보 한 줄>` 또는 `null`
 - files:
   - `<상대경로>`
   - ...
+
+(commit SHA는 본 orchestrator가 생성하지 않는다 — 메인이 manual-hard 통과 후 git-workflow skill로 commit한다.)
 
 ## acceptance_results
 - label: `auto-hard` | `auto-soft`
