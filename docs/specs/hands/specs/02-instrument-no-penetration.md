@@ -57,7 +57,6 @@
 |---|---|---|---|
 | 2026-04-28 | Physics 핸드 비통과 동작 전환 (non-kinematic 콘택트 추종) | Ready | [2026-04-28-sanyoentertain-physics-hand-non-kinematic-contact-tracking.md](../plans/2026-04-28-sanyoentertain-physics-hand-non-kinematic-contact-tracking.md) |
 | 2026-04-28 | HandTracking 입력 떨림 흡수 (OneEuro 사전 스무딩) | Ready | [2026-04-28-sanyoentertain-handtracking-oneeuro-smoothing.md](../plans/2026-04-28-sanyoentertain-handtracking-oneeuro-smoothing.md) |
-| 2026-04-28 | Physics 핸드 root 추종 안정화 (critical damping + source 전환 동기화) | Ready | [2026-04-28-sanyoentertain-physics-hand-critical-damping-and-source-sync.md](../plans/2026-04-28-sanyoentertain-physics-hand-critical-damping-and-source-sync.md) |
 | 2026-04-28 | Locomotion 일시 중단·복원 + 양손 안전성 검증 | Ready | [2026-04-28-sanyoentertain-locomotion-pause-and-bilateral-safety.md](../plans/2026-04-28-sanyoentertain-locomotion-pause-and-bilateral-safety.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
