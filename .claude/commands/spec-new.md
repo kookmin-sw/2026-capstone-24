@@ -82,7 +82,9 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion
 
 ### 5. 마무리
 
-- 작성·갱신된 파일 경로 목록과 다음 권장 액션(`/plan-new <spec-path>`)을 짧게 안내한다.
+- 작성·갱신된 파일 경로 목록을 짧게 출력한다.
+- **commit 권고.** 본 명령의 Write/Edit는 모두 `docs/specs/**` 안에 머무르므로 atomic 단위로 바로 commit하는 것이 자연스럽다. `/spec-implement`는 working tree가 clean해야 plan 실행을 시작하므로, 정리되지 않으면 다음 단계에서 막힌다. 사용자에게 "지금 `git-workflow` skill로 commit할까요?"를 한 번 묻는다 (`AskUserQuestion` 또는 자유 텍스트). 동의하면 그대로 진행, 거절하면 변경 파일 목록만 다시 표시하고 종료. 본 명령은 직접 commit하지 않는다 — 사용자 동의 후 git-workflow skill에 위임만 한다.
+- 다음 권장 액션(`/plan-new <spec-path>`)을 한 줄로 안내.
 
 ## 출력 형식
 

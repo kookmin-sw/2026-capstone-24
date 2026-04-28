@@ -75,6 +75,7 @@ allowed-tools: Read, Glob, Grep, Edit, AskUserQuestion
 ### 6. 마무리
 
 - 닫힌 항목 / 갱신된 항목 / 남은 항목을 짧게 요약.
+- **commit 권고.** 본 명령의 Edit는 모두 `docs/specs/**` 안에 머무르므로 atomic 단위로 바로 commit하는 것이 자연스럽다. `/spec-implement`는 working tree가 clean해야 plan 실행을 시작하므로, 정리되지 않으면 다음 단계에서 막힌다. 사용자에게 "지금 `git-workflow` skill로 commit할까요?"를 한 번 묻는다. 동의하면 그대로 진행, 거절하면 변경 파일 목록만 다시 표시하고 종료. 본 명령은 직접 commit하지 않는다 — 사용자 동의 후 git-workflow skill에 위임만 한다.
 - 다음 권장 액션 (남은 Open Questions를 이어서 닫을지, `/plan-new`로 넘어갈지) 안내.
 
 ## 출력 형식

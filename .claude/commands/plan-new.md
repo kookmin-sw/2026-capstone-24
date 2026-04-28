@@ -165,6 +165,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash
 ### 6. 마무리
 
 - 작성된 plan 파일 경로 목록과 권장 실행 순서를 사용자에게 짧게 안내한다.
+- **commit 권고.** 본 명령의 Write/Edit는 모두 `docs/specs/**` 안에 머무르므로 atomic 단위로 바로 commit하는 것이 자연스럽다. `/spec-implement`는 working tree가 clean해야 plan 실행을 시작하므로, 정리되지 않으면 다음 단계에서 막힌다. 사용자에게 "지금 `git-workflow` skill로 commit할까요?"를 한 번 묻는다. 동의하면 그대로 진행, 거절하면 변경 파일 목록만 다시 표시하고 종료. 본 명령은 직접 commit하지 않는다 — 사용자 동의 후 git-workflow skill에 위임만 한다. (`--from-failure` 모드에서는 선행 plan `## Notes` 갱신과 신규 plan 추가를 한 commit으로 묶는 것이 자연스럽다.)
 - "각 plan을 실행하려면 plan 파일 경로를 새 세션의 Claude에게 전달하면 된다 (Linked Spec과 parent `_index.md`까지 자동으로 읽도록 `docs/specs/README.md` 'Plan 실행 시 읽기 순서'에 규칙이 적혀 있음)"는 안내를 한 번 추가한다.
 
 ## 출력 형식
