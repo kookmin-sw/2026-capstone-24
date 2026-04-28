@@ -101,6 +101,7 @@ SampleScene에서 다음 시나리오를 확인:
 
 - 본 plan에서 root teleport 경로를 제거하므로, `OnEnable` 시점에 rigidbody 위치가 ghost와 어긋나 있으면 첫 FixedUpdate에서 큰 velocity가 발생할 수 있다. Approach 2의 OnEnable rb 위치 동기화로 흡수.
 - Acceptance가 정성적·manual 비중이 크므로 plan 2 시작 전에 본 plan의 [manual-hard] 항목들이 모두 통과되었음을 확인한다.
+- 2026-04-28: 검증 실패에서 파생된 후속 plan `2026-04-28-sanyoentertain-handtracking-oneeuro-smoothing.md` 추가. 완료 후 본 plan의 `[manual-hard]` "정상 연주 속도 떨림·박자 늦음 부재" 항목 재검증 필요.
 
 ## Handoff
 
