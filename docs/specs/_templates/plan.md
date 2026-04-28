@@ -15,6 +15,12 @@
 **Linked Spec:** [`<sub-spec-name>.md`](../specs/<sub-spec-name>.md)
 **Status:** `Ready`
 
+<!--
+선택 헤더: `**Caused By:** [<선행 plan 파일>](./<선행 plan 파일>)`
+검증 실패에서 파생된 plan에만 둔다. `/plan-new --from-failure`가 자동 부여하므로
+직접 작성 시에만 수동 추가. 위치: `Linked Spec`과 `Status` 사이.
+-->
+
 <!-- Status 값: Ready / In Progress / Done -->
 
 ## Goal

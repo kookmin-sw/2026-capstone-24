@@ -57,6 +57,10 @@ Plan 구현을 완료하면 다음 네 곳을 반드시 갱신한다.
 
 Plan 파일은 `Status: Done` 처리 직후 `docs/specs/_archive/<feature>/plans/`로 이동하고, 해당 sub-spec의 `Implementation Plans` 표 링크를 새 경로로 갱신한다.
 
+이동 후, 같은 sub-spec(또는 cross-feature) 안에 헤더 `**Caused By:** <이전 plan 경로>`로 이 plan을 가리키는 후속 plan이 있으면 그 헤더 링크를 새 아카이브 경로로 Edit 갱신한다 (`./<filename>` → `../../_archive/<feature>/plans/<filename>` 형태).
+
 해당 sub-spec의 모든 plan이 Done이고 Open Questions가 없어 Status가 `Done`이면, sub-spec 파일도 `docs/specs/_archive/<feature>/specs/`로 이동하고 `_index.md`의 `Sub-Specs` 표 링크를 새 경로로 갱신한다.
 
 전체 sub-spec이 Done이고 Open Questions가 없으면, feature 폴더 전체를 `docs/specs/_archive/<feature>/` 아래로 이동한다.
+
+> Caused By 백링크 갱신 정책 단일 진실원: [`docs/specs/README.md`](../../../docs/specs/README.md) "검증 실패 시 후속 plan 시드" 섹션.

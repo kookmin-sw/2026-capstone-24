@@ -36,7 +36,7 @@ allowed-tools: Read, Glob, Grep, Bash, Edit, Write, AskUserQuestion, Skill, Task
 | 패턴 | 모드 | 큐 |
 |---|---|---|
 | `docs/specs/<feature>/plans/<...>.md` | `single` | `[<그 경로>]` |
-| `docs/specs/<feature>/specs/<NN>-<sub>.md` | `spec` | sub-spec의 `## Implementation Plans` 표에서 `Status != Done` 행을 작성일 오름차순으로 추출 |
+| `docs/specs/<feature>/specs/<NN>-<sub>.md` | `spec` | sub-spec의 `## Implementation Plans` 표에서 `Status != Done` 행을 **`Caused By` 체인 + 작성일 위상정렬**로 추출 (아래 "Sub-spec 모드 큐 재생성 알고리즘" 박스 참조) |
 | 그 외 | — | 안내 후 종료 (`docs/specs/README.md` 사용법 링크) |
 
 `--apply`는 두 번째 토큰으로 인식한다.
@@ -100,7 +100,7 @@ allowed-tools: Read, Glob, Grep, Bash, Edit, Write, AskUserQuestion, Skill, Task
 | `compile-error` | acceptance_results의 실패 항목과 콘솔 출력 위치 표시. 수동 수정 후 재시작 안내 후 멈춤. |
 | `tree-dirty` | working tree dirty 사유 표시. 정리 또는 별도 commit 옵션 묻기. |
 | `mcp-down` | MCP 재연결 또는 skip 옵션 묻기. |
-| `manual-hard-verification` | `manual_hard_pending` 항목별로 `AskUserQuestion`(통과/실패/보류). 실패 또는 보류가 하나라도 있으면 plan Status `In Progress` 유지 + 큐 중단. 전부 통과 → 3-7로. |
+| `manual-hard-verification` | `manual_hard_pending` 항목별로 `AskUserQuestion`(통과/실패/보류). 실패 또는 보류가 하나라도 있으면 plan Status `In Progress` 유지 + 큐 중단 후, 추가로 "지금 후속 plan을 시드할까요?"를 `AskUserQuestion` (옵션: yes/no/later). **yes** → `Skill` 도구로 `plan-new`를 `--from-failure <current-plan-path>` 인수로 위임. skill 종료 후 상태 파일에 `pending_user_action: "후속 plan 시드 완료 — /spec-implement <sub-spec-path> --apply 재호출 대기"` 기록 후 멈춤. **no/later** → 기존대로 `pending_user_action`만 기록 후 멈춤. 전부 통과 → 3-7로. |
 | `handoff-approval` | (manual-hard 0건이라 바로 도달) 3-7로. |
 | `none` | 정상 종료 — 거의 없음. status가 `completed`인데 next_action이 `none`이면 3-7로. |
 
@@ -113,6 +113,19 @@ allowed-tools: Read, Glob, Grep, Bash, Edit, Write, AskUserQuestion, Skill, Task
 - 리포트의 `handoff_candidate`을 사용자에게 보여주고 `AskUserQuestion`으로 승인/수정/거절 묻기.
 - 승인 또는 수정안 확정 시 plan 파일의 `## Handoff` 섹션에 메인이 Edit (5~15줄, 다음 plan이 알아야 할 공개 API/자산 경로).
 - 거절은 빈 섹션 유지.
+
+#### 3-8.5. 선행 plan 재검증 reflect (Caused By 자동 reflect)
+
+현재 plan이 검증 실패에서 파생된 후속 plan일 때, 선행 plan의 fail AC를 자동으로 pass로 갱신한다.
+
+1. 현재 plan 헤더 `**Caused By:**` 라인을 parse — 없으면 noop, 있으면 다음.
+2. 선행 plan의 같은 sub-spec(또는 cross-feature 가능성도 있음) `.orchestrator-state.json`을 Read.
+3. `per_plan_history[]`에서 선행 plan_path를 찾는다. 없으면 noop + Notes에 한 줄 경고 append (`수동 폴백 필요`).
+4. 그 항목의 `acceptance_results[]`에서 `status: fail` 또는 `skipped`인 항목과, 현재 plan의 acceptance_results 중 criteria가 `선행 plan ... 의 실패 AC ... 가 이 plan 적용 후 재검증에서 통과한다` 형식으로 시작하고 status가 `pass`인 "재검증" 항목을 매칭한다.
+5. 매칭된 선행 plan 항목의 `status`를 `pass`로, `evidence`에 `"후속 plan <current-plan-filename> manual-hard 재검증 통과 (<YYYY-MM-DD>)"`를 append.
+6. 매칭 실패 시 noop + 메인이 현재 plan의 `## Notes`에 한 줄 경고 append (`자동 reflect 매칭 실패 — 사용자가 선행 plan을 큐에 다시 올려 manual로 통과 처리 필요`).
+
+매칭 실패는 후속 plan의 "재검증" AC 문구가 임의로 바뀌었거나 상태 파일이 사라진 경우에 일어난다. 자동 reflect가 안 되어도 사용자가 manual로 선행 plan의 manual-hard를 다시 통과 처리할 수 있는 경로(폴백)가 항상 살아 있어야 한다.
 
 #### 3-9. plan-complete skill 호출
 - `Skill` 도구로 `plan-complete` 호출. plan 경로 위임.
@@ -170,6 +183,19 @@ allowed-tools: Read, Glob, Grep, Bash, Edit, Write, AskUserQuestion, Skill, Task
 이중 실행 방지 차원에서 plan 본문의 `Status: In Progress`도 3-4단계에 기록한다(`--apply` 모드에서만). 재개 호출 시 `current_plan_index`와 `last_step` 다음 단계부터 실행.
 
 `spec` 모드에서는 매 plan 시작 직전 sub-spec 표를 다시 읽어 큐를 재생성하고, `done` 처리된 plan만 history에서 보존한다. 사용자가 중간에 plan을 추가/삭제했어도 큐가 자연스럽게 따라간다.
+
+### Sub-spec 모드 큐 재생성 알고리즘
+
+`spec` 모드에서 큐를 만들 때(또는 매 plan 시작 직전 재생성 시) 정렬 키는 단순 작성일 오름차순이 아니라 **`Caused By` 체인 + 작성일 위상정렬**이다.
+
+1. sub-spec의 `## Implementation Plans` 표에서 `Status != Done` 행을 모두 수집한다.
+2. 각 plan 파일을 Read해 헤더 `**Caused By:**` 라인을 parse한다 — 의존 그래프 구축. 라인이 없으면 그 plan은 의존 없음.
+3. 위상정렬: `Caused By`로 가리켜진 선행 plan은 후속 plan보다 큐에 **먼저** 들어가는 것이 원칙.
+4. **단, 선행 plan의 Status가 `In Progress`(=blocked)이면 후속 plan을 먼저 처리한다** — 선행이 막혀 있으니 후속을 풀고 와야 재검증이 가능하기 때문이다. 이 경우 우선순위가 뒤집힌다.
+5. 같은 우선순위 안에서는 작성일 오름차순.
+6. 큐 미리보기(2단계) 출력 시 정렬 사유를 한 줄 추가한다 (예: `[1] plan3 — plan1이 In Progress(blocked)이고 plan3.Caused By=plan1이라 먼저 처리`).
+
+`Caused By` 체인이 cross-feature(다른 sub-spec/feature를 가리킴)인 경우는 본 알고리즘 범위 밖이다 — 그 경우 위상정렬은 같은 sub-spec 안에서만 작동하고, cross-feature 의존성은 사용자가 수동으로 큐 순서를 정한다.
 
 ## 출력 형식
 
