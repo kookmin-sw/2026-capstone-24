@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: murang-backend
+  mvc:
+    problemdetails:
+      enabled: true
+
+server:
+  shutdown: graceful
+  error:
+    include-message: never
+    include-binding-errors: never
+    include-stacktrace: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
+logging:
+  pattern:
+    level: "%5p [%X{requestId:-N/A}]"
+
+app:
+  security:
+    jwt:
+      issuer: murang-backend
+      access-token-ttl: PT15M
+      refresh-token-ttl: P7D
+      secret: ${MURANG_JWT_SECRET:}
+      allow-ephemeral-secret: true
+    meta:
+      verifier-mode: mock
+      mock-token-prefix: ${MURANG_META_MOCK_PREFIX:mock-meta:}
