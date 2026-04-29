@@ -10,6 +10,10 @@
 
 Meta 계정 기반 인증 흐름을 제공한다. 클라이언트가 Meta ID 토큰을 서버에 제출하면 서버가 검증 후 자체 JWT를 발급하고, 이후 요청은 JWT로 인가된다.
 
+- Access Token은 짧은 유효 기간(수 분~수십 분)을 갖고 Refresh Token으로 갱신된다. Refresh Token은 30일 이상의 유효 기간을 갖는다.
+- Refresh Token 만료 시에도 Meta 계정이 기기에서 유효하면 사용자 개입 없이 새 토큰 쌍이 발급된다.
+- Meta 토큰 검증은 배포 환경(Production·시연·Quest 실기기)에서는 실 Meta Platform SDK를, 개발·에디터 환경에서는 Mock 검증기를 사용하도록 분기된다.
+
 ## Behavior
 
 - **Given** 유저가 Meta 기기에서 앱을 처음 실행했을 때
@@ -24,12 +28,23 @@ Meta 계정 기반 인증 흐름을 제공한다. 클라이언트가 Meta ID 토
   **When** 요청하면
   **Then** 401 응답이 반환된다.
 
+- **Given** Access Token이 만료된 유저가
+  **When** Refresh Token으로 갱신을 요청하면
+  **Then** 새 Access Token이 발급된다.
+
+- **Given** 앱이 실행될 때
+  **When** Meta 기기 계정이 유효하면
+  **Then** 자동 인증이 수행되어 별도 로그인 화면 없이 입장한다.
+
+- **Given** Refresh Token이 만료된 유저가
+  **When** Meta 계정이 기기에서 유효하면
+  **Then** Meta 재인증으로 새 토큰 쌍이 사용자 개입 없이 자동 발급된다.
+
 ## Out of Scope
 
 - DB 유저 정보 저장 (→ `02-user-persistence`)
 - 게스트/익명 로그인
 - 소셜 로그인 (Meta 외 플랫폼)
-- 토큰 갱신(Refresh Token) 흐름
 
 ## Implementation Plans
 
@@ -42,5 +57,4 @@ Meta 계정 기반 인증 흐름을 제공한다. 클라이언트가 Meta ID 토
 
 ## Open Questions
 
-- [ ] 실 기기에서 Meta Platform SDK의 토큰 발급 방식 확인 필요 (현재 Mock 구현)
-- [ ] JWT 만료 시간 정책
+- _없음_
