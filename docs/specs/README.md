@@ -55,6 +55,12 @@ docs/specs/
 
 `spec` 모드 큐는 매 plan 시작 직전 sub-spec 표를 다시 읽어 재생성된다. 재생성 시 정렬 키는 **`Caused By` 체인 + 작성일 위상정렬**이다. **선행 plan이 `In Progress`(=blocked)이면 후속 plan을 먼저 실행**한다 — 선행이 막혀 있으니 후속을 풀고 와야 재검증이 가능하기 때문이다.
 
+> **재검증 AC 매칭 키 (단일 진실원).**
+> 자동 reflect 로직이 후속 plan의 "재검증" AC 항목을 인식할 때 사용하는 substring 키:
+> ` 가 이 plan 적용 후 재검증에서 통과한다`
+>
+> `/plan-new --from-failure`가 후속 plan에 자동 부여하는 재검증 AC 문구와 `/spec-implement` 3-8.5 자동 reflect의 매칭 로직이 본 substring을 동일하게 참조한다. 본 문구가 후속 plan의 AC 항목 끝에 그대로 포함되어야 자동 reflect가 동작한다 — plan 본문에서 임의로 바꾸지 않는다. 누군가 이 키를 변경하려면 본 박스, plan-new, spec-implement 세 곳을 한 commit에 묶어 수정한다.
+
 ## 파일명 규칙
 
 ### Sub-Spec 파일명

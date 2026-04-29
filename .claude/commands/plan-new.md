@@ -142,7 +142,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash
   ```
   - [ ] `[manual-hard]` 선행 plan `<failed-plan-filename>`의 실패 AC ("<criteria 원문 앞 60자>") 가 이 plan 적용 후 재검증에서 통과한다.
   ```
-  이 항목은 `/spec-implement`의 자동 reflect 로직이 매칭하는 키이므로 **criteria 문구를 임의로 바꾸지 않는다.**
+  이 항목은 `/spec-implement`의 자동 reflect 로직이 매칭하는 키이므로 **criteria 문구를 임의로 바꾸지 않는다.** 매칭 키 정의는 [`docs/specs/README.md`](../../docs/specs/README.md) "재검증 AC 매칭 키" 박스를 단일 진실원으로 한다 — 자동 reflect substring은 ` 가 이 plan 적용 후 재검증에서 통과한다`이다.
 
 ### 5. 역링크 갱신
 
