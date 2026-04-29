@@ -1,18 +1,25 @@
 <!--
-구현 plan 템플릿. 이 파일은 docs/specs/<feature>/plans/NNN-<kebab>.md로 복사해서 사용한다.
+구현 plan 템플릿. 이 파일은 docs/specs/<feature>/plans/<YYYY-MM-DD>-<author>-<slug>.md로 복사해서 사용한다.
 
 작성 지침:
-- 파일명 규칙: NNN-kebab-case-name.md (NNN은 docs/specs/ 전체에서 유일한 전역 일련번호. /plan-new가 자동 발급).
+- 파일명 규칙: `YYYY-MM-DD-<author>-<slug>.md` (`/plan-new`가 자동 발급. 작성자는 `git config user.name` 슬러그).
 - self-contained: 이 plan 파일과 Linked Spec만 읽고도 다른 세션에서 작업을 시작할 수 있어야 한다.
 - "한 plan = 한 세션 분량" 기준. 너무 크면 쪼개고, 너무 작으면 합친다.
 - Approach에는 어떻게 구현할지 적는다. 의사코드/파일 경로/주요 함수 단위까지 OK. (Spec과의 차이는 여기서 발생)
 - Acceptance Criteria는 검증 가능한 항목으로 적는다. "잘 동작한다" 같은 모호한 표현 금지.
+- **Acceptance Criteria 각 항목은 라벨을 반드시 붙인다.** `[auto-hard]` / `[auto-soft]` / `[manual-hard]` 중 하나. 라벨 미부여 항목이 하나라도 있으면 `/spec-implement`가 plan 실행을 거부한다.
 -->
 
 # <Plan Title>
 
 **Linked Spec:** [`<sub-spec-name>.md`](../specs/<sub-spec-name>.md)
 **Status:** `Ready`
+
+<!--
+선택 헤더: `**Caused By:** [<선행 plan 파일>](./<선행 plan 파일>)`
+검증 실패에서 파생된 plan에만 둔다. `/plan-new --from-failure`가 자동 부여하므로
+직접 작성 시에만 수동 추가. 위치: `Linked Spec`과 `Status` 사이.
+-->
 
 <!-- Status 값: Ready / In Progress / Done -->
 
@@ -39,9 +46,20 @@
 
 ## Acceptance Criteria
 
-- [ ] <검증 가능한 항목 1>
-- [ ] <검증 가능한 항목 2>
-- [ ] <검증 가능한 항목 3>
+<!--
+각 항목은 반드시 다음 3종 라벨 중 하나를 인라인 코드로 붙인다. 라벨이 빠진 항목이 하나라도 있으면
+`/spec-implement`가 plan 실행을 거부한다.
+
+- `[auto-hard]` — 자동 테스트/스크립트로 검증. 실패 시 plan 중단.
+- `[auto-soft]` — 자동 테스트/스크립트로 검증. 실패 시 노트에 기록하고 다음 plan으로 진행.
+- `[manual-hard]` — 사용자가 직접 검증(헤드셋·Editor·VR 등). 실패 시 plan 중단.
+
+라벨은 위 3종으로 한정한다. 사람이 직접 검증하는 항목은 항상 중단 사유로 처리한다.
+-->
+
+- [ ] `[auto-hard]` <자동 검증 가능, 실패시 중단되어야 하는 항목>
+- [ ] `[auto-soft]` <자동 검증 가능, 실패해도 진행 가능한 항목>
+- [ ] `[manual-hard]` <사용자 직접 검증 항목>
 
 ## Out of Scope
 
@@ -50,3 +68,7 @@
 ## Notes
 
 <선택. 작업 중 발견한 사항, 의사결정 메모, 후속 plan 후보 등.>
+
+## Handoff
+
+<선택. `/spec-implement`가 plan 완료 시 자동 갱신한다. 다음 plan이 알아야 할 공개 API 시그니처·자산 경로·결정 사항 5~15줄. 빈 채로 둬도 OK.>

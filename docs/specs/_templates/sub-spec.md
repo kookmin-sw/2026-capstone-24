@@ -1,5 +1,5 @@
 <!--
-하위 spec 템플릿. 이 파일은 docs/specs/<feature>/specs/<sub-name>.md로 복사해서 사용한다.
+하위 spec 템플릿. 이 파일은 docs/specs/<feature>/specs/<NN>-<sub-name>.md로 복사해서 사용한다 (NN: 구현 순서 zero-pad 2자리).
 
 작성 지침:
 - 이 sub-spec은 "독립적으로 What이 성립하는 단위"여야 한다. 다른 sub-spec에 강하게 의존하면 합치거나 재분해.
@@ -34,12 +34,12 @@
 
 ## Implementation Plans
 
-| 번호 | 제목 | 상태 | 링크 |
+| 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
 | _아직 없음_ | — | — | — |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
-> Plan 추가는 `/plan-new` 사용. 번호는 전역 일련번호.
+> Plan 추가는 `/plan-new` 사용. 파일명은 날짜·작성자·slug 기반.
 
 ## Open Questions
 

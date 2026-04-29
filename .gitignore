@@ -31,6 +31,16 @@
 # Claude plan docs (local working notes)
 /docs/plans/
 
+# /spec-implement orchestrator 진행 상태 캐시 (로컬 전용)
+/docs/specs/**/.orchestrator-state.json
+
+# Unity scene auto-recovery
+/[Aa]ssets/_[Rr]ecovery/
+/[Aa]ssets/_[Rr]ecovery.meta
+
+# Visual Studio / Rider new solution format
+*.slnx
+
 # Uncomment this line if you wish to ignore the asset store tools plugin
 # /[Aa]ssets/AssetStoreTools*
 
@@ -85,3 +95,6 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Claude Code local launcher config
+.claude/launch.json

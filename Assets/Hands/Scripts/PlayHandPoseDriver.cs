@@ -25,6 +25,12 @@ public sealed class PlayHandPoseDriver : MonoBehaviour
     Transform sourceWristRoot;
 
     [SerializeField]
+    Transform fallbackSourceRoot;
+
+    [SerializeField]
+    Transform fallbackSourceWristRoot;
+
+    [SerializeField]
     Transform targetWristRoot;
 
     [SerializeField]
@@ -60,22 +66,37 @@ public sealed class PlayHandPoseDriver : MonoBehaviour
 
     void RefreshActiveSource()
     {
-        var nextRoot  = m_OverrideSourceRoot  != null ? m_OverrideSourceRoot  : sourceRoot;
-        var nextWrist = m_OverrideSourceWristRoot != null ? m_OverrideSourceWristRoot : sourceWristRoot;
+        var (desiredRoot, desiredWrist) = ResolveDesiredSource();
 
-        if (nextRoot == m_ActiveSourceRoot && nextWrist == m_ActiveSourceWristRoot)
+        if (desiredRoot == m_ActiveSourceRoot && desiredWrist == m_ActiveSourceWristRoot)
             return;
 
-        m_ActiveSourceRoot  = nextRoot;
-        m_ActiveSourceWristRoot = nextWrist;
+        m_ActiveSourceRoot = desiredRoot;
+        m_ActiveSourceWristRoot = desiredWrist;
         ResetInitialization();
         TryEnsureInitialized();
     }
 
+    // Priority: grip override > physics (when activeInHierarchy) > ghost fallback > null.
+    (Transform root, Transform wrist) ResolveDesiredSource()
+    {
+        if (m_OverrideSourceRoot != null)
+            return (m_OverrideSourceRoot, m_OverrideSourceWristRoot);
+
+        if (sourceRoot != null && sourceRoot.gameObject.activeInHierarchy)
+            return (sourceRoot, sourceWristRoot);
+
+        if (fallbackSourceRoot != null && fallbackSourceRoot.gameObject.activeInHierarchy)
+            return (fallbackSourceRoot, fallbackSourceWristRoot);
+
+        return (null, null);
+    }
+
     void OnEnable()
     {
-        m_ActiveSourceRoot  = sourceRoot;
-        m_ActiveSourceWristRoot = sourceWristRoot;
+        var (root, wrist) = ResolveDesiredSource();
+        m_ActiveSourceRoot = root;
+        m_ActiveSourceWristRoot = wrist;
         Application.onBeforeRender += OnBeforeRender;
     }
 
@@ -91,6 +112,8 @@ public sealed class PlayHandPoseDriver : MonoBehaviour
 
     void LateUpdate()
     {
+        SyncDesiredSourceIfChanged();
+
         if (!TryEnsureInitialized())
             return;
 
@@ -99,10 +122,26 @@ public sealed class PlayHandPoseDriver : MonoBehaviour
 
     void OnBeforeRender()
     {
-        if (!isActiveAndEnabled || !TryEnsureInitialized())
+        if (!isActiveAndEnabled)
+            return;
+
+        SyncDesiredSourceIfChanged();
+
+        if (!TryEnsureInitialized())
             return;
 
         SyncPose();
+    }
+
+    void SyncDesiredSourceIfChanged()
+    {
+        var (desiredRoot, desiredWrist) = ResolveDesiredSource();
+        if (desiredRoot == m_ActiveSourceRoot && desiredWrist == m_ActiveSourceWristRoot)
+            return;
+
+        m_ActiveSourceRoot = desiredRoot;
+        m_ActiveSourceWristRoot = desiredWrist;
+        ResetInitialization();
     }
 
     bool TryEnsureInitialized()
