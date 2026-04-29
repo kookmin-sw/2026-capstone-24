@@ -1,7 +1,7 @@
 ---
 description: plan 파일 또는 sub-spec 경로를 받아, 해당 plan(들)을 plan-orchestrator sub-agent에 위임해 순차 실행한다. 메인 세션은 큐 관리·사용자 상호작용·plan 파일 갱신만 담당해 컨텍스트를 최소화한다. 기본 dry-run, --apply로 실제 실행.
 argument-hint: "<plan 또는 sub-spec 경로> [--apply]"
-allowed-tools: Read, Glob, Grep, Bash, Edit, Write, AskUserQuestion, Skill, Task
+allowed-tools: Read, Glob, Grep, Bash, Edit, Write, AskUserQuestion, Skill, Task, mcp__unityMCP__read_console
 ---
 
 # /spec-implement — Plan/Spec 실행 orchestrator
@@ -15,15 +15,14 @@ allowed-tools: Read, Glob, Grep, Bash, Edit, Write, AskUserQuestion, Skill, Task
    - `plan-orchestrator` sub-agent 호출 (implementer → reviewer → 자동 AC 검증) — **commit은 본 sub-agent가 만들지 않는다.**
    - 컴팩트 리포트 수신 → `next_action`으로 분기
    - 사용자 상호작용 4종(Open Q 경고는 1단계, manual-hard 검증·Handoff 승인·중단 결정은 plan별)
-   - manual-hard 전부 통과 시에만 메인 세션이 `git-workflow` skill로 atomic commit 생성
-   - plan 파일 `## Handoff`/`## Notes` 갱신 → `plan-complete` skill 호출
+   - manual-hard 전부 통과 시에만: plan 파일 `## Handoff`/`## Notes` 갱신 → `plan-complete` skill 호출(Status: Done, sub-spec 표·`_index.md`·README 동기화, `_archive/` 이동) → 메인 세션이 `git-workflow` skill로 코드 + plan 라이프사이클 docs를 한 atomic commit에 묶음
 4. 큐 종료 또는 중단 시점에서 상태 파일 갱신 + 한 줄 보고
 
 기본 모드는 **dry-run**. 어떤 명령을 실행할 예정인지만 보고하고 멈춘다. `--apply`가 명시될 때만 sub-agent 호출·commit·검증·plan 파일 갱신을 실제로 수행한다.
 
 ## 절대 규칙
 
-1. **검증 통과 plan만 한 atomic commit으로 묶는다.** "통과"는 자동 AC + manual-hard가 모두 통과한 상태를 뜻한다. manual-hard 실패·보류로 멈춘 plan은 commit이 만들어지지 않는다 (변경사항은 working tree에 남고, 후속 plan이 그 위에 빌드업해 자기 commit에 누적해 묶는다 — 한 atomic commit은 항상 "통과한 한 plan의 책임 단위"를 표현한다).
+1. **검증 통과 plan만 한 atomic commit으로 묶는다.** "통과"는 자동 AC + manual-hard가 모두 통과한 상태를 뜻한다. atomic commit에는 그 plan에 속한 코드/자산 변경뿐 아니라 plan 라이프사이클 docs(plan 파일 `Status: Done`·`Handoff`·`Notes` 갱신, `_archive/` 이동, sub-spec `Implementation Plans` 표, parent `_index.md` Sub-Specs 표, `docs/specs/README.md` 상태 보드)도 모두 포함된다 — 한 atomic commit은 항상 "통과한 한 plan의 책임 단위 + 그 plan의 라이프사이클 동기화"를 함께 표현한다. manual-hard 실패·보류로 멈춘 plan은 commit이 만들어지지 않는다 (변경사항은 working tree에 남고, 후속 plan이 그 위에 빌드업해 자기 commit에 누적해 묶는다).
 2. **plan 파일은 메인 세션만 수정한다.** plan-orchestrator를 포함한 어떤 sub-agent에도 plan 파일 편집 권한을 주지 않는다 (도구 레벨에서 `Edit`/`Write` 미부여로 강제). `Status` 갱신·`Handoff` 작성·`Notes` 추가 모두 이 명령이 직접 한다.
 3. **plan-orchestrator는 git commit을 만들지 않는다.** commit은 메인 세션이 manual-hard 통과 확인 후 `git-workflow` skill에 위임해 만든다. 이로써 "검증되지 않은 commit"이 history에 남지 않게 한다.
 4. **Pre-flight 실패 시 멈춘다.** dry-run에서도 working tree dirty면 원칙적으로 진행하지 않는다 — 단, 큐 첫 plan이 `**Caused By:**` 라인을 갖고 사용자가 변경사항이 선행 plan의 빌드업 기반임을 확인하면 예외로 진행 가능 (1단계 참조).
@@ -108,25 +107,16 @@ allowed-tools: Read, Glob, Grep, Bash, Edit, Write, AskUserQuestion, Skill, Task
 | `compile-error` | acceptance_results의 실패 항목과 콘솔 출력 위치 표시. 수동 수정 후 재시작 안내 후 멈춤. |
 | `tree-dirty` | working tree dirty 사유 표시. 정리 또는 별도 commit 옵션 묻기. |
 | `mcp-down` | MCP 재연결 또는 skip 옵션 묻기. |
-| `manual-hard-verification` | `manual_hard_pending` 항목별로 `AskUserQuestion`(통과/실패/보류). **전부 통과** → 3-6.5(commit) → 3-7로. **실패 또는 보류가 하나라도 있으면** plan Status `In Progress` 유지 + commit 미생성(변경사항은 working tree에 남아 후속 plan이 누적해 한 commit으로 묶음) + 큐 중단 후, 추가로 "지금 후속 plan을 시드할까요?"를 `AskUserQuestion` (옵션: yes/no/later). **yes** → `Skill` 도구로 `plan-new`를 `--from-failure <current-plan-path>` 인수로 위임. skill 종료 후 상태 파일에 `pending_user_action: "후속 plan 시드 완료 — /spec-implement <sub-spec-path> --apply 재호출 대기"` 기록 후 멈춤. **no/later** → 기존대로 `pending_user_action`만 기록 후 멈춤. |
-| `handoff-approval` | (manual-hard 0건이라 바로 도달) 3-6.5(commit) → 3-7로. |
-| `none` | 정상 종료 — 거의 없음. status가 `completed`인데 next_action이 `none`이면 3-6.5(commit) → 3-7로. |
+| `manual-hard-verification` | `manual_hard_pending` 항목별로 `AskUserQuestion`(통과/실패/보류). **전부 통과** → 3-7로 (commit은 plan-complete 이후 3-9.5에서 수행). **실패 또는 보류가 하나라도 있으면** plan Status `In Progress` 유지 + commit 미생성(변경사항은 working tree에 남아 후속 plan이 누적해 한 commit으로 묶음) + 큐 중단 후, 추가로 "지금 후속 plan을 시드할까요?"를 `AskUserQuestion` (옵션: yes/no/later). **yes** → `Skill` 도구로 `plan-new`를 `--from-failure <current-plan-path>` 인수로 위임. skill 종료 후 상태 파일에 `pending_user_action: "후속 plan 시드 완료 — /spec-implement <sub-spec-path> --apply 재호출 대기"` 기록 후 멈춤. **no/later** → 기존대로 `pending_user_action`만 기록 후 멈춤. |
+| `handoff-approval` | (manual-hard 0건이라 바로 도달) 3-7로 (commit은 plan-complete 이후 3-9.5에서 수행). |
+| `none` | 정상 종료 — 거의 없음. status가 `completed`인데 next_action이 `none`이면 3-7로 (commit은 plan-complete 이후 3-9.5에서 수행). |
+
+**3-6 어떤 분기에 도달하든 분기 처리 직전에, 메인은 plan-orchestrator가 보고한 `auto_soft_failed_notes`(있으면)를 plan `## Notes`에 먼저 append한다.** 이렇게 해야 fail 분기(예: `compile-error`/`review-failed`)로 빠져 큐가 멈춘 경우에도 auto-soft 노트가 유실되지 않는다. `## Notes` 섹션이 없으면 새로 만든다.
 
 `status: failed`인 모든 분기에서 plan Status는 `In Progress` 유지. 큐 진행 중단. **이 분기에서는 commit이 만들어지지 않는다 — 변경사항은 working tree에 남아 사용자가 직접 정리하거나 후속 plan이 누적한다.**
 
-#### 3-6.5. Commit (manual-hard 전부 통과 시에만)
-- 본 단계는 3-6에서 manual-hard가 전부 통과(또는 manual-hard 0건)했을 때만 진입한다. 실패·보류 분기는 commit을 건너뛴다.
-- 메인이 `Skill` 도구로 `git-workflow`를 호출해 atomic commit을 만든다. 위임 정보:
-  - plan 제목 (plan 파일 H1)
-  - plan 경로
-  - plan-orchestrator가 보고한 `changes.message_candidate`
-  - 변경 파일 목록 (`changes.files`) — plan Status `In Progress`로 갱신한 plan 파일도 함께 stage된 상태이므로 같이 묶인다.
-- 결과 SHA를 보관해 상태 파일 `per_plan_history[].commit_sha`에 기록한다.
-- 본 명령은 직접 `git commit`을 작성하지 않는다 — 사용자 동의는 git-workflow skill 절차 안에서 처리.
-- 상태 파일 `last_step: commit`.
-
-#### 3-7. auto-soft 실패 노트 적용
-- 리포트의 `auto_soft_failed_notes`가 비어있지 않으면 plan 파일의 `## Notes` 섹션에 메인이 직접 append (없으면 새로 만든다).
+#### 3-7. (예약)
+- 단계 번호 안정화를 위해 비워둔다. auto-soft 노트 append는 3-6 분기 처리 직전에 이미 끝났다. 본 단계에서 추가로 할 일은 없다.
 
 #### 3-8. Handoff 승인 + 적용
 - 리포트의 `handoff_candidate`을 사용자에게 보여주고 `AskUserQuestion`으로 승인/수정/거절 묻기.
@@ -140,7 +130,7 @@ allowed-tools: Read, Glob, Grep, Bash, Edit, Write, AskUserQuestion, Skill, Task
 1. 현재 plan 헤더 `**Caused By:**` 라인을 parse — 없으면 noop, 있으면 다음.
 2. 선행 plan의 같은 sub-spec(또는 cross-feature 가능성도 있음) `.orchestrator-state.json`을 Read.
 3. `per_plan_history[]`에서 선행 plan_path를 찾는다. 없으면 noop + Notes에 한 줄 경고 append (`수동 폴백 필요`).
-4. 그 항목의 `acceptance_results[]`에서 `status: fail` 또는 `skipped`인 항목과, 현재 plan의 acceptance_results 중 criteria가 `선행 plan ... 의 실패 AC ... 가 이 plan 적용 후 재검증에서 통과한다` 형식으로 시작하고 status가 `pass`인 "재검증" 항목을 매칭한다.
+4. 그 항목의 `acceptance_results[]`에서 `status: fail` 또는 `skipped`인 항목과, 현재 plan의 acceptance_results 중 criteria가 `선행 plan ... 의 실패 AC ... 가 이 plan 적용 후 재검증에서 통과한다` 형식으로 시작하고 status가 `pass`인 "재검증" 항목을 매칭한다. 매칭 키 정의는 [`docs/specs/README.md`](../../docs/specs/README.md) "재검증 AC 매칭 키" 박스를 단일 진실원으로 한다 — 매칭에 쓰는 substring은 ` 가 이 plan 적용 후 재검증에서 통과한다`이다.
 5. 매칭된 선행 plan 항목의 `status`를 `pass`로, `evidence`에 `"후속 plan <current-plan-filename> manual-hard 재검증 통과 (<YYYY-MM-DD>)"`를 append.
 6. 매칭 실패 시 noop + 메인이 현재 plan의 `## Notes`에 한 줄 경고 append (`자동 reflect 매칭 실패 — 사용자가 선행 plan을 큐에 다시 올려 manual로 통과 처리 필요`).
 
@@ -149,6 +139,25 @@ allowed-tools: Read, Glob, Grep, Bash, Edit, Write, AskUserQuestion, Skill, Task
 #### 3-9. plan-complete skill 호출
 - `Skill` 도구로 `plan-complete` 호출. plan 경로 위임.
 - skill이 plan Status `Done` 갱신, sub-spec의 Implementation Plans 표 갱신, parent `_index.md` 동기화, `docs/specs/README.md` 상태 보드 갱신, 완료된 plan 파일을 `_archive/`로 이동까지 처리.
+- **destructive 분기 가드.** plan-complete가 sub-spec 파일 또는 feature 폴더 단위 이동 분기에 진입할 조건이 충족되면(즉 sub-spec 또는 feature 전체가 Done으로 판정되어 `_archive/`로 옮겨지는 경우) 메인이 `AskUserQuestion`으로 이동 대상 경로와 영향(외부 링크 깨짐 가능성 포함)을 보여주고 승인 처리한 뒤에만 진행한다. plan 단일 파일 이동은 가드 대상 아님.
+- **commit은 본 단계에서 만들지 않는다.** plan-complete는 파일 Edit/Write/이동만 적용하고 working tree에 그대로 둔다. atomic commit은 직후 3-9.5에서 한 번에 처리한다.
+
+#### 3-9.5. Atomic commit
+- 본 단계는 3-6에서 manual-hard가 전부 통과(또는 manual-hard 0건)했을 때만 진입한다. 실패·보류 분기는 commit을 건너뛴다.
+- 메인이 `Skill` 도구로 `git-workflow`를 호출해 한 atomic commit을 만든다. 이 commit에는 다음이 모두 포함된다.
+  - plan-orchestrator의 implementer 단계가 적용한 코드/자산 변경 (`changes.files`)
+  - 3-4에서 메인이 갱신한 plan 파일 `Status: In Progress` 편집분 (이후 3-9에서 `Done`으로 다시 갱신됨)
+  - 3-8에서 메인이 갱신한 plan 파일 `## Handoff` 섹션
+  - 3-6 분기 처리 중 메인이 append한 plan 파일 `## Notes` (auto-soft 노트)
+  - 3-9에서 plan-complete가 적용한 변경: plan 파일 `Status: Done`, sub-spec `## Implementation Plans` 표, parent `_index.md` Sub-Specs 표, `docs/specs/README.md` 상태 보드, plan 파일의 `_archive/` 이동(delete + add — git이 자연스럽게 rename으로 인지)
+  - destructive 가드를 통과한 sub-spec 또는 feature 폴더 이동분(있으면)
+- git-workflow 위임 시 다음을 함께 전달한다.
+  - plan 제목 (plan 파일 H1)
+  - plan-orchestrator의 `changes.message_candidate` (commit 메시지 후보)
+  - **단일 atomic 단위 지시.** "이 plan에 속한 모든 변경(코드 + plan 라이프사이클 docs)은 한 atomic commit으로 묶어 주세요. 논리 단위 분할 제안 단계는 건너뛰어 주세요." 한 줄을 위임 컨텍스트에 명시한다 — git-workflow의 "단위가 2개 이상이면 사용자에게 분할안 제시" 분기를 우회한다.
+- 결과 SHA를 보관해 상태 파일 `per_plan_history[].commit_sha`에 기록한다.
+- 본 명령은 직접 `git commit`을 작성하지 않는다 — 사용자 동의는 git-workflow skill 절차 안에서 처리.
+- 상태 파일 `last_step: commit`.
 
 #### 3-10. 다음 plan으로
 - 상태 파일에 `per_plan_history` 항목 추가 (commit_sha, ac_results, auto_soft_notes).

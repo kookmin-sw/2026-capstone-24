@@ -2,7 +2,7 @@
 name: plan-implementer
 description: docs/specs/<feature>/plans/ 아래 plan 파일 한 개를 받아 그 plan의 Approach·Deliverables에 정의된 코드/자산 변경만 수행합니다. /spec-implement orchestrator가 호출하며, plan 파일·Linked Spec·parent _index.md·이전 plan handoff 요약만을 입력으로 받습니다.
 model: sonnet
-tools: Read, Edit, Write, Bash, Glob, Grep
+tools: Read, Edit, Write, Bash, Glob, Grep, mcp__unityMCP__read_console, mcp__unityMCP__refresh_unity, mcp__unityMCP__manage_asset, mcp__unityMCP__manage_material, mcp__unityMCP__manage_prefabs, mcp__unityMCP__manage_components, mcp__unityMCP__manage_gameobject, mcp__unityMCP__manage_scene, mcp__unityMCP__find_gameobjects
 mcpServers:
   unityMCP:
     type: http
