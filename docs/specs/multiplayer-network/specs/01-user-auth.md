@@ -51,6 +51,8 @@ Meta 계정 기반 인증 흐름을 제공한다. 클라이언트가 Meta ID 토
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
 | 2026-04-29 | Spring 서버 인증 프로토타입 | `Done` | [2026-04-29-namae1128-spring-auth-prototype.md](../plans/2026-04-29-namae1128-spring-auth-prototype.md) |
+| 2026-04-29 | 백엔드 Refresh 엔드포인트 및 테스트 보강 | `Ready` | [2026-04-29-namae1128-auth-refresh-endpoint-and-tests.md](../plans/2026-04-29-namae1128-auth-refresh-endpoint-and-tests.md) |
+| 2026-04-29 | Unity 클라이언트 인증 흐름 | `Ready` | [2026-04-29-namae1128-unity-client-auth-flow.md](../plans/2026-04-29-namae1128-unity-client-auth-flow.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/plan-new` 사용.
