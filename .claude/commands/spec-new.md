@@ -17,20 +17,33 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion
 
 ## 입력
 
-- `$ARGUMENTS` — 사용자의 초기 아이디어 한두 줄. 비어 있으면 먼저 "어떤 피처를 spec으로 만들고 싶은지" 물어본다.
+- `$ARGUMENTS` — 사용자의 초기 아이디어 한두 줄. 비어 있을 수 있다.
 
 ## 워크플로우
 
-### 1. 컨텍스트 파악 (read-only)
+### 0. 시작 분기
 
-- `docs/specs/`를 글롭해 기존 피처 폴더와 상태 보드를 파악한다.
-- `_templates/root-spec.md`, `_templates/sub-spec.md`를 읽어 작성 형식을 확인한다.
-- 사용자 아이디어가 기존 피처의 sub-spec인지, 아예 새 피처인지 분기한다. 모호하면 사용자에게 묻는다.
-- 필요하면 관련 코드/문서를 *읽기만* 한다 (예: `Assets/`의 기존 구현 확인). 수정 금지.
+- `$ARGUMENTS`가 비어 있으면 **다른 어떤 도구도 호출하기 전에** 먼저 "어떤 피처/주제를 spec으로 만들고 싶은지" 사용자에게 자유 텍스트로 묻는다. 답을 받기 전에는 글롭/읽기를 하지 않는다.
+- 인수가 있으면 그 내용을 그대로 받아 다음 단계로 진행한다. 단, spec 작성에 정보가 부족하다고 판단되면 2단계 clarifying으로 분기한다.
+
+### 1. 컨텍스트 파악 (필요 시, read-only)
+
+처음부터 모든 것을 읽지 않는다. 사용자 아이디어가 잡힌 뒤, **필요할 때 필요한 만큼만** 읽는다.
+
+- 기존 피처의 sub-spec일 가능성이 보이면 → `docs/specs/`를 글롭하고 후보 root-spec 1개 정도만 읽는다.
+- 새 피처가 명백하면 → 이 단계를 건너뛰어도 된다.
+- `_templates/root-spec.md`, `_templates/sub-spec.md`는 **4단계 파일 작성 직전**에 읽는다. 처음부터 읽지 않는다.
+- 인접 코드/문서 읽기는 사용자가 명시적으로 요청하거나, spec의 What/Why 판단에 꼭 필요할 때만. 수정 금지.
 
 ### 2. Clarifying 질문 라운드 (최대 3회)
 
-각 라운드마다 **3~5개**의 질문을 `AskUserQuestion`으로 한 번에 묶어 던진다. 라운드 사이에는 받은 답을 짧게 요약해 사용자가 보강·수정할 여지를 준다.
+사용자가 이미 충분한 정보를 줬다면 이 단계를 건너뛴다. **정보가 부족하다고 판단될 때만 진입한다.**
+
+각 라운드의 질문은 `AskUserQuestion`으로 묶어 던지거나 자유 텍스트로 직접 물을 수 있다.
+- 질문이 3개 이상이거나 선택지가 명확한 옵션 형태면 `AskUserQuestion` 권장.
+- 1~2개의 단순 질문이거나 옵션화가 어색하면 자유 텍스트 질문이 자연스럽다.
+
+라운드 사이에는 받은 답을 짧게 요약해 사용자가 보강·수정할 여지를 준다. 한 라운드에 너무 많은 질문을 몰아치지 않는다.
 
 질문 우선순위:
 1. **Why** — 안 하면 어떤 비용이 드는가, 누가 이 결과를 관찰하는가.
@@ -48,7 +61,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion
 
 - Feature 이름 (kebab-case 폴더명).
 - 새 root-spec(`_index.md`)을 만들지, 기존 피처에 sub-spec을 추가할지.
-- Sub-spec이 여러 개라면 각자의 이름과 책임 한 줄.
+- Sub-spec이 여러 개라면 각자의 이름과 책임 한 줄, 그리고 권장 구현 순서(파일명 prefix `NN`을 결정하는 근거).
 - 작성될 파일 경로 목록.
 
 승인 전에는 어떤 파일도 만들지 않는다.
@@ -58,15 +71,21 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion
 승인 후에만 진행:
 
 - 새 root-spec: `docs/specs/<feature-kebab>/_index.md` — `_templates/root-spec.md`를 베이스로.
-- Sub-spec: `docs/specs/<feature-kebab>/specs/<sub-name>.md` — `_templates/sub-spec.md`를 베이스로. 헤더의 `Parent` 링크를 정확히 채운다.
+- Sub-spec: `docs/specs/<feature-kebab>/specs/<NN>-<sub-name>.md` — `_templates/sub-spec.md`를 베이스로. 헤더의 `Parent` 링크를 정확히 채운다.
+  - **`NN`(구현 순서 prefix) 발급 절차**:
+    1. 같은 피처에 이미 등록된 sub-spec들의 가장 큰 번호 + 1 을 새 prefix로 부여한다 (zero-pad 2자리, 예: `01`, `02`, …).
+    2. 사용자가 명시적으로 사이 삽입(예: 기존 `02` 앞)을 요청하면 영향받는 sub-spec과 그 모든 링크(상호 참조 + `_index.md` Sub-Specs 표)를 함께 재번호한다.
+    3. 새 root-spec과 함께 sub-spec 여러 개를 동시에 만들 때는 사용자가 결정한 순서대로 `01`, `02`, … 부여.
 - Root-spec의 `Sub-Specs` 표에 신규 sub-spec 행을 추가한다 (둘 다 만든 경우).
+- **`docs/specs/README.md` 상태 보드 갱신은 필수.** 새 root-spec을 만든 경우 행을 추가하고, 기존 피처에 sub-spec만 추가한 경우 해당 행의 `Sub-Specs` 카운트를 갱신한다.
 - Plan은 만들지 않는다. (`plans/` 디렉토리는 비어 있어도 된다. 필요해지면 `/plan-new` 호출.)
 
 ### 5. 마무리
 
-- `docs/specs/README.md`의 상태 보드에 행 추가가 필요한지 사용자에게 보고한다 (자동 갱신은 하지 않는다 — 사용자가 직접 결정).
-- 작성된 파일 경로 목록과 다음 권장 액션(`/plan-new <spec-path>`)을 짧게 안내한다.
+- 작성·갱신된 파일 경로 목록을 짧게 출력한다.
+- **commit 권고.** 본 명령의 Write/Edit는 모두 `docs/specs/**` 안에 머무르므로 atomic 단위로 바로 commit하는 것이 자연스럽다. `/spec-implement`는 working tree가 clean해야 plan 실행을 시작하므로, 정리되지 않으면 다음 단계에서 막힌다. 사용자에게 "지금 `git-workflow` skill로 commit할까요?"를 한 번 묻는다 (`AskUserQuestion` 또는 자유 텍스트). 동의하면 그대로 진행, 거절하면 변경 파일 목록만 다시 표시하고 종료. 본 명령은 직접 commit하지 않는다 — 사용자 동의 후 git-workflow skill에 위임만 한다.
+- 다음 권장 액션(`/plan-new <spec-path>`)을 한 줄로 안내.
 
 ## 출력 형식
 
-각 단계 진행 시 사용자에게 보일 메시지는 한국어, 짧게. 질문은 `AskUserQuestion`으로만 묶어 던지고 자유 텍스트 질문 남발 금지.
+각 단계 진행 시 사용자에게 보일 메시지는 한국어, 짧게. 질문은 `AskUserQuestion` 또는 자유 텍스트 둘 다 허용. 어느 쪽이든 한 번에 너무 많은 질문은 피한다.

@@ -1101,6 +1101,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2094619799919520334, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
+      propertyPath: fallbackSourceRoot
+      value: 
+      objectReference: {fileID: 7187747401014242039}
+    - target: {fileID: 2094619799919520334, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
+      propertyPath: fallbackSourceWristRoot
+      value: 
+      objectReference: {fileID: 7187747401014242038}
+    - target: {fileID: 4135285964237339789, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
+      propertyPath: fallbackSourceRoot
+      value: 
+      objectReference: {fileID: 7187747401014242037}
+    - target: {fileID: 4135285964237339789, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
+      propertyPath: fallbackSourceWristRoot
+      value: 
+      objectReference: {fileID: 7187747401014242036}
     - target: {fileID: 4466217632400179204, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
       propertyPath: m_Name
       value: VR Player
@@ -1150,6 +1166,26 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
+--- !u!4 &7187747401014242036 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5282249856627015518, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
+  m_PrefabInstance: {fileID: 7187747401014242035}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &7187747401014242037 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3872540163036783424, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
+  m_PrefabInstance: {fileID: 7187747401014242035}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &7187747401014242038 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2976319809083046861, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
+  m_PrefabInstance: {fileID: 7187747401014242035}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &7187747401014242039 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6052689650612780148, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
+  m_PrefabInstance: {fileID: 7187747401014242035}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

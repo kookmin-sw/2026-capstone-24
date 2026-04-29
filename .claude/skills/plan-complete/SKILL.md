@@ -1,3 +1,9 @@
+---
+name: plan-complete
+description: docs/specs/<feature>/plans/ 아래 plan 파일의 구현이 끝났을 때 사용. plan Status를 Done으로 갱신하고 docs/specs/README.md 상태 보드, 해당 sub-spec의 Implementation Plans 표, parent _index.md의 Sub-Specs 표를 동기화한 뒤, 완료된 plan/sub-spec 파일을 docs/specs/_archive/ 아래로 이동한다. 사용자가 "plan 끝났어", "이 plan 구현 완료", "plan Done 처리", "아카이브 정리" 같은 요청을 할 때 트리거한다. /spec-implement orchestrator가 plan 검증 통과 직후에도 본 skill을 자동 호출한다.
+allowed-tools: Read, Edit, Write, Glob, Grep, Bash
+---
+
 # Plan 라이프사이클 규칙
 
 Plan 구현을 완료하면 다음 네 곳을 반드시 갱신한다.
@@ -31,7 +37,7 @@ Plan 구현을 완료하면 다음 네 곳을 반드시 갱신한다.
 `Implementation Plans` 표에서 해당 plan 행의 Status 열을 `Done`으로 변경한다.
 
 ```
-| NNN | <Plan Title> | Done | [NNN-<kebab>.md](…) |
+| <YYYY-MM-DD> | <Plan Title> | Done | [<filename>.md](…) |
 ```
 
 ## 4. `_index.md` Sub-Specs 표 상태 갱신
@@ -49,8 +55,14 @@ Plan 구현을 완료하면 다음 네 곳을 반드시 갱신한다.
 
 ## 5. 완료된 파일 아카이브
 
+> **destructive 분기 진입 시 사용자 승인.** plan 단일 파일 이동은 자동 진행한다. 단 (a) sub-spec 파일을 `_archive/<feature>/specs/`로 이동하거나 (b) feature 폴더 전체를 `_archive/<feature>/`로 이동하는 분기에 진입하기 직전에는 사용자에게 이동 대상 경로와 영향(외부 링크 깨짐 가능성 포함)을 보여주고 명시 승인을 받는다. 승인 거절 시 plan/sub-spec/feature의 Status 갱신만 마치고 이동은 보류한다. `/spec-implement`가 자동 호출한 경우에도 본 게이트는 동일하게 작동한다.
+
 Plan 파일은 `Status: Done` 처리 직후 `docs/specs/_archive/<feature>/plans/`로 이동하고, 해당 sub-spec의 `Implementation Plans` 표 링크를 새 경로로 갱신한다.
+
+이동 후, 같은 sub-spec(또는 cross-feature) 안에 헤더 `**Caused By:** <이전 plan 경로>`로 이 plan을 가리키는 후속 plan이 있으면 그 헤더 링크를 새 아카이브 경로로 Edit 갱신한다 (`./<filename>` → `../../_archive/<feature>/plans/<filename>` 형태).
 
 해당 sub-spec의 모든 plan이 Done이고 Open Questions가 없어 Status가 `Done`이면, sub-spec 파일도 `docs/specs/_archive/<feature>/specs/`로 이동하고 `_index.md`의 `Sub-Specs` 표 링크를 새 경로로 갱신한다.
 
 전체 sub-spec이 Done이고 Open Questions가 없으면, feature 폴더 전체를 `docs/specs/_archive/<feature>/` 아래로 이동한다.
+
+> Caused By 백링크 갱신 정책 단일 진실원: [`docs/specs/README.md`](../../../docs/specs/README.md) "검증 실패 시 후속 plan 시드" 섹션.

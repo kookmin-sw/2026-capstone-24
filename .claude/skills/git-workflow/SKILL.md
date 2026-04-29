@@ -1,3 +1,9 @@
+---
+name: git-workflow
+description: VirtualMusicStudio_Unity 프로젝트의 커밋·브랜치·PR 절차. 사용자가 "커밋해", "commit", "PR 만들어줘", "PR 작성", "브랜치 추천", "브랜치 만들어", "push" 등 git/GitHub 작업을 요청할 때 사용한다. 한국어 커밋 메시지 포맷, 논리 단위 분할 절차, gh CLI 사용 원칙, pull_request_template.md 준수 같은 프로젝트별 규칙을 포함한다.
+allowed-tools: Bash, Read, Grep, Glob
+---
+
 # Git 커밋/PR 규칙
 
 "commit 해줘", "커밋해", "PR 만들어줘" 등의 요청을 받으면 아래 절차를 따른다.
@@ -73,7 +79,7 @@
    - Assets/Hands/Prefabs/Physics/LeftPhysicsHand.prefab
 2. docs(git): <설명>
    - AGENTS.md
-   - docs/agent-rules/git.md
+   - .claude/skills/git-workflow/SKILL.md
 
 이대로 진행할까요? 아니면 다른 단위로 묶을까요?
 ```
