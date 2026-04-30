@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5a475d419a141d6810d19441766fb28, type: 3}
+  m_Name: MultiplayerAuthConfig
+  m_EditorClassIdentifier: Murang.Multiplayer::Murang.Multiplayer.Auth.MultiplayerAuthConfig
+  backendBaseUrl: http://localhost:8080
+  useMockMetaToken: 1
+  mockMetaTokenPrefix: mock-meta:
+  mockAccountId: quest-user-01
+  defaultNickname: Murang Quest User
