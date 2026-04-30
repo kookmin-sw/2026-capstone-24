@@ -1,7 +1,9 @@
 # Base Teleport: 단일 이동 수단 전환
 
 **Linked Spec:** [`01-base-teleport.md`](../specs/01-base-teleport.md)
-**Status:** `In Progress`
+**Status:** `Abandoned`
+
+> **Abandoned 2026-04-30.** Approach 2가 Teleport Interactor를 `Camera Offset/Hands/Left`(정적 컨테이너)에 부착하도록 작성됐으나, 실제 controller pose는 그 자식 `LeftControllerHandRoot`(TrackedPoseDriver 보유)가 받는다는 사실을 plan 작성 시점에 검증하지 않음. manual-hard 검증에서 라인 visual이 사용자 시야 밖에 그려지는 형태로 fail. 후속 reparent plan도 같은 시점의 다른 사고로 abandoned 처리 — base 자체를 폐기하고 spec(`01-base-teleport.md`)에서 처음부터 다시 plan을 작성한다.
 
 ## Goal
 

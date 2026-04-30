@@ -2,7 +2,9 @@
 
 **Linked Spec:** [`01-base-teleport.md`](../specs/01-base-teleport.md)
 **Caused By:** [`2026-04-30-sanyoentertain-base-teleport.md`](./2026-04-30-sanyoentertain-base-teleport.md)
-**Status:** `In Progress`
+**Status:** `Abandoned`
+
+> **Abandoned 2026-04-30.** Approach 자체가 nested prefab 자식 추가의 직렬화 비정합 시나리오를 누락하고 자동 AC가 한 줄 변경만으로 통과하는 헐거운 형태로 작성됨. manual-hard 검증 단계에서 VR Player prefab hierarchy 전체가 인스턴스화 실패해 화면이 표시되지 않는 사고로 이어짐. 즉시 복구로 working tree 변경은 롤백됐으나, 본 plan이 가정한 접근(top-level prefab에서 nested prefab의 stripped Transform을 m_TransformParent로 직접 가리킴) 자체가 잘못 — 후속 plan으로 잇기보다 spec(`01-base-teleport.md`)에서 처음부터 다시 plan을 작성하는 형태로 갈음한다. 사고 분석은 본 plan ## Notes에 그대로 박제됨.
 
 ## Goal
 
