@@ -31,6 +31,28 @@
 
 <왜 이 plan이 지금 필요한가. Linked Spec의 어떤 What을 어떻게 풀어내는가. 다른 세션에서 이 파일만 읽고도 작업을 시작할 수 있도록 필요한 배경(현재 코드 상태, 제약, 결정 근거)을 충분히 적는다.>
 
+## Verified Structural Assumptions
+
+<!--
+plan의 Approach가 가정하는 Unity 자산 구조(GameObject 경로·컴포넌트 부착 위치·prefab vs
+scene instance 구분·ScriptableObject/material/animation 자산 값 등)를 한 번에 점검한 결과를 적는다.
+
+작성 규칙:
+- 최소 1개 항목, 최대 ~6개 권장.
+- 각 항목 끝에 출처를 명시한다:
+  - `unity-scene-reader 보고 (YYYY-MM-DD)` — `/plan-new` step 1.5에서 sub-agent로 검증한 경우. (권장)
+  - `MCP 미사용 — 가정` — Unity MCP 사용 불가 fallback 경로일 때만. (사용자 동의 박제)
+- 검증한 GameObject·컴포넌트·자산 경로를 plan 본문 안 어디에선가 다시 인용하므로 정확한 표기를 쓴다.
+- Unity 자산 의존이 0인 plan(순수 C# 로직 변경, 문서 정리 등)은 본문 한 줄로 비워둔다:
+  `_해당 없음 — 순수 로직 변경_`
+
+이 섹션은 모든 plan에 필수다. 비어 있어도 fallback 한 줄을 둬야 `/spec-implement`가 plan 가정의
+검증 출처를 추적할 수 있다.
+-->
+
+- <검증 항목 1 — 예: "VR Player.prefab의 controller-tracked transform은 `Camera Offset/Hands/Left/LeftControllerHandRoot`(TrackedPoseDriver 부착) — `Left` 자체는 정적 컨테이너"> — `unity-scene-reader 보고 (YYYY-MM-DD)`
+- <검증 항목 2> — `unity-scene-reader 보고 (YYYY-MM-DD)`
+
 ## Approach
 
 <어떻게 구현할 것인가. 단계별로.>

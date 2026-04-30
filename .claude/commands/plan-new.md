@@ -77,6 +77,42 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash
 
 필요하면 관련 코드/문서를 *읽기만* 한다. Step 0에서 이미 읽은 파일은 다시 읽지 않는다.
 
+### 1.5. 구조 가정 검증 (Unity 자산 의존 plan일 때 필수)
+
+plan이 Unity 직렬화 자산(prefab, scene, material, ScriptableObject, animation 등)의 구조에 의존하는 경우, **plan 본문 작성을 시작하기 전에** `unity-scene-reader` sub-agent를 호출해 plan이 가정할 사실을 검증된 형태로 받아온다. 메인 세션이 raw `Read`/`Grep`으로 prefab·scene YAML을 통째로 끌어와 멋대로 해석하는 경로를 차단하는 단계다.
+
+**Trigger.** 이 단계는 **plan의 Approach 초안에 다음 중 하나라도 등장하면** 발동한다.
+
+- (a) 특정 GameObject 경로 (예: `Camera Offset/Hands/Left`, `Player/Inventory/Slot01`).
+- (b) 특정 prefab 또는 scene asset 경로 (예: `Assets/Characters/Prefabs/VR Player.prefab`).
+- (c) 특정 컴포넌트 타입의 부착 위치를 가정 (예: "TrackedPoseDriver는 X에 붙어 있다", "RigidBody는 Y에 있어야 한다").
+- (d) ScriptableObject·material·animation 자산의 필드 값에 대한 가정.
+
+판단이 모호하면 발동시킨다 — false positive(불필요한 호출)는 ~5초 비용이지만 false negative(검증 누락)는 plan 실행 후 manual 단계까지 늦게 잡혀 후속 plan을 강제한다.
+
+**Action.**
+
+1. plan이 가정하는 GameObject 경로·컴포넌트·자산 경로 등을 정리해 `unity-scene-reader` sub-agent 호출용 질문을 만든다 (예: "VR Player.prefab의 `Camera Offset/Hands/Left` 자식 트리와 각 자식의 핵심 컴포넌트 부착 위치를 알려달라. 특히 TrackedPoseDriver가 어느 GameObject에 붙어 있는지").
+2. `Task` 도구로 `unity-scene-reader`를 호출해 검증된 요약을 받는다.
+3. 받은 요약을 메인 세션에 보관해 step 2(분할 제안)·step 4(파일 작성)에서 plan 본문 작성에 사용한다. **메인 세션은 같은 prefab/scene YAML을 raw `Read`로 다시 열지 않는다.** 단일 컴포넌트 값 1줄 grep 같은 좁은 조회는 허용.
+4. unity-scene-reader 보고와 plan의 가정이 어긋나면 (예: "X에 붙어 있을 것"이라고 가정했는데 실제로는 자식 Y에 붙어 있음), Approach를 보고 사실에 맞춰 수정한 뒤 step 2로 진입한다.
+
+**Skip 조건.** plan이 다음 중 하나에만 해당하면 본 단계를 건너뛰고 step 2로 직행한다.
+
+- 순수 C# 로직 변경 (컴포넌트 부착 위치·GameObject 경로 무관).
+- spec 문서·docs 정리.
+- 입력 액션 자산(`*.inputactions`) 같은 비-GameObject 자산만 손대는 변경.
+
+skip한 경우에도 step 4에서 plan 본문에 `## Verified Structural Assumptions` 섹션을 비우는 표기(`_해당 없음 — 순수 로직 변경_`)는 반드시 들어간다 (template 강제).
+
+**Fallback (MCP 미사용 경로).** Unity MCP 도구가 세션에 노출되지 않거나 인스턴스가 죽어 있어 `unity-scene-reader`를 호출할 수 없는 경우:
+
+1. `AskUserQuestion`으로 "Unity MCP 없이 가정으로 진행해도 좋습니까?"를 묻는다.
+2. 사용자가 yes이면 진행한다 — step 4에서 `## Verified Structural Assumptions` 섹션의 각 항목 출처를 `MCP 미사용 — 가정`으로 표기한다.
+3. 사용자가 no이면 멈추고 MCP 복구를 안내한다.
+
+**산출물.** 본 단계의 산출물은 step 4에서 plan 파일의 `## Verified Structural Assumptions` 섹션에 그대로 박힐 수 있는 형태(검증 항목 + 출처)다. 별도 임시 파일을 만들지 않는다.
+
 ### 2. 분할 제안
 
 `--from-failure` 모드일 때는 우선 다음 질문을 한 번 더 한다:

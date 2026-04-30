@@ -2,7 +2,7 @@
 
 **Linked Spec:** [`01-base-teleport.md`](../specs/01-base-teleport.md)
 **Caused By:** [`2026-04-30-sanyoentertain-base-teleport.md`](./2026-04-30-sanyoentertain-base-teleport.md)
-**Status:** `Ready`
+**Status:** `In Progress`
 
 ## Goal
 
@@ -116,5 +116,13 @@ XRI 3.x 표준 hierarchy(`XR Origin/Camera Offset/{Left|Right} Controller/Telepo
 
 - 본 plan은 단일 prefab 단일 노드의 부모 변경이므로 가능한 한 작은 범위 변경. atomic commit 단위로 자연스럽게 묶인다.
 - Unity가 nested prefab의 자식 추가를 직렬화하는 방식은 Unity 버전·상황에 따라 `m_AddedGameObjects` 또는 부모 Transform의 `m_Children` modification 둘 중 하나로 갈리므로, AC #1·#2는 둘 다 만족시킬 수 있는 형태(부모 transform 변경 + Left에서 제거)로 작성됐다. AC가 prefab의 자식 추가 직렬화 방식을 한 가지로 강제하지 않는다.
+- **2026-04-30 검증 실패 — VR Player prefab hierarchy 붕괴.** 사용자 manual-hard 보고: "VR Player가 엄청나게 잘못됐고 화면이 아예 보이지 않는다." 분석 결과:
+  - VR Player.prefab top-level에 위치한 Teleport Interactor PrefabInstance(`&7223456789012345004`)의 `m_TransformParent`가 nested prefab `LeftControllerHandRoot` PrefabInstance(`&2953468454788347712`)의 stripped Transform(`8092876703916648065`)을 가리키도록 변경됨.
+  - 그러나 LCH PrefabInstance의 `m_AddedGameObjects` 배열은 비어 있음(라인 966). Unity의 nested prefab 직렬화 규칙상, top-level prefab이 nested prefab의 자식으로 새 GameObject를 추가하려면 nested prefab PrefabInstance의 `m_AddedGameObjects`에 명시 항목이 있어야 한다 — 그게 없으면 비정합으로 간주된다.
+  - 결과: Unity가 SampleScene 안의 VR Player PrefabInstance를 인스턴스화할 때 hierarchy 전체가 붕괴. 씬 안 VR Player의 자식 GameObject는 0개로 줄고, stripped Transform만 남음. Main Camera/AudioListener/XROrigin/Hands/Teleport Interactor 모두 인스턴스화되지 않음.
+  - 콘솔 시그널: `"There are no audio listeners in the scene"` 다수, `"Reference frame of the curve not set and XROrigin is not found"`, 컴파일 에러는 0건 — hierarchy/직렬화 문제임을 확정.
+  - 본 plan의 Approach 3에 적힌 "Unity가 둘 중 하나(`m_AddedGameObjects` 또는 LCH Transform `m_Children` modification)로 자동 처리한다"는 가정이 실제로는 깨졌다 — 직렬화 시점에 어느 쪽도 채워지지 않은 채 m_TransformParent만 stripped reference를 가리킨 비정합 상태로 디스크에 기록됨.
+  - 즉시 복구안: working tree의 VR Player.prefab에서 본 plan의 변경만 되돌린다 (Teleport Interactor PrefabInstance의 `m_TransformParent`를 `{fileID: 4884399879460611291}`(Left Transform)으로 복원, `Left` Transform `m_Children`에 stripped Transform `7223456789012345003`을 다시 추가). 선행 base-teleport plan의 변경(DynamicMoveProvider→TeleportationProvider 교체, ControllerInputActionManager 부착, m_SelectInput override, SampleScene Plane TeleportationArea)은 그대로 둔다.
+  - 후속 접근 후보(별도 plan에서 결정 필요): (a) `LeftControllerHandRoot.prefab` 자산 자체를 편집해 그 안에 Teleport Interactor 자식을 넣고 VR Player에서 별도 인스턴스화 — 같은 텔레포트 리그를 우/양손 분기로 확장할 때 자연스러운 구조; (b) 런타임 코드로 `ControllerInputActionManager.Awake/Start`에서 자식 reparent — prefab YAML 충돌 회피, 그러나 새 코드 도입; (c) 정적 컨테이너 Left에 Teleport Interactor를 둔 채 실시간 위치를 LCH 위치에서 따라가게 하는 follower MonoBehaviour 도입.
 
 ## Handoff
