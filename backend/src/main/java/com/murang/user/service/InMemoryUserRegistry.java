@@ -8,15 +8,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
-import org.springframework.stereotype.Service;
 
-@Service
-public class InMemoryUserRegistry {
+public class InMemoryUserRegistry implements UserRegistry {
 
     private final AtomicLong sequence = new AtomicLong(1L);
     private final Map<String, UserProfile> usersByMetaAccountId = new ConcurrentHashMap<>();
     private final Map<String, String> metaAccountIdByNicknameKey = new ConcurrentHashMap<>();
 
+    @Override
     public synchronized UserProfile registerOrUpdate(String metaAccountId, String nickname) {
         String nicknameKey = nickname.toLowerCase(Locale.ROOT);
         UserProfile existing = usersByMetaAccountId.get(metaAccountId);
@@ -53,6 +52,7 @@ public class InMemoryUserRegistry {
         return updated;
     }
 
+    @Override
     public Optional<UserProfile> findByMetaAccountId(String metaAccountId) {
         return Optional.ofNullable(usersByMetaAccountId.get(metaAccountId));
     }

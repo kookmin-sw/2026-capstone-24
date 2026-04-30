@@ -5,7 +5,7 @@ import com.murang.auth.dto.MetaLoginResponse;
 import com.murang.auth.dto.RefreshTokenRequest;
 import com.murang.common.exception.ApiException;
 import com.murang.user.domain.UserProfile;
-import com.murang.user.service.InMemoryUserRegistry;
+import com.murang.user.service.UserRegistry;
 import java.util.regex.Pattern;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +15,12 @@ public class AuthService {
     private static final Pattern MULTI_SPACE = Pattern.compile("\\s+");
 
     private final MetaIdTokenVerifier metaIdTokenVerifier;
-    private final InMemoryUserRegistry userRegistry;
+    private final UserRegistry userRegistry;
     private final JwtTokenService jwtTokenService;
 
     public AuthService(
             MetaIdTokenVerifier metaIdTokenVerifier,
-            InMemoryUserRegistry userRegistry,
+            UserRegistry userRegistry,
             JwtTokenService jwtTokenService
     ) {
         this.metaIdTokenVerifier = metaIdTokenVerifier;

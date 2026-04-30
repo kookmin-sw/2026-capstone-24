@@ -75,6 +75,15 @@ class AuthControllerTest {
     }
 
     @Test
+    void metaLoginReusesUserIdForSameMetaAccountAfterNicknameChange() throws Exception {
+        TokenBundle firstLogin = login("mock-meta:quest-user-17", "Original Nickname");
+        TokenBundle secondLogin = login("mock-meta:quest-user-17", "Renamed Nickname");
+
+        org.junit.jupiter.api.Assertions.assertEquals(firstLogin.userId(), secondLogin.userId());
+        org.junit.jupiter.api.Assertions.assertEquals("Renamed Nickname", secondLogin.nickname());
+    }
+
+    @Test
     void metaLoginRejectsNicknameWithUnsupportedCharacters() throws Exception {
         mockMvc.perform(post("/api/v1/auth/meta-login")
                         .contentType(MediaType.APPLICATION_JSON)
