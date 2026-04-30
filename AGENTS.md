@@ -19,6 +19,11 @@
   - Play 모드 동작 검증
 - 위 작업이 필요한데 Unity MCP 도구가 세션에 노출되어 있지 않으면, **작업을 중단하고 사용자에게 "MCP 없이 진행할지" 묻는다.** 임의로 우회하거나 추측으로 진행하지 않는다.
 
+### 직렬화 자산 수정 MCP 우선
+
+- 메인 세션 + plan-implementer 등 sub-agent 모두 대상. `.prefab` / `.unity` / `.asset` / ScriptableObject 수정은 manage_* MCP 우선이며 절차는 [`.claude/skills/unity-asset-edit/SKILL.md`](.claude/skills/unity-asset-edit/SKILL.md)를 따른다.
+- 직접 텍스트 Edit 허용 예외: (a) MCP가 못 다뤄 plan/사용자가 명시 허락, (b) 단일 propertyPath 스칼라 변경이라 부수 직렬화 영향이 없다고 메인이 책임짐. **둘 다 plan 명시 또는 사용자 승인이 선행**되어야 하며, sub-agent 단독 판단으로 YAML을 직접 Edit하지 않는다.
+
 ## Spec 시스템
 
 What/Why를 담는 얇은 **spec**과 How를 담는 실행 가능한 **plan**을 분리해 관리한다. 폴더 구조, 파일명 규칙(sub-spec NN-prefix, plan `<YYYY-MM-DD>-<author>-<slug>`), Plan 실행 시 읽기 순서, 작성 anti-pattern, 상태 보드는 모두 [`docs/specs/README.md`](docs/specs/README.md)에 단일 진실원으로 관리한다.
