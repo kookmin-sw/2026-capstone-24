@@ -6,17 +6,23 @@ import jakarta.validation.ConstraintViolationException;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
-import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
@@ -36,34 +42,63 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler({
-            MethodArgumentNotValidException.class,
-            BindException.class,
-            ConstraintViolationException.class,
-            HandlerMethodValidationException.class,
-            HttpMessageNotReadableException.class
-    })
-    public ProblemDetail handleValidation(Exception exception, HttpServletRequest request) {
-        String detail = switch (exception) {
-            case MethodArgumentNotValidException methodArgumentNotValidException ->
-                    collectFieldErrors(methodArgumentNotValidException.getBindingResult().getFieldErrors());
-            case BindException bindException ->
-                    collectFieldErrors(bindException.getBindingResult().getFieldErrors());
-            case ConstraintViolationException constraintViolationException ->
-                    constraintViolationException.getConstraintViolations().stream()
-                            .map(violation -> violation.getMessage())
-                            .collect(Collectors.joining(", "));
-            case HandlerMethodValidationException handlerMethodValidationException ->
-                    handlerMethodValidationException.getParameterValidationResults().stream()
-                            .flatMap(result -> result.getResolvableErrors().stream())
-                            .map(error -> error.getDefaultMessage() == null ? ErrorCode.VALIDATION_REQUEST.defaultMessage() : error.getDefaultMessage())
-                            .collect(Collectors.joining(", "));
-            case HttpMessageNotReadableException ignored -> "요청 본문(JSON) 형식이 올바르지 않습니다.";
-            default -> ErrorCode.VALIDATION_REQUEST.defaultMessage();
-        };
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException exception,
+            HttpHeaders headers,
+            HttpStatusCode status,
+            WebRequest request
+    ) {
+        String detail = collectFieldErrors(exception.getBindingResult().getFieldErrors());
+        return validationResponse(detail, request);
+    }
 
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<Object> handleBindException(
+            BindException exception,
+            HttpServletRequest request
+    ) {
+        String detail = collectFieldErrors(exception.getBindingResult().getFieldErrors());
         log.warn("validation-error path={} detail={}", request.getRequestURI(), detail);
-        return problemResponseFactory.create(ErrorCode.VALIDATION_REQUEST, detail, request.getRequestURI());
+        return ResponseEntity.status(ErrorCode.VALIDATION_REQUEST.status())
+                .body(problemResponseFactory.create(ErrorCode.VALIDATION_REQUEST, detail, request.getRequestURI()));
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHandlerMethodValidationException(
+            HandlerMethodValidationException exception,
+            HttpHeaders headers,
+            HttpStatusCode status,
+            WebRequest request
+    ) {
+        String detail = exception.getParameterValidationResults().stream()
+                .flatMap(result -> result.getResolvableErrors().stream())
+                .map(error -> error.getDefaultMessage() == null ? ErrorCode.VALIDATION_REQUEST.defaultMessage() : error.getDefaultMessage())
+                .collect(Collectors.joining(", "));
+        return validationResponse(detail, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(
+            HttpMessageNotReadableException exception,
+            HttpHeaders headers,
+            HttpStatusCode status,
+            WebRequest request
+    ) {
+        return validationResponse("요청 본문(JSON) 형식이 올바르지 않습니다.", request);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Object> handleConstraintViolation(
+            ConstraintViolationException exception,
+            HttpServletRequest request
+    ) {
+        String detail = exception.getConstraintViolations().stream()
+                .map(violation -> violation.getMessage())
+                .collect(Collectors.joining(", "));
+        log.warn("validation-error path={} detail={}", request.getRequestURI(), detail);
+        return ResponseEntity.status(ErrorCode.VALIDATION_REQUEST.status())
+                .body(problemResponseFactory.create(ErrorCode.VALIDATION_REQUEST, detail, request.getRequestURI()));
     }
 
     @ExceptionHandler(Exception.class)
@@ -74,6 +109,13 @@ public class GlobalExceptionHandler {
                 ErrorCode.INTERNAL_UNEXPECTED.defaultMessage(),
                 request.getRequestURI()
         );
+    }
+
+    private ResponseEntity<Object> validationResponse(String detail, WebRequest request) {
+        String path = requestPath(request);
+        log.warn("validation-error path={} detail={}", path, detail);
+        return ResponseEntity.status(ErrorCode.VALIDATION_REQUEST.status())
+                .body(problemResponseFactory.create(ErrorCode.VALIDATION_REQUEST, detail, path));
     }
 
     private String collectFieldErrors(Iterable<FieldError> fieldErrors) {
@@ -90,5 +132,12 @@ public class GlobalExceptionHandler {
             detail = joined;
         }
         return detail.isBlank() ? ErrorCode.VALIDATION_REQUEST.defaultMessage() : detail;
+    }
+
+    private String requestPath(WebRequest request) {
+        if (request instanceof ServletWebRequest servletWebRequest) {
+            return servletWebRequest.getRequest().getRequestURI();
+        }
+        return "";
     }
 }

@@ -2,6 +2,7 @@ package com.murang.auth.service;
 
 import com.murang.auth.dto.MetaLoginRequest;
 import com.murang.auth.dto.MetaLoginResponse;
+import com.murang.auth.dto.RefreshTokenRequest;
 import com.murang.common.exception.ApiException;
 import com.murang.user.domain.UserProfile;
 import com.murang.user.service.InMemoryUserRegistry;
@@ -34,11 +35,15 @@ public class AuthService {
         UserProfile user = userRegistry.registerOrUpdate(identity.metaAccountId(), normalizedNickname);
         JwtTokenService.IssuedTokens tokens = jwtTokenService.issueTokens(user);
 
-        return new MetaLoginResponse(
-                tokens.accessToken(),
-                tokens.refreshToken(),
-                new MetaLoginResponse.UserSummary(user.userId(), user.nickname())
-        );
+        return toMetaLoginResponse(user, tokens);
+    }
+
+    public MetaLoginResponse refresh(RefreshTokenRequest request) {
+        String metaAccountId = jwtTokenService.parseRefreshToken(request.refreshToken());
+        UserProfile user = userRegistry.findByMetaAccountId(metaAccountId)
+                .orElseThrow(ApiException::invalidJwt);
+        JwtTokenService.IssuedTokens tokens = jwtTokenService.issueTokens(user);
+        return toMetaLoginResponse(user, tokens);
     }
 
     private String normalizeNickname(String rawNickname) {
@@ -47,5 +52,13 @@ public class AuthService {
             throw ApiException.invalidNickname("닉네임은 공백만으로 구성될 수 없습니다.");
         }
         return trimmed;
+    }
+
+    private MetaLoginResponse toMetaLoginResponse(UserProfile user, JwtTokenService.IssuedTokens tokens) {
+        return new MetaLoginResponse(
+                tokens.accessToken(),
+                tokens.refreshToken(),
+                new MetaLoginResponse.UserSummary(user.userId(), user.nickname())
+        );
     }
 }

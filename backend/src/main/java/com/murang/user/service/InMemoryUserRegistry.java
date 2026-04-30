@@ -5,6 +5,7 @@ import com.murang.user.domain.UserProfile;
 import java.time.Instant;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.stereotype.Service;
@@ -50,5 +51,9 @@ public class InMemoryUserRegistry {
         );
         usersByMetaAccountId.put(metaAccountId, updated);
         return updated;
+    }
+
+    public Optional<UserProfile> findByMetaAccountId(String metaAccountId) {
+        return Optional.ofNullable(usersByMetaAccountId.get(metaAccountId));
     }
 }

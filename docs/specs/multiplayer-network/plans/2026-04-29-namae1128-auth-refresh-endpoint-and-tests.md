@@ -1,7 +1,7 @@
 # 백엔드 Refresh 엔드포인트 및 테스트 보강
 
 **Linked Spec:** [`01-user-auth.md`](../specs/01-user-auth.md)
-**Status:** `Ready`
+**Status:** `Done`
 
 ## Goal
 
@@ -81,4 +81,7 @@ Spring 백엔드에 Refresh Token 갱신 엔드포인트를 추가하고, spec B
 
 ## Handoff
 
-<!-- /spec-implement 가 plan 완료 시 채움. -->
+- Unity 클라이언트 인증 plan은 `POST /api/v1/auth/meta-login`, `POST /api/v1/auth/refresh`, `GET /api/v1/users/me`가 준비된 상태를 전제로 이어서 구현하면 된다.
+- `POST /api/v1/auth/refresh`는 `{ "refreshToken": "<jwt>" }` 요청 바디를 받고, 응답 포맷은 `meta-login`과 동일하다.
+- `GET /api/v1/users/me`는 Bearer access token을 요구하고 `ApiResponse.data`에 `{ userId, metaAccountId, nickname }`를 반환한다.
+- 자동 검증은 `backend/src/test/java/com/murang/auth/controller/AuthControllerTest.java`와 `backend/src/test/java/com/murang/user/controller/UserControllerTest.java`에 있다.

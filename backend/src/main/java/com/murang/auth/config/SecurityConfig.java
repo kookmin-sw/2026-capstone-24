@@ -51,7 +51,7 @@ public class SecurityConfig {
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/v1/auth/meta-login").permitAll()
+                        .requestMatchers("/api/v1/auth/meta-login", "/api/v1/auth/refresh").permitAll()
                         .requestMatchers("/actuator/health", "/actuator/info", "/error").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(requestIdFilter, UsernamePasswordAuthenticationFilter.class)

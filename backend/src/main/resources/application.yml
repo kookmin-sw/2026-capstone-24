@@ -30,7 +30,7 @@ app:
     jwt:
       issuer: murang-backend
       access-token-ttl: PT15M
-      refresh-token-ttl: P7D
+      refresh-token-ttl: P30D
       secret: ${MURANG_JWT_SECRET:}
       allow-ephemeral-secret: true
     meta:

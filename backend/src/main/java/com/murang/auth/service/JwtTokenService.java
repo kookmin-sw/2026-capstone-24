@@ -65,6 +65,15 @@ public class JwtTokenService {
         return new AuthPrincipal(number.longValue(), metaAccountId, nickname);
     }
 
+    public String parseRefreshToken(String token) {
+        Claims claims = parseAndValidate(token, TOKEN_TYPE_REFRESH);
+        String metaAccountId = claims.getSubject();
+        if (!StringUtils.hasText(metaAccountId)) {
+            throw ApiException.invalidJwt();
+        }
+        return metaAccountId;
+    }
+
     private Claims parseAndValidate(String token, String expectedTokenType) {
         try {
             Jws<Claims> jws = Jwts.parser()

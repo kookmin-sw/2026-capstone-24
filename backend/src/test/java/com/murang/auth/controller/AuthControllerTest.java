@@ -1,9 +1,12 @@
 package com.murang.auth.controller;
 
+import static org.hamcrest.Matchers.greaterThan;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -20,6 +23,9 @@ class AuthControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Test
     void metaLoginReturnsTokensForValidMockToken() throws Exception {
         mockMvc.perform(post("/api/v1/auth/meta-login")
@@ -27,15 +33,15 @@ class AuthControllerTest {
                         .content("""
                                 {
                                   "metaIdToken": "mock-meta:quest-user-01",
-                                  "nickname": "Murang User"
+                                  "nickname": "Murang User 01"
                                 }
                                 """))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data.accessToken").isNotEmpty())
                 .andExpect(jsonPath("$.data.refreshToken").isNotEmpty())
-                .andExpect(jsonPath("$.data.user.userId").value(1))
-                .andExpect(jsonPath("$.data.user.nickname").value("Murang User"));
+                .andExpect(jsonPath("$.data.user.userId").value(greaterThan(0)))
+                .andExpect(jsonPath("$.data.user.nickname").value("Murang User 01"));
     }
 
     @Test
@@ -50,5 +56,143 @@ class AuthControllerTest {
                                 """))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.code").value("AUTH_INVALID_META_TOKEN"));
+    }
+
+    @Test
+    void metaLoginRejectsDuplicateNicknameFromAnotherMetaAccount() throws Exception {
+        login("mock-meta:quest-user-11", "Shared Nickname");
+
+        mockMvc.perform(post("/api/v1/auth/meta-login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "metaIdToken": "mock-meta:quest-user-12",
+                                  "nickname": "Shared Nickname"
+                                }
+                                """))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code").value("AUTH_NICKNAME_DUPLICATE"));
+    }
+
+    @Test
+    void metaLoginRejectsNicknameWithUnsupportedCharacters() throws Exception {
+        mockMvc.perform(post("/api/v1/auth/meta-login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "metaIdToken": "mock-meta:quest-user-13",
+                                  "nickname": "Bad*Nickname"
+                                }
+                                """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("VALIDATION_REQUEST"));
+    }
+
+    @Test
+    void metaLoginRejectsNicknameLongerThanThirtyTwoCharacters() throws Exception {
+        mockMvc.perform(post("/api/v1/auth/meta-login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "metaIdToken": "mock-meta:quest-user-14",
+                                  "nickname": "123456789012345678901234567890123"
+                                }
+                                """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("VALIDATION_REQUEST"));
+    }
+
+    @Test
+    void refreshReturnsNewTokensForValidRefreshToken() throws Exception {
+        TokenBundle login = login("mock-meta:quest-user-15", "Refresh User 15");
+
+        TokenBundle refreshed = refresh(login.refreshToken());
+
+        org.junit.jupiter.api.Assertions.assertNotEquals(login.accessToken(), refreshed.accessToken());
+        org.junit.jupiter.api.Assertions.assertNotEquals(login.refreshToken(), refreshed.refreshToken());
+        org.junit.jupiter.api.Assertions.assertEquals(login.userId(), refreshed.userId());
+        org.junit.jupiter.api.Assertions.assertEquals(login.nickname(), refreshed.nickname());
+    }
+
+    @Test
+    void refreshRejectsAccessTokenInRefreshTokenField() throws Exception {
+        TokenBundle login = login("mock-meta:quest-user-16", "Refresh User 16");
+
+        mockMvc.perform(post("/api/v1/auth/refresh")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "refreshToken": "%s"
+                                }
+                                """.formatted(login.accessToken())))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.code").value("AUTH_INVALID_JWT"));
+    }
+
+    @Test
+    void refreshRejectsMalformedToken() throws Exception {
+        mockMvc.perform(post("/api/v1/auth/refresh")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "refreshToken": "invalid-token"
+                                }
+                                """))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.code").value("AUTH_INVALID_JWT"));
+    }
+
+    private TokenBundle login(String metaIdToken, String nickname) throws Exception {
+        String content = mockMvc.perform(post("/api/v1/auth/meta-login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "metaIdToken": "%s",
+                                  "nickname": "%s"
+                                }
+                                """.formatted(metaIdToken, nickname)))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        return readTokenBundle(content);
+    }
+
+    private TokenBundle refresh(String refreshToken) throws Exception {
+        String content = mockMvc.perform(post("/api/v1/auth/refresh")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "refreshToken": "%s"
+                                }
+                                """.formatted(refreshToken)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.data.accessToken").isNotEmpty())
+                .andExpect(jsonPath("$.data.refreshToken").isNotEmpty())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        return readTokenBundle(content);
+    }
+
+    private TokenBundle readTokenBundle(String content) throws Exception {
+        JsonNode data = objectMapper.readTree(content).path("data");
+        return new TokenBundle(
+                data.path("accessToken").asText(),
+                data.path("refreshToken").asText(),
+                data.path("user").path("userId").asLong(),
+                data.path("user").path("nickname").asText()
+        );
+    }
+
+    private record TokenBundle(
+            String accessToken,
+            String refreshToken,
+            long userId,
+            String nickname
+    ) {
     }
 }

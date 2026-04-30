@@ -2,6 +2,7 @@ package com.murang.auth.controller;
 
 import com.murang.auth.dto.MetaLoginRequest;
 import com.murang.auth.dto.MetaLoginResponse;
+import com.murang.auth.dto.RefreshTokenRequest;
 import com.murang.auth.service.AuthService;
 import com.murang.common.response.ApiResponse;
 import jakarta.validation.Valid;
@@ -26,5 +27,12 @@ public class AuthController {
             @Valid @RequestBody MetaLoginRequest request
     ) {
         return ResponseEntity.ok(ApiResponse.ok(authService.login(request)));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiResponse<MetaLoginResponse>> refresh(
+            @Valid @RequestBody RefreshTokenRequest request
+    ) {
+        return ResponseEntity.ok(ApiResponse.ok(authService.refresh(request)));
     }
 }
