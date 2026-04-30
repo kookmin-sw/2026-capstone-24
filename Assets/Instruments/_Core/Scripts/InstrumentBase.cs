@@ -27,6 +27,14 @@ public abstract class InstrumentBase : MonoBehaviour, IPlayable
     [Tooltip("이 악기에서 사용할 오디오 클립 목록입니다.")]
     [SerializeField] AudioClip[] soundClips = System.Array.Empty<AudioClip>();
 
+    [Tooltip("이 악기의 레인-MIDI 노트 매핑 데이터입니다.")]
+    [SerializeField] InstrumentLaneConfig laneConfig;
+
+    /// <summary>
+    /// 레인-MIDI 노트 매핑 설정 자산입니다. 노트 디스플레이 패널이 이 값을 참조합니다.
+    /// </summary>
+    public InstrumentLaneConfig LaneConfig => laneConfig;
+
     public event Action<MidiEvent> MidiTriggered;
 
     Dictionary<string, AudioClip> audioBank;

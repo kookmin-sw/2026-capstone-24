@@ -1,0 +1,191 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ea3863fa700496e88bb1e930fde6a56, type: 3}
+  m_Name: Piano_LaneConfig
+  m_EditorClassIdentifier: RhythmGame.Data::InstrumentLaneConfig
+  lanes:
+    - laneIndex: 0
+      midiNote: 21
+    - laneIndex: 1
+      midiNote: 22
+    - laneIndex: 2
+      midiNote: 23
+    - laneIndex: 3
+      midiNote: 24
+    - laneIndex: 4
+      midiNote: 25
+    - laneIndex: 5
+      midiNote: 26
+    - laneIndex: 6
+      midiNote: 27
+    - laneIndex: 7
+      midiNote: 28
+    - laneIndex: 8
+      midiNote: 29
+    - laneIndex: 9
+      midiNote: 30
+    - laneIndex: 10
+      midiNote: 31
+    - laneIndex: 11
+      midiNote: 32
+    - laneIndex: 12
+      midiNote: 33
+    - laneIndex: 13
+      midiNote: 34
+    - laneIndex: 14
+      midiNote: 35
+    - laneIndex: 15
+      midiNote: 36
+    - laneIndex: 16
+      midiNote: 37
+    - laneIndex: 17
+      midiNote: 38
+    - laneIndex: 18
+      midiNote: 39
+    - laneIndex: 19
+      midiNote: 40
+    - laneIndex: 20
+      midiNote: 41
+    - laneIndex: 21
+      midiNote: 42
+    - laneIndex: 22
+      midiNote: 43
+    - laneIndex: 23
+      midiNote: 44
+    - laneIndex: 24
+      midiNote: 45
+    - laneIndex: 25
+      midiNote: 46
+    - laneIndex: 26
+      midiNote: 47
+    - laneIndex: 27
+      midiNote: 48
+    - laneIndex: 28
+      midiNote: 49
+    - laneIndex: 29
+      midiNote: 50
+    - laneIndex: 30
+      midiNote: 51
+    - laneIndex: 31
+      midiNote: 52
+    - laneIndex: 32
+      midiNote: 53
+    - laneIndex: 33
+      midiNote: 54
+    - laneIndex: 34
+      midiNote: 55
+    - laneIndex: 35
+      midiNote: 56
+    - laneIndex: 36
+      midiNote: 57
+    - laneIndex: 37
+      midiNote: 58
+    - laneIndex: 38
+      midiNote: 59
+    - laneIndex: 39
+      midiNote: 60
+    - laneIndex: 40
+      midiNote: 61
+    - laneIndex: 41
+      midiNote: 62
+    - laneIndex: 42
+      midiNote: 63
+    - laneIndex: 43
+      midiNote: 64
+    - laneIndex: 44
+      midiNote: 65
+    - laneIndex: 45
+      midiNote: 66
+    - laneIndex: 46
+      midiNote: 67
+    - laneIndex: 47
+      midiNote: 68
+    - laneIndex: 48
+      midiNote: 69
+    - laneIndex: 49
+      midiNote: 70
+    - laneIndex: 50
+      midiNote: 71
+    - laneIndex: 51
+      midiNote: 72
+    - laneIndex: 52
+      midiNote: 73
+    - laneIndex: 53
+      midiNote: 74
+    - laneIndex: 54
+      midiNote: 75
+    - laneIndex: 55
+      midiNote: 76
+    - laneIndex: 56
+      midiNote: 77
+    - laneIndex: 57
+      midiNote: 78
+    - laneIndex: 58
+      midiNote: 79
+    - laneIndex: 59
+      midiNote: 80
+    - laneIndex: 60
+      midiNote: 81
+    - laneIndex: 61
+      midiNote: 82
+    - laneIndex: 62
+      midiNote: 83
+    - laneIndex: 63
+      midiNote: 84
+    - laneIndex: 64
+      midiNote: 85
+    - laneIndex: 65
+      midiNote: 86
+    - laneIndex: 66
+      midiNote: 87
+    - laneIndex: 67
+      midiNote: 88
+    - laneIndex: 68
+      midiNote: 89
+    - laneIndex: 69
+      midiNote: 90
+    - laneIndex: 70
+      midiNote: 91
+    - laneIndex: 71
+      midiNote: 92
+    - laneIndex: 72
+      midiNote: 93
+    - laneIndex: 73
+      midiNote: 94
+    - laneIndex: 74
+      midiNote: 95
+    - laneIndex: 75
+      midiNote: 96
+    - laneIndex: 76
+      midiNote: 97
+    - laneIndex: 77
+      midiNote: 98
+    - laneIndex: 78
+      midiNote: 99
+    - laneIndex: 79
+      midiNote: 100
+    - laneIndex: 80
+      midiNote: 101
+    - laneIndex: 81
+      midiNote: 102
+    - laneIndex: 82
+      midiNote: 103
+    - laneIndex: 83
+      midiNote: 104
+    - laneIndex: 84
+      midiNote: 105
+    - laneIndex: 85
+      midiNote: 106
+    - laneIndex: 86
+      midiNote: 107
+    - laneIndex: 87
+      midiNote: 108
