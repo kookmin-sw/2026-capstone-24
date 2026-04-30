@@ -4,7 +4,7 @@
 
 ## Why
 
-가상 공간에는 사용자가 가지 말아야 하는 영역이 존재한다. 예를 들면 무대 밖 영역, 다른 사용자의 자리, 시각적으로는 floor지만 의도적으로 막아두고 싶은 구역 등이다. [`01-base-teleport.md`](01-base-teleport.md)의 기본 텔레포트만으로는 floor/surface 위 모든 지점이 동등하게 도달 가능하므로, 이런 차단 의도를 표현할 수 없다.
+가상 공간에는 사용자가 가지 말아야 하는 영역이 존재한다. 예를 들면 무대 밖 영역, 다른 사용자의 자리, 시각적으로는 floor지만 의도적으로 막아두고 싶은 구역 등이다. [`01-base-teleport.md`](../../_archive/teleport-locomotion/specs/01-base-teleport.md)의 기본 텔레포트만으로는 floor/surface 위 모든 지점이 동등하게 도달 가능하므로, 이런 차단 의도를 표현할 수 없다.
 
 또한 사용자가 "여긴 갈 수 없는 자리야"를 입력 종료 시점이 아니라 **라인을 그 위에 두는 즉시** 알아차려야 잘못된 자리에 라인을 두고 확정하는 헛걸음을 줄일 수 있다.
 
@@ -35,7 +35,7 @@
 
 ## Out of Scope
 
-- 텔레포트 라인 자체의 도입과 기본 valid 표현 — [`01-base-teleport.md`](01-base-teleport.md)의 책임.
+- 텔레포트 라인 자체의 도입과 기본 valid 표현 — [`01-base-teleport.md`](../../_archive/teleport-locomotion/specs/01-base-teleport.md)의 책임.
 - 악기 anchor 반경에서 라인이 "구별되는 표현"으로 바뀌는 동작 — [`03-instrument-anchors.md`](03-instrument-anchors.md). 단, anchor 표현과 invalid 표현이 시각적으로 충돌하지 않도록 유지한다.
 - 노 텔레포트 존 안에 *이미* 들어가 있는 사용자를 강제로 밖으로 밀어내는 동작. 본 sub-spec은 라인 진입 차단만 책임진다.
 
