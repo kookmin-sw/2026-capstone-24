@@ -23,6 +23,11 @@ namespace Murang.Multiplayer.Auth
             get { return _session; }
         }
 
+        public MultiplayerAuthConfig Config
+        {
+            get { return config; }
+        }
+
         void Awake()
         {
             if (config == null)

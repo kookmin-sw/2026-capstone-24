@@ -12,10 +12,16 @@ namespace Murang.Multiplayer.Auth
             _config = config;
         }
 
-        public Task<string> GetMetaIdTokenAsync(CancellationToken cancellationToken)
+        public Task<MetaAuthenticationResult> GetAuthenticationResultAsync(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            return Task.FromResult(_config.MockMetaTokenPrefix + _config.MockAccountId);
+
+            MetaAuthenticationResult result = new MetaAuthenticationResult(
+                _config.MockMetaTokenPrefix + _config.MockAccountId,
+                _config.MockAccountId,
+                null);
+
+            return Task.FromResult(result);
         }
     }
 }

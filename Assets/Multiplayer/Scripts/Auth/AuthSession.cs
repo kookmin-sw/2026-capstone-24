@@ -60,16 +60,26 @@ namespace Murang.Multiplayer.Auth
         {
             try
             {
-                string metaIdToken = await _metaTokenProvider.GetMetaIdTokenAsync(cancellationToken);
+                MetaAuthenticationResult authenticationResult =
+                    await _metaTokenProvider.GetAuthenticationResultAsync(cancellationToken);
+                string nickname = _config.ResolveNickname(authenticationResult);
                 MetaLoginResponse response = await _backendApiClient.MetaLoginAsync(
-                    metaIdToken,
-                    _config.DefaultNickname,
+                    authenticationResult.MetaIdToken,
+                    nickname,
                     cancellationToken);
                 return SaveAndCreateState(response, AuthSource.MetaLogin);
             }
+            catch (ApiException exception)
+            {
+                throw new AuthFailedException(BuildMetaLoginApiFailureMessage(exception), exception);
+            }
+            catch (InvalidOperationException exception)
+            {
+                throw new AuthFailedException(exception.Message, exception);
+            }
             catch (Exception exception) when (!(exception is AuthFailedException))
             {
-                throw new AuthFailedException("Meta 로그인에 실패했습니다.", exception);
+                throw new AuthFailedException("Meta 로그인에 실패했습니다. " + exception.Message, exception);
             }
         }
 
@@ -128,6 +138,18 @@ namespace Murang.Multiplayer.Auth
         {
             _tokenStore.Save(response);
             return new AuthState(source, response.accessToken, response.refreshToken);
+        }
+
+        private string BuildMetaLoginApiFailureMessage(ApiException exception)
+        {
+            string detail = string.IsNullOrWhiteSpace(exception.Detail) ? exception.Code : exception.Detail;
+            if (_config.UseMockMetaToken)
+            {
+                return "Meta 로그인 API 호출이 실패했습니다. " + detail;
+            }
+
+            return "Meta 로그인 API 호출이 실패했습니다. 실 Meta 토큰 경로를 쓰려면 Meta Platform SDK와 Android Quest 실기기, 그리고 해당 토큰을 이해하는 서버 verifier가 함께 준비되어야 합니다. "
+                + detail;
         }
 
         public enum AuthSource

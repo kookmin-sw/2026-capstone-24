@@ -52,6 +52,7 @@ Meta 계정 기반 인증 흐름을 제공한다. 클라이언트가 Meta ID 토
 | 2026-04-29 | Spring 서버 인증 프로토타입 | `Done` | [2026-04-29-namae1128-spring-auth-prototype.md](../plans/2026-04-29-namae1128-spring-auth-prototype.md) |
 | 2026-04-29 | 백엔드 Refresh 엔드포인트 및 테스트 보강 | `Done` | [2026-04-29-namae1128-auth-refresh-endpoint-and-tests.md](../plans/2026-04-29-namae1128-auth-refresh-endpoint-and-tests.md) |
 | 2026-04-29 | Unity 클라이언트 인증 흐름 | `Done` | [2026-04-29-namae1128-unity-client-auth-flow.md](../plans/2026-04-29-namae1128-unity-client-auth-flow.md) |
+| 2026-04-30 | Quest 앱 인증 브리지 후속 구현 | `Done` | [2026-04-30-namae1128-quest-app-auth-bridge.md](../plans/2026-04-30-namae1128-quest-app-auth-bridge.md) |
 
 > 상태 값은 `Ready` / `In Progress` / `Done`
 

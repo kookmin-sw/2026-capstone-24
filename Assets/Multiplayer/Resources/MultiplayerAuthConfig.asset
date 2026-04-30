@@ -12,8 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5a475d419a141d6810d19441766fb28, type: 3}
   m_Name: MultiplayerAuthConfig
   m_EditorClassIdentifier: Murang.Multiplayer::Murang.Multiplayer.Auth.MultiplayerAuthConfig
-  backendBaseUrl: http://localhost:8080
+  editorBackendBaseUrl: http://localhost:8080
+  deviceBackendBaseUrl: 
   useMockMetaToken: 1
   mockMetaTokenPrefix: mock-meta:
   mockAccountId: quest-user-01
   defaultNickname: Murang Quest User
+  nicknameOverride: 
+  nicknameAccountSuffixLength: 6

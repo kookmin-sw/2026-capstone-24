@@ -34,8 +34,15 @@ public class ChartAutoPlayer : MonoBehaviour
     float _elapsed;
     bool  _playing;
 
+    void Awake()
+    {
+        ResetPlaybackState();
+    }
+
     void Start()
     {
+        ResetPlaybackState();
+
         _map = new Dictionary<int, InstrumentBase>();
         foreach (var b in channelBindings)
             if (b.instrument != null) _map[b.channel] = b.instrument;
@@ -72,7 +79,7 @@ public class ChartAutoPlayer : MonoBehaviour
 
     void Update()
     {
-        if (!_playing) return;
+        if (!_playing || _events == null) return;
         _elapsed += Time.deltaTime;
         while (_next < _events.Count && _events[_next].fireTime <= _elapsed)
             Fire(_events[_next++]);
@@ -102,5 +109,14 @@ public class ChartAutoPlayer : MonoBehaviour
     {
         if (!_map.TryGetValue(ev.channel, out var inst)) return;
         inst.TriggerMidi(new MidiEvent(ev.midiNote, ev.velocity, ev.type, (byte)(ev.channel - 1)));
+    }
+
+    void ResetPlaybackState()
+    {
+        _events  = null;
+        _map     = null;
+        _next    = 0;
+        _elapsed = 0f;
+        _playing = false;
     }
 }
