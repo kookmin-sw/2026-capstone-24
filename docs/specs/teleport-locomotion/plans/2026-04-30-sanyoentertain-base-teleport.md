@@ -1,7 +1,7 @@
 # Base Teleport: 단일 이동 수단 전환
 
 **Linked Spec:** [`01-base-teleport.md`](../specs/01-base-teleport.md)
-**Status:** `Ready`
+**Status:** `In Progress`
 
 ## Goal
 
@@ -145,5 +145,8 @@ XRI 데모 씬 표준 셋업(`XR Origin (XR Rig).prefab`의 Left/Right Controlle
 - `Move` 액션 자체는 입력 액션 자산에 그대로 남는다. `DynamicMoveProvider`가 사라졌으므로 어떤 위치 이동도 만들지 않지만, 입력 액션 자산을 손대지 않은 이유는 같은 액션맵을 다른 곳에서 참조할 수 있기 때문이다 — 본 plan은 자유 이동의 *발동 경로*만 끊는다.
 - `Teleport Interactor.prefab` 본 자산은 `m_SelectInput.m_InputActionReferencePerformed`/`m_InputActionReferenceValue`가 `fileID: 0`(빈 값)으로 박혀 있다 — 즉 인스턴스 단계에서 명시 override가 필수다. 이 사실을 모른 채 "프리팹 부착하면 동작한다"고 가정하면 thumbstick은 작동하지만 텔레포트가 발동되지 않는 무성공 상태로 빠지므로, Approach 2의 override 단계를 반드시 실행해야 한다. (참고: `XR Origin (XR Rig).prefab`의 1893/1905줄이 데모 씬 표준 override 패턴.)
 - `ControllerInputActionManager`가 라인 visual on/off만 책임지고 select 자체는 Teleport Interactor의 select input이 발동시킨다는 사실은 `ControllerInputActionManager.cs`의 `OnStartTeleport`가 `m_TeleportInteractor.gameObject.SetActive(true)`만 호출하고 select trigger를 직접 부르지 않는 점에서 확인된다 — 본 plan에서 두 셋업 모두를 강제하는 이유.
+- 2026-04-30: 검증 실패에서 파생된 후속 plan `2026-04-30-sanyoentertain-reparent-teleport-interactor-to-controller-hand-root.md` 추가. 완료 후 본 plan의 `[manual-hard]` "Play 모드 + VR(또는 XR Device Simulator)에서 **왼손 thumbstick만**을 앞으로 밀면 (트리거·그" 항목 재검증 필요.
+- 2026-04-30: 같은 후속 plan에서 `[manual-hard]` "라인이 `Plane` 위 한 지점을 가리키는 동안 **thumbstick을 놓는 순간** (다른 어떤 버튼" 항목 재검증 필요.
+- 2026-04-30: 같은 후속 plan에서 `[manual-hard]` "라인 끝이 `Plane`을 벗어난 허공/Table/악기를 가리킬 때 thumbstick을 놓으면 이동이" 항목 재검증 필요.
 
 ## Handoff

@@ -48,7 +48,8 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| 2026-04-30 | Base Teleport: 단일 이동 수단 전환 | Ready | [2026-04-30-sanyoentertain-base-teleport.md](../plans/2026-04-30-sanyoentertain-base-teleport.md) |
+| 2026-04-30 | Base Teleport: 단일 이동 수단 전환 | In Progress | [2026-04-30-sanyoentertain-base-teleport.md](../plans/2026-04-30-sanyoentertain-base-teleport.md) |
+| 2026-04-30 | Teleport Interactor를 LeftControllerHandRoot로 재배치 | Ready | [2026-04-30-sanyoentertain-reparent-teleport-interactor-to-controller-hand-root.md](../plans/2026-04-30-sanyoentertain-reparent-teleport-interactor-to-controller-hand-root.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/plan-new` 사용. 파일명은 날짜·작성자·slug 기반.
