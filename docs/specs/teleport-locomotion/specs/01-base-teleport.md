@@ -48,7 +48,8 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| 2026-04-30 | Base Teleport on Controller Hand Root | Ready | [2026-04-30-sanyoentertain-base-teleport-on-controller-hand-root.md](../plans/2026-04-30-sanyoentertain-base-teleport-on-controller-hand-root.md) |
+| 2026-04-30 | Base Teleport on Controller Hand Root | In Progress | [2026-04-30-sanyoentertain-base-teleport-on-controller-hand-root.md](../plans/2026-04-30-sanyoentertain-base-teleport-on-controller-hand-root.md) |
+| 2026-04-30 | Fix Push-Immediate Teleport Trigger | Done | [2026-04-30-sanyoentertain-fix-push-immediate-teleport-trigger.md](../../_archive/teleport-locomotion/plans/2026-04-30-sanyoentertain-fix-push-immediate-teleport-trigger.md) |
 
 (이전 plan 2종은 잘못된 접근으로 2026-04-30 abandoned 처리, [`docs/specs/_archive/teleport-locomotion/plans/`](../../_archive/teleport-locomotion/plans/)로 이동.)
 

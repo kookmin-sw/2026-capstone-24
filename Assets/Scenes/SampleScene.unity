@@ -793,6 +793,7 @@ GameObject:
   - component: {fileID: 949974133}
   - component: {fileID: 949974132}
   - component: {fileID: 949974131}
+  - component: {fileID: 281270978}
   m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
@@ -894,6 +895,35 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &281270978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 949974130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38f6bf3d943ac7945842268c9ef1dca6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_InteractionManager: {fileID: 0}
+  m_InteractionLayers:
+    m_Bits: 4294967295
+  m_CustomReticle: {fileID: 0}
+  m_SelectEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectExited:
+    m_PersistentCalls:
+      m_Calls: []
+  serializedVersion: 2
+  m_CollisionDetectionMode: 0
+  m_TeleportationProvider: {fileID: 0}
+  m_MatchOrientation: 0
+  m_TeleportTrigger: 0
+  m_FilterSelectionByHitNormalDirection: 0
+  m_UpNormalToleranceDegrees: 30
 --- !u!134 &1044326333
 PhysicsMaterial:
   m_ObjectHideFlags: 0
