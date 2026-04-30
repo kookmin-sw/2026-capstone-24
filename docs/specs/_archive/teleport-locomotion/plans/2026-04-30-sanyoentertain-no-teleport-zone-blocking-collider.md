@@ -1,7 +1,7 @@
 # No Teleport Zone via Blocking Collider
 
 **Linked Spec:** [`02-no-teleport-zones.md`](../specs/02-no-teleport-zones.md)
-**Status:** `Ready`
+**Status:** `Done`
 
 ## Goal
 
@@ -123,7 +123,8 @@ prefab 구성:
 
 ## Handoff
 
-- **`Assets/Locomotion/Prefabs/NoTeleportZone.prefab`**: root에 `BoxCollider`(center [0, 0.025, 0], size [1, 0.05, 1], isTrigger=false)만. 메시 렌더러 없음. Layer Default. 추가 노 텔레포트 존이 필요하면 이 prefab을 끌어다 놓고 transform.position(X/Z)와 transform.scale(X/Z)로 영역 조정. Y축 transform·scale은 보통 그대로 둔다(차단 두께만 결정).
-- **`Plane`의 `TeleportationArea` 보존**: `m_TeleportTrigger: 0`, `interactionLayers: -1`. 본 plan에서 손대지 않음. 후속 plan에서도 release 트리거 시점·layer 매치 모두 그대로 신뢰 가능.
-- **자동 invalid color 분기 메커니즘**: `XRInteractorLineVisual`이 hit 객체의 `ITeleportationInteractable` 구현 여부로 분기. 후속에서 "anchor 반경에서 라인 시각이 anchor용으로 구별 표현"을 추가할 때, 그 표현이 invalid color(red)와 충돌하지 않도록 별도 색 슬롯/우선순위를 도입해야 함을 잊지 말 것 — `02-no-teleport-zones.md` Out of Scope 노트와 일치.
+- **`Assets/Locomotion/Prefabs/NoTeleportZone.prefab`**: root에 `BoxCollider`(center [0, 0.025, 0], size [1, 0.05, 1], isTrigger=false)만 부착. 메시 렌더러 없음. Layer Default. GUID `f0269c3394cc4cabbf13d40950c197fd`. 추가 노 텔레포트 존이 필요하면 이 prefab을 끌어다 놓고 transform.position(X/Z)와 transform.scale(X/Z)로 영역 조정. Y축 transform·scale은 보통 그대로 둔다(차단 두께만 결정).
+- **SampleScene `NoTeleportZone (Demo)` 인스턴스**: position [0, 0, 2.5], scale [2, 1, 1.5]. PrefabInstance fileID `3141592653589793238`. 씬 root에 배치. 후속 plan에서 zone 추가/이동이 필요하면 이 인스턴스를 참고로 같은 prefab의 다른 인스턴스를 만들면 된다.
+- **`Plane`의 `TeleportationArea` 보존**: `m_TeleportTrigger: 0`, `m_InteractionLayers.m_Bits: 4294967295`(= `-1`/Everything). 본 plan에서 손대지 않음. 후속 plan에서도 release 트리거 시점·layer 매치 모두 그대로 신뢰 가능.
+- **자동 invalid color 분기 메커니즘**: `XRInteractorLineVisual`이 hit 객체의 `ITeleportationInteractable` 구현 여부로 분기. NoTeleportZone에는 `TeleportationArea` 미부착 → hit 시 자동 invalid. 후속에서 "anchor 반경에서 라인 시각이 anchor용으로 구별 표현"을 추가할 때, 그 표현이 invalid color(red)와 충돌하지 않도록 별도 색 슬롯/우선순위를 도입해야 함을 잊지 말 것 — `02-no-teleport-zones.md` Out of Scope 노트와 일치.
 - **Layer 결정**: NoTeleportZone은 Default Layer 사용. 후속에서 노 텔레포트 존 전용 Layer를 도입해 raycast 분기를 정밀화하고 싶다면 `XRRayInteractor.raycastMask` 변경도 같이 들어가야 함을 명시.
