@@ -48,7 +48,7 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| _아직 없음_ | — | — | — |
+| 2026-04-30 | Base Teleport: 단일 이동 수단 전환 | Ready | [2026-04-30-sanyoentertain-base-teleport.md](../plans/2026-04-30-sanyoentertain-base-teleport.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/plan-new` 사용. 파일명은 날짜·작성자·slug 기반.
