@@ -6,7 +6,7 @@ disallowedTools:
   - Write
   - Edit
 mcpServers:
-  unityMCP:
+  UnityMCP:
     type: http
     url: http://127.0.0.1:8080
 ---

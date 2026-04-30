@@ -1,7 +1,7 @@
 ---
 description: plan 파일 또는 sub-spec 경로를 받아, 해당 plan(들)을 plan-orchestrator sub-agent에 위임해 순차 실행한다. 메인 세션은 큐 관리·사용자 상호작용·plan 파일 갱신만 담당해 컨텍스트를 최소화한다. 기본 dry-run, --apply로 실제 실행.
 argument-hint: "<plan 또는 sub-spec 경로> [--apply]"
-allowed-tools: Read, Glob, Grep, Bash, Edit, Write, AskUserQuestion, Skill, Task, mcp__unityMCP__read_console
+allowed-tools: Read, Glob, Grep, Bash, Edit, Write, AskUserQuestion, Skill, Task, mcp__UnityMCP__read_console
 ---
 
 # /spec-implement — Plan/Spec 실행 orchestrator
