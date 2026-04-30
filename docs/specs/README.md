@@ -87,6 +87,7 @@ docs/specs/
 - **Plan 작성 전 Open Questions 정리.** 핵심 질문(예: 포맷 결정)이 미결이면 plan을 다시 써야 할 가능성이 높으므로 `/spec-resolve`로 먼저 닫는 것을 권장.
 - **Acceptance Criteria 라벨 부여.** plan의 각 Acceptance Criteria 항목은 `[auto-hard]`(자동 검증·실패시 plan 중단) / `[auto-soft]`(자동 검증·실패시 노트 기록 후 진행) / `[manual-hard]`(사용자 직접 검증·실패시 plan 중단) 중 하나를 인라인 코드로 붙인다. 라벨 미부여 항목이 있으면 `/spec-implement`가 실행을 거부한다. 라벨은 이 3종으로 한정 — 사람이 직접 검증하는 항목은 항상 중단 사유로 처리한다.
 - **Unity 직렬화 자산 의존 plan은 직렬화 정합성 또는 인스턴스화 sanity AC 최소 1건 필수.** `## Verified Structural Assumptions`에 못 박은 prefab 계층/nested override/씬 인스턴스 가정을 plan 적용 후 실제로 깨뜨리지 않았는지 확인하는 항목을 둔다 — 예: "VR Player prefab 인스턴스화 후 `<자식 경로>` 자식이 빠짐없이 존재한다", "PrefabUtility로 인스턴스화 시 콘솔 에러 0". 권장 라벨은 `[auto-hard]`(MCP `find_gameobjects`/`manage_prefabs`로 자동 검증 가능). 자동화가 어려우면 `[manual-hard]`로 떨어뜨린다 — `[auto-soft]`는 직렬화 사고에서 부적합(soft fail은 catch에 실패하므로 사고 패턴 그대로 재현된다).
+- **컴포넌트 enum/Flags 필드를 신규 셋업하는 plan은 의도 값 검증 AC 1건 필수.** 부착 사실만 검증하는 AC는 MCP의 enum 인덱스 매핑 함정(인스펙터 표기와 직렬화 인덱스가 어긋나는 케이스)을 잡지 못해 동작이 정반대가 되는 사고를 그대로 통과시킨다. AC는 `## Verified Structural Assumptions`에 박제된 enum 정의의 의도 값을 직렬화 grep 단일 매치로 검증하는 형태로 둔다 — 예: "`Plane TeleportationArea` 부착 + `m_TeleportTrigger == 0`(OnSelectExited)을 grep으로 단일 매치." 권장 라벨 `[auto-hard]`. 단일 propertyPath 스칼라 변경이 필요할 때는 [`unity-asset-edit`](.claude/skills/unity-asset-edit/SKILL.md) skill의 직접 텍스트 Edit 예외 경로로 우회한다.
 - **검증 실패에서 파생된 plan은 헤더에 `**Caused By:** [<선행 plan>](./<선행 plan>)` 라인을 둔다.** 옵셔널 메타필드. `/plan-new --from-failure`가 자동 부여한다. 정책 단일 진실원: 위 "검증 실패 시 후속 plan 시드" 섹션.
 
 ## Plan 실행 시 읽기 순서

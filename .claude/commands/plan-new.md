@@ -87,6 +87,7 @@ plan이 Unity 직렬화 자산(prefab, scene, material, ScriptableObject, animat
 - (b) 특정 prefab 또는 scene asset 경로 (예: `Assets/Characters/Prefabs/VR Player.prefab`).
 - (c) 특정 컴포넌트 타입의 부착 위치를 가정 (예: "TrackedPoseDriver는 X에 붙어 있다", "RigidBody는 Y에 있어야 한다").
 - (d) ScriptableObject·material·animation 자산의 필드 값에 대한 가정.
+- (e) **컴포넌트의 enum 또는 Flags 필드를 신규로 셋업하는 plan.** MCP(`manage_components`/`manage_gameobject`)의 enum 인덱스 매핑이 인스펙터 표기와 어긋나는 함정이 있어, 박제 없이 진행하면 직렬화는 통과하지만 동작이 정반대가 될 수 있다 (예: `TeleportationArea.m_TeleportTrigger`의 `0=OnSelectExited`/`1=OnSelectEntered` 매핑 사고). 패키지 소스(`Read <패키지 경로>/<파일>.cs`)에서 enum 정의 전체와 본 plan이 의도하는 값을 메인 세션이 직접 박제한다 — `unity-scene-reader`는 enum 정의를 보지 않으므로 본 (e) trigger의 박제는 메인이 처리하고 출처는 `Read <경로> (YYYY-MM-DD)`로 표기.
 
 판단이 모호하면 발동시킨다 — false positive(불필요한 호출)는 ~5초 비용이지만 false negative(검증 누락)는 plan 실행 후 manual 단계까지 늦게 잡혀 후속 plan을 강제한다.
 

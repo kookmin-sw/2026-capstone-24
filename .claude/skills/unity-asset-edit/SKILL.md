@@ -31,3 +31,14 @@ allowed-tools: Read, Edit, Glob, Grep, mcp__unityMCP__manage_asset, mcp__unityMC
 - 텍스트 수정 직후에는 Unity가 자산을 다시 읽을 수 있는지 반드시 확인한다.
 - 에디터가 로드 실패, 포맷 오류, 자산 인식 실패를 내면 추가 수정 전에 포맷 복구와 자산 인식 복구를 먼저 수행한다.
 - 에디터 스크립트에서 `AssetDatabase.FindAssets`로 씬·프리팹을 검색할 때는 반드시 `new[] { "Assets" }`를 두 번째 인수로 전달한다. 인수를 생략하면 `Packages/` 경로까지 포함되어 패키지 씬을 열려다 예외가 발생한다.
+
+## enum 필드 매핑 함정
+
+`manage_components`/`manage_gameobject`로 컴포넌트의 enum 또는 Flags 필드를 셋업할 때 인덱스 매핑이 인스펙터 표기와 어긋나는 경우가 있다. 직렬화는 통과하지만 동작이 정반대가 되는 사고를 일으킨다 (실제 사례: `TeleportationArea.m_TeleportTrigger`가 `OnSelectExited`(0) 의도였으나 `OnSelectEntered`(1)로 박혀 push 시 즉시 텔레포트 발동. base plan 검증 통과 후 manual-hard에서야 잡힘 — `docs/specs/_archive/teleport-locomotion/plans/2026-04-30-sanyoentertain-fix-push-immediate-teleport-trigger.md` 진단).
+
+다음 두 단계로 함정을 차단한다.
+
+1. **plan 작성 단계.** plan `## Verified Structural Assumptions`에 enum 정의(클래스명·각 값 인덱스)와 본 plan 의도 값을 박제한다. 출처는 패키지 소스 `Read <패키지 경로>/<파일>.cs`. 강제 룰 단일 진실원: `docs/specs/README.md` "작성 규칙 요약" + `/plan-new` step 1.5 Trigger (e).
+2. **자산 적용 직후.** MCP 호출 결과를 직렬화 `Grep`으로 다시 읽어 의도 값과 일치하는지 대조한다. 어긋났으면 단일 propertyPath 스칼라 변경이라 직접 텍스트 Edit 예외(`AGENTS.md` 직렬화 자산 수정 MCP 우선 정책의 (b) 조건)로 우회 가능 — sub-agent 단독 판단 금지, plan 명시 또는 메인 승인 후에만.
+
+AC는 의도 값 단일 매치 grep을 `[auto-hard]`로 둔다 (예: "`Plane TeleportationArea` 부착 + `m_TeleportTrigger == 0`을 grep 단일 매치"). AC 라벨/문구 가이드는 `docs/specs/README.md` "작성 규칙 요약"이 단일 진실원.
