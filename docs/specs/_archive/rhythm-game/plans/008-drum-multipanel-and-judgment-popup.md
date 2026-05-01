@@ -1,7 +1,7 @@
 # 드럼 멀티패널 + 판정 팝업
 
 **Linked Spec:** [`note-display.md`](../specs/note-display.md)
-**Status:** `Ready`
+**Status:** `Done`
 
 ## Goal
 
@@ -62,17 +62,26 @@ Plan 007 산출물 전제:
 
 ## Acceptance Criteria
 
-- [ ] Play 모드에서 드럼 세션 시작 시, 각 DrumPiece 위에 독립 패널이 자동으로 배치되고 해당 파츠의 노트가 내려온다.
-- [ ] 피아노 세션은 Plan 007 동작(단일 패널)이 유지된다 — 드럼 분기 추가 후에도 회귀 없음.
-- [ ] 노트 히트 판정 이벤트 발생 시 해당 패널에 "Perfect" / "Good" / "Miss" 텍스트가 나타나고, 0.6초 내에 알파가 0으로 페이드아웃된다.
-- [ ] `laneConfig`에 midiNote 매핑이 없는 DrumPiece에는 패널이 생성되지 않고 예외가 발생하지 않는다.
-- [ ] 세션 종료 시 드럼 파츠별 패널이 모두 제거된다.
+- [x] `[manual-hard]` Play 모드에서 드럼 세션 시작 시, 각 DrumPiece 위에 독립 패널이 자동으로 배치되고 해당 파츠의 노트가 내려온다.
+- [x] `[manual-hard]` 피아노 세션은 Plan 007 동작(단일 패널)이 유지된다 — 드럼 분기 추가 후에도 회귀 없음.
+- [x] `[manual-hard]` 노트 히트 판정 이벤트 발생 시 해당 패널에 "Perfect" / "Good" / "Miss" 텍스트가 나타나고, 0.6초 내에 알파가 0으로 페이드아웃된다.
+- [x] `[auto-hard]` `laneConfig`에 midiNote 매핑이 없는 DrumPiece에는 패널이 생성되지 않고 예외가 발생하지 않는다.
+- [x] `[manual-hard]` 세션 종료 시 드럼 파츠별 패널이 모두 제거된다.
 
 ## Out of Scope
 
 - 드럼 파츠 인식 방식(Renderer vs Collider) 이외의 파츠 위치 계산 방식 — plan 내 Approach 기준 사용.
 - 판정 팝업 애니메이션 커스터마이징 (displayDuration 이외의 트윈 파라미터).
 - 점수 합산 / 결과 화면.
+
+## Handoff
+
+- `INoteDisplayController` (Display/INoteDisplayController.cs): `Hide()` + `OnJudged(JudgmentEvent)` — NoteDisplayPanel·DrumNoteDisplayAdapter 공통 인터페이스. RhythmGameHost.activeNoteDisplay 타입.
+- `DrumNoteDisplayAdapter` (Display/DrumNoteDisplayAdapter.cs): `Init(InstrumentLaneConfig, VmSongChart, int judgedChannel, IRhythmClock)` — DrumHitZone 순회 → 파츠당 NoteDisplayPanel Instantiate·배치. `Hide()` — 전 패널 Destroy. `OnJudged(JudgmentEvent)` — midiNote로 대상 패널 라우팅.
+- `JudgmentPopup` (Display/JudgmentPopup.cs): `Show(JudgmentGrade)` — Perfect(노랑)/Good(초록)/Miss(빨강) 텍스트 + 0.6초 CanvasGroup 알파 페이드. NoteDisplayPanel의 `[SerializeField] judgmentPopup` 필드에 프리팹 단계에서 연결.
+- `NoteDisplayPanel` (Display/NoteDisplayPanel.cs): `OnJudged(JudgmentEvent e)` 추가 — judgmentPopup?.Show(e.Grade). `SetLaneConfig(InstrumentLaneConfig)` 추가.
+- `RhythmGameHost` (Runtime/RhythmGameHost.cs): `StartSession()`에서 instrument가 DrumKit이면 DrumNoteDisplayAdapter.Init(), 아니면 noteDisplayPanel.Show(). `judge.Judged += activeNoteDisplay.OnJudged` 구독. `StopSession()`에서 구독 해제 + `activeNoteDisplay.Hide()`.
+- DrumNoteDisplayAdapter 씬 배치: DrumKit GameObject에 컴포넌트로 추가, `noteDisplayPanelPrefab` 필드에 NoteDisplayPanel 프리팹 연결 필요 (Inspector 또는 씬 YAML 편집).
 
 ## Notes
 

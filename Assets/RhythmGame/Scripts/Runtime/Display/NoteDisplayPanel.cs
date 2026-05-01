@@ -8,7 +8,7 @@ using UnityEngine.UI;
 /// 씬에서 초기 m_IsActive=0 으로 배치한다. Show() 호출 시 활성화된다.
 /// </summary>
 [RequireComponent(typeof(RectTransform))]
-public class NoteDisplayPanel : MonoBehaviour
+public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
 {
     // ─── Inspector ───────────────────────────────────────────────────────────
     [SerializeField] InstrumentLaneConfig laneConfig;
@@ -17,6 +17,9 @@ public class NoteDisplayPanel : MonoBehaviour
 
     [Header("Note Prefab (optional – plain RectTransform if null)")]
     [SerializeField] NoteVisual noteVisualPrefab;
+
+    [Header("Judgment Popup (optional)")]
+    [SerializeField] JudgmentPopup judgmentPopup;
 
     // ─── Runtime ─────────────────────────────────────────────────────────────
     struct PendingNote
@@ -36,6 +39,16 @@ public class NoteDisplayPanel : MonoBehaviour
     // ─── Public API ──────────────────────────────────────────────────────────
 
     /// <summary>
+    /// 런타임에 laneConfig를 교체한다. Show() 호출 전에 사용해야 한다.
+    /// DrumNoteDisplayAdapter가 파츠별 단일-노트 config를 주입할 때 사용.
+    /// </summary>
+    public void SetLaneConfig(InstrumentLaneConfig config)
+    {
+        laneConfig = config;
+        layoutBuilt = false; // 다음 Show()에서 레이아웃 재빌드
+    }
+
+    /// <summary>
     /// 세션이 시작될 때 호출. 판정 채널 트랙의 노트를 큐에 적재하고 패널을 활성화한다.
     /// </summary>
     public void Show(VmSongChart chart, int judgedChannel, IRhythmClock clock)
@@ -48,6 +61,7 @@ public class NoteDisplayPanel : MonoBehaviour
         }
 
         Hide(); // 이전 세션 잔여물 정리
+        layoutBuilt = true; // Hide()가 리셋하지 않도록 재설정
 
         this.clock = clock;
         pendingQueue.Clear();
@@ -99,6 +113,16 @@ public class NoteDisplayPanel : MonoBehaviour
         pendingQueue.Clear();
 
         gameObject.SetActive(false);
+    }
+
+    /// <summary>
+    /// RhythmJudge.Judged 이벤트 핸들러. 판정 결과를 JudgmentPopup에 전달한다.
+    /// RhythmGameHost가 StartSession() 시 구독하고 StopSession() 시 구독 해제한다.
+    /// </summary>
+    public void OnJudged(JudgmentEvent e)
+    {
+        if (judgmentPopup != null)
+            judgmentPopup.Show(e.grade);
     }
 
     // ─── Update ──────────────────────────────────────────────────────────────

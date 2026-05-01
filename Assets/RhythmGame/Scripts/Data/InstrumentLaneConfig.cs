@@ -59,4 +59,18 @@ public sealed class InstrumentLaneConfig : ScriptableObject
         laneIndex = -1;
         return false;
     }
+
+    /// <summary>
+    /// 런타임 전용. 단일 MIDI 노트를 laneIndex=0 에 매핑하는 임시 InstrumentLaneConfig를 생성합니다.
+    /// DrumNoteDisplayAdapter가 파츠 패널마다 사용합니다. 생명주기는 호출자가 관리하세요.
+    /// </summary>
+    public static InstrumentLaneConfig CreateSingleNote(byte midiNote)
+    {
+        InstrumentLaneConfig cfg = CreateInstance<InstrumentLaneConfig>();
+        cfg.lanes = new List<LaneEntry>
+        {
+            new LaneEntry { laneIndex = 0, midiNote = midiNote }
+        };
+        return cfg;
+    }
 }

@@ -6,10 +6,11 @@ public class RhythmGameHost : MonoBehaviour
     [SerializeField] Transform uiRoot;
     [SerializeField] NoteDisplayPanel noteDisplayPanel;
 
-    InstrumentBase instrument;
-    RhythmClock    clock;
-    RhythmJudge    judge;
-    RhythmSession  activeSession;
+    InstrumentBase         instrument;
+    RhythmClock            clock;
+    RhythmJudge            judge;
+    RhythmSession          activeSession;
+    INoteDisplayController activeNoteDisplay;
 
     void Awake()
     {
@@ -32,8 +33,24 @@ public class RhythmGameHost : MonoBehaviour
         activeSession = new RhythmSession(instrument, song, clock, judge);
         activeSession.Start();
 
-        if (noteDisplayPanel != null)
+        // 드럼이면 DrumNoteDisplayAdapter, 그 외엔 단일 NoteDisplayPanel 사용
+        if (instrument is DrumKit)
+        {
+            DrumNoteDisplayAdapter adapter = instrument.GetComponent<DrumNoteDisplayAdapter>();
+            if (adapter != null && instrument.LaneConfig != null)
+            {
+                adapter.Init(instrument.LaneConfig, chart, judgedChannel, clock);
+                activeNoteDisplay = adapter;
+            }
+        }
+        else if (noteDisplayPanel != null)
+        {
             noteDisplayPanel.Show(chart, judgedChannel, clock);
+            activeNoteDisplay = noteDisplayPanel;
+        }
+
+        if (activeNoteDisplay != null)
+            judge.Judged += activeNoteDisplay.OnJudged;
 
         return activeSession;
     }
@@ -42,8 +59,12 @@ public class RhythmGameHost : MonoBehaviour
     {
         if (activeSession != null)
         {
-            if (noteDisplayPanel != null)
-                noteDisplayPanel.Hide();
+            if (activeNoteDisplay != null)
+            {
+                judge.Judged -= activeNoteDisplay.OnJudged;
+                activeNoteDisplay.Hide();
+                activeNoteDisplay = null;
+            }
 
             activeSession.Stop();
             judge.Stop();
