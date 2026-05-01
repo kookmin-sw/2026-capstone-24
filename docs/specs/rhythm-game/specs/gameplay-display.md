@@ -41,7 +41,7 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| _아직 없음_ | — | — | — |
+| 2026-05-01 | 피아노 노트 디스플레이 VR 씬 통합 | Ready | [2026-05-01-linksky0311-piano-display-vr-scene-integration.md](../plans/2026-05-01-linksky0311-piano-display-vr-scene-integration.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/plan-new` 사용.
