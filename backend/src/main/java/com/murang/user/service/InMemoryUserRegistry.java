@@ -1,12 +1,12 @@
 package com.murang.user.service;
 
 import com.murang.common.exception.ApiException;
+import com.murang.user.domain.PlayerIdGenerator;
 import com.murang.user.domain.UserProfile;
 import java.time.Instant;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -31,7 +31,7 @@ public class InMemoryUserRegistry implements UserRegistry {
             Instant now = Instant.now();
             UserProfile created = new UserProfile(
                     sequence.getAndIncrement(),
-                    UUID.randomUUID().toString(),
+                    PlayerIdGenerator.newPlayerId(),
                     metaAccountId,
                     nickname,
                     now,

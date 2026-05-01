@@ -19,8 +19,8 @@
 
 - 개발/배포 공통 DB는 `MariaDB`를 기본으로 한다.
 - 백엔드 ORM은 `Spring Data JPA`를 사용한다.
-- 유저 테이블은 내부 PK `users.id`와 별도로 공개 영구 식별자 `users.player_id`를 가진다.
-- `player_id`는 UUID/ULID 계열의 안정적인 문자열 식별자로 발급하고, Photon Custom Auth의 `UserId` 같은 외부 세션 식별에는 이 값을 사용한다.
+- 유저 테이블은 내부 PK `users.user_id`와 별도로 공개 영구 식별자 `users.player_id`를 가진다.
+- `player_id`는 서버가 발급하는 ULID 기반 안정적인 문자열 식별자로 두고, Photon Custom Auth의 `UserId` 같은 외부 세션 식별에는 이 값을 사용한다.
 - 유저 테이블은 `meta_account_id` 유니크 제약을 두고, 닉네임도 현재 정책을 유지하기 위해 유니크 제약을 둔다.
 - 로그인 시 기존 유저가 있으면 `nickname`, `lastLoginAt`을 갱신한다.
 

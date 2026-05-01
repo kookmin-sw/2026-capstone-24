@@ -1,12 +1,12 @@
 package com.murang.user.service;
 
 import com.murang.common.exception.ApiException;
+import com.murang.user.domain.PlayerIdGenerator;
 import com.murang.user.domain.UserAccount;
 import com.murang.user.domain.UserProfile;
 import com.murang.user.repository.UserAccountRepository;
 import java.time.Instant;
 import java.util.Optional;
-import java.util.UUID;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +35,7 @@ public class PersistentUserRegistry implements UserRegistry {
                 return created.toProfile();
             }
 
-            existing.assignPlayerIdIfMissing(newPlayerId());
+            existing.assignPlayerIdIfNeeded(newPlayerId());
             if (!existing.getNicknameKey().equals(nicknameKey)) {
                 ensureNicknameAvailable(nicknameKey, metaAccountId);
             }
@@ -71,13 +71,13 @@ public class PersistentUserRegistry implements UserRegistry {
     }
 
     private UserProfile ensurePlayerIdAndToProfile(UserAccount userAccount) {
-        if (userAccount.assignPlayerIdIfMissing(newPlayerId())) {
+        if (userAccount.assignPlayerIdIfNeeded(newPlayerId())) {
             userAccountRepository.flush();
         }
         return userAccount.toProfile();
     }
 
     private String newPlayerId() {
-        return UUID.randomUUID().toString();
+        return PlayerIdGenerator.newPlayerId();
     }
 }

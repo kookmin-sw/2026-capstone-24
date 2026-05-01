@@ -29,7 +29,7 @@ public class UserAccount {
     @Column(name = "meta_account_id", nullable = false, length = 128, updatable = false)
     private String metaAccountId;
 
-    @Column(name = "player_id", length = 36)
+    @Column(name = "player_id", length = 26)
     private String playerId;
 
     @Column(name = "nickname", nullable = false, length = 32)
@@ -58,8 +58,8 @@ public class UserAccount {
         return userAccount;
     }
 
-    public boolean assignPlayerIdIfMissing(String playerId) {
-        if (this.playerId != null && !this.playerId.isBlank()) {
+    public boolean assignPlayerIdIfNeeded(String playerId) {
+        if (PlayerIdGenerator.isUlid(this.playerId)) {
             return false;
         }
 
