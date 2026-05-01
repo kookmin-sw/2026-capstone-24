@@ -1,7 +1,9 @@
 {
     "name": "Murang.Multiplayer",
     "rootNamespace": "Murang.Multiplayer",
-    "references": [],
+    "references": [
+        "Fusion.Unity"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

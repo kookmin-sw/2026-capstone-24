@@ -1,7 +1,7 @@
 # 룸 세션 라이프사이클 (비밀번호 옵션 포함)
 
 **Linked Spec:** [`03-room-session.md`](../specs/03-room-session.md)
-**Status:** `Ready`
+**Status:** `In Progress`
 
 ## Goal
 
@@ -32,6 +32,7 @@ Photon Fusion Server 모드 권위 인스턴스를 부트스트랩하고, 클라
 - **비밀번호 메타데이터**: `SessionInfo.Properties`에 `IsLocked`(bool) 플래그를 두어 룸 목록 plan이 잠금 여부를 읽을 수 있게 한다. 해시값은 서버 권위 객체 내부에만 보관하고 SessionInfo에는 노출하지 않는다.
 - **거부 사유 전달**: `RoomJoinResult { success, reason }` 데이터 구조. `reason`은 enum(`RoomFull`, `WrongPassword`, `RoomNotFound`, `Other`). 서버 측에서 합류 거부 시 클라이언트의 `OnConnectFailed` 콜백 또는 RPC로 결과를 전달.
 - **자동 소멸**: 마지막 유저 퇴장 시 서버 측 NetworkRunner가 룸 인스턴스를 종료. Photon Fusion의 `Shutdown()` 호출.
+- **플레이어 식별자 매핑**: Fusion의 `PlayerRef`는 세션 수명 동안만 유효한 transport 식별자로 사용한다. 실제 유저 식별은 백엔드가 발급한 `playerId`를 기준으로 유지하고, Photon Custom Auth의 `UserId`에도 `playerId`를 전달한다. `metaAccountId`는 로그인 제공자 식별자, `nickname`은 표시용 값이며 room participant 상태나 UI는 `PlayerRef`를 영속 키로 저장하지 않는다.
 
 ## Approach
 
@@ -94,6 +95,7 @@ Photon Fusion Server 모드 권위 인스턴스를 부트스트랩하고, 클라
 - Dedicated Server 빌드를 위해 Unity Hub에서 해당 플랫폼의 Dedicated Server 빌드 모듈이 설치되어 있어야 한다. 검증은 Windows Dedicated Server 기준으로 우선 수행한다.
 - Photon Fusion의 SessionProperties는 Photon Cloud Lobby에 노출되므로, 비밀번호 해시 자체는 SessionProperties에 넣지 않는다(노출 위험). `IsLocked` 불리언만 노출하고 해시는 서버 권위 객체에서만 보관·비교한다.
 - 검증 시 동일 머신에서 Dedicated Server + Editor 클라이언트 + 빌드 클라이언트 조합을 사용한다. 9명 정원 초과 검증은 헤드리스 클라이언트를 다중 인스턴스로 실행해 수행한다.
+- 2026-05-01: `PlayerRef`는 세션 내부 transport 식별자로만 두고, 외부 세션 식별은 백엔드 `playerId`를 사용한다는 결정으로 상위 spec open question을 닫았다.
 
 ## Handoff
 
