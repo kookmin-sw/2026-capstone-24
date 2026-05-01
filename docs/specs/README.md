@@ -26,6 +26,15 @@ docs/specs/
 
 ## 워크플로우
 
+자동 파이프라인(권장):
+
+| 작업 | 명령 |
+|---|---|
+| 새 피처를 인터뷰로 박제 | `/spec-interview [러프한 아이디어]` |
+| 박제된 root-spec 한 개 자동 구현 | `/spec-build <root-spec-path>` (기본 dry-run, `--apply`로 실제 실행) |
+
+수동 단계별 진입점(자동 파이프라인이 막히거나 한 단계만 손으로 진행하고 싶을 때):
+
 | 작업 | 명령 |
 |---|---|
 | 새 피처의 spec 시작 | `/spec-new` |
@@ -35,15 +44,30 @@ docs/specs/
 | 작성된 plan대로 구현 | `/spec-implement <plan-path>` (기본 dry-run, `--apply`로 실제 실행) |
 | 구현 완료 후 상태 갱신·아카이브 | `plan-complete` skill (자동 트리거) |
 
+### Command 책임 분리
+
+| Command | 입력 | 책임 | 사용자 게이트 |
+|---|---|---|---|
+| `/spec-interview` | 자유 텍스트(아이디어) | 인터뷰 → spec(루트+서브) 박제. Open Q 0건 강제. | Q&A 라운드 N회 + 초안 확인 1회 |
+| `/spec-build` | root-spec `_index.md` | sub-spec 큐 자동 실행: plan-drafter → plan-quality-reviewer → spec-implement 워크플로우 inline 답습 | manual-hard 검증·destructive 가드만 |
+| `/spec-implement` | plan 또는 sub-spec 경로 | 미완료 plan들 순차 실행 + manual-hard 4택 분기 + Caused By max-cascade 제한 | manual-hard 검증, handoff 승인 |
+| `/plan-new` | spec 경로 또는 `--from-failure` | plan 1~N개 인터랙티브 작성. plan-drafter sub-agent가 `--auto` 모드로도 호출. | 분할 결정·slug 확인 (인터랙티브 모드만) |
+| `/spec-new`·`/spec-resolve` | spec 경로 | 단계별 spec 작성·Open Q 닫기 (`/spec-interview`로 흡수됨, 수동 호출용) | 라운드별 사용자 결정 |
+
 ## 검증 실패 시 후속 plan 시드
 
-`/spec-implement --apply` 도중 plan의 acceptance criteria가 fail로 판정되면(특히 `manual-hard`에서 자주 발생한다) 그 plan은 Status `In Progress` 유지 + 큐 중단으로 멈춘다. 이때 사용자가 선택할 수 있는 분기는 셋이다.
+`/spec-implement --apply` 도중 plan의 acceptance criteria가 fail로 판정되면(특히 `manual-hard`에서 자주 발생한다) `/spec-implement`는 사용자에게 **4택 결정**을 묻는다. 단일 진실원: [`.claude/commands/spec-implement.md`](../../.claude/commands/spec-implement.md) "manual-hard fail 4택 분기" 박스.
 
-1. **원 plan 본문 수정 후 재호출** — 실패 원인이 plan의 매개변수·순서 조정으로 풀리는 경우.
-2. **후속 plan 시드 후 재호출** — 실패 원인이 새 자산·시스템·튜닝 작업을 요구해 원 plan의 Approach 안에서 풀기 어려운 경우. 권장 시점: 원 plan의 Out of Scope에 적힌 영역에 가깝거나, 결정 근거 자체를 바꿔야 할 때.
-3. **중단** — abandoned 처리 또는 보류.
+| 옵션 | 동작 |
+|---|---|
+| `pass` | 통과 처리. 항목별 evidence 박제. |
+| `stop` | plan Status `In Progress` 유지 + 큐 중단. 후속 plan 시드 묻지 않음. |
+| `stop-and-seed` | 큐 중단 + `/plan-new --from-failure <current-plan>` 자동 위임. 새 plan은 아래 자동 부여 항목들을 받는다. (단 `cascade_depth >= max-cascade`면 거부.) |
+| `skip-and-continue` | 이번 항목을 `skipped-deferred`로 박제 + plan은 In Progress 유지 + working tree 변경분 그대로 두고 다음 plan 진행. 큐 종료 시 deferred 목록을 모아 일괄 시드 옵션 제공. |
 
-`/spec-implement`는 manual-hard fail 직후 사용자에게 "후속 plan을 지금 시드할까요?"를 묻는다. **yes**를 선택하면 자동으로 `/plan-new --from-failure <current-plan>`을 위임 호출하며, 새 plan은 다음을 자동으로 부여받는다.
+**Caused By max-cascade 제한:** `/spec-implement --max-cascade N` (default 2). `Caused By` 자동 시드가 N단을 초과하려 하면 거부 + 사용자 호출. 무한 루프 차단.
+
+`stop-and-seed` 또는 `/plan-new --from-failure`를 직접 호출했을 때, 새 plan은 다음을 자동으로 부여받는다.
 
 - **`Linked Spec`** — 원 plan과 동일한 spec을 자동 상속.
 - **`Caused By` 헤더** — `**Caused By:** [<선행 plan 파일>](./<선행 plan 파일>)` 한 줄. grep으로 의존 그래프를 추적하기 위한 옵셔널 메타필드.
