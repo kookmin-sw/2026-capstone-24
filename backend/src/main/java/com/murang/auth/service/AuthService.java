@@ -39,8 +39,8 @@ public class AuthService {
     }
 
     public MetaLoginResponse refresh(RefreshTokenRequest request) {
-        String metaAccountId = jwtTokenService.parseRefreshToken(request.refreshToken());
-        UserProfile user = userRegistry.findByMetaAccountId(metaAccountId)
+        JwtTokenService.RefreshTokenIdentity refreshIdentity = jwtTokenService.parseRefreshToken(request.refreshToken());
+        UserProfile user = findRefreshUser(refreshIdentity)
                 .orElseThrow(ApiException::invalidJwt);
         JwtTokenService.IssuedTokens tokens = jwtTokenService.issueTokens(user);
         return toMetaLoginResponse(user, tokens);
@@ -58,7 +58,16 @@ public class AuthService {
         return new MetaLoginResponse(
                 tokens.accessToken(),
                 tokens.refreshToken(),
-                new MetaLoginResponse.UserSummary(user.userId(), user.nickname())
+                new MetaLoginResponse.UserSummary(user.playerId(), user.nickname())
         );
+    }
+
+    private java.util.Optional<UserProfile> findRefreshUser(JwtTokenService.RefreshTokenIdentity refreshIdentity) {
+        if (refreshIdentity.playerId() != null && !refreshIdentity.playerId().isBlank()) {
+            return userRegistry.findByPlayerId(refreshIdentity.playerId())
+                    .or(() -> userRegistry.findByMetaAccountId(refreshIdentity.metaAccountId()));
+        }
+
+        return userRegistry.findByMetaAccountId(refreshIdentity.metaAccountId());
     }
 }

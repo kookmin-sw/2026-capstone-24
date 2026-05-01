@@ -6,6 +6,7 @@ import com.murang.user.domain.UserProfile;
 import com.murang.user.repository.UserAccountRepository;
 import java.time.Instant;
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,10 +30,12 @@ public class PersistentUserRegistry implements UserRegistry {
             UserAccount existing = userAccountRepository.findByMetaAccountId(metaAccountId).orElse(null);
             if (existing == null) {
                 ensureNicknameAvailable(nicknameKey, metaAccountId);
-                UserAccount created = userAccountRepository.saveAndFlush(UserAccount.create(metaAccountId, nickname, now));
+                UserAccount created = userAccountRepository.saveAndFlush(
+                        UserAccount.create(metaAccountId, newPlayerId(), nickname, now));
                 return created.toProfile();
             }
 
+            existing.assignPlayerIdIfMissing(newPlayerId());
             if (!existing.getNicknameKey().equals(nicknameKey)) {
                 ensureNicknameAvailable(nicknameKey, metaAccountId);
             }
@@ -46,10 +49,17 @@ public class PersistentUserRegistry implements UserRegistry {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
+    public Optional<UserProfile> findByPlayerId(String playerId) {
+        return userAccountRepository.findByPlayerId(playerId)
+                .map(this::ensurePlayerIdAndToProfile);
+    }
+
+    @Override
+    @Transactional
     public Optional<UserProfile> findByMetaAccountId(String metaAccountId) {
         return userAccountRepository.findByMetaAccountId(metaAccountId)
-                .map(UserAccount::toProfile);
+                .map(this::ensurePlayerIdAndToProfile);
     }
 
     private void ensureNicknameAvailable(String nicknameKey, String metaAccountId) {
@@ -58,5 +68,16 @@ public class PersistentUserRegistry implements UserRegistry {
                 .ifPresent(userAccount -> {
                     throw ApiException.nicknameDuplicate();
                 });
+    }
+
+    private UserProfile ensurePlayerIdAndToProfile(UserAccount userAccount) {
+        if (userAccount.assignPlayerIdIfMissing(newPlayerId())) {
+            userAccountRepository.flush();
+        }
+        return userAccount.toProfile();
+    }
+
+    private String newPlayerId() {
+        return UUID.randomUUID().toString();
     }
 }

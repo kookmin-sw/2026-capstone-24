@@ -6,6 +6,7 @@ import java.time.Instant;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -13,6 +14,7 @@ public class InMemoryUserRegistry implements UserRegistry {
 
     private final AtomicLong sequence = new AtomicLong(1L);
     private final Map<String, UserProfile> usersByMetaAccountId = new ConcurrentHashMap<>();
+    private final Map<String, UserProfile> usersByPlayerId = new ConcurrentHashMap<>();
     private final Map<String, String> metaAccountIdByNicknameKey = new ConcurrentHashMap<>();
 
     @Override
@@ -27,8 +29,15 @@ public class InMemoryUserRegistry implements UserRegistry {
             }
 
             Instant now = Instant.now();
-            UserProfile created = new UserProfile(sequence.getAndIncrement(), metaAccountId, nickname, now, now);
+            UserProfile created = new UserProfile(
+                    sequence.getAndIncrement(),
+                    UUID.randomUUID().toString(),
+                    metaAccountId,
+                    nickname,
+                    now,
+                    now);
             usersByMetaAccountId.put(metaAccountId, created);
+            usersByPlayerId.put(created.playerId(), created);
             return created;
         }
 
@@ -43,13 +52,20 @@ public class InMemoryUserRegistry implements UserRegistry {
 
         UserProfile updated = new UserProfile(
                 existing.userId(),
+                existing.playerId(),
                 existing.metaAccountId(),
                 nickname,
                 existing.createdAt(),
                 Instant.now()
         );
         usersByMetaAccountId.put(metaAccountId, updated);
+        usersByPlayerId.put(updated.playerId(), updated);
         return updated;
+    }
+
+    @Override
+    public Optional<UserProfile> findByPlayerId(String playerId) {
+        return Optional.ofNullable(usersByPlayerId.get(playerId));
     }
 
     @Override

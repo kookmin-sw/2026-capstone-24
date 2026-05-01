@@ -20,14 +20,14 @@ class AuthServicePersistenceTest {
     Path tempDir;
 
     @Test
-    void loginPreservesUserIdAcrossApplicationRestarts() {
+    void loginPreservesPlayerIdAcrossApplicationRestarts() {
         String databaseUrl = "jdbc:h2:file:%s;MODE=MariaDB;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE"
                 .formatted(tempDir.resolve("murang-persistence").toAbsolutePath().toString().replace('\\', '/'));
 
         MetaLoginResponse firstLogin = login(databaseUrl, "mock-meta:quest-user-31", "Restart User 31");
         MetaLoginResponse secondLogin = login(databaseUrl, "mock-meta:quest-user-31", "Restart User Renamed");
 
-        assertEquals(firstLogin.user().userId(), secondLogin.user().userId());
+        assertEquals(firstLogin.user().playerId(), secondLogin.user().playerId());
         assertEquals("Restart User Renamed", secondLogin.user().nickname());
     }
 

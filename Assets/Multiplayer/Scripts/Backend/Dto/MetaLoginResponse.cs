@@ -12,7 +12,7 @@ namespace Murang.Multiplayer.Backend.Dto
         [Serializable]
         public sealed class UserSummary
         {
-            public long userId;
+            public string playerId;
             public string nickname;
         }
     }

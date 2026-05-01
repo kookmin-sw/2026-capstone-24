@@ -146,9 +146,9 @@ namespace Murang.Multiplayer.Auth
         private async Task FetchAndReportCurrentUserAsync(AuthSession.AuthState state, CancellationToken cancellationToken)
         {
             UserMeResponse user = await authBootstrap.Session.GetCurrentUserAsync(cancellationToken);
-            _userSummary = user.nickname + " (" + user.metaAccountId + ")";
+            _userSummary = user.nickname + " (" + user.playerId + ")";
             _statusMessage = "/users/me 성공: " + _userSummary + " / " + state.Source;
-            Debug.Log("[AuthSmokeProbe] /users/me returned " + user.nickname + " (" + user.metaAccountId + ") via " + state.Source + ".");
+            Debug.Log("[AuthSmokeProbe] /users/me returned " + user.nickname + " (" + user.playerId + ") via " + state.Source + ".");
         }
 
         void OnGUI()

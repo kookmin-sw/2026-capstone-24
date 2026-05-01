@@ -1,12 +1,17 @@
 package com.murang.auth.controller;
 
-import static org.hamcrest.Matchers.greaterThan;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
+import java.util.UUID;
+import javax.crypto.SecretKey;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -19,6 +24,9 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 class AuthControllerTest {
+
+    private static final String TEST_JWT_SECRET =
+            "test-secret-for-hs512-signing-must-be-at-least-sixty-four-bytes-long-2026";
 
     @Autowired
     private MockMvc mockMvc;
@@ -40,7 +48,7 @@ class AuthControllerTest {
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data.accessToken").isNotEmpty())
                 .andExpect(jsonPath("$.data.refreshToken").isNotEmpty())
-                .andExpect(jsonPath("$.data.user.userId").value(greaterThan(0)))
+                .andExpect(jsonPath("$.data.user.playerId").isNotEmpty())
                 .andExpect(jsonPath("$.data.user.nickname").value("Murang User 01"));
     }
 
@@ -75,11 +83,11 @@ class AuthControllerTest {
     }
 
     @Test
-    void metaLoginReusesUserIdForSameMetaAccountAfterNicknameChange() throws Exception {
+    void metaLoginReusesPlayerIdForSameMetaAccountAfterNicknameChange() throws Exception {
         TokenBundle firstLogin = login("mock-meta:quest-user-17", "Original Nickname");
         TokenBundle secondLogin = login("mock-meta:quest-user-17", "Renamed Nickname");
 
-        org.junit.jupiter.api.Assertions.assertEquals(firstLogin.userId(), secondLogin.userId());
+        org.junit.jupiter.api.Assertions.assertEquals(firstLogin.playerId(), secondLogin.playerId());
         org.junit.jupiter.api.Assertions.assertEquals("Renamed Nickname", secondLogin.nickname());
     }
 
@@ -119,7 +127,16 @@ class AuthControllerTest {
 
         org.junit.jupiter.api.Assertions.assertNotEquals(login.accessToken(), refreshed.accessToken());
         org.junit.jupiter.api.Assertions.assertNotEquals(login.refreshToken(), refreshed.refreshToken());
-        org.junit.jupiter.api.Assertions.assertEquals(login.userId(), refreshed.userId());
+        org.junit.jupiter.api.Assertions.assertEquals(login.playerId(), refreshed.playerId());
+        org.junit.jupiter.api.Assertions.assertEquals(login.nickname(), refreshed.nickname());
+    }
+
+    @Test
+    void refreshAcceptsLegacyRefreshTokenSubjectWithMetaAccountId() throws Exception {
+        TokenBundle login = login("mock-meta:quest-user-18", "Legacy Refresh User");
+        TokenBundle refreshed = refresh(buildLegacyRefreshToken("quest-user-18"));
+
+        org.junit.jupiter.api.Assertions.assertEquals(login.playerId(), refreshed.playerId());
         org.junit.jupiter.api.Assertions.assertEquals(login.nickname(), refreshed.nickname());
     }
 
@@ -192,15 +209,33 @@ class AuthControllerTest {
         return new TokenBundle(
                 data.path("accessToken").asText(),
                 data.path("refreshToken").asText(),
-                data.path("user").path("userId").asLong(),
+                data.path("user").path("playerId").asText(),
                 data.path("user").path("nickname").asText()
         );
+    }
+
+    private String buildLegacyRefreshToken(String metaAccountId) {
+        SecretKey secretKey = Keys.hmacShaKeyFor(TEST_JWT_SECRET.getBytes(StandardCharsets.UTF_8));
+        Date now = new Date();
+        Date expiresAt = new Date(now.getTime() + 86_400_000L);
+
+        return Jwts.builder()
+                .id(UUID.randomUUID().toString())
+                .issuer("murang-backend")
+                .subject(metaAccountId)
+                .claim("userId", 1L)
+                .claim("nickname", "Legacy Refresh User")
+                .claim("tokenType", "refresh")
+                .issuedAt(now)
+                .expiration(expiresAt)
+                .signWith(secretKey, Jwts.SIG.HS512)
+                .compact();
     }
 
     private record TokenBundle(
             String accessToken,
             String refreshToken,
-            long userId,
+            String playerId,
             String nickname
     ) {
     }

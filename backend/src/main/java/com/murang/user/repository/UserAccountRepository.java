@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserAccountRepository extends JpaRepository<UserAccount, Long> {
 
+    Optional<UserAccount> findByPlayerId(String playerId);
+
     Optional<UserAccount> findByMetaAccountId(String metaAccountId);
 
     Optional<UserAccount> findByNicknameKey(String nicknameKey);

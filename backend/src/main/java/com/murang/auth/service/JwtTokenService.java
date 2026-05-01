@@ -27,6 +27,7 @@ public class JwtTokenService {
     private static final Logger log = LoggerFactory.getLogger(JwtTokenService.class);
     private static final int HS512_MINIMUM_KEY_BYTES = 64;
     private static final String CLAIM_USER_ID = "userId";
+    private static final String CLAIM_META_ACCOUNT_ID = "metaAccountId";
     private static final String CLAIM_NICKNAME = "nickname";
     private static final String CLAIM_TOKEN_TYPE = "tokenType";
     private static final String TOKEN_TYPE_ACCESS = "access";
@@ -56,22 +57,29 @@ public class JwtTokenService {
             throw ApiException.invalidJwt();
         }
 
-        String metaAccountId = claims.getSubject();
+        String playerId = claims.getSubject();
+        String metaAccountId = claims.get(CLAIM_META_ACCOUNT_ID, String.class);
         String nickname = claims.get(CLAIM_NICKNAME, String.class);
-        if (!StringUtils.hasText(metaAccountId) || !StringUtils.hasText(nickname)) {
+        if (!StringUtils.hasText(playerId) || !StringUtils.hasText(metaAccountId) || !StringUtils.hasText(nickname)) {
             throw ApiException.invalidJwt();
         }
 
-        return new AuthPrincipal(number.longValue(), metaAccountId, nickname);
+        return new AuthPrincipal(number.longValue(), playerId, metaAccountId, nickname);
     }
 
-    public String parseRefreshToken(String token) {
+    public RefreshTokenIdentity parseRefreshToken(String token) {
         Claims claims = parseAndValidate(token, TOKEN_TYPE_REFRESH);
-        String metaAccountId = claims.getSubject();
-        if (!StringUtils.hasText(metaAccountId)) {
+        String subject = claims.getSubject();
+        if (!StringUtils.hasText(subject)) {
             throw ApiException.invalidJwt();
         }
-        return metaAccountId;
+
+        String metaAccountId = claims.get(CLAIM_META_ACCOUNT_ID, String.class);
+        if (StringUtils.hasText(metaAccountId)) {
+            return new RefreshTokenIdentity(subject, metaAccountId);
+        }
+
+        return new RefreshTokenIdentity(null, subject);
     }
 
     private Claims parseAndValidate(String token, String expectedTokenType) {
@@ -98,8 +106,9 @@ public class JwtTokenService {
         return Jwts.builder()
                 .id(UUID.randomUUID().toString())
                 .issuer(securityProperties.getJwt().getIssuer())
-                .subject(userProfile.metaAccountId())
+                .subject(userProfile.playerId())
                 .claim(CLAIM_USER_ID, userProfile.userId())
+                .claim(CLAIM_META_ACCOUNT_ID, userProfile.metaAccountId())
                 .claim(CLAIM_NICKNAME, userProfile.nickname())
                 .claim(CLAIM_TOKEN_TYPE, tokenType)
                 .issuedAt(Date.from(issuedAt))
@@ -148,6 +157,12 @@ public class JwtTokenService {
     public record IssuedTokens(
             String accessToken,
             String refreshToken
+    ) {
+    }
+
+    public record RefreshTokenIdentity(
+            String playerId,
+            String metaAccountId
     ) {
     }
 }

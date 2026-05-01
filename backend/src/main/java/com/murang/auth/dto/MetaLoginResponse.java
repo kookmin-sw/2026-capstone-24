@@ -7,7 +7,7 @@ public record MetaLoginResponse(
 ) {
 
     public record UserSummary(
-            long userId,
+            String playerId,
             String nickname
     ) {
     }

@@ -30,11 +30,11 @@ Spring 백엔드에 Refresh Token 갱신 엔드포인트를 추가하고, spec B
 
 ## Approach
 
-1. **Refresh 토큰 검증 노출.** `JwtTokenService`에 refresh 토큰 파싱 메서드(`parseRefreshToken`)를 추가하고, refresh 성공 시 발급할 새 토큰 쌍 메서드(`reissueTokens(metaAccountId)`)를 노출한다. 기존 `parseAndValidate` 로직 재사용.
-2. **AuthService.refresh** 추가. Refresh Token 파싱 → `InMemoryUserRegistry`에서 metaAccountId로 유저 조회 → 새 토큰 쌍 발급 → `MetaLoginResponse` 동일 형식으로 반환. 유저가 없으면 `AUTH_INVALID_JWT`로 통일 (refresh 후 등록 해제된 경우 등).
+1. **Refresh 토큰 검증 노출.** `JwtTokenService`에 refresh 토큰 파싱 메서드(`parseRefreshToken`)를 추가하고, refresh 성공 시 발급할 새 토큰 쌍 메서드를 노출한다. 현재 토큰 subject는 공개 `playerId`를 사용하고, 구형 `metaAccountId` subject refresh 토큰도 호환 처리한다.
+2. **AuthService.refresh** 추가. Refresh Token 파싱 → 유저 레지스트리에서 `playerId`로 우선 조회하고 필요 시 `metaAccountId` fallback → 새 토큰 쌍 발급 → `MetaLoginResponse` 동일 형식으로 반환. 유저가 없으면 `AUTH_INVALID_JWT`로 통일한다.
 3. **`POST /api/v1/auth/refresh`** 엔드포인트를 `AuthController`에 추가. 요청 DTO `RefreshTokenRequest(String refreshToken)`. 응답은 `MetaLoginResponse` 재사용.
 4. **SecurityConfig** 의 `permitAll` 패턴에 `/api/v1/auth/refresh` 추가.
-5. **보호 엔드포인트 추가** — `GET /api/v1/users/me`. `SecurityContextHolder` 기반 `AuthPrincipal` 조회 후 `{userId, metaAccountId, nickname}` 반환. 컨트롤러는 `com.murang.user.controller.UserController`.
+5. **보호 엔드포인트 추가** — `GET /api/v1/users/me`. `SecurityContextHolder` 기반 `AuthPrincipal` 조회 후 `{playerId, metaAccountId, nickname}` 반환. 컨트롤러는 `com.murang.user.controller.UserController`.
 6. **JWT TTL 정책 갱신** — `application.yml`의 `refresh-token-ttl`을 `P30D`로 변경. `application-test.yml`에는 짧은 만료(`PT1S` 등) 시나리오용 프로필 또는 테스트에서 동적 오버라이드 가능하도록 두는 방안 중 후자(`@DynamicPropertySource` 또는 `@TestPropertySource`)를 사용해 만료 테스트 작성.
 7. **테스트 보강** — `AuthControllerTest`에 시나리오 추가:
    - 닉네임 중복(`AUTH_NICKNAME_DUPLICATE`) — 다른 Meta 계정으로 같은 닉네임 두 번째 로그인.
@@ -61,7 +61,7 @@ Spring 백엔드에 Refresh Token 갱신 엔드포인트를 추가하고, spec B
 
 - [ ] `[auto-hard]` `POST /api/v1/auth/refresh`에 유효한 Refresh Token을 보내면 200과 새 access/refresh 토큰을 반환한다.
 - [ ] `[auto-hard]` `POST /api/v1/auth/refresh`에 access 토큰이나 변조된 토큰을 보내면 401 `AUTH_INVALID_JWT`를 반환한다.
-- [ ] `[auto-hard]` `GET /api/v1/users/me`에 유효한 access 토큰으로 요청하면 200과 `{userId, metaAccountId, nickname}`을 반환한다.
+- [ ] `[auto-hard]` `GET /api/v1/users/me`에 유효한 access 토큰으로 요청하면 200과 `{playerId, metaAccountId, nickname}`을 반환한다.
 - [ ] `[auto-hard]` `GET /api/v1/users/me`에 토큰 없이/무효 토큰으로 요청하면 401 `AUTH_INVALID_JWT`를 반환한다.
 - [ ] `[auto-hard]` 만료된 access 토큰으로 보호 엔드포인트에 요청하면 401을 반환한다 (테스트 프로파일에서 짧은 TTL 적용).
 - [ ] `[auto-hard]` 다른 Meta 계정이 동일 닉네임으로 로그인을 시도하면 409 `AUTH_NICKNAME_DUPLICATE`를 반환한다.
@@ -77,11 +77,11 @@ Spring 백엔드에 Refresh Token 갱신 엔드포인트를 추가하고, spec B
 
 ## Notes
 
-- `users/me` 엔드포인트를 본 plan에서 추가하는 이유: spec Behavior #2 ("유효한 JWT를 보유한 유저가 보호된 API 엔드포인트에 요청하면 인가가 허용된다")의 자동 검증 대상이 필요하기 때문. DB 영속화가 추가되더라도 동일 응답 형식을 유지하면 된다.
+- `users/me` 엔드포인트를 본 plan에서 추가하는 이유: spec Behavior #2 ("유효한 JWT를 보유한 유저가 보호된 API 엔드포인트에 요청하면 인가가 허용된다")의 자동 검증 대상이 필요하기 때문. 이후 유저 영속화가 `playerId` 공개 식별자를 도입해도 응답 계약은 이 형식을 유지한다.
 
 ## Handoff
 
 - Unity 클라이언트 인증 plan은 `POST /api/v1/auth/meta-login`, `POST /api/v1/auth/refresh`, `GET /api/v1/users/me`가 준비된 상태를 전제로 이어서 구현하면 된다.
 - `POST /api/v1/auth/refresh`는 `{ "refreshToken": "<jwt>" }` 요청 바디를 받고, 응답 포맷은 `meta-login`과 동일하다.
-- `GET /api/v1/users/me`는 Bearer access token을 요구하고 `ApiResponse.data`에 `{ userId, metaAccountId, nickname }`를 반환한다.
+- `GET /api/v1/users/me`는 Bearer access token을 요구하고 `ApiResponse.data`에 `{ playerId, metaAccountId, nickname }`를 반환한다.
 - 자동 검증은 `backend/src/test/java/com/murang/auth/controller/AuthControllerTest.java`와 `backend/src/test/java/com/murang/user/controller/UserControllerTest.java`에 있다.

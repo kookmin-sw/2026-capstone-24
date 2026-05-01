@@ -23,7 +23,7 @@ public class UserController {
         }
 
         return ResponseEntity.ok(ApiResponse.ok(new UserMeResponse(
-                principal.userId(),
+                principal.playerId(),
                 principal.metaAccountId(),
                 principal.nickname()
         )));

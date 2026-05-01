@@ -14,6 +14,7 @@ import java.util.Locale;
 @Table(
         name = "users",
         uniqueConstraints = {
+                @UniqueConstraint(name = "uk_users_player_id", columnNames = "player_id"),
                 @UniqueConstraint(name = "uk_users_meta_account_id", columnNames = "meta_account_id"),
                 @UniqueConstraint(name = "uk_users_nickname_key", columnNames = "nickname_key")
         }
@@ -27,6 +28,9 @@ public class UserAccount {
 
     @Column(name = "meta_account_id", nullable = false, length = 128, updatable = false)
     private String metaAccountId;
+
+    @Column(name = "player_id", length = 36)
+    private String playerId;
 
     @Column(name = "nickname", nullable = false, length = 32)
     private String nickname;
@@ -43,14 +47,24 @@ public class UserAccount {
     protected UserAccount() {
     }
 
-    public static UserAccount create(String metaAccountId, String nickname, Instant now) {
+    public static UserAccount create(String metaAccountId, String playerId, String nickname, Instant now) {
         UserAccount userAccount = new UserAccount();
         userAccount.metaAccountId = metaAccountId;
+        userAccount.playerId = playerId;
         userAccount.nickname = nickname;
         userAccount.nicknameKey = nicknameKeyOf(nickname);
         userAccount.createdAt = now;
         userAccount.lastLoginAt = now;
         return userAccount;
+    }
+
+    public boolean assignPlayerIdIfMissing(String playerId) {
+        if (this.playerId != null && !this.playerId.isBlank()) {
+            return false;
+        }
+
+        this.playerId = playerId;
+        return true;
     }
 
     public void recordLogin(String nickname, Instant now) {
@@ -60,7 +74,7 @@ public class UserAccount {
     }
 
     public UserProfile toProfile() {
-        return new UserProfile(userId, metaAccountId, nickname, createdAt, lastLoginAt);
+        return new UserProfile(userId, playerId, metaAccountId, nickname, createdAt, lastLoginAt);
     }
 
     public Long getUserId() {
@@ -69,6 +83,10 @@ public class UserAccount {
 
     public String getMetaAccountId() {
         return metaAccountId;
+    }
+
+    public String getPlayerId() {
+        return playerId;
     }
 
     public String getNicknameKey() {

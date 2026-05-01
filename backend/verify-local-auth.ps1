@@ -55,11 +55,12 @@ try {
 
 [pscustomobject]@{
     health = $health.status
-    firstUserId = $firstLogin.data.user.userId
-    secondUserId = $secondLogin.data.user.userId
-    sameUserIdAfterRename = ($firstLogin.data.user.userId -eq $secondLogin.data.user.userId)
+    firstPlayerId = $firstLogin.data.user.playerId
+    secondPlayerId = $secondLogin.data.user.playerId
+    samePlayerIdAfterRename = ($firstLogin.data.user.playerId -eq $secondLogin.data.user.playerId)
     renamedNickname = $secondLogin.data.user.nickname
-    meUserId = $me.data.userId
+    mePlayerId = $me.data.playerId
+    meMetaAccountId = $me.data.metaAccountId
     meNickname = $me.data.nickname
     duplicateNicknameConflict = $duplicateConflict
 } | ConvertTo-Json -Depth 8

@@ -31,11 +31,11 @@ class UserControllerTest {
     void meReturnsProfileForValidAccessToken() throws Exception {
         LoginBundle login = login("mock-meta:quest-user-21", "Profile User 21");
 
-        mockMvc.perform(get("/api/v1/users/me")
+                mockMvc.perform(get("/api/v1/users/me")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + login.accessToken()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data.userId").value(login.userId()))
+                .andExpect(jsonPath("$.data.playerId").value(login.playerId()))
                 .andExpect(jsonPath("$.data.metaAccountId").value("quest-user-21"))
                 .andExpect(jsonPath("$.data.nickname").value("Profile User 21"));
     }
@@ -84,13 +84,13 @@ class UserControllerTest {
         JsonNode data = objectMapper.readTree(content).path("data");
         return new LoginBundle(
                 data.path("accessToken").asText(),
-                data.path("user").path("userId").asLong()
+                data.path("user").path("playerId").asText()
         );
     }
 
     private record LoginBundle(
             String accessToken,
-            long userId
+            String playerId
     ) {
     }
 }

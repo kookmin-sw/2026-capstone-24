@@ -1,7 +1,7 @@
 package com.murang.user.dto;
 
 public record UserMeResponse(
-        long userId,
+        String playerId,
         String metaAccountId,
         String nickname
 ) {

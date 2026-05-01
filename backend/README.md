@@ -47,7 +47,7 @@ SHOW CREATE USER 'root'@'127.0.0.1';
 
 ### 4. 로컬 API 검증
 
-백엔드가 떠 있는 상태에서 아래 스크립트를 실행하면 `health`, `meta-login`, `users/me`, 같은 Meta 계정 재로그인 시 `userId` 유지, 다른 Meta 계정의 닉네임 충돌까지 한 번에 확인할 수 있습니다.
+백엔드가 떠 있는 상태에서 아래 스크립트를 실행하면 `health`, `meta-login`, `users/me`, 같은 Meta 계정 재로그인 시 `playerId` 유지, 다른 Meta 계정의 닉네임 충돌까지 한 번에 확인할 수 있습니다.
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\verify-local-auth.ps1

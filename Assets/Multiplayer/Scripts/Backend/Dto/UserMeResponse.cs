@@ -5,7 +5,7 @@ namespace Murang.Multiplayer.Backend.Dto
     [Serializable]
     public sealed class UserMeResponse
     {
-        public long userId;
+        public string playerId;
         public string metaAccountId;
         public string nickname;
     }
