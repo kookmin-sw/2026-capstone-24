@@ -26,6 +26,8 @@
 - `Assets/Multiplayer/Scripts/Auth/IMetaTokenProvider.cs`
 - `Assets/Multiplayer/Scripts/Auth/MockMetaTokenProvider.cs`
 - `Assets/Multiplayer/Scripts/Auth/RealMetaTokenProvider.cs`
+- `Assets/Multiplayer/Scripts/Auth/AuthBootstrap.cs`
+- `Assets/Multiplayer/Scripts/Auth/AuthSmokeProbe.cs`
 - `Assets/Multiplayer/Scripts/Auth/MultiplayerAuthConfig.cs`
 - `Assets/Multiplayer/Scripts/Auth/AuthSession.cs`
 - `Assets/Multiplayer/Resources/MultiplayerAuthConfig.asset`
@@ -37,6 +39,7 @@
 - [x] `[auto-hard]` `MultiplayerAuthConfig`가 editor/device 별 backend URL 분기를 제공한다.
 - [x] `[auto-hard]` 닉네임 override가 비어 있을 때 `metaAccountId` 기반 suffix가 붙은 기본 닉네임이 사용된다.
 - [x] `[manual-hard]` `SampleScene` 진입 시 `AuthBootstrap`이 자동 인증을 시도할 수 있는 연결 상태가 된다.
+- [x] `[manual-hard]` `useMockMetaToken = false` 상태로 에디터 Play Mode에 진입하면 “실제 Meta 토큰 발급은 Quest Android 실기기에서만 확인 가능합니다” 메시지로 안전하게 실패한다.
 - [x] `[manual-hard]` Quest Android 빌드에서 Meta Platform SDK가 설치/설정되어 있으면 `RealMetaTokenProvider`가 userId + userProof payload를 구성한다.
 
 ## Notes
@@ -46,4 +49,6 @@
 
 ## Handoff
 
-<!-- /spec-implement 가 plan 완료 후 채움. -->
+- `SampleScene`에는 `MultiplayerAuthBootstrap` 루트 오브젝트가 추가되어 `AuthBootstrap`과 `AuthSmokeProbe`가 함께 연결되어 있다. Play Mode에서 mock 경로와 `/users/me` 호출 흐름을 씬 내부 오버레이로 다시 확인할 수 있다.
+- `RealMetaTokenProvider`는 에디터/비-Android 환경에서 즉시 실패하며, 메시지에 Meta Platform SDK 필요성과 Quest Android 실기기 제약을 드러낸다. 따라서 실기기 검증 전에도 씬/버튼/API 연결과 오류 문구를 먼저 검증할 수 있다.
+- 현재 백엔드 기본 설정은 `app.security.meta.verifier-mode: mock` 이다. `useMockMetaToken = false` 로 Unity 쪽 실제 payload 경로를 태워도 end-to-end 성공 여부는 별도 서버 real verifier 구현 이후에 다시 확인해야 한다.
