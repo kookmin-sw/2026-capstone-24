@@ -1,7 +1,7 @@
 # Instrument Anchors via TeleportationAnchor
 
 **Linked Spec:** [`03-instrument-anchors.md`](../specs/03-instrument-anchors.md)
-**Status:** `Ready`
+**Status:** `Done`
 
 ## Goal
 

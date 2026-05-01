@@ -49,7 +49,7 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| 2026-04-30 | Instrument Anchors via TeleportationAnchor | Ready | [2026-04-30-sanyoentertain-instrument-anchors-via-teleportation-anchor.md](../plans/2026-04-30-sanyoentertain-instrument-anchors-via-teleportation-anchor.md) |
+| 2026-04-30 | Instrument Anchors via TeleportationAnchor | Done | [2026-04-30-sanyoentertain-instrument-anchors-via-teleportation-anchor.md](../../../_archive/teleport-locomotion/plans/2026-04-30-sanyoentertain-instrument-anchors-via-teleportation-anchor.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/plan-new` 사용. 파일명은 날짜·작성자·slug 기반.
