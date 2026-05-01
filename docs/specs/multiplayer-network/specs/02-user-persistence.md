@@ -40,5 +40,4 @@
 
 ## Open Questions
 
-- MariaDB 로컬 개발 실행 방식을 Docker Compose로 통일할지?
-- 닉네임 변경을 허용할지, 현재처럼 로그인 시점에 덮어쓸지?
+- 없음
