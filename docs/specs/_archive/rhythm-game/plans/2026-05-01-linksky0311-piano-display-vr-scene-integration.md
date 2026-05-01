@@ -1,7 +1,7 @@
 # 피아노 노트 디스플레이 VR 씬 통합
 
 **Linked Spec:** [`gameplay-display.md`](../specs/gameplay-display.md)
-**Status:** `Ready`
+**Status:** `Done`
 
 ## Goal
 
@@ -78,4 +78,4 @@ JudgmentPopup에서 `Text(Legacy)` 사용: 2026년 기준 이 프로젝트는 Te
 
 ## Handoff
 
-_`/spec-implement` 완료 시 자동 갱신_
+NoteDisplayCanvas는 Piano 자식으로 이동 (local pos 0, 1.3, 0.5). JudgmentPopup GameObject가 NoteDisplayPanel 자식으로 생성되고 NoteDisplayPanel.judgmentPopup 필드에 연결됨. 판정 흐름 완성: Piano.MidiTriggered → RhythmSession.OnMidiTriggered → RhythmJudge.Judged event → NoteDisplayPanel.OnJudged → JudgmentPopup.Show(grade).
