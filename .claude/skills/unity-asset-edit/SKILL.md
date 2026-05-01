@@ -39,6 +39,6 @@ allowed-tools: Read, Edit, Glob, Grep, mcp__UnityMCP__manage_asset, mcp__UnityMC
 다음 두 단계로 함정을 차단한다.
 
 1. **plan 작성 단계.** plan `## Verified Structural Assumptions`에 enum 정의(클래스명·각 값 인덱스)와 본 plan 의도 값을 박제한다. 출처는 패키지 소스 `Read <패키지 경로>/<파일>.cs`. 강제 룰 단일 진실원: `docs/specs/README.md` "작성 규칙 요약" + `/plan-new` step 1.5 Trigger (e).
-2. **자산 적용 직후.** MCP 호출 결과를 직렬화 `Grep`으로 다시 읽어 의도 값과 일치하는지 대조한다. 어긋났으면 단일 propertyPath 스칼라 변경이라 직접 텍스트 Edit 예외(`AGENTS.md` 직렬화 자산 수정 MCP 우선 정책의 (b) 조건)로 우회 가능 — sub-agent 단독 판단 금지, plan 명시 또는 메인 승인 후에만.
+2. **자산 적용 직후.** MCP 호출 결과를 직렬화 `Grep`으로 다시 읽어 의도 값과 일치하는지 대조한다. 어긋났으면 단일 propertyPath 스칼라 변경이라 직접 텍스트 Edit 예외로 우회 가능 — sub-agent 단독 판단 금지, plan 명시 또는 메인 승인 후에만.
 
 AC는 의도 값 단일 매치 grep을 `[auto-hard]`로 둔다 (예: "`Plane TeleportationArea` 부착 + `m_TeleportTrigger == 0`을 grep 단일 매치"). AC 라벨/문구 가이드는 `docs/specs/README.md` "작성 규칙 요약"이 단일 진실원.
