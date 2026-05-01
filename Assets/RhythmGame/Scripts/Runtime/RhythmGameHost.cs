@@ -5,6 +5,7 @@ public class RhythmGameHost : MonoBehaviour
     [SerializeField] RhythmSongDatabase songDatabase;
     [SerializeField] Transform uiRoot;
     [SerializeField] NoteDisplayPanel noteDisplayPanel;
+    [SerializeField] InstrumentBase targetInstrument;
 
     InstrumentBase         instrument;
     RhythmClock            clock;
@@ -14,7 +15,7 @@ public class RhythmGameHost : MonoBehaviour
 
     void Awake()
     {
-        instrument = GetComponentInParent<InstrumentBase>();
+        instrument = targetInstrument != null ? targetInstrument : GetComponentInParent<InstrumentBase>();
         clock = new RhythmClock(new DspTimeProvider());
         judge = new RhythmJudge(clock);
     }
