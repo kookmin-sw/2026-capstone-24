@@ -1,6 +1,6 @@
 # Base Teleport
 
-**Parent:** [`_index.md`](../../../teleport-locomotion/_index.md)
+**Parent:** [`_index.md`](../_index.md)
 
 ## Why
 
@@ -13,7 +13,7 @@
 - 사용자는 **왼손**의 입력으로만 텔레포트 라인을 띄우고, 라인이 가리키는 위치로 이동한다.
 - 텔레포트는 **위치 이동만** 담당한다. 회전(Turn)은 이미 별도로 구현된 Snap Turn이 책임지며, 본 sub-spec이 회전을 변경하지 않는다.
 - 기존에 존재하던 다른 이동 수단(예: 자유 이동 형태의 locomotion)은 **사용자에게 보이지도, 입력으로 발동되지도 않는 상태로 제거**된다.
-- 텔레포트가 가능한 floor/surface와 그렇지 않은 영역의 구분은 본 sub-spec에서 도입한다 — 단, "특정 영역을 명시적으로 차단하는" 노 텔레포트 존 자체는 [`02-no-teleport-zones.md`](../../../teleport-locomotion/specs/02-no-teleport-zones.md)에서 다룬다.
+- 텔레포트가 가능한 floor/surface와 그렇지 않은 영역의 구분은 본 sub-spec에서 도입한다 — 단, "특정 영역을 명시적으로 차단하는" 노 텔레포트 존 자체는 [`02-no-teleport-zones.md`](02-no-teleport-zones.md)에서 다룬다.
 
 ## Behavior
 
@@ -39,8 +39,8 @@
 
 ## Out of Scope
 
-- 라인이 노 텔레포트 존을 가리켰을 때의 invalid 시각 표시 — [`02-no-teleport-zones.md`](../../../teleport-locomotion/specs/02-no-teleport-zones.md).
-- 악기 근처에서 라인이 anchor로 스냅·구별 표시되는 동작 — [`03-instrument-anchors.md`](../../../teleport-locomotion/specs/03-instrument-anchors.md).
+- 라인이 노 텔레포트 존을 가리켰을 때의 invalid 시각 표시 — [`02-no-teleport-zones.md`](02-no-teleport-zones.md).
+- 악기 근처에서 라인이 anchor로 스냅·구별 표시되는 동작 — [`03-instrument-anchors.md`](03-instrument-anchors.md).
 - 회전(Snap Turn / Continuous Turn)의 구현·조정. 본 sub-spec은 기존 회전 동작을 보존만 한다.
 - 텔레포트 시 페이드 인/아웃 같은 시각 전환 효과의 정책 결정. 필요해지면 별도 plan 또는 sub-spec.
 
