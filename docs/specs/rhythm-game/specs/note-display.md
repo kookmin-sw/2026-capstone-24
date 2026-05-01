@@ -51,7 +51,7 @@
 | 번호 | 제목 | 상태 | 링크 |
 |---|---|---|---|
 | 006 | 악기 레인 메타데이터 | Done | [006-instrument-lane-config.md](../../_archive/rhythm-game/plans/006-instrument-lane-config.md) |
-| 007 | 노트 디스플레이 패널 | Ready | [007-note-display-panel.md](../plans/007-note-display-panel.md) |
+| 007 | 노트 디스플레이 패널 | Done | [007-note-display-panel.md](../../_archive/rhythm-game/plans/007-note-display-panel.md) |
 | 008 | 드럼 멀티패널 + 판정 팝업 | Ready | [008-drum-multipanel-and-judgment-popup.md](../plans/008-drum-multipanel-and-judgment-popup.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`

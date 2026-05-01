@@ -1,7 +1,7 @@
 # 노트 디스플레이 패널
 
 **Linked Spec:** [`note-display.md`](../specs/note-display.md)
-**Status:** `Ready`
+**Status:** `Done`
 
 ## Goal
 
@@ -63,11 +63,11 @@ Chart 노트는 tick 기반이므로, 표시 시점은 `scheduledTime - lookAhea
 
 ## Acceptance Criteria
 
-- [ ] 에디터 Play 모드에서 `RhythmGameHost.StartSession()`을 호출하면 피아노 위 패널이 나타나고 노트가 위에서 아래로 내려온다.
-- [ ] `StopSession()`을 호출하면 패널과 모든 노트가 사라진다.
-- [ ] 같은 tick의 화음 노트(2개 이상)가 있으면 각기 다른 레인에 동시에 노트가 스폰된다.
-- [ ] `laneConfig`에 없는 midiNote를 가진 노트는 무시되고 예외가 발생하지 않는다.
-- [ ] 레인 수가 config에 따라 변경되면(재생 전) 레인 레이아웃이 그에 맞게 달라진다.
+- [ ] `[manual-hard]` 에디터 Play 모드에서 `RhythmGameHost.StartSession()`을 호출하면 피아노 위 패널이 나타나고 노트가 위에서 아래로 내려온다.
+- [ ] `[manual-hard]` `StopSession()`을 호출하면 패널과 모든 노트가 사라진다.
+- [ ] `[manual-hard]` 같은 tick의 화음 노트(2개 이상)가 있으면 각기 다른 레인에 동시에 노트가 스폰된다.
+- [ ] `[auto-hard]` `laneConfig`에 없는 midiNote를 가진 노트는 무시되고 예외가 발생하지 않는다.
+- [ ] `[manual-hard]` 레인 수가 config에 따라 변경되면(재생 전) 레인 레이아웃이 그에 맞게 달라진다.
 
 ## Out of Scope
 
@@ -75,6 +75,20 @@ Chart 노트는 tick 기반이므로, 표시 시점은 `scheduledTime - lookAhea
 - Perfect/Good/Miss 팝업 표시 → Plan 008.
 - 노트 오브젝트 풀링.
 - 난이도별 노트 색 구분.
+
+## Handoff
+
+- `NoteDisplayPanel` (MonoBehaviour, `Assets/RhythmGame/Scripts/Runtime/Display/NoteDisplayPanel.cs`)
+  - `Show(VmSongChart chart, int judgedChannel, IRhythmClock clock)` — 세션 시작 시 호출
+  - `Hide()` — 세션 종료 시 호출
+  - SerializeField: `InstrumentLaneConfig laneConfig`, `float lookAheadSeconds = 2f`, `float panelHeight = 1f`, `NoteVisual noteVisualPrefab`
+- `NoteVisual` (MonoBehaviour, `Assets/RhythmGame/Scripts/Runtime/Display/NoteVisual.cs`)
+  - `Init(float fallSpeed, float lifetime)` — NoteDisplayPanel이 스폰 시 주입
+- `RhythmGameHost` (`Assets/RhythmGame/Scripts/Runtime/RhythmGameHost.cs`)
+  - `[SerializeField] NoteDisplayPanel noteDisplayPanel` 필드
+  - `StartSession()` → `noteDisplayPanel.Show()`, `StopSession()` → `noteDisplayPanel.Hide()`
+- 씬 배치: Piano 하위 `NoteDisplayCanvas` → `NoteDisplayPanel` (laneConfig=`Piano_LaneConfig.asset` 연결됨)
+- Plan 008이 `OnJudged(JudgmentEvent)` 메서드를 `NoteDisplayPanel`에 추가해야 함
 
 ## Notes
 
