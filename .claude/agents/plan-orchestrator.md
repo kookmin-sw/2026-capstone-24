@@ -2,9 +2,9 @@
 name: plan-orchestrator
 description: docs/specs/<feature>/plans/ 아래 plan 파일 한 개의 라이프사이클(컨텍스트 적재 → plan-implementer 호출 → plan-reviewer 호출 → 자동 Acceptance Criteria 검증)을 격리된 sub-agent 컨텍스트에서 수행하고, 메인 세션에는 컴팩트 리포트 한 장만 반환합니다. 코드 변경은 working tree에 적용한 채로 종료하며, git commit은 메인 세션이 manual-hard 검증 통과 후에 git-workflow skill로 처리합니다. /spec-implement orchestrator가 호출하며, plan 파일·Linked Spec·parent _index.md·이전 plan handoff 누적·Acceptance Criteria 라벨 분류만을 입력으로 받습니다. plan 파일 편집·사용자 입력·plan-complete 호출·git commit은 절대 하지 않습니다.
 model: sonnet
-tools: Read, Glob, Grep, Bash, Task, Skill, mcp__unityMCP__read_console
+tools: Read, Glob, Grep, Bash, Task, Skill, mcp__UnityMCP__read_console
 mcpServers:
-  unityMCP:
+  UnityMCP:
     type: http
     url: http://127.0.0.1:8080
 ---

@@ -1,0 +1,53 @@
+# No Teleport Zones
+
+**Parent:** [`_index.md`](../_index.md)
+
+## Why
+
+가상 공간에는 사용자가 가지 말아야 하는 영역이 존재한다. 예를 들면 무대 밖 영역, 다른 사용자의 자리, 시각적으로는 floor지만 의도적으로 막아두고 싶은 구역 등이다. [`01-base-teleport.md`](01-base-teleport.md)의 기본 텔레포트만으로는 floor/surface 위 모든 지점이 동등하게 도달 가능하므로, 이런 차단 의도를 표현할 수 없다.
+
+또한 사용자가 "여긴 갈 수 없는 자리야"를 입력 종료 시점이 아니라 **라인을 그 위에 두는 즉시** 알아차려야 잘못된 자리에 라인을 두고 확정하는 헛걸음을 줄일 수 있다.
+
+## What
+
+- 가상 공간의 일부 영역을 **노 텔레포트 존**으로 지정할 수 있다.
+- 라인이 노 텔레포트 존을 가리키는 동안 라인의 시각 표현이 **invalid**임을 즉시 드러낸다(예: 빨간색 등 valid 상태와 명확히 구분되는 표현).
+- 라인이 노 텔레포트 존을 가리킨 상태에서 사용자가 텔레포트를 확정해도 이동은 일어나지 않는다.
+- 노 텔레포트 존의 "정의·배치 방식"은 씬 작업자가 다룰 수 있는 형태로 제공된다 — 구체적인 자료 형태(콜라이더, 영역 마커 등)는 plan에서 결정한다.
+
+## Behavior
+
+- **Given** 라인이 노 텔레포트 존 바깥의 텔레포트 가능 surface를 가리키고 있다
+  **When** 라인 끝이 노 텔레포트 존 위로 이동한다
+  **Then** 라인의 시각 표현이 invalid 상태로 즉시 전환된다.
+
+- **Given** 라인이 노 텔레포트 존 위를 가리키고 있고 invalid 표현이 적용된 상태이다
+  **When** 라인 끝이 다시 텔레포트 가능 surface로 돌아온다
+  **Then** 라인의 시각 표현이 valid 상태로 즉시 복구된다.
+
+- **Given** 라인이 노 텔레포트 존 위를 가리키고 있다
+  **When** 사용자가 텔레포트 확정 입력을 한다
+  **Then** 사용자는 이동하지 않으며, 라인은 사라진다.
+
+- **Given** 노 텔레포트 존이 정의된 영역
+  **When** 사용자가 그 영역 위에 다른 입력 없이 단지 라인을 통과시켜본다
+  **Then** 영역에 진입·이탈할 때마다 invalid/valid 표현이 즉각적으로 전환되어, 사용자가 "여긴 갈 수 없다"를 사전에 인지한다.
+
+## Out of Scope
+
+- 텔레포트 라인 자체의 도입과 기본 valid 표현 — [`01-base-teleport.md`](01-base-teleport.md)의 책임.
+- 악기 anchor 반경에서 라인이 "구별되는 표현"으로 바뀌는 동작 — [`03-instrument-anchors.md`](03-instrument-anchors.md). 단, anchor 표현과 invalid 표현이 시각적으로 충돌하지 않도록 유지한다.
+- 노 텔레포트 존 안에 *이미* 들어가 있는 사용자를 강제로 밖으로 밀어내는 동작. 본 sub-spec은 라인 진입 차단만 책임진다.
+
+## Implementation Plans
+
+| 작성일 | 제목 | 상태 | 링크 |
+|---|---|---|---|
+| 2026-04-30 | No Teleport Zone via Blocking Collider | Done | [2026-04-30-sanyoentertain-no-teleport-zone-blocking-collider.md](../plans/2026-04-30-sanyoentertain-no-teleport-zone-blocking-collider.md) |
+
+> 상태 값: `Ready` / `In Progress` / `Done`
+> Plan 추가는 `/plan-new` 사용. 파일명은 날짜·작성자·slug 기반.
+
+## Open Questions
+
+_현재 열린 질문 없음._

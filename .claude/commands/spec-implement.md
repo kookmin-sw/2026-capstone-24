@@ -1,7 +1,7 @@
 ---
 description: plan 파일 또는 sub-spec 경로를 받아, 해당 plan(들)을 plan-orchestrator sub-agent에 위임해 순차 실행한다. 메인 세션은 큐 관리·사용자 상호작용·plan 파일 갱신만 담당해 컨텍스트를 최소화한다. 기본 dry-run, --apply로 실제 실행.
-argument-hint: "<plan 또는 sub-spec 경로> [--apply]"
-allowed-tools: Read, Glob, Grep, Bash, Edit, Write, AskUserQuestion, Skill, Task, mcp__unityMCP__read_console
+argument-hint: "<plan 또는 sub-spec 경로> [--apply] [--max-cascade N]"
+allowed-tools: Read, Glob, Grep, Bash, Edit, Write, AskUserQuestion, Skill, Task, mcp__UnityMCP__read_console
 ---
 
 # /spec-implement — Plan/Spec 실행 orchestrator
@@ -107,13 +107,39 @@ allowed-tools: Read, Glob, Grep, Bash, Edit, Write, AskUserQuestion, Skill, Task
 | `compile-error` | acceptance_results의 실패 항목과 콘솔 출력 위치 표시. 수동 수정 후 재시작 안내 후 멈춤. |
 | `tree-dirty` | working tree dirty 사유 표시. 정리 또는 별도 commit 옵션 묻기. |
 | `mcp-down` | MCP 재연결 또는 skip 옵션 묻기. |
-| `manual-hard-verification` | `manual_hard_pending` 항목별로 `AskUserQuestion`(통과/실패/보류). **전부 통과** → 3-7로 (commit은 plan-complete 이후 3-9.5에서 수행). **실패 또는 보류가 하나라도 있으면** plan Status `In Progress` 유지 + commit 미생성(변경사항은 working tree에 남아 후속 plan이 누적해 한 commit으로 묶음) + 큐 중단 후, 추가로 "지금 후속 plan을 시드할까요?"를 `AskUserQuestion` (옵션: yes/no/later). **yes** → `Skill` 도구로 `plan-new`를 `--from-failure <current-plan-path>` 인수로 위임. skill 종료 후 상태 파일에 `pending_user_action: "후속 plan 시드 완료 — /spec-implement <sub-spec-path> --apply 재호출 대기"` 기록 후 멈춤. **no/later** → 기존대로 `pending_user_action`만 기록 후 멈춤. |
+| `manual-hard-verification` | **(선행 단계 — confirmation bias 차단)** 사용자에게 `manual_hard_pending` 항목별 검증 묻기 *전에*, 메인 세션은 가장 최근 plan-orchestrator의 `acceptance_results` evidence 블록 전체를 한 번 다시 훑는다. 사용자 보고가 evidence와 모순되거나 evidence에 이미 root cause 단서가 있는지 확인 — 이미 가진 사실을 의심하지 않고 사용자 보고만으로 새 가설을 세우는 사고를 차단한다 (예: `m_TeleportTrigger: 1`이 evidence에 박혀 있었음에도 입력 셋업 가설을 먼저 세워 1.5시간 우회한 사례 — `docs/specs/_archive/teleport-locomotion/plans/2026-04-30-sanyoentertain-fix-push-immediate-teleport-trigger.md` 참고). 그 후 `manual_hard_pending` 항목별로 `AskUserQuestion` **4택**(아래 "manual-hard fail 4택 분기" 박스 참조). **전부 `pass`** → 3-7로 (commit은 plan-complete 이후 3-9.5에서 수행). **하나라도 `stop`/`stop-and-seed`/`skip-and-continue`이면** 분기별 처리(아래 박스). |
 | `handoff-approval` | (manual-hard 0건이라 바로 도달) 3-7로 (commit은 plan-complete 이후 3-9.5에서 수행). |
 | `none` | 정상 종료 — 거의 없음. status가 `completed`인데 next_action이 `none`이면 3-7로 (commit은 plan-complete 이후 3-9.5에서 수행). |
 
 **3-6 어떤 분기에 도달하든 분기 처리 직전에, 메인은 plan-orchestrator가 보고한 `auto_soft_failed_notes`(있으면)를 plan `## Notes`에 먼저 append한다.** 이렇게 해야 fail 분기(예: `compile-error`/`review-failed`)로 빠져 큐가 멈춘 경우에도 auto-soft 노트가 유실되지 않는다. `## Notes` 섹션이 없으면 새로 만든다.
 
 `status: failed`인 모든 분기에서 plan Status는 `In Progress` 유지. 큐 진행 중단. **이 분기에서는 commit이 만들어지지 않는다 — 변경사항은 working tree에 남아 사용자가 직접 정리하거나 후속 plan이 누적한다.**
+
+##### manual-hard fail 4택 분기 (단일 진실원)
+
+`manual-hard-verification` 분기에서 사용자가 각 `manual_hard_pending` 항목별로 4택 결정을 한다. 옵션과 동작은 다음과 같다.
+
+| 옵션 | 동작 |
+|---|---|
+| `pass` | 통과 처리. 항목별 evidence는 `acceptance_results[]`에 `status: pass`로 기록. |
+| `stop` | 큐 중단. plan Status `In Progress` 유지 + commit 미생성. 후속 plan 시드 묻지 않음. `pending_user_action`에 "사용자 stop 결정" 기록. |
+| `stop-and-seed` | 큐 중단 + `Skill` 도구로 `plan-new`를 `--from-failure <current-plan-path>` 인수로 위임. skill 종료 후 상태 파일에 `pending_user_action: "후속 plan 시드 완료 — /spec-implement <sub-spec-path> --apply 재호출 대기"` 기록. **단 본 분기는 `cascade_depth >= max-cascade`면 거부** — 사용자에게 "Caused By 체인이 max-cascade(N)에 도달. 자동 시드 거부. 직접 plan을 손보거나 stop을 선택해 달라"고 보고하고 멈춤. |
+| `skip-and-continue` | 이번 manual-hard 항목을 `acceptance_results[]`에 `status: skipped-deferred`로 기록 + plan Status는 `In Progress` 유지 + working tree 변경분 그대로 두고 다음 plan으로 진행. 상태 파일 `pending_skipped_deferred: true` + `deferred_failures[]`에 `{plan_path, criteria, evidence}` append. **현재 plan은 commit하지 않으며 plan-complete도 호출하지 않는다.** |
+
+**`skip-and-continue` 시 다음 plan 진입 가드.** 다음 plan의 3-1 진입 검증에서 working tree dirty가 발견되어도, 상태 파일 `pending_skipped_deferred == true`이면 사용자에게 한 번 사실 확인(`AskUserQuestion`)만 받고 통과시킨다 — "이전 plan(`<current-plan-path>`)이 skip-and-continue로 working tree에 변경분을 남겼다. 다음 plan이 이 변경분 위에서 빌드업된다는 사실을 확인했는가?" yes이면 진행, no이면 멈춤.
+
+**큐 종료 시 deferred 목록 처리.** 큐 끝까지 진행해 모든 plan을 완주(완주 = pass 또는 skip-and-continue) 했을 때, 상태 파일 `deferred_failures[]`가 비어 있지 않으면 메인이 한 줄씩 사용자에게 보여준 뒤 `AskUserQuestion`으로 "각 deferred 항목에 대해 `/plan-new --from-failure`로 후속 plan을 일괄 시드할까요? (yes/no/per-item)"를 묻는다. **yes** → 모든 항목에 대해 순차적으로 `Skill` 도구로 `plan-new --from-failure` 위임. **per-item** → 항목별로 yes/no 결정. **no** → 메인이 deferred 목록을 마지막에 한 번 더 출력하고 종료.
+
+##### Caused By max-cascade 정책
+
+`--max-cascade N` (default 2). `.orchestrator-state.json` 최상위에 `cascade_depth` 정수 필드를 둔다.
+
+- 큐 첫 진입 시 `cascade_depth = 0`.
+- 큐 안에서 `Caused By` 라인이 있는 plan에 진입할 때 +1.
+- `stop-and-seed` 또는 자동 후속 시드가 일어나려는 시점에 `cascade_depth >= max-cascade`이면 시드를 거부 + 사용자 호출. 무한 루프 차단.
+- `skip-and-continue` 분기는 cascade를 만들지 않으므로 cascade_depth에 영향 없음.
+
+`spec` 모드의 큐 재생성 시점마다 cascade_depth는 큐 안의 `Caused By` 체인 깊이를 다시 계산해 갱신된다 (재계산 알고리즘: 큐 첫 plan부터 따라가며 `Caused By`가 가리키는 plan이 같은 큐 안에 있으면 +1).
 
 #### 3-7. (예약)
 - 단계 번호 안정화를 위해 비워둔다. auto-soft 노트 append는 3-6 분기 처리 직전에 이미 끝났다. 본 단계에서 추가로 할 일은 없다.
@@ -172,6 +198,7 @@ allowed-tools: Read, Glob, Grep, Bash, Edit, Write, AskUserQuestion, Skill, Task
 
 - **dry-run (기본값)** — 입력 분기, Pre-flight 1~6 모두 실제로 수행한 뒤, 큐 미리보기 + "각 plan별로 plan-orchestrator(plan=…, prev_handoff=<N자>)를 어떤 입력으로 호출할 예정인지"만 보고하고 멈춘다. **plan-orchestrator를 단 한 번도 spawn하지 않는다.** plan 파일·코드·자산·git 상태 모두 변경 없음.
 - **`--apply`** — 위 1~4단계를 모두 실제 실행. 각 plan별로 plan-orchestrator를 spawn하고, manual-hard·handoff 결정을 받아 plan 파일을 갱신하고, `plan-complete`로 마무리.
+- **`--max-cascade N`** (default `2`) — `Caused By` 자동 시드 횟수 제한. 위 "Caused By max-cascade 정책" 박스 단일 진실원.
 
 ## 상태 파일
 
@@ -196,7 +223,7 @@ allowed-tools: Read, Glob, Grep, Bash, Edit, Write, AskUserQuestion, Skill, Task
       "plan_path": "...",
       "commit_sha": "abc123",
       "acceptance_results": [
-        {"label": "auto-hard", "criteria": "...", "status": "pass | fail | skipped", "evidence": "..."}
+        {"label": "auto-hard", "criteria": "...", "status": "pass | fail | skipped | skipped-deferred", "evidence": "..."}
       ],
       "auto_soft_notes": []
     }
@@ -204,7 +231,13 @@ allowed-tools: Read, Glob, Grep, Bash, Edit, Write, AskUserQuestion, Skill, Task
   "open_questions_acknowledged": [],
   "unity_compile_check": "pass | skip | fail",
   "last_step": "preflight | implement | review | commit | verify | handoff | completed",
-  "pending_user_action": null
+  "pending_user_action": null,
+  "cascade_depth": 0,
+  "max_cascade": 2,
+  "pending_skipped_deferred": false,
+  "deferred_failures": [
+    {"plan_path": "...", "criteria": "...", "evidence": "..."}
+  ]
 }
 ```
 
