@@ -34,7 +34,7 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| 2026-04-30 | 백엔드 유저 영속화 전환 | `Ready` | [2026-04-30-namae1128-backend-user-persistence.md](../plans/2026-04-30-namae1128-backend-user-persistence.md) |
+| 2026-04-30 | 백엔드 유저 영속화 전환 | `Done` | [2026-04-30-namae1128-backend-user-persistence.md](../plans/2026-04-30-namae1128-backend-user-persistence.md) |
 
 > 상태 값은 `Ready` / `In Progress` / `Done`
 

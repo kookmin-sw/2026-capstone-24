@@ -1,7 +1,7 @@
 # 백엔드 유저 영속화 전환
 
 **Linked Spec:** [`02-user-persistence.md`](../specs/02-user-persistence.md)  
-**Status:** `Ready`
+**Status:** `Done`
 
 ## Goal
 
@@ -45,10 +45,10 @@
 
 ## Acceptance Criteria
 
-- [ ] `[auto-hard]` 백엔드 테스트가 모두 통과한다.
-- [ ] `[auto-hard]` 서버 재시작 전후 동일한 `metaAccountId` 로그인 시 같은 `userId`가 유지된다.
-- [ ] `[auto-hard]` 서로 다른 `metaAccountId`가 같은 닉네임으로 가입하려 하면 충돌이 유지된다.
-- [ ] `[manual-hard]` 로컬 MariaDB를 띄운 뒤 백엔드를 재시작해도 `/api/v1/auth/meta-login`과 `/api/v1/users/me` 흐름이 기존과 동일하게 동작한다.
+- [x] `[auto-hard]` 백엔드 테스트가 모두 통과한다.
+- [x] `[auto-hard]` 서버 재시작 전후 동일한 `metaAccountId` 로그인 시 같은 `userId`가 유지된다.
+- [x] `[auto-hard]` 서로 다른 `metaAccountId`가 같은 닉네임으로 가입하려 하면 충돌이 유지된다.
+- [x] `[manual-hard]` 로컬 MariaDB를 띄운 뒤 백엔드를 재시작해도 `/api/v1/auth/meta-login`과 `/api/v1/users/me` 흐름이 기존과 동일하게 동작한다.
 
 ## Out of Scope
 
@@ -60,3 +60,10 @@
 
 - 현재 코드베이스가 아직 초기 단계라, 첫 버전은 단일 `users` 테이블 중심으로 단순하게 가는 편이 안전하다.
 - 운영 전환 전에 마이그레이션 도구를 붙이는 것이 이상적이지만, 이번 단계에서는 스키마 안정화가 우선이다.
+- 2026-05-01: `backend/.gradle-user-home`를 사용해 `./gradlew.bat test`를 다시 실행했고 전체 테스트가 통과했다.
+- 2026-05-01: 로컬 MariaDB + `verify-local-auth.ps1`로 `health`, `meta-login`, `users/me`, 동일 Meta 계정 재로그인 시 `userId` 유지, 닉네임 충돌(409)을 수동 확인했다.
+
+## Handoff
+
+- 로컬 검증은 `backend/run-dev.ps1`와 `backend/verify-local-auth.ps1` 조합으로 재현할 수 있다.
+- 재시작 내구성은 `AuthServicePersistenceTest`가 파일 기반 H2(MariaDB 호환 모드)로 애플리케이션 컨텍스트를 두 번 띄워 자동 검증한다.
