@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using UnityEngine;
 
@@ -6,6 +7,9 @@ namespace Murang.Multiplayer.Auth
     [CreateAssetMenu(fileName = "MultiplayerAuthConfig", menuName = "Multiplayer/Auth Config")]
     public sealed class MultiplayerAuthConfig : ScriptableObject
     {
+        private const string MockAccountIdArgument = "-mockAccountId";
+        private const string NicknameArgument = "-nickname";
+
         [SerializeField] private string editorBackendBaseUrl = "http://localhost:8080";
         [SerializeField] private string deviceBackendBaseUrl = string.Empty;
         [SerializeField] private bool useMockMetaToken = true;
@@ -42,6 +46,11 @@ namespace Murang.Multiplayer.Auth
             get { return string.IsNullOrEmpty(mockAccountId) ? "quest-user-01" : mockAccountId; }
         }
 
+        public string ResolveMockAccountId()
+        {
+            return ResolveOptionalArgumentValue(MockAccountIdArgument) ?? MockAccountId;
+        }
+
         public string DefaultNickname
         {
             get { return string.IsNullOrEmpty(defaultNickname) ? "Murang Quest User" : defaultNickname; }
@@ -49,7 +58,8 @@ namespace Murang.Multiplayer.Auth
 
         public string ResolveNickname(MetaAuthenticationResult authenticationResult)
         {
-            string configuredNickname = NormalizeNickname(nicknameOverride);
+            string configuredNickname = NormalizeNickname(
+                ResolveOptionalArgumentValue(NicknameArgument) ?? nicknameOverride);
             if (!string.IsNullOrEmpty(configuredNickname))
             {
                 return configuredNickname;
@@ -158,6 +168,28 @@ namespace Murang.Multiplayer.Auth
         private static string SanitizeBackendBaseUrl(string candidate)
         {
             return string.IsNullOrWhiteSpace(candidate) ? string.Empty : candidate.Trim().TrimEnd('/');
+        }
+
+        private static string ResolveOptionalArgumentValue(string argumentName)
+        {
+            string[] arguments = Environment.GetCommandLineArgs();
+            if (arguments == null)
+            {
+                return null;
+            }
+
+            for (int index = 0; index < arguments.Length - 1; index++)
+            {
+                if (!string.Equals(arguments[index], argumentName, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                string value = arguments[index + 1];
+                return string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+            }
+
+            return null;
         }
     }
 }

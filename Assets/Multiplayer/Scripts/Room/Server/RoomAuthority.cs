@@ -10,11 +10,17 @@ namespace Murang.Multiplayer.Room.Server
     [DisallowMultipleComponent]
     public sealed class RoomAuthority : MonoBehaviour, INetworkRunnerCallbacks
     {
-        [SerializeField] private RoomServerConfig config;
+        private readonly List<PlayerRef> _pendingDisconnectPlayers = new List<PlayerRef>();
 
-        public void Initialize(RoomServerConfig roomServerConfig)
+        private string _roomName = "murang-room";
+        private int _maxPlayers = 8;
+        private string _passwordHash;
+
+        public void Initialize(string roomName, int maxPlayers, string passwordHash)
         {
-            config = roomServerConfig;
+            _roomName = string.IsNullOrWhiteSpace(roomName) ? "murang-room" : roomName.Trim();
+            _maxPlayers = Mathf.Max(1, maxPlayers);
+            _passwordHash = RoomPasswordHasher.NormalizeHash(passwordHash);
         }
 
         public static RoomJoinResult ValidateJoin(
@@ -42,9 +48,33 @@ namespace Murang.Multiplayer.Room.Server
             return RoomJoinResult.CreateSuccess(string.Empty);
         }
 
+        private void Update()
+        {
+            if (_pendingDisconnectPlayers.Count == 0)
+            {
+                return;
+            }
+
+            NetworkRunner runner = GetComponent<NetworkRunner>();
+            if (runner == null || !runner.IsRunning || !runner.IsServer)
+            {
+                _pendingDisconnectPlayers.Clear();
+                return;
+            }
+
+            // Reliable verdict를 보낸 직후 같은 프레임에 바로 끊으면 클라이언트가 사유를 못 받을 수 있어,
+            // 한 프레임 뒤에 정리한다.
+            for (int index = 0; index < _pendingDisconnectPlayers.Count; index++)
+            {
+                runner.Disconnect(_pendingDisconnectPlayers[index], null);
+            }
+
+            _pendingDisconnectPlayers.Clear();
+        }
+
         public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
         {
-            if (!runner.IsServer || config == null)
+            if (!runner.IsServer)
             {
                 return;
             }
@@ -54,27 +84,23 @@ namespace Murang.Multiplayer.Room.Server
             bool tokenDecoded = RoomConnectionTokenCodec.TryDeserialize(connectionToken, out passwordHash);
 
             RoomJoinResult validationResult = tokenDecoded
-                ? ValidateJoin(runner.ActivePlayers.Count(), config.MaxPlayers, config.PasswordHash, passwordHash)
+                ? ValidateJoin(runner.ActivePlayers.Count(), _maxPlayers, _passwordHash, passwordHash)
                 : RoomJoinResult.CreateFailure(RoomJoinFailureReason.Other, string.Empty, "입장 토큰을 해석하지 못했습니다.");
 
             if (validationResult.Success)
             {
-                runner.SendReliableDataToPlayer(
-                    player,
-                    RoomJoinVerdictCodec.ReliableKey,
-                    RoomJoinVerdictCodec.Serialize(RoomJoinResult.CreateSuccess(config.RoomName)));
+                SendJoinVerdict(runner, player, RoomJoinResult.CreateSuccess(_roomName));
                 return;
             }
 
-            runner.SendReliableDataToPlayer(
+            SendJoinVerdict(
+                runner,
                 player,
-                RoomJoinVerdictCodec.ReliableKey,
-                RoomJoinVerdictCodec.Serialize(
-                    RoomJoinResult.CreateFailure(
-                        validationResult.Reason,
-                        config.RoomName,
-                        validationResult.Message)));
-            runner.Disconnect(player, null);
+                RoomJoinResult.CreateFailure(
+                    validationResult.Reason,
+                    _roomName,
+                    validationResult.Message));
+            QueueDisconnect(player);
         }
 
         public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
@@ -171,6 +197,22 @@ namespace Murang.Multiplayer.Room.Server
 
         void INetworkRunnerCallbacks.OnSceneLoadStart(NetworkRunner runner)
         {
+        }
+
+        private void SendJoinVerdict(NetworkRunner runner, PlayerRef player, RoomJoinResult result)
+        {
+            runner.SendReliableDataToPlayer(
+                player,
+                RoomJoinVerdictCodec.ReliableKey,
+                RoomJoinVerdictCodec.Serialize(result));
+        }
+
+        private void QueueDisconnect(PlayerRef player)
+        {
+            if (!_pendingDisconnectPlayers.Contains(player))
+            {
+                _pendingDisconnectPlayers.Add(player);
+            }
         }
     }
 }

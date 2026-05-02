@@ -15,10 +15,11 @@ namespace Murang.Multiplayer.Auth
         public Task<MetaAuthenticationResult> GetAuthenticationResultAsync(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
+            string mockAccountId = _config.ResolveMockAccountId();
 
             MetaAuthenticationResult result = new MetaAuthenticationResult(
-                _config.MockMetaTokenPrefix + _config.MockAccountId,
-                _config.MockAccountId,
+                _config.MockMetaTokenPrefix + mockAccountId,
+                mockAccountId,
                 null);
 
             return Task.FromResult(result);

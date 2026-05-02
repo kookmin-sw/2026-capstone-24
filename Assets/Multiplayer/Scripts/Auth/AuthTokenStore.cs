@@ -10,6 +10,7 @@ namespace Murang.Multiplayer.Auth
         public const string AccessTokenKey = "murang.multiplayer.auth.access";
         public const string RefreshTokenKey = "murang.multiplayer.auth.refresh";
         public const string AccessTokenExpiresAtKey = "murang.multiplayer.auth.accessExpiresAt";
+        public const string MockAccountIdKey = "murang.multiplayer.auth.mockAccountId";
 
         public bool TryLoad(out StoredTokens storedTokens)
         {
@@ -49,6 +50,23 @@ namespace Murang.Multiplayer.Auth
             PlayerPrefs.DeleteKey(AccessTokenKey);
             PlayerPrefs.DeleteKey(RefreshTokenKey);
             PlayerPrefs.DeleteKey(AccessTokenExpiresAtKey);
+            PlayerPrefs.Save();
+        }
+
+        public void ResetIfMockAccountChanged(string mockAccountId)
+        {
+            string normalizedAccountId = string.IsNullOrWhiteSpace(mockAccountId)
+                ? string.Empty
+                : mockAccountId.Trim();
+            string previousAccountId = PlayerPrefs.GetString(MockAccountIdKey, string.Empty);
+
+            if (string.Equals(previousAccountId, normalizedAccountId, StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            DeleteAll();
+            PlayerPrefs.SetString(MockAccountIdKey, normalizedAccountId);
             PlayerPrefs.Save();
         }
 

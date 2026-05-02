@@ -21,6 +21,19 @@ namespace Murang.Multiplayer.Room.Tests
         }
 
         [Test]
+        public void ValidateJoin_AtCapacityStillAllowsCurrentJoin()
+        {
+            RoomJoinResult result = RoomAuthority.ValidateJoin(
+                connectedPlayers: 8,
+                maxPlayers: 8,
+                expectedPasswordHash: null,
+                providedPasswordHash: null);
+
+            Assert.IsTrue(result.Success);
+            Assert.AreEqual(RoomJoinFailureReason.None, result.Reason);
+        }
+
+        [Test]
         public void ValidateJoin_OverCapacity_ReturnsRoomFull()
         {
             RoomJoinResult result = RoomAuthority.ValidateJoin(
@@ -55,6 +68,19 @@ namespace Murang.Multiplayer.Room.Tests
                 maxPlayers: 8,
                 expectedPasswordHash: RoomPasswordHasher.Hash("murang-secret"),
                 providedPasswordHash: RoomPasswordHasher.Hash("other-secret"));
+
+            Assert.IsFalse(result.Success);
+            Assert.AreEqual(RoomJoinFailureReason.WrongPassword, result.Reason);
+        }
+
+        [Test]
+        public void ValidateJoin_LockedRoomWithoutPassword_ReturnsWrongPassword()
+        {
+            RoomJoinResult result = RoomAuthority.ValidateJoin(
+                connectedPlayers: 1,
+                maxPlayers: 8,
+                expectedPasswordHash: RoomPasswordHasher.Hash("murang-secret"),
+                providedPasswordHash: null);
 
             Assert.IsFalse(result.Success);
             Assert.AreEqual(RoomJoinFailureReason.WrongPassword, result.Reason);

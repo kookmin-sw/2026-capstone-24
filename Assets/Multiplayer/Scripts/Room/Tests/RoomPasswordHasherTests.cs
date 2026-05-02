@@ -31,5 +31,20 @@ namespace Murang.Multiplayer.Room.Tests
 
             Assert.AreNotEqual(first, second);
         }
+
+        [Test]
+        public void Matches_EmptyExpectedHash_TreatsRoomAsUnlocked()
+        {
+            Assert.IsTrue(RoomPasswordHasher.Matches(null, null));
+            Assert.IsTrue(RoomPasswordHasher.Matches(string.Empty, RoomPasswordHasher.Hash("optional-secret")));
+        }
+
+        [Test]
+        public void NormalizeHash_TrimmedWhitespace_ReturnsCanonicalValue()
+        {
+            string hash = RoomPasswordHasher.Hash("murang-secret");
+
+            Assert.AreEqual(hash, RoomPasswordHasher.NormalizeHash("  " + hash + "  "));
+        }
     }
 }

@@ -27,6 +27,11 @@ namespace Murang.Multiplayer.Auth
 
         public async Task<AuthState> EnsureAuthenticatedAsync(CancellationToken cancellationToken)
         {
+            if (_config.UseMockMetaToken)
+            {
+                _tokenStore.ResetIfMockAccountChanged(_config.ResolveMockAccountId());
+            }
+
             if (_tokenStore.TryLoad(out AuthTokenStore.StoredTokens storedTokens))
             {
                 if (_tokenStore.HasUsableAccessToken(storedTokens))
