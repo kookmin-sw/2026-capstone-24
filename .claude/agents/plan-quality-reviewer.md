@@ -37,13 +37,18 @@ orchestrator(`/spec-build`)가 정확히 다음 3개만 전달한다. 메인 세
 7. **manual-hard 비율 ≤ 30%.** AC 전체 중 `[manual-hard]` 항목 비율이 30%를 초과하면 경고 (fail이 아니라 `auto-soft` 권유 사유). 자동화 가능한 항목을 manual로 떨어뜨리지 않았는지.
 8. **enum/Flags 의도 값 검증 AC 1건 필수.** plan이 컴포넌트의 enum/Flags 필드를 신규 셋업하는 plan인지 (Approach·Deliverables grep으로 판단). 그렇다면 의도 값을 직렬화 grep 단일 매치로 검증하는 AC 1건이 있는지. 단일 진실원: `docs/specs/README.md` "작성 규칙 요약" 박스.
 9. **직렬화 정합성/인스턴스화 sanity AC 1건 필수.** plan이 Unity 직렬화 자산(`.prefab`/`.unity`/`.asset` 등)을 *수정*하는 plan인지. 그렇다면 plan 적용 후 인스턴스화 sanity 또는 직렬화 정합성을 검증하는 AC 1건이 있는지. 단일 진실원: `docs/specs/README.md` 동일 박스.
+10. **호출 API side effect 박제 충실성.** plan의 Approach가 외부 컴포넌트 public API를 호출하면 (grep으로 plan 본문에서 `<ComponentName>.<MethodName>` 패턴 추출), 그 컴포넌트 source 파일을 Read해 다음 항목이 plan의 `## Verified Structural Assumptions`에 박제됐는지 확인:
+    - 호출 API의 직접 동작 (override/push/event subscription 등)
+    - 호출 API의 간접 side effect (frame-level loop, syncRoot/syncTransform 같은 플래그 영향, OnEnable/OnDisable 시 발생하는 동작)
+    - parent-child transform 관계에 영향이 있다면 cycle 가능성 분석 1줄
+    박제 누락 발견 시 fail. fail 시 verdict는 `fix-and-retry` (drafter 재호출 1회로 보강 가능).
 
 ## 판정 (verdict)
 
 세 분류 중 하나로 결론.
 
-- **`pass`** — 9종 모두 pass(7번 manual-hard 비율 경고는 fail로 격상하지 않는다).
-- **`fix-and-retry`** — 1·3·8·9번 중 fail이 있고, plan-drafter 재호출 1회로 자동 수정 가능. 구체적 auto_fix_hints를 적어 반환. 메인 세션이 이 힌트를 plan-drafter에 전달.
+- **`pass`** — 10종 모두 pass(7번 manual-hard 비율 경고는 fail로 격상하지 않는다).
+- **`fix-and-retry`** — 1·3·8·9·10번 중 fail이 있고, plan-drafter 재호출 1회로 자동 수정 가능. 구체적 auto_fix_hints를 적어 반환. 메인 세션이 이 힌트를 plan-drafter에 전달.
 - **`stop`** — 4·5·6번 중 fail이 있거나 (spec과 plan의 의도 불일치 / spec 본문 침해 / self-contained 위반), `fix-and-retry`로 1회 시도했는데 또 fail이거나, 점검 자체가 막힌 경우. 사용자 개입 필요.
 
 ## 반환 형식
@@ -64,6 +69,7 @@ pass | fix-and-retry | stop
 7. manual-hard 비율 — pass | warn (X/Y = Z%)
 8. enum/Flags 의도 값 검증 AC — pass | fail | n/a (해당 plan 아님)
 9. 직렬화 정합성 AC — pass | fail | n/a (해당 plan 아님)
+10. 호출 API side effect 박제 충실성 — pass | fail | n/a (외부 컴포넌트 API 호출 없음)
 
 ## auto_fix_hints
 (verdict=fix-and-retry일 때만)
