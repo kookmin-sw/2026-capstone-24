@@ -20,6 +20,8 @@ docs/specs/
     ├── _index.md                   # 루트 spec (What/Why + 하위 spec 링크)
     ├── specs/
     │   └── <NN>-<sub-name>.md      # 하위 spec (NN: 구현 순서 zero-pad 2자리)
+    ├── decisions/
+    │   └── <NN>-<title>.md         # Architecture Decision Record (ARD) — /spec-build phase 0 자동 생성
     └── plans/
         └── <YYYY-MM-DD>-<author>-<slug>.md  # 구현 plan (날짜·작성자·slug 기반 파일명)
 ```
@@ -49,7 +51,7 @@ docs/specs/
 | Command | 입력 | 책임 | 사용자 게이트 |
 |---|---|---|---|
 | `/spec-interview` | 자유 텍스트(아이디어) | 인터뷰 → spec(루트+서브) 박제. Open Q 0건 강제. | Q&A 라운드 N회 + 초안 확인 1회 |
-| `/spec-build` | root-spec `_index.md` | sub-spec 큐 자동 실행: plan-drafter → plan-quality-reviewer → spec-implement 워크플로우 inline 답습 | manual-hard 검증·destructive 가드만 |
+| `/spec-build` | root-spec `_index.md` | sub-spec 큐 자동 실행: **phase 0 Architecture Decision** → plan-drafter → plan-quality-reviewer → spec-implement 워크플로우 inline 답습 | phase 0 설계 결정 Q&A·manual-hard 검증·destructive 가드 |
 | `/spec-implement` | plan 또는 sub-spec 경로 | 미완료 plan들 순차 실행 + manual-hard 4택 분기 + Caused By max-cascade 제한 | manual-hard 검증, handoff 승인 |
 | `/plan-new` | spec 경로 또는 `--from-failure` | plan 1~N개 인터랙티브 작성. plan-drafter sub-agent가 `--auto` 모드로도 호출. | 분할 결정·slug 확인 (인터랙티브 모드만) |
 | `/spec-new`·`/spec-resolve` | spec 경로 | 단계별 spec 작성·Open Q 닫기 (`/spec-interview`로 흡수됨, 수동 호출용) | 라운드별 사용자 결정 |
@@ -104,6 +106,7 @@ docs/specs/
 
 ## 작성 규칙 요약
 
+- **ARD 우선.** plan-drafter는 plan 작성 전에 같은 sub-spec의 `decisions/<NN>-*.md`를 모두 읽고, 그 결정을 plan의 Approach·Verified Structural Assumptions에 그대로 반영한다. ARD와 충돌하는 plan 본문 작성 금지.
 - **Spec은 얇게.** What/Why만. 함수명·파일 경로·자료구조 같은 구현 디테일 금지.
 - **방대하면 쪼갠다.** 한 spec에 무관한 피처를 섞지 않는다.
 - **Plan은 self-contained.** 다른 plan이나 이전 세션 컨텍스트를 가정하지 않는다. 필요한 배경은 `Context` 섹션에 모두 담는다.
@@ -113,6 +116,7 @@ docs/specs/
 - **Unity 직렬화 자산 의존 plan은 직렬화 정합성 또는 인스턴스화 sanity AC 최소 1건 필수.** `## Verified Structural Assumptions`에 못 박은 prefab 계층/nested override/씬 인스턴스 가정을 plan 적용 후 실제로 깨뜨리지 않았는지 확인하는 항목을 둔다 — 예: "VR Player prefab 인스턴스화 후 `<자식 경로>` 자식이 빠짐없이 존재한다", "PrefabUtility로 인스턴스화 시 콘솔 에러 0". 권장 라벨은 `[auto-hard]`(MCP `find_gameobjects`/`manage_prefabs`로 자동 검증 가능). 자동화가 어려우면 `[manual-hard]`로 떨어뜨린다 — `[auto-soft]`는 직렬화 사고에서 부적합(soft fail은 catch에 실패하므로 사고 패턴 그대로 재현된다).
 - **컴포넌트 enum/Flags 필드를 신규 셋업하는 plan은 의도 값 검증 AC 1건 필수.** 부착 사실만 검증하는 AC는 MCP의 enum 인덱스 매핑 함정(인스펙터 표기와 직렬화 인덱스가 어긋나는 케이스)을 잡지 못해 동작이 정반대가 되는 사고를 그대로 통과시킨다. AC는 `## Verified Structural Assumptions`에 박제된 enum 정의의 의도 값을 직렬화 grep 단일 매치로 검증하는 형태로 둔다 — 예: "`Plane TeleportationArea` 부착 + `m_TeleportTrigger == 0`(OnSelectExited)을 grep으로 단일 매치." 권장 라벨 `[auto-hard]`. 단일 propertyPath 스칼라 변경이 필요할 때는 [`unity-asset-edit`](.claude/skills/unity-asset-edit/SKILL.md) skill의 직접 텍스트 Edit 예외 경로로 우회한다.
 - **검증 실패에서 파생된 plan은 헤더에 `**Caused By:** [<선행 plan>](./<선행 plan>)` 라인을 둔다.** 옵셔널 메타필드. `/plan-new --from-failure`가 자동 부여한다. 정책 단일 진실원: 위 "검증 실패 시 후속 plan 시드" 섹션.
+- **호출 API side effect 박제 강제.** Unity 자산 의존 plan이 외부 컴포넌트 public API를 호출하면, 그 API가 호출 컴포넌트의 transform·frame loop·event 구독에 미치는 모든 side effect를 `## Verified Structural Assumptions`에 박제한다. 부분 라인 박제 금지.
 
 ## Plan 실행 시 읽기 순서
 
