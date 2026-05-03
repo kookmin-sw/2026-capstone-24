@@ -1,7 +1,7 @@
 # RhythmClock 기반 자동 반주 구현
 
 **Linked Spec:** [`accompaniment.md`](../specs/accompaniment.md)
-**Status:** `Ready`
+**Status:** `In Progress`
 
 ## Goal
 

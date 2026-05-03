@@ -6,6 +6,7 @@ public class RhythmGameHost : MonoBehaviour
     [SerializeField] Transform uiRoot;
     [SerializeField] NoteDisplayPanel noteDisplayPanel;
     [SerializeField] InstrumentBase targetInstrument;
+    [SerializeField] RhythmAccompaniment accompaniment;
 
     InstrumentBase         instrument;
     RhythmClock            clock;
@@ -30,6 +31,7 @@ public class RhythmGameHost : MonoBehaviour
     {
         StopSession();
         clock.Start(chart);
+        accompaniment?.Begin(chart, judgedChannel, clock);
         judge.Start(chart, judgedChannel);
         activeSession = new RhythmSession(instrument, song, clock, judge);
         activeSession.Start();
@@ -67,6 +69,7 @@ public class RhythmGameHost : MonoBehaviour
                 activeNoteDisplay = null;
             }
 
+            accompaniment?.End();
             activeSession.Stop();
             judge.Stop();
             clock.Stop();

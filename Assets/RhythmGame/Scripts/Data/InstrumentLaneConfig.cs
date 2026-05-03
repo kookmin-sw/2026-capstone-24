@@ -61,6 +61,23 @@ public sealed class InstrumentLaneConfig : ScriptableObject
     }
 
     /// <summary>
+    /// laneIndex 에 대응하는 midiNote 를 조회합니다.
+    /// </summary>
+    public bool TryGetMidiNote(int laneIndex, out byte midiNote)
+    {
+        for (int i = 0; i < lanes.Count; i++)
+        {
+            if (lanes[i].laneIndex == laneIndex)
+            {
+                midiNote = lanes[i].midiNote;
+                return true;
+            }
+        }
+        midiNote = 0;
+        return false;
+    }
+
+    /// <summary>
     /// 런타임 전용. 단일 MIDI 노트를 laneIndex=0 에 매핑하는 임시 InstrumentLaneConfig를 생성합니다.
     /// DrumNoteDisplayAdapter가 파츠 패널마다 사용합니다. 생명주기는 호출자가 관리하세요.
     /// </summary>
