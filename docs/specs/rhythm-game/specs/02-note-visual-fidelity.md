@@ -45,7 +45,8 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| 2026-05-03 | Note Visual Fidelity 구현 — 높이 비례 표시 + 3D 프리팹 스킨 | Ready | [2026-05-03-linksky0311-note-visual-fidelity-height-and-skin.md](../plans/2026-05-03-linksky0311-note-visual-fidelity-height-and-skin.md) |
+| 2026-05-03 | Note Visual Fidelity 구현 — 높이 비례 표시 + 3D 프리팹 스킨 | In Progress | [2026-05-03-linksky0311-note-visual-fidelity-height-and-skin.md](../plans/2026-05-03-linksky0311-note-visual-fidelity-height-and-skin.md) |
+| 2026-05-03 | Note Visual Fidelity 클리핑 버그 수정 | Ready | [2026-05-03-linksky0311-note-visual-fidelity-clipping-fix.md](../plans/2026-05-03-linksky0311-note-visual-fidelity-clipping-fix.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/plan-new` 사용. 파일명은 날짜·작성자·slug 기반.

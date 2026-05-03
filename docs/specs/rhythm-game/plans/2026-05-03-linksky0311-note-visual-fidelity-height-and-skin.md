@@ -1,7 +1,7 @@
 # Note Visual Fidelity 구현 — 높이 비례 표시 + 3D 프리팹 스킨
 
 **Linked Spec:** [`../specs/02-note-visual-fidelity.md`](../specs/02-note-visual-fidelity.md)
-**Status:** `Ready`
+**Status:** `In Progress`
 
 ## Goal
 
@@ -135,5 +135,7 @@
 - `DrumNoteDisplayAdapter`의 노트 높이 비례 — 드럼 전용 경로는 이 plan 범위 밖이다.
 
 ## Notes
+
+- 2026-05-03: 검증 실패에서 파생된 후속 plan `2026-05-03-linksky0311-note-visual-fidelity-clipping-fix.md` 추가. 완료 후 본 plan의 `[manual-hard]` "세션 실행 시 C4 4분음표와 E4 2분음표 노트를 비교하면 E4 노트가 C4 노트의 약" 항목 재검증 필요.
 
 ## Handoff
