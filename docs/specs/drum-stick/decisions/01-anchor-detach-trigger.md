@@ -1,6 +1,6 @@
 # 01 — Anchor 도착·이탈 트리거 신호 소스
 
-**Linked Spec:** [`../specs/01-anchor-auto-attach-detach.md`](../specs/01-anchor-auto-attach-detach.md)
+**Linked Spec:** [`01-anchor-auto-attach-detach.md`](../../_archive/drum-stick/specs/01-anchor-auto-attach-detach.md)
 **Date:** 2026-05-02
 **Status:** Resolved
 

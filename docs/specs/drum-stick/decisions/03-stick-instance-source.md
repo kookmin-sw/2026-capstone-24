@@ -1,6 +1,6 @@
 # 03 — Anchor 부착 시 Stick 인스턴스 출처
 
-**Linked Spec:** [`../specs/01-anchor-auto-attach-detach.md`](../specs/01-anchor-auto-attach-detach.md)
+**Linked Spec:** [`01-anchor-auto-attach-detach.md`](../../_archive/drum-stick/specs/01-anchor-auto-attach-detach.md)
 **Date:** 2026-05-02
 **Status:** Resolved
 

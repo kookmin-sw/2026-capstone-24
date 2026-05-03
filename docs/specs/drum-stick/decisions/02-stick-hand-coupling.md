@@ -1,6 +1,6 @@
 # 02 — Anchor 부착 상태에서 Stick↔손 결합 방식
 
-**Linked Spec:** [`../specs/01-anchor-auto-attach-detach.md`](../specs/01-anchor-auto-attach-detach.md)
+**Linked Spec:** [`01-anchor-auto-attach-detach.md`](../../_archive/drum-stick/specs/01-anchor-auto-attach-detach.md)
 **Date:** 2026-05-02
 **Status:** Resolved
 

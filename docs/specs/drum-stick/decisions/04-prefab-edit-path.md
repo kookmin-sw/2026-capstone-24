@@ -1,6 +1,6 @@
 # 04 — Drum Stick / Anchor Prefab 수정 경로
 
-**Linked Spec:** [`../specs/01-anchor-auto-attach-detach.md`](../specs/01-anchor-auto-attach-detach.md), [`../specs/02-stick-no-penetration.md`](../specs/02-stick-no-penetration.md)
+**Linked Spec:** [`01-anchor-auto-attach-detach.md`](../../_archive/drum-stick/specs/01-anchor-auto-attach-detach.md), [`../specs/02-stick-no-penetration.md`](../specs/02-stick-no-penetration.md)
 **Date:** 2026-05-02
 **Status:** Resolved
 
