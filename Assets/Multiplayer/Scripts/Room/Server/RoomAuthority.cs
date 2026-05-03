@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Fusion;
@@ -10,7 +11,23 @@ namespace Murang.Multiplayer.Room.Server
     [DisallowMultipleComponent]
     public sealed class RoomAuthority : MonoBehaviour, INetworkRunnerCallbacks
     {
-        private readonly List<PlayerRef> _pendingDisconnectPlayers = new List<PlayerRef>();
+        private const float RejectedPlayerDisconnectDelaySeconds = 0.5f;
+
+        private struct PendingJoinVerdict
+        {
+            public PlayerRef Player;
+            public RoomJoinResult Result;
+            public bool DisconnectAfterSend;
+        }
+
+        private struct PendingDisconnect
+        {
+            public PlayerRef Player;
+            public float ExecuteAtRealtime;
+        }
+
+        private readonly List<PendingJoinVerdict> _pendingJoinVerdicts = new List<PendingJoinVerdict>();
+        private readonly List<PendingDisconnect> _pendingDisconnectPlayers = new List<PendingDisconnect>();
 
         private string _roomName = "murang-room";
         private int _maxPlayers = 8;
@@ -34,7 +51,7 @@ namespace Murang.Multiplayer.Room.Server
                 return RoomJoinResult.CreateFailure(
                     RoomJoinFailureReason.RoomFull,
                     string.Empty,
-                    "룸 정원이 가득 찼습니다.");
+                    "Room is already full.");
             }
 
             if (!RoomPasswordHasher.Matches(expectedPasswordHash, providedPasswordHash))
@@ -42,7 +59,7 @@ namespace Murang.Multiplayer.Room.Server
                 return RoomJoinResult.CreateFailure(
                     RoomJoinFailureReason.WrongPassword,
                     string.Empty,
-                    "비밀번호가 일치하지 않습니다.");
+                    "Password does not match.");
             }
 
             return RoomJoinResult.CreateSuccess(string.Empty);
@@ -50,7 +67,7 @@ namespace Murang.Multiplayer.Room.Server
 
         private void Update()
         {
-            if (_pendingDisconnectPlayers.Count == 0)
+            if (_pendingJoinVerdicts.Count == 0 && _pendingDisconnectPlayers.Count == 0)
             {
                 return;
             }
@@ -58,18 +75,34 @@ namespace Murang.Multiplayer.Room.Server
             NetworkRunner runner = GetComponent<NetworkRunner>();
             if (runner == null || !runner.IsRunning || !runner.IsServer)
             {
+                _pendingJoinVerdicts.Clear();
                 _pendingDisconnectPlayers.Clear();
                 return;
             }
 
-            // Reliable verdict를 보낸 직후 같은 프레임에 바로 끊으면 클라이언트가 사유를 못 받을 수 있어,
-            // 한 프레임 뒤에 정리한다.
-            for (int index = 0; index < _pendingDisconnectPlayers.Count; index++)
+            for (int index = 0; index < _pendingJoinVerdicts.Count; index++)
             {
-                runner.Disconnect(_pendingDisconnectPlayers[index], null);
+                PendingJoinVerdict pendingVerdict = _pendingJoinVerdicts[index];
+                SendJoinVerdict(runner, pendingVerdict.Player, pendingVerdict.Result);
+                if (pendingVerdict.DisconnectAfterSend)
+                {
+                    QueueDisconnect(pendingVerdict.Player, Time.realtimeSinceStartup + RejectedPlayerDisconnectDelaySeconds);
+                }
             }
 
-            _pendingDisconnectPlayers.Clear();
+            _pendingJoinVerdicts.Clear();
+
+            for (int index = _pendingDisconnectPlayers.Count - 1; index >= 0; index--)
+            {
+                PendingDisconnect pendingDisconnect = _pendingDisconnectPlayers[index];
+                if (pendingDisconnect.ExecuteAtRealtime > Time.realtimeSinceStartup)
+                {
+                    continue;
+                }
+
+                runner.Disconnect(pendingDisconnect.Player, null);
+                _pendingDisconnectPlayers.RemoveAt(index);
+            }
         }
 
         public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
@@ -85,22 +118,24 @@ namespace Murang.Multiplayer.Room.Server
 
             RoomJoinResult validationResult = tokenDecoded
                 ? ValidateJoin(runner.ActivePlayers.Count(), _maxPlayers, _passwordHash, passwordHash)
-                : RoomJoinResult.CreateFailure(RoomJoinFailureReason.Other, string.Empty, "입장 토큰을 해석하지 못했습니다.");
+                : RoomJoinResult.CreateFailure(
+                    RoomJoinFailureReason.Other,
+                    string.Empty,
+                    "Connection token could not be parsed.");
 
             if (validationResult.Success)
             {
-                SendJoinVerdict(runner, player, RoomJoinResult.CreateSuccess(_roomName));
+                QueueJoinVerdict(player, RoomJoinResult.CreateSuccess(_roomName), disconnectAfterSend: false);
                 return;
             }
 
-            SendJoinVerdict(
-                runner,
+            QueueJoinVerdict(
                 player,
                 RoomJoinResult.CreateFailure(
                     validationResult.Reason,
                     _roomName,
-                    validationResult.Message));
-            QueueDisconnect(player);
+                    validationResult.Message),
+                disconnectAfterSend: true);
         }
 
         public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
@@ -155,7 +190,7 @@ namespace Murang.Multiplayer.Room.Server
             NetworkRunner runner,
             PlayerRef player,
             ReliableKey key,
-            System.ArraySegment<byte> data)
+            ArraySegment<byte> data)
         {
         }
 
@@ -207,12 +242,36 @@ namespace Murang.Multiplayer.Room.Server
                 RoomJoinVerdictCodec.Serialize(result));
         }
 
-        private void QueueDisconnect(PlayerRef player)
+        private void QueueDisconnect(PlayerRef player, float executeAtRealtime)
         {
-            if (!_pendingDisconnectPlayers.Contains(player))
+            for (int index = 0; index < _pendingDisconnectPlayers.Count; index++)
             {
-                _pendingDisconnectPlayers.Add(player);
+                if (_pendingDisconnectPlayers[index].Player != player)
+                {
+                    continue;
+                }
+
+                PendingDisconnect updatedDisconnect = _pendingDisconnectPlayers[index];
+                updatedDisconnect.ExecuteAtRealtime = Mathf.Max(updatedDisconnect.ExecuteAtRealtime, executeAtRealtime);
+                _pendingDisconnectPlayers[index] = updatedDisconnect;
+                return;
             }
+
+            _pendingDisconnectPlayers.Add(new PendingDisconnect
+            {
+                Player = player,
+                ExecuteAtRealtime = executeAtRealtime
+            });
+        }
+
+        private void QueueJoinVerdict(PlayerRef player, RoomJoinResult result, bool disconnectAfterSend)
+        {
+            _pendingJoinVerdicts.Add(new PendingJoinVerdict
+            {
+                Player = player,
+                Result = result,
+                DisconnectAfterSend = disconnectAfterSend
+            });
         }
     }
 }

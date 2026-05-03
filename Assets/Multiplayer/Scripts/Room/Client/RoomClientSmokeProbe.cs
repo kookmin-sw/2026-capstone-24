@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Murang.Multiplayer.Auth;
@@ -12,15 +13,31 @@ namespace Murang.Multiplayer.Room.Client
     [DisallowMultipleComponent]
     public sealed class RoomClientSmokeProbe : MonoBehaviour
     {
+        private const string AutomationActionArgument = "-roomAutomationAction";
+        private const string AutomationRoomNameArgument = "-roomName";
+        private const string AutomationPasswordArgument = "-roomPassword";
+        private const string AutomationResultPathArgument = "-roomResultPath";
+        private const string AutomationJoinedSignalPathArgument = "-roomJoinedSignalPath";
+        private const string AutomationHoldSecondsArgument = "-roomHoldSeconds";
+        private const string AutomationLeaveAfterHoldArgument = "-roomLeaveAfterHold";
+        private const string AutomationMaxPlayersArgument = "-roomMaxPlayers";
+
         [SerializeField] private AuthBootstrap authBootstrap;
         [SerializeField] private RoomClient roomClient;
         [SerializeField] private string defaultRoomName = "murang-room";
         [SerializeField] private string defaultPassword = string.Empty;
 
         private readonly CancellationTokenSource _destroyCancellationTokenSource = new CancellationTokenSource();
+        private AutomationAction _automationAction;
+        private bool _isAutomationEnabled;
+        private string _automationResultPath = string.Empty;
+        private string _automationJoinedSignalPath = string.Empty;
+        private float _automationHoldSeconds;
+        private bool _automationLeaveAfterHold;
+        private int _automationMaxPlayers = 8;
         private string _roomNameInput = "murang-room";
         private string _passwordInput = string.Empty;
-        private string _statusMessage = "대기 중";
+        private string _statusMessage = "Idle";
         private string _playerIdSummary = string.Empty;
         private Task _activeTask;
 
@@ -38,6 +55,17 @@ namespace Murang.Multiplayer.Room.Client
 
             _roomNameInput = string.IsNullOrEmpty(defaultRoomName) ? "murang-room" : defaultRoomName;
             _passwordInput = defaultPassword ?? string.Empty;
+            ConfigureAutomationMode();
+        }
+
+        async void Start()
+        {
+            if (!_isAutomationEnabled)
+            {
+                return;
+            }
+
+            await RunAutomationAsync(_destroyCancellationTokenSource.Token);
         }
 
         void OnDestroy()
@@ -70,7 +98,7 @@ namespace Murang.Multiplayer.Room.Client
         {
             if (authBootstrap == null || roomClient == null)
             {
-                _statusMessage = "AuthBootstrap 또는 RoomClient 참조가 비었습니다.";
+                _statusMessage = "AuthBootstrap or RoomClient reference is missing.";
                 return Task.CompletedTask;
             }
 
@@ -91,7 +119,7 @@ namespace Murang.Multiplayer.Room.Client
             }
             catch (ApiException exception)
             {
-                _statusMessage = "백엔드 요청 실패: " + exception.Code + " - " + exception.Detail;
+                _statusMessage = "Backend request failed: " + exception.Code + " - " + exception.Detail;
             }
             catch (AuthFailedException exception)
             {
@@ -99,10 +127,11 @@ namespace Murang.Multiplayer.Room.Client
             }
             catch (TaskCanceledException)
             {
+                _statusMessage = "Operation canceled.";
             }
             catch (Exception exception)
             {
-                _statusMessage = "알 수 없는 오류: " + exception.Message;
+                _statusMessage = "Unexpected error: " + exception.Message;
             }
             finally
             {
@@ -110,57 +139,74 @@ namespace Murang.Multiplayer.Room.Client
             }
         }
 
-        private async Task JoinFlowAsync(CancellationToken cancellationToken)
+        private async Task<(UserMeResponse user, RoomJoinResult result)> JoinRoomInternalAsync(CancellationToken cancellationToken)
         {
-            _statusMessage = "백엔드 인증 확인 중...";
+            _statusMessage = "Authenticating...";
             await authBootstrap.EnsureAuthenticatedAsync();
 
             UserMeResponse user = await authBootstrap.Session.GetCurrentUserAsync(cancellationToken);
             _playerIdSummary = user.nickname + " (" + user.playerId + ")";
-            _statusMessage = "룸 입장 시도: " + _roomNameInput;
+            _statusMessage = "Joining room: " + _roomNameInput;
 
             RoomJoinOptions options = new RoomJoinOptions(user.playerId, _roomNameInput, _passwordInput);
             RoomJoinResult result = await roomClient.JoinRoomAsync(options, cancellationToken);
-
             _statusMessage = result.Success
-                ? "룸 입장 성공: " + result.RoomName
-                : "룸 입장 실패: " + result.Reason + " - " + result.Message;
+                ? "Join succeeded: " + result.RoomName
+                : "Join failed: " + result.Reason + " - " + result.Message;
+
+            return (user, result);
+        }
+
+        private async Task<(UserMeResponse user, RoomJoinResult result)> CreateRoomInternalAsync(CancellationToken cancellationToken)
+        {
+            _statusMessage = "Authenticating...";
+            await authBootstrap.EnsureAuthenticatedAsync();
+
+            UserMeResponse user = await authBootstrap.Session.GetCurrentUserAsync(cancellationToken);
+            _playerIdSummary = user.nickname + " (" + user.playerId + ")";
+            _statusMessage = "Creating room: " + _roomNameInput;
+
+            RoomCreateOptions options = new RoomCreateOptions(
+                user.playerId,
+                _roomNameInput,
+                _passwordInput,
+                _automationMaxPlayers);
+            RoomJoinResult result = await roomClient.CreateRoomAsync(options, cancellationToken);
+            _statusMessage = result.Success
+                ? "Create succeeded: " + result.RoomName
+                : "Create failed: " + result.Reason + " - " + result.Message;
+
+            return (user, result);
+        }
+
+        private async Task JoinFlowAsync(CancellationToken cancellationToken)
+        {
+            await JoinRoomInternalAsync(cancellationToken);
         }
 
         private async Task CreateFlowAsync(CancellationToken cancellationToken)
         {
-            _statusMessage = "백엔드 인증 확인 중...";
-            await authBootstrap.EnsureAuthenticatedAsync();
-
-            UserMeResponse user = await authBootstrap.Session.GetCurrentUserAsync(cancellationToken);
-            _playerIdSummary = user.nickname + " (" + user.playerId + ")";
-            _statusMessage = "룸 생성 시도: " + _roomNameInput;
-
-            RoomCreateOptions options = new RoomCreateOptions(user.playerId, _roomNameInput, _passwordInput);
-            RoomJoinResult result = await roomClient.CreateRoomAsync(options, cancellationToken);
-
-            _statusMessage = result.Success
-                ? "룸 생성/합류 성공: " + result.RoomName
-                : "룸 생성 실패: " + result.Reason + " - " + result.Message;
+            await CreateRoomInternalAsync(cancellationToken);
         }
 
         private async Task LeaveFlowAsync(CancellationToken cancellationToken)
         {
-            _statusMessage = "룸 퇴장 요청 중...";
+            _statusMessage = "Leaving room...";
+            cancellationToken.ThrowIfCancellationRequested();
             await roomClient.LeaveRoomAsync();
-            _statusMessage = "룸 퇴장 완료";
+            _statusMessage = "Leave completed.";
         }
 
         void OnGUI()
         {
-            if (!Application.isPlaying)
+            if (!Application.isPlaying || _isAutomationEnabled)
             {
                 return;
             }
 
             GUILayout.BeginArea(new Rect(16f, 240f, 420f, 220f), GUI.skin.box);
             GUILayout.Label("Room Client Smoke Probe");
-            GUILayout.Label("Player: " + (string.IsNullOrEmpty(_playerIdSummary) ? "미인증" : _playerIdSummary));
+            GUILayout.Label("Player: " + (string.IsNullOrEmpty(_playerIdSummary) ? "Not authenticated" : _playerIdSummary));
 
             GUILayout.Label("Room name");
             _roomNameInput = GUILayout.TextField(_roomNameInput);
@@ -171,17 +217,17 @@ namespace Murang.Multiplayer.Room.Client
 
             GUI.enabled = !IsBusy;
 
-            if (GUILayout.Button("룸 생성"))
+            if (GUILayout.Button("Create Room"))
             {
                 TriggerCreate();
             }
 
-            if (GUILayout.Button("룸 입장"))
+            if (GUILayout.Button("Join Room"))
             {
                 TriggerJoin();
             }
 
-            if (GUILayout.Button("룸 퇴장"))
+            if (GUILayout.Button("Leave Room"))
             {
                 TriggerLeave();
             }
@@ -190,10 +236,167 @@ namespace Murang.Multiplayer.Room.Client
 
             if (IsBusy)
             {
-                GUILayout.Label("실행 중...");
+                GUILayout.Label("Running...");
             }
 
             GUILayout.EndArea();
+        }
+
+        private void ConfigureAutomationMode()
+        {
+            string rawAction = RoomAutomationCommandLine.GetString(AutomationActionArgument, string.Empty);
+            if (!TryParseAutomationAction(rawAction, out _automationAction))
+            {
+                _isAutomationEnabled = false;
+                return;
+            }
+
+            _isAutomationEnabled = true;
+            _automationResultPath = RoomAutomationCommandLine.GetString(AutomationResultPathArgument, string.Empty);
+            _automationJoinedSignalPath = RoomAutomationCommandLine.GetString(AutomationJoinedSignalPathArgument, string.Empty);
+            _automationHoldSeconds = Mathf.Max(0f, RoomAutomationCommandLine.GetFloat(AutomationHoldSecondsArgument, 0f));
+            _automationLeaveAfterHold = RoomAutomationCommandLine.GetBool(AutomationLeaveAfterHoldArgument, false);
+            _automationMaxPlayers = Mathf.Max(1, RoomAutomationCommandLine.GetInt(AutomationMaxPlayersArgument, 8));
+            _roomNameInput = RoomAutomationCommandLine.GetString(AutomationRoomNameArgument, _roomNameInput);
+            _passwordInput = RoomAutomationCommandLine.GetString(AutomationPasswordArgument, _passwordInput);
+        }
+
+        private async Task RunAutomationAsync(CancellationToken cancellationToken)
+        {
+            AutomationResultPayload payload = new AutomationResultPayload
+            {
+                action = _automationAction.ToString(),
+                phase = "starting",
+                requestedRoomName = _roomNameInput,
+                startedAtUtc = DateTime.UtcNow.ToString("O")
+            };
+
+            try
+            {
+                (UserMeResponse user, RoomJoinResult result) = _automationAction == AutomationAction.Create
+                    ? await CreateRoomInternalAsync(cancellationToken)
+                    : await JoinRoomInternalAsync(cancellationToken);
+
+                payload.playerId = user != null ? user.playerId : string.Empty;
+                payload.nickname = user != null ? user.nickname : string.Empty;
+                payload.success = result.Success;
+                payload.reason = result.Reason.ToString();
+                payload.roomName = result.RoomName;
+                payload.message = result.Message;
+                payload.statusMessage = _statusMessage;
+                payload.phase = result.Success ? "joined" : "completed";
+
+                if (result.Success)
+                {
+                    WriteJoinedSignal();
+
+                    if (_automationHoldSeconds > 0f)
+                    {
+                        await Task.Delay(TimeSpan.FromSeconds(_automationHoldSeconds), cancellationToken);
+                    }
+
+                    if (_automationLeaveAfterHold)
+                    {
+                        payload.leaveAttempted = true;
+                        await LeaveFlowAsync(cancellationToken);
+                        payload.leaveCompleted = true;
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                payload.success = false;
+                payload.reason = RoomJoinFailureReason.Other.ToString();
+                payload.message = exception.Message;
+                payload.error = exception.ToString();
+                payload.phase = "completed";
+                payload.statusMessage = _statusMessage;
+                payload.completedAtUtc = DateTime.UtcNow.ToString("O");
+                WriteAutomationResult(payload);
+                Environment.Exit(2);
+                return;
+            }
+
+            payload.phase = "completed";
+            payload.statusMessage = _statusMessage;
+            payload.completedAtUtc = DateTime.UtcNow.ToString("O");
+            WriteAutomationResult(payload);
+            Environment.Exit(0);
+        }
+
+        private void WriteJoinedSignal()
+        {
+            if (string.IsNullOrEmpty(_automationJoinedSignalPath))
+            {
+                return;
+            }
+
+            string directory = Path.GetDirectoryName(_automationJoinedSignalPath);
+            if (!string.IsNullOrEmpty(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
+            File.WriteAllText(_automationJoinedSignalPath, "joined");
+        }
+
+        private void WriteAutomationResult(AutomationResultPayload payload)
+        {
+            if (string.IsNullOrEmpty(_automationResultPath))
+            {
+                return;
+            }
+
+            string directory = Path.GetDirectoryName(_automationResultPath);
+            if (!string.IsNullOrEmpty(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
+            File.WriteAllText(_automationResultPath, JsonUtility.ToJson(payload, true));
+        }
+
+        private static bool TryParseAutomationAction(string rawAction, out AutomationAction action)
+        {
+            switch ((rawAction ?? string.Empty).Trim().ToLowerInvariant())
+            {
+                case "join":
+                    action = AutomationAction.Join;
+                    return true;
+                case "create":
+                    action = AutomationAction.Create;
+                    return true;
+                default:
+                    action = AutomationAction.None;
+                    return false;
+            }
+        }
+
+        private enum AutomationAction
+        {
+            None = 0,
+            Join = 1,
+            Create = 2
+        }
+
+        [Serializable]
+        private sealed class AutomationResultPayload
+        {
+            public string action;
+            public string phase;
+            public string requestedRoomName;
+            public string roomName;
+            public string playerId;
+            public string nickname;
+            public bool success;
+            public string reason;
+            public string message;
+            public bool leaveAttempted;
+            public bool leaveCompleted;
+            public string statusMessage;
+            public string error;
+            public string startedAtUtc;
+            public string completedAtUtc;
         }
     }
 }

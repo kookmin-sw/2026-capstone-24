@@ -13,6 +13,8 @@ namespace Murang.Multiplayer.Room.Client
     [DisallowMultipleComponent]
     public sealed class RoomClient : MonoBehaviour, INetworkRunnerCallbacks
     {
+        private const float ConnectedSuccessFallbackDelaySeconds = 1f;
+
         private sealed class PendingJoinRequest
         {
             public PendingJoinRequest(string roomName)
@@ -30,6 +32,7 @@ namespace Murang.Multiplayer.Room.Client
 
         private NetworkRunner _runner;
         private PendingJoinRequest _pendingJoin;
+        private CancellationTokenSource _pendingJoinFallbackCancellationTokenSource;
 
         public event Action<RoomJoinResult> OnJoinCompleted;
 
@@ -132,6 +135,7 @@ namespace Murang.Multiplayer.Room.Client
 
             PendingJoinRequest pendingJoin = new PendingJoinRequest(normalizedRoomName);
             _pendingJoin = pendingJoin;
+            _pendingJoinFallbackCancellationTokenSource = new CancellationTokenSource();
 
             using CancellationTokenSource timeoutSource =
                 CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
@@ -290,6 +294,13 @@ namespace Murang.Multiplayer.Room.Client
 
             PendingJoinRequest pendingJoin = _pendingJoin;
             _pendingJoin = null;
+            if (_pendingJoinFallbackCancellationTokenSource != null)
+            {
+                _pendingJoinFallbackCancellationTokenSource.Cancel();
+                _pendingJoinFallbackCancellationTokenSource.Dispose();
+                _pendingJoinFallbackCancellationTokenSource = null;
+            }
+
             pendingJoin.Completion.TrySetResult(result);
             OnJoinCompleted?.Invoke(result);
         }
@@ -399,6 +410,14 @@ namespace Murang.Multiplayer.Room.Client
 
         void INetworkRunnerCallbacks.OnConnectedToServer(NetworkRunner runner)
         {
+            if (_pendingJoin == null || _pendingJoinFallbackCancellationTokenSource == null)
+            {
+                return;
+            }
+
+            _ = CompleteJoinOnConnectedFallbackAsync(
+                _pendingJoin.RoomName,
+                _pendingJoinFallbackCancellationTokenSource.Token);
         }
 
         void INetworkRunnerCallbacks.OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
@@ -419,6 +438,30 @@ namespace Murang.Multiplayer.Room.Client
 
         void INetworkRunnerCallbacks.OnSceneLoadStart(NetworkRunner runner)
         {
+        }
+
+        private async Task CompleteJoinOnConnectedFallbackAsync(string roomName, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await Task.Delay(
+                    TimeSpan.FromSeconds(ConnectedSuccessFallbackDelaySeconds),
+                    cancellationToken);
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
+
+            if (_pendingJoin == null
+                || !string.Equals(_pendingJoin.RoomName, roomName, StringComparison.Ordinal)
+                || _runner == null
+                || !_runner.IsRunning)
+            {
+                return;
+            }
+
+            CompleteJoin(RoomJoinResult.CreateSuccess(roomName));
         }
     }
 }
