@@ -20,7 +20,7 @@
 
 | 이름 | 상태 | 링크 |
 |---|---|---|
-| Anchor Auto Attach/Detach | Active | [specs/01-anchor-auto-attach-detach.md](specs/01-anchor-auto-attach-detach.md) |
+| Anchor Auto Attach/Detach | Done | [specs/01-anchor-auto-attach-detach.md](specs/01-anchor-auto-attach-detach.md) |
 | Stick No-Penetration | Draft | [specs/02-stick-no-penetration.md](specs/02-stick-no-penetration.md) |
 
 > 상태 값: `Draft` / `Active` / `Done` / `Abandoned`
