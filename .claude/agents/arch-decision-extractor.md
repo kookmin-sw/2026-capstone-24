@@ -28,7 +28,7 @@ sub-spec 한 개를 받아 그 spec에서 **사용자 입력이 필요한 설계
 - **sub-spec/_index.md/code를 수정하지 않는다.**
 - **후보 최대 5개.** 5 초과 시 risk 높은 5개로 추려 리포트하고, 추린 사실을 리포트 끝 한 줄로 명시.
 - **Bash는 read-only.** `git status`, `git log` 같은 read-only 호출만 허용.
-- **다른 sub-agent를 호출하지 않는다.** `unity-scene-reader` Task는 필요 시 사용 가능.
+- **다른 sub-agent를 호출하지 않는다.** Unity 자산 사실 확인이 필요하면 부여된 read-only MCP(`manage_components`, `find_gameobjects`, `read_console`)를 직접 호출한다.
 
 ## 워크플로우
 

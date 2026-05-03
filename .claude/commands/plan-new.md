@@ -79,7 +79,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash
 
 ### 1.5. 구조 가정 검증 (Unity 자산 의존 plan일 때 필수)
 
-plan이 Unity 직렬화 자산(prefab, scene, material, ScriptableObject, animation 등)의 구조에 의존하는 경우, **plan 본문 작성을 시작하기 전에** `unity-scene-reader` sub-agent를 호출해 plan이 가정할 사실을 검증된 형태로 받아온다. 메인 세션이 raw `Read`/`Grep`으로 prefab·scene YAML을 통째로 끌어와 멋대로 해석하는 경로를 차단하는 단계다.
+plan이 Unity 직렬화 자산(prefab, scene, material, ScriptableObject, animation 등)의 구조에 의존하는 경우, **plan 본문 작성을 시작하기 전에** 메인 세션이 read-only Unity MCP 도구를 직접 호출해 plan이 가정할 사실을 박제한다. raw `Read`/`Grep`으로 prefab·scene YAML을 통째로 끌어와 멋대로 해석하는 경로는 여전히 차단 — 단일 컴포넌트 값 1줄 grep 같은 좁은 조회는 허용.
 
 **Trigger.** 이 단계는 **plan의 Approach 초안에 다음 중 하나라도 등장하면** 발동한다.
 
@@ -87,16 +87,16 @@ plan이 Unity 직렬화 자산(prefab, scene, material, ScriptableObject, animat
 - (b) 특정 prefab 또는 scene asset 경로 (예: `Assets/Characters/Prefabs/VR Player.prefab`).
 - (c) 특정 컴포넌트 타입의 부착 위치를 가정 (예: "TrackedPoseDriver는 X에 붙어 있다", "RigidBody는 Y에 있어야 한다").
 - (d) ScriptableObject·material·animation 자산의 필드 값에 대한 가정.
-- (e) **컴포넌트의 enum 또는 Flags 필드를 신규로 셋업하는 plan.** MCP(`manage_components`/`manage_gameobject`)의 enum 인덱스 매핑이 인스펙터 표기와 어긋나는 함정이 있어, 박제 없이 진행하면 직렬화는 통과하지만 동작이 정반대가 될 수 있다 (예: `TeleportationArea.m_TeleportTrigger`의 `0=OnSelectExited`/`1=OnSelectEntered` 매핑 사고). 패키지 소스(`Read <패키지 경로>/<파일>.cs`)에서 enum 정의 전체와 본 plan이 의도하는 값을 메인 세션이 직접 박제한다 — `unity-scene-reader`는 enum 정의를 보지 않으므로 본 (e) trigger의 박제는 메인이 처리하고 출처는 `Read <경로> (YYYY-MM-DD)`로 표기.
+- (e) **컴포넌트의 enum 또는 Flags 필드를 신규로 셋업하는 plan.** MCP(`manage_components`/`manage_gameobject`)의 enum 인덱스 매핑이 인스펙터 표기와 어긋나는 함정이 있어, 박제 없이 진행하면 직렬화는 통과하지만 동작이 정반대가 될 수 있다 (예: `TeleportationArea.m_TeleportTrigger`의 `0=OnSelectExited`/`1=OnSelectEntered` 매핑 사고). 패키지 소스(`Read <패키지 경로>/<파일>.cs`)에서 enum 정의 전체와 본 plan이 의도하는 값을 메인 세션이 직접 박제하며, 출처는 `Read <경로> (YYYY-MM-DD)`로 표기.
 
 판단이 모호하면 발동시킨다 — false positive(불필요한 호출)는 ~5초 비용이지만 false negative(검증 누락)는 plan 실행 후 manual 단계까지 늦게 잡혀 후속 plan을 강제한다.
 
 **Action.**
 
-1. plan이 가정하는 GameObject 경로·컴포넌트·자산 경로 등을 정리해 `unity-scene-reader` sub-agent 호출용 질문을 만든다 (예: "VR Player.prefab의 `Camera Offset/Hands/Left` 자식 트리와 각 자식의 핵심 컴포넌트 부착 위치를 알려달라. 특히 TrackedPoseDriver가 어느 GameObject에 붙어 있는지").
-2. `Task` 도구로 `unity-scene-reader`를 호출해 검증된 요약을 받는다.
-3. 받은 요약을 메인 세션에 보관해 step 2(분할 제안)·step 4(파일 작성)에서 plan 본문 작성에 사용한다. **메인 세션은 같은 prefab/scene YAML을 raw `Read`로 다시 열지 않는다.** 단일 컴포넌트 값 1줄 grep 같은 좁은 조회는 허용.
-4. unity-scene-reader 보고와 plan의 가정이 어긋나면 (예: "X에 붙어 있을 것"이라고 가정했는데 실제로는 자식 Y에 붙어 있음), Approach를 보고 사실에 맞춰 수정한 뒤 step 2로 진입한다.
+1. plan이 가정하는 GameObject 경로·컴포넌트·자산 경로 등을 정리해 read-only MCP 호출 계획을 세운다. 사용 가능한 도구: `manage_prefabs get_hierarchy` (prefab 트리), `manage_components get` (특정 GameObject의 컴포넌트 필드), `manage_scene get_hierarchy` (scene 트리), `find_gameobjects` (이름·경로·컴포넌트 역조회). 비-GameObject 자산은 `manage_material` / `manage_scriptable_object` / `manage_animation` / `manage_shader` / `manage_texture` / `manage_asset` 중 적합한 것. **mutation 액션 호출 금지** — `set_property`·`add_component`·`modify_contents` 같은 자산을 변경하는 액션은 본 단계에서 호출하지 않으며, 실제 변경은 `/spec-implement`의 plan-implementer가 담당한다.
+2. 좁은 단위로 호출한다. 한 번에 큰 영역(전체 scene hierarchy 등)을 던지지 말고 plan이 진짜 가정하는 GameObject·필드만 뽑는다.
+3. 받은 결과의 핵심 필드만 한 줄 항목으로 정리해 step 2(분할 제안)·step 4(파일 작성)에서 사용한다. **메인 세션은 같은 prefab/scene YAML을 raw `Read`로 다시 열지 않는다** — 단일 컴포넌트 값 1줄 grep 같은 좁은 조회는 허용. 출처 표기는 `MCP <tool> <action> (YYYY-MM-DD)` 형식 (예: `MCP manage_prefabs get_hierarchy (2026-05-03)`). raw JSON을 plan 본문에 그대로 붙이지 않는다.
+4. MCP 호출 결과와 plan의 가정이 어긋나면 (예: "X에 붙어 있을 것"이라고 가정했는데 실제로는 자식 Y에 붙어 있음), Approach를 사실에 맞춰 수정한 뒤 step 2로 진입한다.
 
 **Skip 조건.** plan이 다음 중 하나에만 해당하면 본 단계를 건너뛰고 step 2로 직행한다.
 
@@ -106,7 +106,7 @@ plan이 Unity 직렬화 자산(prefab, scene, material, ScriptableObject, animat
 
 skip한 경우에도 step 4에서 plan 본문에 `## Verified Structural Assumptions` 섹션을 비우는 표기(`_해당 없음 — 순수 로직 변경_`)는 반드시 들어간다 (template 강제).
 
-**Fallback (MCP 미사용 경로).** Unity MCP 도구가 세션에 노출되지 않거나 인스턴스가 죽어 있어 `unity-scene-reader`를 호출할 수 없는 경우:
+**Fallback (MCP 미사용 경로).** Unity MCP 도구가 세션에 노출되지 않거나 Editor 인스턴스가 죽어 있어 read-only MCP 호출이 실패하는 경우:
 
 1. `AskUserQuestion`으로 "Unity MCP 없이 가정으로 진행해도 좋습니까?"를 묻는다.
 2. 사용자가 yes이면 진행한다 — step 4에서 `## Verified Structural Assumptions` 섹션의 각 항목 출처를 `MCP 미사용 — 가정`으로 표기한다.
@@ -219,7 +219,7 @@ skip한 경우에도 step 4에서 plan 본문에 `## Verified Structural Assumpt
 | Step | 인터랙티브 모드 | `--auto` 모드 |
 |---|---|---|
 | 0 (lazy 모드) | 인수 비었을 때 사용자에게 묻기 | **인수 비어 있으면 즉시 실패 + 사유 반환.** spec-path 누락은 plan-drafter 호출 측 버그. |
-| 1.5 (구조 가정 검증) | unity-scene-reader 호출, MCP 끊김이면 사용자에게 fallback 묻기 | unity-scene-reader 호출 동일. **MCP 끊김이면 메인 세션이 묻는 게 아니라, plan-drafter가 자기 컴팩트 리포트의 `unresolved`에 "MCP 미사용 fallback 필요 — 메인 확인 요청"을 적어 반환.** plan-drafter 호출 측(메인 세션)이 사용자에게 묻고 결정. |
+| 1.5 (구조 가정 검증) | 메인 세션이 read-only MCP를 직접 호출, MCP 끊김이면 사용자에게 fallback 묻기 | plan-drafter가 부여된 read-only MCP(`manage_prefabs`/`manage_components`/`manage_scene`/`find_gameobjects`)를 직접 호출. Task 도구 미부여. **MCP 끊김이면 plan-drafter가 자기 컴팩트 리포트의 `unresolved`에 "MCP 미사용 fallback 필요 — 메인 확인 요청"을 적어 반환.** plan-drafter 호출 측(메인 세션)이 사용자에게 묻고 결정. |
 | 2 (분할 제안) | 사용자에게 1 plan vs N plan 제시·승인 | **default `single`.** spec 본문이 명시적으로 N개 plan을 권장(예: spec의 Out of Scope에서 "추가 plan 필요" 명시)하지 않는 한 1 plan. N plan 분할이 명백히 필요하면 plan-drafter가 자체 판단으로 split. 메인에 split 사유 1줄 보고. |
 | 3 (파일명 발급) | 한국어 제목 → 사용자에게 영문 slug 후보 확인 | **slug 자동 생성** — spec slug + sub-spec 제목을 kebab-case 변환. ASCII 안전 변환을 plan-drafter가 직접 수행. 충돌 시 `-2`, `-3` 자동 부여. |
 | 4 (파일 작성) | 동일 | 동일. AC 라벨 부착 누락 검증은 plan-drafter가 자체 수행 — 누락 1건이라도 있으면 `unresolved`에 적어 반환. |
