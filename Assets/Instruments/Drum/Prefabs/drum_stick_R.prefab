@@ -41,6 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5788619030670277683}
   - component: {fileID: 5563444475541118583}
+  - component: {fileID: 6273073276893436019}
   m_Layer: 0
   m_Name: HandMeshPreview
   m_TagString: Untagged
@@ -149,6 +150,18 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.013066754, y: -0.015430767, z: 0.07811258}
     m_Extent: {x: 0.08679949, y: 0.055157233, z: 0.10162347}
   m_DirtyAABB: 0
+--- !u!114 &6273073276893436019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1081060389095683195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81b49635a9c18db4084e7a10e9637b12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Hands::HidePhysicsHandInPlayMode
 --- !u!1 &1135794343069144466
 GameObject:
   m_ObjectHideFlags: 0
@@ -1097,8 +1110,28 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1396545934230101329, guid: fe086597558106146ab900d46b9d5a59, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4824428300578239102}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8004441565049108403, guid: fe086597558106146ab900d46b9d5a59, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8053929893990966838}
   m_SourcePrefab: {fileID: 100100000, guid: fe086597558106146ab900d46b9d5a59, type: 3}
+--- !u!1 &3148841231096536523 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8004441565049108403, guid: fe086597558106146ab900d46b9d5a59, type: 3}
+  m_PrefabInstance: {fileID: 4947084735672445560}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8053929893990966838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3148841231096536523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01423c0d7f464aa488ab581813117ef7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Instruments::AnchoredStickGhostFollower
 --- !u!4 &6324765249325922089 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1396545934230101329, guid: fe086597558106146ab900d46b9d5a59, type: 3}

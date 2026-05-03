@@ -760,6 +760,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7113029333335648921}
   - component: {fileID: 8066186601623339056}
+  - component: {fileID: 3219399427889614503}
   m_Layer: 0
   m_Name: HandMeshPreview
   m_TagString: Untagged
@@ -868,6 +869,18 @@ SkinnedMeshRenderer:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
   m_DirtyAABB: 1
+--- !u!114 &3219399427889614503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8409127765377356832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81b49635a9c18db4084e7a10e9637b12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Hands::HidePhysicsHandInPlayMode
 --- !u!1 &8505164711551792989
 GameObject:
   m_ObjectHideFlags: 0
@@ -1097,10 +1110,30 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1396545934230101329, guid: fe086597558106146ab900d46b9d5a59, type: 3}
       insertIndex: -1
       addedObject: {fileID: 9051489707544732059}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8004441565049108403, guid: fe086597558106146ab900d46b9d5a59, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8115384551437015499}
   m_SourcePrefab: {fileID: 100100000, guid: fe086597558106146ab900d46b9d5a59, type: 3}
 --- !u!4 &2127944141149233721 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1396545934230101329, guid: fe086597558106146ab900d46b9d5a59, type: 3}
   m_PrefabInstance: {fileID: 1073684979191381864}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &7057989427913574619 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8004441565049108403, guid: fe086597558106146ab900d46b9d5a59, type: 3}
+  m_PrefabInstance: {fileID: 1073684979191381864}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8115384551437015499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7057989427913574619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01423c0d7f464aa488ab581813117ef7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Instruments::AnchoredStickGhostFollower
