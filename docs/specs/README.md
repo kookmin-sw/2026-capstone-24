@@ -130,6 +130,29 @@ docs/specs/
 - **검증 실패에서 파생된 plan은 헤더에 `**Caused By:** [<선행 plan>](./<선행 plan>)` 라인을 둔다.** 옵셔널 메타필드. `/plan-new --from-failure`가 자동 부여한다. 정책 단일 진실원: 위 "검증 실패 시 후속 plan 시드" 섹션.
 - **호출 API side effect 박제 강제.** Unity 자산 의존 plan이 외부 컴포넌트 public API를 호출하면, 그 API가 호출 컴포넌트의 transform·frame loop·event 구독에 미치는 모든 side effect를 `## Verified Structural Assumptions`에 박제한다. 부분 라인 박제 금지.
 
+### ARD Spec What Coverage 룰
+
+phase 0(arch-decision-extractor)이 추출하는 결정 후보의 모든 `options[]` 항목은 sub-spec의 `## What` 섹션에 박제된 모든 What을 1:1 매핑해 `spec_what_coverage`를 박제해야 한다. "만족 못 함" 옵션은 라벨 끝에 ⚠️ 마커. `recommended`는 `spec_what_coverage` 전부 "만족"인 옵션 우선.
+
+phase 0가 작성하는 `decisions/<NN>-<title>.md` 본문에는 `## Spec What Coverage` 섹션이 옵션이 아니라 *권장*된다. 결정의 근거가 What 만족도라면 그 매트릭스를 본문에 박제해 후속 plan-drafter·plan-implementer가 결정 의도를 정확히 받을 수 있게 한다.
+
+모든 옵션이 ⚠️인 경우(어떤 옵션도 spec What을 fully 만족하지 못함) arch-decision-extractor는 경고 한 줄을 해당 결정 항목에 추가하고, 메인 세션이 사용자에게 sub-spec의 What 재검토 여부를 확인한다.
+
+### plan-quality-reviewer 점검 항목 #4 (Spec What 정합)
+
+plan-quality-reviewer는 plan 작성 직후 Linked Spec의 `## What` 항목을 enumerate해 각 What이 plan의 Approach·Deliverables 적용으로 만족되는지를 pass/partial/fail 3분류로 판정한다.
+
+| 판정 | 의미 | verdict 영향 |
+|---|---|---|
+| pass | 만족 메커니즘 박제 + AC 검증 항목 존재 | — |
+| partial | 메커니즘 박제됐으나 AC 누락, 또는 AC는 있으나 메커니즘 모호 | `fix-and-retry` |
+| fail | Approach 적용 후에도 해당 What이 만족된다고 추론 불가 | `stop` |
+
+`fail` 1건 이상 → verdict `stop` (ARD 또는 spec 수정 필요, plan-drafter 재호출로 해결 불가).  
+`partial` 1건 이상(fail 없음) → verdict `fix-and-retry` (plan-drafter 재호출로 수정 가능).
+
+plan-drafter는 plan 작성 시 위 기준으로 self-check해, Approach가 spec의 모든 What을 만족시키는지 확인한 후 제출한다.
+
 ## Plan 실행 시 읽기 순서
 
 사용자가 plan 경로를 주고 "구현해" 라고 하면 다음 순서로 컨텍스트를 적재한다.

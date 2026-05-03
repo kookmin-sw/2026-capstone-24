@@ -41,7 +41,8 @@ sub-spec 한 개를 받아 그 spec에서 **사용자 입력이 필요한 설계
    - **Unity 직렬화 자산 수정 경로**: plan에서 MCP vs propertyPath Edit override 결정 필요한가.
    - **frame-level transform sync / parent-child 관계 변경 / physics integration 변경**: 실행 순서·cycle 회피 전략 결정 필요한가.
    - **enum/Flags 필드 신규 셋업**: 의도 값 결정 필요한가.
-6. **후보별 결정 요청 작성** — 각 후보에 대해 title·context·options·recommended 4항목 구성.
+   - **Spec What 만족 메커니즘 분기**: sub-spec의 What/Behavior 항목 중 *물리/시스템 거동*에 의존하는 항목이 있고(예: "표면에서 멈춤", "동시에 발생", "통과 안 함"), 그 항목을 만족시킬 수 있는 후보 메커니즘이 2개 이상 존재하며, 후보별로 spec의 What을 만족시킬 수 있는 능력이 다르면 결정 후보로 추출한다.
+6. **후보별 결정 요청 작성** — 각 후보에 대해 title·context·options·recommended 4항목 구성. **recommended 결정 룰:** `spec_what_coverage` 전부 "만족"인 옵션이 있으면 그 옵션을 추천한다. 없으면 "만족 못 함" 항목이 가장 적은 옵션을 추천한다. 동점이면 "부분 만족" 항목이 더 적은 옵션을 우선한다. 이유를 `recommended` 필드 옆에 한 줄로 명시한다.
 7. **컴팩트 리포트 반환.**
 
 ## 반환 형식
@@ -51,10 +52,24 @@ sub-spec 한 개를 받아 그 spec에서 **사용자 입력이 필요한 설계
 - title: <한 문장>
   context: <왜 이 결정이 필요한가. 한 단락.>
   options:
-    - <라벨>: <설명·trade-off 한 줄>
-    - <라벨>: <설명·trade-off 한 줄>
-  recommended: <라벨> (추천)
+    - label: <짧은 라벨>
+      spec_what_coverage:
+        - "<What 1>: 만족 | 부분 만족 | 만족 못 함 — <왜인지 한 줄>"
+        - "<What 2>: ..."
+      cost: <한 줄 — 셋업·튜닝 비용>
+      risk: <한 줄 — 알려진 위험>
+  recommended: <라벨> — <이유 한 줄>
 ```
+
+`spec_what_coverage`는 sub-spec의 `## What` 섹션에 박제된 모든 항목을 1:1 매핑해 평가한다(spec What이 N개면 각 옵션마다 N줄). "만족 못 함"이 1건이라도 있는 옵션은 라벨 끝에 ⚠️ 마커를 부착한다.
+
+**모든 옵션 ⚠️ 케이스:** `options[]` 전부에 ⚠️가 붙으면, 해당 결정 항목 끝에 다음 경고 한 줄을 추가한다:
+
+```
+> ⚠️ 모든 옵션이 spec What을 완전히 만족하지 못한다 — sub-spec의 What 재검토가 필요할 수 있다.
+```
+
+이 경고는 sub-spec 갱신 트리거 신호다. arch-decision-extractor 자신은 sub-spec을 수정하지 않으며, 메인 세션이 사용자에게 갱신 여부를 확인한다.
 
 후보 0개면:
 
