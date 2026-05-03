@@ -93,6 +93,8 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
 
     // ─── Public API ──────────────────────────────────────────────────────────
 
+    public float LookAheadSeconds => lookAheadSeconds;
+
     /// <summary>런타임에 laneConfig를 교체한다. Show() 호출 전에 사용해야 한다.</summary>
     public void SetLaneConfig(InstrumentLaneConfig config)
     {

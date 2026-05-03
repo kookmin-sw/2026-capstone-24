@@ -7,7 +7,7 @@ public interface IRhythmClock
 
     event System.Action<RhythmClockState> StateChanged;
 
-    void Start(VmSongChart chart);
+    void Start(VmSongChart chart, double leadInSeconds = 0);
     void Pause();
     void Resume();
     void Stop();

@@ -7,6 +7,7 @@ public class RhythmGameHost : MonoBehaviour
     [SerializeField] NoteDisplayPanel noteDisplayPanel;
     [SerializeField] InstrumentBase targetInstrument;
     [SerializeField] RhythmAccompaniment accompaniment;
+    [SerializeField] float leadInSeconds = 3f;
 
     InstrumentBase         instrument;
     RhythmClock            clock;
@@ -30,7 +31,9 @@ public class RhythmGameHost : MonoBehaviour
     public RhythmSession StartSession(VmSongChart chart, RhythmSong song, int judgedChannel)
     {
         StopSession();
-        clock.Start(chart);
+        float lookAhead = noteDisplayPanel != null ? noteDisplayPanel.LookAheadSeconds : 0f;
+        double effectiveLeadIn = System.Math.Max(leadInSeconds, lookAhead);
+        clock.Start(chart, effectiveLeadIn);
         accompaniment?.Begin(chart, judgedChannel, clock);
         judge.Start(chart, judgedChannel);
         activeSession = new RhythmSession(instrument, song, clock, judge);
