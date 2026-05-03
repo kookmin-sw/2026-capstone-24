@@ -204,7 +204,7 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
         bgRect.anchorMax = Vector2.one;
         bgRect.offsetMin = Vector2.zero;
         bgRect.offsetMax = Vector2.zero;
-        bg.AddComponent<Image>().color = Color.black;
+        bg.AddComponent<Image>().color = new Color(0f, 0f, 0f, 0f); // 투명
 
         // ── 판정선 (패널 하단) ──
         var jlGo   = MakeUI("JudgeLine", transform);
@@ -282,8 +282,8 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
             var go = new GameObject("Note", typeof(RectTransform), typeof(Image));
             go.transform.SetParent(transform, false);
             go.GetComponent<Image>().color = IsWhiteKey(pn.midiNote)
-                ? Color.white
-                : new Color(0.35f, 0.60f, 1f, 1f); // 검은 건반은 파란색
+                ? new Color(0.25f, 0.90f, 0.25f, 1f)          // 흰 건반 → 밝은 초록
+                : new Color(0.10f, 0.55f, 0.10f, 1f);          // 반음 건반 → 진한 초록
             nv = go.AddComponent<NoteVisual>();
         }
 

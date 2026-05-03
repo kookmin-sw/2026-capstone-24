@@ -13,18 +13,23 @@ channel=1   instrument=piano
 channel=10  instrument=drum
 
 [Track:1]
-# C4 D4 E4 F4 G4 A4 B4 C5
+# 크로매틱 스케일: 도 도# 레 레# 미 파 파# 솔 솔# 라 라# 시 도 (C4~C5)
 tick=0     note=60  len=460  vel=90
-tick=480   note=62  len=460  vel=85
-tick=960   note=64  len=460  vel=88
-tick=1440  note=65  len=460  vel=85
-tick=1920  note=67  len=460  vel=90
-tick=2400  note=69  len=460  vel=85
-tick=2880  note=71  len=460  vel=88
-tick=3360  note=72  len=460  vel=95
+tick=480   note=61  len=460  vel=85
+tick=960   note=62  len=460  vel=88
+tick=1440  note=63  len=460  vel=85
+tick=1920  note=64  len=460  vel=88
+tick=2400  note=65  len=460  vel=85
+tick=2880  note=66  len=460  vel=88
+tick=3360  note=67  len=460  vel=90
+tick=3840  note=68  len=460  vel=85
+tick=4320  note=69  len=460  vel=88
+tick=4800  note=70  len=460  vel=85
+tick=5280  note=71  len=460  vel=88
+tick=5760  note=72  len=460  vel=95
 
 [Track:10]
-# Kick(36) 1·3박, Snare(38) 2·4박
+# Kick(36) 홀수박, Snare(38) 짝수박
 tick=0     note=36  len=60   vel=100
 tick=480   note=38  len=60   vel=90
 tick=960   note=36  len=60   vel=100
@@ -33,6 +38,11 @@ tick=1920  note=36  len=60   vel=100
 tick=2400  note=38  len=60   vel=90
 tick=2880  note=36  len=60   vel=100
 tick=3360  note=38  len=60   vel=90
+tick=3840  note=36  len=60   vel=100
+tick=4320  note=38  len=60   vel=90
+tick=4800  note=36  len=60   vel=100
+tick=5280  note=38  len=60   vel=90
+tick=5760  note=36  len=60   vel=100
 # HiHat(42) 8분음표
 tick=0     note=42  len=40   vel=65
 tick=240   note=42  len=40   vel=55
@@ -50,3 +60,13 @@ tick=2880  note=42  len=40   vel=65
 tick=3120  note=42  len=40   vel=55
 tick=3360  note=42  len=40   vel=65
 tick=3600  note=42  len=40   vel=55
+tick=3840  note=42  len=40   vel=65
+tick=4080  note=42  len=40   vel=55
+tick=4320  note=42  len=40   vel=65
+tick=4560  note=42  len=40   vel=55
+tick=4800  note=42  len=40   vel=65
+tick=5040  note=42  len=40   vel=55
+tick=5280  note=42  len=40   vel=65
+tick=5520  note=42  len=40   vel=55
+tick=5760  note=42  len=40   vel=65
+tick=6000  note=42  len=40   vel=55
