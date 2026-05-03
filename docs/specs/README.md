@@ -50,6 +50,6 @@ docs/specs/
 |---|---|---|---|---|
 | [rhythm-game](rhythm-game/_index.md) | Active | 6 | 5/5 | |
 | [hands](hands/_index.md) | Active | 2 | 1/1 | |
-| [multiplayer-network](multiplayer-network/_index.md) | Active | 4 | 6/9 | |
+| [multiplayer-network](multiplayer-network/_index.md) | Active | 4 | 7/9 | |
 
 > Status 값은 `Draft` / `Active` / `Done` / `Abandoned`
