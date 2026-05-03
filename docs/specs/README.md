@@ -111,7 +111,7 @@ docs/specs/
 
 | Feature | Status | Sub-Specs | Plans (Done/Total) | 비고 |
 |---|---|---|---|---|
-| [rhythm-game](rhythm-game/_index.md) | Active | 8 | 9/9 | |
+| [rhythm-game](rhythm-game/_index.md) | Active | 9 | 8/8 | |
 | [hands](hands/_index.md) | Active | 2 | 1/1 | |
 
 > Status 값: `Draft` / `Active` / `Done` / `Abandoned`
