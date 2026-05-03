@@ -12,10 +12,12 @@ docs/specs/
 │   ├── root-spec.md                # 큰 피처의 _index.md 템플릿
 │   ├── sub-spec.md                 # 하위 spec 템플릿
 │   └── plan.md                     # 구현 plan 템플릿
-├── _archive/                       # 완료된 spec·plan 보관
+├── _archive/                       # 완료된 feature 전체 보관 (feature 단위 이동)
 │   └── <feature-kebab>/
-│       ├── specs/
-│       └── plans/
+│       ├── _index.md               # 루트 spec (이동됨)
+│       ├── specs/                  # 하위 spec 전체 (이동됨)
+│       ├── decisions/              # ARD 전체 (이동됨, drum-stick부터 포함)
+│       └── plans/                  # 구현 plan 전체 (plan Done 시점에 먼저 이동됨)
 └── <feature-kebab>/                # 큰 피처 = 폴더 하나
     ├── _index.md                   # 루트 spec (What/Why + 하위 spec 링크)
     ├── specs/
@@ -25,6 +27,16 @@ docs/specs/
     └── plans/
         └── <YYYY-MM-DD>-<author>-<slug>.md  # 구현 plan (날짜·작성자·slug 기반 파일명)
 ```
+
+### Archive 정책
+
+- **plan 단위**: `Status: Done` 직후 `_archive/<feature>/plans/`로 자동 이동.
+- **sub-spec 단위**: Done 되어도 feature 전체 Done 시점까지 `specs/` 안에 보류. 중간 이동 없음.
+- **feature 단위**: 모든 sub-spec Done + Open Q 0건 + 검증 pass + working tree clean 조건 모두 충족 시, 다음 항목을 `_archive/<feature>/`로 이동. 사용자 승인 1회.
+  - `_index.md` / `specs/` / `decisions/` / `plans/`(이미 `_archive`에 있으면 병합)
+  - `.feature-build-state.json`은 삭제(`.gitignore`라 git 영향 없음)
+- **archive 포맷 사례**: `teleport-locomotion`은 decisions/ 없는 구형식, `drum-stick`부터는 decisions/ 포함 신형식.
+- **archive 행 표기**: `| [<feature>](_archive/<feature>/_index.md) | Done | ... |`
 
 ## 워크플로우
 

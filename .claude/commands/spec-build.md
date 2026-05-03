@@ -141,10 +141,28 @@ inline 실행 결과 분기:
 
 ### 4. 큐 종료
 
-모든 sub-spec이 `Done`이고 `deferred_failures`가 비어 있으면:
+모든 sub-spec이 `Done`이고 `deferred_failures`가 비어 있으면 다음 두 경로 중 하나로 분기한다.
 
-- root-spec Status `Done` 갱신은 `plan-complete` skill이 마지막 sub-spec 처리 시 자동 수행.
-- 한 줄 요약 출력 (총 N sub-spec, M plan, K commit).
+#### 4-A. feature archive 자동 트리거
+
+다음 조건을 **모두** 만족할 때 `plan-complete` skill의 "feature 단위 archive" 분기를 호출한다:
+
+1. 모든 sub-spec `Status == Done`.
+2. `deferred_failures` 0건.
+3. 모든 plan의 auto-hard / manual-hard 검증 pass (`.orchestrator-state.json` 참조).
+4. working tree clean (마지막 atomic commit 직후).
+5. Unity MCP 노출 시 `read_console` types=error 0건.
+
+조건 충족 시 순서:
+
+1. `archive-feature.sh <feature>` 호출 — 외부 참조 grep 결과 출력.
+2. `AskUserQuestion`으로 이동 대상 경로 + 외부 참조 매치를 보여주고 사용자 승인 1회.
+3. 승인 후 스크립트가 이미 수행한 `git mv` 결과 확인 + README 보드 갱신 + 외부 링크 Edit 갱신.
+4. atomic commit: `chore(<feature>): feature archive 이동 + README 보드 갱신`.
+
+#### 4-B. archive 보류 또는 deferred 처리
+
+조건이 하나라도 충족되지 않으면 archive 분기를 진입하지 않고 사유 한 줄 보고 후 종료.
 
 `deferred_failures`가 비어 있지 않으면:
 
@@ -153,6 +171,10 @@ inline 실행 결과 분기:
 - **yes** → 각 항목에 대해 순차적으로 `Skill` 도구로 `plan-new`를 `--from-failure <plan-path> --auto` 인수로 위임 호출. 시드 완료 후 사용자에게 `/spec-build <root-spec> --apply` 재호출을 안내.
 - **per-item** → 항목별 yes/no 결정.
 - **no** → deferred 목록을 한 번 더 출력하고 종료.
+
+---
+
+모든 sub-spec Done + deferred 0건 + archive 완료 시 한 줄 요약 출력 (총 N sub-spec, M plan, K commit).
 
 중간에 멈춘 경우 → `pending_user_action` + 다음에 무엇을 해야 하는지 한 줄 출력. 재호출 시 상태 파일에서 현재 sub-spec / `current_plan_index`부터 재개.
 
