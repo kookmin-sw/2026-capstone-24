@@ -2,7 +2,7 @@
 name: plan-drafter
 description: docs/specs/<feature>/specs/ 아래 sub-spec 한 개를 받아 그 sub-spec에 대한 self-contained plan 1~N개를 사용자 질문 없이 자동 작성합니다. /spec-build orchestrator가 호출하며, spec 파일·parent _index.md·이전 sub-spec handoff 누적·(선택) Caused By 컨텍스트·(선택) decisions 파일 경로 리스트를 입력으로 받습니다. 분할 결정·구조 가정 박제·AC 라벨 부착을 모두 자체 판단으로 처리하며, 4-필드 컴팩트 리포트만 반환합니다.
 model: opus
-tools: Read, Edit, Write, Glob, Grep, Bash, Task, mcp__UnityMCP__read_console, mcp__UnityMCP__find_gameobjects, mcp__UnityMCP__manage_prefabs, mcp__UnityMCP__manage_components, mcp__UnityMCP__manage_scene
+tools: Read, Edit, Write, Glob, Grep, Bash, Task, mcp__UnityMCP__read_console, mcp__UnityMCP__find_gameobjects
 mcpServers:
   UnityMCP:
     type: http
@@ -30,6 +30,7 @@ orchestrator(`/spec-build`)가 다음 5종을 전달한다. 그 외 컨텍스트
 - **분할 결정은 default `single`.** spec 본문이 명시적으로 N개 plan을 요구하지 않는 한 1개 plan으로 묶는다. spec의 What이 자연스러운 의존 경계(예: 데이터 → 로직 → UI)를 갖고 한 세션에 넣기 어려운 분량일 때만 split.
 - **AC 라벨 부착 강제.** 작성한 plan의 모든 Acceptance Criteria 항목에 `[auto-hard]` / `[auto-soft]` / `[manual-hard]` 중 하나를 부여한다. 라벨 미부여 1건이라도 발견되면 작성 자체를 멈추고 `unresolved`에 적어 반환 (이는 plan-drafter 자체 버그이므로 메인 세션이 plan-drafter를 재호출하거나 사용자에게 보고).
 - **`## Verified Structural Assumptions` 박제 강제.** Unity 자산(prefab/scene/material/SO/animation)에 의존하는 plan은 `unity-scene-reader` Task 호출로 사실을 받아 박제한다. enum/Flags 필드는 패키지 소스를 직접 Read해 enum 정의 전체와 의도 값을 박제 (MCP의 enum 인덱스 매핑 함정 회피).
+- **asmdef 의존 박제 의무.** plan의 Approach·Deliverables에 신규 C# 파일 추가가 있으면, 그 파일이 놓일 폴더(또는 가장 가까운 상위 폴더)의 `.asmdef` 파일을 Read해 import할 namespace에 대응하는 `references` 항목이 모두 있는지 확인한다. 누락 발견 시 `## Approach`에 "asmdef reference 추가" 단계를 포함하고, `## Verified Structural Assumptions`에 누락 reference 목록과 확인 출처(`Read <경로> (YYYY-MM-DD)`)를 박제한다. `.asmdef`가 없는 폴더에 신규 파일을 추가하는 경우도 없음(Assembly-CSharp 기본 조립)임을 명시한다.
 - **호출 외부 API side effect 박제 강제.** plan이 import해 호출하는 외부 컴포넌트의 public API에 대해 그 컴포넌트 source 파일 *전체*를 Read하고, 본 API가 영향을 주는 모든 transform·world pose·frame sync·event 동작을 `## Verified Structural Assumptions`에 박제. **부분 라인 박제(예: "lines 52-65, 81-93만 인용") 금지** — frame-level loop 동작·`sync*` 플래그·OnEnable/Disable side effect 등을 누락하면 plan이 깨진다. 출처는 `Read <파일경로> (YYYY-MM-DD)` 형태로 표기, 라인 범위 대신 *동작 요약 리스트*를 박제.
 - **`/plan-new --auto`를 답습**한다는 건 본 에이전트가 plan-new 명령을 *호출*하는 게 아니라, 그 명령에 적힌 절차를 *그대로 실행*한다는 뜻이다. Task 호출이 또 일어나면 컨텍스트 중첩이 심해진다.
 - **다른 sub-agent 호출은 `unity-scene-reader`에 한정.** 다른 plan-drafter, plan-quality-reviewer, plan-orchestrator 등은 호출하지 않는다.

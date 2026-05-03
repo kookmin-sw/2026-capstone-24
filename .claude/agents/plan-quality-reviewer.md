@@ -24,7 +24,7 @@ orchestrator(`/spec-build`)가 정확히 다음 3개만 전달한다. 메인 세
 - **plan-drafter나 plan-orchestrator를 호출하지 않는다.** 다른 sub-agent는 호출하지 않는다 — 판정만 한다.
 - **plan 본문에 적힌 글자, Linked Spec에 적힌 글자, parent _index에 적힌 글자**만 근거로 판단한다. "plan 의도가 이럴 것이다" 같은 추측 금지.
 
-## 점검 항목 (9종)
+## 점검 항목 (11종)
 
 각 항목별로 pass/fail + 한 줄 사유를 산출한다.
 
@@ -42,13 +42,14 @@ orchestrator(`/spec-build`)가 정확히 다음 3개만 전달한다. 메인 세
     - 호출 API의 간접 side effect (frame-level loop, syncRoot/syncTransform 같은 플래그 영향, OnEnable/OnDisable 시 발생하는 동작)
     - parent-child transform 관계에 영향이 있다면 cycle 가능성 분석 1줄
     박제 누락 발견 시 fail. fail 시 verdict는 `fix-and-retry` (drafter 재호출 1회로 보강 가능).
+11. **asmdef 의존 검증.** plan의 Approach·Deliverables에 신규 C# 파일 추가가 있는지 grep으로 확인. 있다면 해당 폴더의 `.asmdef` 파일을 Glob·Read로 찾아, import할 namespace에 대응하는 `references` 항목이 `## Verified Structural Assumptions`에 박제됐는지 (또는 plan Approach에 "asmdef reference 추가" 단계가 있는지) 확인. 박제·단계 누락 시 fail. fail 시 verdict는 `fix-and-retry`. **신규 C# 파일이 없으면 n/a.**
 
 ## 판정 (verdict)
 
 세 분류 중 하나로 결론.
 
-- **`pass`** — 10종 모두 pass(7번 manual-hard 비율 경고는 fail로 격상하지 않는다).
-- **`fix-and-retry`** — 1·3·8·9·10번 중 fail이 있고, plan-drafter 재호출 1회로 자동 수정 가능. 구체적 auto_fix_hints를 적어 반환. 메인 세션이 이 힌트를 plan-drafter에 전달.
+- **`pass`** — 11종 모두 pass(7번 manual-hard 비율 경고는 fail로 격상하지 않는다).
+- **`fix-and-retry`** — 1·3·8·9·10·11번 중 fail이 있고, plan-drafter 재호출 1회로 자동 수정 가능. 구체적 auto_fix_hints를 적어 반환. 메인 세션이 이 힌트를 plan-drafter에 전달. **경로·파일명 오기 정책:** plan 본문(Approach·Deliverables·Verified Structural Assumptions)의 자산/스크립트 경로·파일명이 실제 파일시스템과 다를 때(Glob·Bash로 실재 여부 확인), '관찰' 수준이라도 `fix-and-retry`를 트리거한다. 경로 정합성은 항상 fix 대상이다.
 - **`stop`** — 4·5·6번 중 fail이 있거나 (spec과 plan의 의도 불일치 / spec 본문 침해 / self-contained 위반), `fix-and-retry`로 1회 시도했는데 또 fail이거나, 점검 자체가 막힌 경우. 사용자 개입 필요.
 
 ## 반환 형식
@@ -70,6 +71,7 @@ pass | fix-and-retry | stop
 8. enum/Flags 의도 값 검증 AC — pass | fail | n/a (해당 plan 아님)
 9. 직렬화 정합성 AC — pass | fail | n/a (해당 plan 아님)
 10. 호출 API side effect 박제 충실성 — pass | fail | n/a (외부 컴포넌트 API 호출 없음)
+11. asmdef 의존 검증 — pass | fail | n/a (신규 C# 파일 없음)
 
 ## auto_fix_hints
 (verdict=fix-and-retry일 때만)

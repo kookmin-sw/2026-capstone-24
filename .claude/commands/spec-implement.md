@@ -94,9 +94,25 @@ allowed-tools: Read, Glob, Grep, Bash, Edit, Write, AskUserQuestion, Skill, Task
 4. 이전 plan handoff 누적 (3-3 산출물)
 5. AC 라벨 분류 배열 (3-2 산출물)
 
+**표준 호출 템플릿.** 메인 세션이 전달하는 prompt에는 반드시 다음 책임 한정 문구를 첫 부분에 포함한다:
+
+```
+책임: 이 sub-agent는 아래 plan 1개의 라이프사이클(implementer → reviewer → AC 검증)만 수행한다.
+~/.claude/memory/·다른 프로젝트·CLAUDE.md·.claude/ 디렉터리는 본 호출 범위 외다.
+```
+
+이후 입력 1~5를 순서대로 명시한다.
+
 반환된 9섹션 리포트(`status` / `next_action` / `plan_path` / `changes` / `acceptance_results` / `manual_hard_pending` / `auto_soft_failed_notes` / `handoff_candidate` / `unresolved`)를 받아 보관. 코드 변경은 sub-agent 종료 후에도 working tree에 남아 있다.
 
 #### 3-6. 결과 분기
+
+**plan-orchestrator 자가 보고 교차 검증 (메인 세션 직접 재실행).** 리포트 수신 직후, `next_action`으로 분기하기 전에, `acceptance_results`에 `status: pass`인 `auto-hard` 항목이 1건 이상 있으면 메인 세션이 그 검증 식을 *직접 실행*해 결과를 비교한다.
+
+- plan 본문의 해당 AC 항목 아래에 적힌 검증 식(grep / Bash / `find_gameobjects` / `read_console` / `manage_prefabs get_hierarchy` 등)을 메인 세션이 그대로 실행.
+- 결과가 plan-orchestrator 보고(`status: pass`)와 일치하면 그대로 진행.
+- **불일치 시:** plan-orchestrator 자가 보고를 무효로 처리하고 메인 세션의 직접 실행 결과를 채택. `acceptance_results`를 갱신(pass→fail 또는 fail→pass)한 뒤 `next_action`을 재분기.
+- `acceptance_results`의 `auto-hard` 항목이 모두 `status: fail`(compile-error/review-failed 분기)이거나 `auto-hard` AC가 0건이면 본 단계는 건너뛴다.
 
 리포트의 `next_action`으로 분기한다.
 
