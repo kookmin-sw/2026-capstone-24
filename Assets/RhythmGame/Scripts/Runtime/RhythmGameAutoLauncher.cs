@@ -1,9 +1,10 @@
 using System.IO;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 /// <summary>
-/// 테스트용 자동 세션 런처.
-/// Play 모드 진입 시 .vmsong 파일을 파싱해 RhythmGameHost.StartSession()을 호출한다.
+/// 테스트용 세션 런처.
+/// Play 모드 진입 후 키보드 O 키를 누르면 .vmsong 파일을 파싱해 RhythmGameHost.StartSession()을 호출한다.
 /// </summary>
 public class RhythmGameAutoLauncher : MonoBehaviour
 {
@@ -13,11 +14,24 @@ public class RhythmGameAutoLauncher : MonoBehaviour
     [Tooltip("채점할 채널 번호 (test.vmsong 기준: 1=피아노, 10=드럼)")]
     [SerializeField] int judgedChannel = 1;
 
+    VmSongChart _chart;
+
     void Start()
     {
-        var chart = LoadChart();
-        if (chart != null && host != null)
-            host.StartSession(chart, null, judgedChannel);
+        // 파싱만 미리 해두고 세션은 O 키 입력 시 시작
+        _chart = LoadChart();
+        if (_chart != null)
+            Debug.Log("[RhythmGameAutoLauncher] 차트 로드 완료 — [O] 키를 눌러 세션 시작", this);
+    }
+
+    void Update()
+    {
+        if (_chart == null || host == null) return;
+        if (Keyboard.current != null && Keyboard.current.oKey.wasPressedThisFrame)
+        {
+            Debug.Log("[RhythmGameAutoLauncher] [O] 입력 — 세션 시작", this);
+            host.StartSession(_chart, null, judgedChannel);
+        }
     }
 
     VmSongChart LoadChart()
@@ -37,7 +51,7 @@ public class RhythmGameAutoLauncher : MonoBehaviour
             return null;
         }
 
-        Debug.Log($"[RhythmGameAutoLauncher] '{result.chart.title}' 파싱 완료 — channel {judgedChannel} 세션 시작", this);
+        Debug.Log($"[RhythmGameAutoLauncher] '{result.chart.title}' 차트 파싱 완료", this);
         return result.chart;
     }
 }
