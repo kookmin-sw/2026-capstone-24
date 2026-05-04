@@ -38,7 +38,7 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| _아직 없음_ | — | — | — |
+| 2026-05-04 | Note Bottom Clipping — 판정선 하단 노트 숨김 | Ready | [2026-05-04-linksky0311-note-bottom-clipping.md](../plans/2026-05-04-linksky0311-note-bottom-clipping.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/plan-new` 사용. 파일명은 날짜·작성자·slug 기반.
