@@ -1,7 +1,7 @@
 # Note Bottom Clipping — 판정선 하단 노트 숨김
 
 **Linked Spec:** [`../specs/03-note-bottom-clipping.md`](../specs/03-note-bottom-clipping.md)
-**Status:** `Ready`
+**Status:** `Done`
 
 ## Goal
 
@@ -68,3 +68,18 @@ _해당 없음 — 순수 로직 변경_
 ## Notes
 
 ## Handoff
+
+`NoteDisplayPanel`에 다음 변경이 적용되어 있다.
+
+- `RectTransform _panelRt` 필드: `Awake()`에서 캐시. `SpawnNote()`의
+  `GetComponent<RectTransform>()` 호출을 대체한다.
+- `RectMask2D` 동적 추가: `Awake()`에서 컴포넌트가 없으면 자동 추가.
+  패널 RectTransform 경계 안으로 자식 UI(노트)를 자동 클리핑한다.
+- `Update()` 하단 클리핑 루프: `activeNotes` 역순 순회.
+  - 2D 모드: `topY = localPosition.y + sizeDelta.y`
+  - 3D 모드: `topY = localPosition.y + localScale.y * 0.5f`
+  - `topY <= _panelRt.rect.y` 이면 `Destroy` + 리스트 제거.
+  - 시각 클리핑은 `RectMask2D`가 담당, 루프는 오브젝트 수명 관리만 수행.
+- 판정 로직(`RhythmJudge`)은 `NoteVisual`과 독립적이므로
+  판정 타이밍에 영향 없음.
+- 대상 파일: `Assets/RhythmGame/Scripts/Runtime/Display/NoteDisplayPanel.cs`

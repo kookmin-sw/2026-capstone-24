@@ -47,6 +47,16 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
     List<NoteVisual>   activeNotes  = new List<NoteVisual>();
     bool               layoutBuilt;
     bool               active;
+    RectTransform      _panelRt;
+
+    // ─── Lifecycle ───────────────────────────────────────────
+
+    void Awake()
+    {
+        _panelRt = GetComponent<RectTransform>();
+        if (GetComponent<RectMask2D>() == null)
+            gameObject.AddComponent<RectMask2D>();
+    }
 
     // ─── 건반 분류 유틸 ──────────────────────────────────────────────────────
 
@@ -193,6 +203,24 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
             }
             else { i++; }
         }
+
+        // 하단 클리핑: 판정선 아래로 내려간 노트 즉시 파괴
+        for (int j = activeNotes.Count - 1; j >= 0; j--)
+        {
+            NoteVisual nv = activeNotes[j];
+            if (nv == null) { activeNotes.RemoveAt(j); continue; }
+
+            var nvRt = nv.GetComponent<RectTransform>();
+            float topY = (nvRt != null)
+                ? nv.transform.localPosition.y + nvRt.sizeDelta.y
+                : nv.transform.localPosition.y + nv.transform.localScale.y * 0.5f;
+
+            if (topY <= _panelRt.rect.y)
+            {
+                Destroy(nv.gameObject);
+                activeNotes.RemoveAt(j);
+            }
+        }
     }
 
     // ─── 레이아웃 빌드 ───────────────────────────────────────────────────────
@@ -264,7 +292,7 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
         if (startY < 0f) return;
 
         // 패널 rect (피봇 무관하게 하단·좌단 절대 좌표 획득)
-        Rect  pr = GetComponent<RectTransform>().rect;
+        Rect  pr = _panelRt.rect;
         float pw = pr.width  > 1f ? pr.width  : 1326f;
 
         // Y=180 반전 포함 canvasNormX → 패널 로컬 X
