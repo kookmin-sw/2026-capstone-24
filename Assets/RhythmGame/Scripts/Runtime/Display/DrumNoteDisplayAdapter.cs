@@ -11,6 +11,8 @@ public class DrumNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
     [SerializeField] NoteDisplayPanel noteDisplayPanelPrefab;
     [Tooltip("각 드럼 파츠 위 패널의 y 오프셋 (월드 단위)")]
     [SerializeField] float yOffset = 0.15f;
+    [Tooltip("패널 상단을 카메라 반대 방향으로 기울이는 각도 (0 = 수직, 클수록 더 눕혀짐)")]
+    [SerializeField, Range(0f, 70f)] float panelTiltDegrees = 50f;
 
     readonly List<NoteDisplayPanel>              spawnedPanels  = new List<NoteDisplayPanel>();
     readonly List<InstrumentLaneConfig>          runtimeConfigs = new List<InstrumentLaneConfig>();
@@ -42,10 +44,10 @@ public class DrumNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
             InstrumentLaneConfig singleConfig = InstrumentLaneConfig.CreateSingleNote(note);
             runtimeConfigs.Add(singleConfig);
 
-            Vector3 worldPos = ComputePanelPosition(zone.transform);
+            Vector3 worldPos = ComputePanelPosition(zone.transform, zone.PanelYOffset);
             NoteDisplayPanel panel = Instantiate(noteDisplayPanelPrefab);
             panel.transform.position = worldPos;
-            panel.transform.rotation = Quaternion.LookRotation(zone.transform.up, Vector3.up);
+            panel.gameObject.AddComponent<BillboardUI>().tiltDegrees = panelTiltDegrees;
 
             panel.SetLaneConfig(singleConfig);
             panel.Show(chart, judgedChannel, clock);
@@ -85,19 +87,29 @@ public class DrumNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
             panel.OnJudged(e);
     }
 
-    Vector3 ComputePanelPosition(Transform t)
+    Vector3 ComputePanelPosition(Transform t, float extraOffset = 0f)
     {
-        // Renderer bounds 상단 중심 우선 사용
-        Renderer rend = t.GetComponentInChildren<Renderer>();
-        if (rend != null)
-            return new Vector3(rend.bounds.center.x, rend.bounds.max.y + yOffset, rend.bounds.center.z);
+        float totalOffset = yOffset + extraOffset;
 
-        // Collider bounds 폴백
+        // Y: 히트존 Collider 상단 (실제 타격면 높이)
         Collider col = t.GetComponentInChildren<Collider>();
-        if (col != null)
-            return new Vector3(col.bounds.center.x, col.bounds.max.y + yOffset, col.bounds.center.z);
+        float worldY = col != null
+            ? col.bounds.max.y + totalOffset
+            : t.position.y + 0.1f + totalOffset;
 
-        // 둘 다 없으면 transform.position + 오프셋
-        return t.position + Vector3.up * (0.1f + yOffset);
+        // XZ: DrumPiece 메쉬 Renderer bounds 중심 (시각적 중심과 일치)
+        DrumPiece piece = t.GetComponentInParent<DrumPiece>();
+        if (piece != null)
+        {
+            Renderer rend = piece.GetComponentInChildren<Renderer>();
+            if (rend != null)
+                return new Vector3(rend.bounds.center.x, worldY, rend.bounds.center.z);
+        }
+
+        // 폴백: Collider 또는 transform XZ
+        if (col != null)
+            return new Vector3(col.bounds.center.x, worldY, col.bounds.center.z);
+
+        return new Vector3(t.position.x, worldY, t.position.z);
     }
 }

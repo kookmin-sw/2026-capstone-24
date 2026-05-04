@@ -115,6 +115,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DrumHitZone
   targetPiece: {fileID: 0}
   midiNote: 43
+  panelYOffset: 0.035
   triggerCollider: {fileID: 7995302422597239088}
   allowedLayers:
     serializedVersion: 2

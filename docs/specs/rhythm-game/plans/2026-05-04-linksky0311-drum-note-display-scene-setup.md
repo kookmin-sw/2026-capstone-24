@@ -1,7 +1,7 @@
 # Drum Note Display — 씬 설정 및 프리팹 생성
 
 **Linked Spec:** [`../specs/04-drum-note-display.md`](../specs/04-drum-note-display.md)
-**Status:** `Ready`
+**Status:** `In Progress`
 
 ## Goal
 
