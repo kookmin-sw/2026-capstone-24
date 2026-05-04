@@ -1,52 +1,81 @@
 [Meta]
-title   = Test
+title   = Test (Mary Had a Little Lamb)
 songid  = test_001
 
 [Resolution]
 ticksPerQuarter = 480
 
 [Tempo]
-tick=0  bpm=120  beats=4  beatUnit=4
+tick=0  bpm=100  beats=4  beatUnit=4
 
 [Channels]
 channel=1   instrument=piano
 channel=10  instrument=drum
 
 [Track:1]
-# C4 D4 E4 F4 G4 A4 B4 C5
-tick=0     note=60  len=460  vel=90
-tick=480   note=62  len=460  vel=85
-tick=960   note=64  len=460  vel=88
-tick=1440  note=65  len=460  vel=85
-tick=1920  note=67  len=460  vel=90
-tick=2400  note=69  len=460  vel=85
-tick=2880  note=71  len=460  vel=88
-tick=3360  note=72  len=460  vel=95
+# Mary Had a Little Lamb — 100 BPM, ticksPerQuarter=480
+# 2C=C4(60) 2D=D4(62) 2E=E4(64)
+# 1박=480t  0.5박=240t  1.5박=720t  2박=960t  3박=1440t
+# ---
+# 2E-1.5, 2D-0.5, 2C-1, 2D-1, 2E-1, 2E-1, 2E-2
+tick=0      note=64  len=720   vel=90
+tick=720    note=62  len=240   vel=85
+tick=960    note=60  len=480   vel=90
+tick=1440   note=62  len=480   vel=85
+tick=1920   note=64  len=480   vel=90
+tick=2400   note=64  len=480   vel=90
+tick=2880   note=64  len=960   vel=90
+# 2D-1, 2D-1, 2D-2
+tick=3840   note=62  len=480   vel=85
+tick=4320   note=62  len=480   vel=85
+tick=4800   note=62  len=960   vel=85
+# 2E-1, 2E-1, 2E-2
+tick=5760   note=64  len=480   vel=90
+tick=6240   note=64  len=480   vel=90
+tick=6720   note=64  len=960   vel=90
+# 2E-1.5, 2D-0.5, 2C-1, 2D-1, 2E-1, 2E-1, 2E-2
+tick=7680   note=64  len=720   vel=90
+tick=8400   note=62  len=240   vel=85
+tick=8640   note=60  len=480   vel=90
+tick=9120   note=62  len=480   vel=85
+tick=9600   note=64  len=480   vel=90
+tick=10080  note=64  len=480   vel=90
+tick=10560  note=64  len=960   vel=90
+# 2D-1, 2D-1, 2E-1.5, 2D-0.5, 2C-3
+tick=11520  note=62  len=480   vel=85
+tick=12000  note=62  len=480   vel=85
+tick=12480  note=64  len=720   vel=90
+tick=13200  note=62  len=240   vel=85
+tick=13440  note=60  len=1440  vel=90
 
 [Track:10]
-# Kick(36) 1·3박, Snare(38) 2·4박
-tick=0     note=36  len=60   vel=100
-tick=480   note=38  len=60   vel=90
-tick=960   note=36  len=60   vel=100
-tick=1440  note=38  len=60   vel=90
-tick=1920  note=36  len=60   vel=100
-tick=2400  note=38  len=60   vel=90
-tick=2880  note=36  len=60   vel=100
-tick=3360  note=38  len=60   vel=90
-# HiHat(42) 8분음표
-tick=0     note=42  len=40   vel=65
-tick=240   note=42  len=40   vel=55
-tick=480   note=42  len=40   vel=65
-tick=720   note=42  len=40   vel=55
-tick=960   note=42  len=40   vel=65
-tick=1200  note=42  len=40   vel=55
-tick=1440  note=42  len=40   vel=65
-tick=1680  note=42  len=40   vel=55
-tick=1920  note=42  len=40   vel=65
-tick=2160  note=42  len=40   vel=55
-tick=2400  note=42  len=40   vel=65
-tick=2640  note=42  len=40   vel=55
-tick=2880  note=42  len=40   vel=65
-tick=3120  note=42  len=40   vel=55
-tick=3360  note=42  len=40   vel=65
-tick=3600  note=42  len=40   vel=55
+# Kick(36) 1/3박, Snare(38) 2/4박 (총 29박 = 13920 ticks)
+tick=0      note=36  len=60   vel=100
+tick=480    note=38  len=60   vel=90
+tick=960    note=36  len=60   vel=100
+tick=1440   note=38  len=60   vel=90
+tick=1920   note=36  len=60   vel=100
+tick=2400   note=38  len=60   vel=90
+tick=2880   note=36  len=60   vel=100
+tick=3360   note=38  len=60   vel=90
+tick=3840   note=36  len=60   vel=100
+tick=4320   note=38  len=60   vel=90
+tick=4800   note=36  len=60   vel=100
+tick=5280   note=38  len=60   vel=90
+tick=5760   note=36  len=60   vel=100
+tick=6240   note=38  len=60   vel=90
+tick=6720   note=36  len=60   vel=100
+tick=7200   note=38  len=60   vel=90
+tick=7680   note=36  len=60   vel=100
+tick=8160   note=38  len=60   vel=90
+tick=8640   note=36  len=60   vel=100
+tick=9120   note=38  len=60   vel=90
+tick=9600   note=36  len=60   vel=100
+tick=10080  note=38  len=60   vel=90
+tick=10560  note=36  len=60   vel=100
+tick=11040  note=38  len=60   vel=90
+tick=11520  note=36  len=60   vel=100
+tick=12000  note=38  len=60   vel=90
+tick=12480  note=36  len=60   vel=100
+tick=12960  note=38  len=60   vel=90
+tick=13440  note=36  len=60   vel=100

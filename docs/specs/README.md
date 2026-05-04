@@ -137,7 +137,7 @@ docs/specs/
 
 | Feature | Status | Sub-Specs | Plans (Done/Total) | 비고 |
 |---|---|---|---|---|
-| [rhythm-game](rhythm-game/_index.md) | Active | 6 | 5/5 | |
+| [rhythm-game](rhythm-game/_index.md) | Active | 11 | 11/13 | |
 | [hands](hands/_index.md) | Active | 2 | 1/1 | |
 | [teleport-locomotion](_archive/teleport-locomotion/_index.md) | Done | 3 | 4/4 | |
 

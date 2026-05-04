@@ -16,6 +16,12 @@ public sealed class DrumHitZone : MonoBehaviour
 
     readonly Dictionary<int, float> m_LastHitTimeByCollider = new Dictionary<int, float>();
 
+    /// <summary>
+    /// 이 히트존에 할당된 MIDI 노트 번호.
+    /// DrumNoteDisplayAdapter가 패널 배치 대상 파츠를 결정하기 위해 사용한다.
+    /// </summary>
+    public int MidiNote => midiNote;
+
     void Awake()
     {
         ResolveReferences();
