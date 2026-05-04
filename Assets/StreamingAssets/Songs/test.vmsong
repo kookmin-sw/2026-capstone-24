@@ -13,69 +13,274 @@ channel=1   instrument=piano
 channel=10  instrument=drum
 
 [Track:1]
-# Mary Had a Little Lamb — 100 BPM, ticksPerQuarter=480
-# 2C=C4(60) 2D=D4(62) 2E=E4(64)
-# 1박=480t  0.5박=240t  1.5박=720t  2박=960t  3박=1440t
-# ---
-# 2E-1.5, 2D-0.5, 2C-1, 2D-1, 2E-1, 2E-1, 2E-2
-tick=0      note=64  len=720   vel=90
-tick=720    note=62  len=240   vel=85
-tick=960    note=60  len=480   vel=90
-tick=1440   note=62  len=480   vel=85
-tick=1920   note=64  len=480   vel=90
-tick=2400   note=64  len=480   vel=90
-tick=2880   note=64  len=960   vel=90
-# 2D-1, 2D-1, 2D-2
-tick=3840   note=62  len=480   vel=85
-tick=4320   note=62  len=480   vel=85
-tick=4800   note=62  len=960   vel=85
-# 2E-1, 2E-1, 2E-2
-tick=5760   note=64  len=480   vel=90
-tick=6240   note=64  len=480   vel=90
-tick=6720   note=64  len=960   vel=90
-# 2E-1.5, 2D-0.5, 2C-1, 2D-1, 2E-1, 2E-1, 2E-2
-tick=7680   note=64  len=720   vel=90
-tick=8400   note=62  len=240   vel=85
-tick=8640   note=60  len=480   vel=90
-tick=9120   note=62  len=480   vel=85
-tick=9600   note=64  len=480   vel=90
-tick=10080  note=64  len=480   vel=90
-tick=10560  note=64  len=960   vel=90
-# 2D-1, 2D-1, 2E-1.5, 2D-0.5, 2C-3
-tick=11520  note=62  len=480   vel=85
-tick=12000  note=62  len=480   vel=85
-tick=12480  note=64  len=720   vel=90
-tick=13200  note=62  len=240   vel=85
-tick=13440  note=60  len=1440  vel=90
+# 피아노 테스트 악보 — 전 음역대 + 검은 건반 + 동시 히트(코드)
+# 100 BPM, ticksPerQuarter=480
+# 1beat=480t  8th=240t  16th=120t  1bar=1920t
+# C2=36 C3=48 C4=60 C5=72 C6=84 C7=96
+
+# ── BAR 1 (0-1919): C3 → C4 도 장음계 (8분음표) ──
+tick=0      note=48  len=200  vel=90   # C3
+tick=240    note=50  len=200  vel=85   # D3
+tick=480    note=52  len=200  vel=85   # E3
+tick=720    note=53  len=200  vel=85   # F3
+tick=960    note=55  len=200  vel=85   # G3
+tick=1200   note=57  len=200  vel=85   # A3
+tick=1440   note=59  len=200  vel=85   # B3
+tick=1680   note=60  len=200  vel=90   # C4
+
+# ── BAR 2 (1920-3839): C4 → C5 도 장음계 (8분음표) ──
+tick=1920   note=60  len=200  vel=90   # C4
+tick=2160   note=62  len=200  vel=85   # D4
+tick=2400   note=64  len=200  vel=85   # E4
+tick=2640   note=65  len=200  vel=85   # F4
+tick=2880   note=67  len=200  vel=85   # G4
+tick=3120   note=69  len=200  vel=85   # A4
+tick=3360   note=71  len=200  vel=85   # B4
+tick=3600   note=72  len=200  vel=90   # C5
+
+# ── BAR 3 (3840-5759): C5 → C6 도 장음계 (8분음표) ──
+tick=3840   note=72  len=200  vel=90   # C5
+tick=4080   note=74  len=200  vel=85   # D5
+tick=4320   note=76  len=200  vel=85   # E5
+tick=4560   note=77  len=200  vel=85   # F5
+tick=4800   note=79  len=200  vel=85   # G5
+tick=5040   note=81  len=200  vel=85   # A5
+tick=5280   note=83  len=200  vel=85   # B5
+tick=5520   note=84  len=200  vel=90   # C6
+
+# ── BAR 4 (5760-7679): 반음계 C4 → C5 (16분음표, 검은 건반 포함) ──
+tick=5760   note=60  len=120  vel=85   # C4
+tick=5880   note=61  len=120  vel=75   # C#4
+tick=6000   note=62  len=120  vel=85   # D4
+tick=6120   note=63  len=120  vel=75   # D#4
+tick=6240   note=64  len=120  vel=85   # E4
+tick=6360   note=65  len=120  vel=85   # F4
+tick=6480   note=66  len=120  vel=75   # F#4
+tick=6600   note=67  len=120  vel=85   # G4
+tick=6720   note=68  len=120  vel=75   # G#4
+tick=6840   note=69  len=120  vel=85   # A4
+tick=6960   note=70  len=120  vel=75   # A#4
+tick=7080   note=71  len=120  vel=85   # B4
+tick=7200   note=72  len=240  vel=90   # C5
+
+# ── BAR 5 (7680-9599): 옥타브 점프 C2 → C3 → C4 → C5 → C6 → C7 ──
+tick=7680   note=36  len=350  vel=90   # C2
+tick=8040   note=48  len=350  vel=90   # C3
+tick=8400   note=60  len=350  vel=90   # C4
+tick=8760   note=72  len=350  vel=90   # C5
+tick=9120   note=84  len=350  vel=90   # C6
+tick=9480   note=96  len=350  vel=90   # C7
+
+# ── BAR 6 (9600-11519): 코드 테스트 — I-IV-V-I (C장조) ──
+# C major (C4-E4-G4)
+tick=9600   note=60  len=450  vel=85   # C4
+tick=9600   note=64  len=450  vel=80   # E4  [동시]
+tick=9600   note=67  len=450  vel=80   # G4  [동시]
+# F major (F4-A4-C5)
+tick=10080  note=65  len=450  vel=85   # F4
+tick=10080  note=69  len=450  vel=80   # A4  [동시]
+tick=10080  note=72  len=450  vel=80   # C5  [동시]
+# G major (G4-B4-D5)
+tick=10560  note=67  len=450  vel=85   # G4
+tick=10560  note=71  len=450  vel=80   # B4  [동시]
+tick=10560  note=74  len=450  vel=80   # D5  [동시]
+# C major (C3-E4-G4-C5) — 넓은 보이싱
+tick=11040  note=48  len=900  vel=90   # C3
+tick=11040  note=64  len=900  vel=85   # E4  [동시]
+tick=11040  note=67  len=900  vel=85   # G4  [동시]
+tick=11040  note=72  len=900  vel=85   # C5  [동시]
+
+# ── BAR 7 (11520-13439): 아르페지오 + 코드 혼합 ──
+tick=11520  note=60  len=200  vel=85   # C4
+tick=11760  note=64  len=200  vel=85   # E4
+tick=12000  note=67  len=200  vel=85   # G4
+tick=12240  note=57  len=200  vel=85   # A3
+tick=12480  note=60  len=200  vel=85   # C4
+tick=12720  note=64  len=200  vel=85   # E4
+# F major chord
+tick=12960  note=65  len=450  vel=85   # F4
+tick=12960  note=69  len=450  vel=80   # A4  [동시]
+tick=12960  note=72  len=450  vel=80   # C5  [동시]
+# G7 chord (G4-B4-D5-F5)
+tick=13440  note=67  len=450  vel=85   # G4
+tick=13440  note=71  len=450  vel=80   # B4  [동시]
+tick=13440  note=74  len=450  vel=80   # D5  [동시]
+tick=13440  note=77  len=450  vel=75   # F5  [동시]
+
+# ── BAR 8 (13920-15839): 피날레 — 전 음역 동시 히트 + 마지막 화음 ──
+# 저음 → 고음 순차
+tick=13920  note=36  len=200  vel=90   # C2
+tick=14160  note=48  len=200  vel=90   # C3
+tick=14400  note=60  len=200  vel=90   # C4
+tick=14640  note=72  len=200  vel=90   # C5
+tick=14880  note=84  len=200  vel=90   # C6
+# 전 옥타브 동시 히트
+tick=15120  note=36  len=300  vel=90   # C2
+tick=15120  note=48  len=300  vel=90   # C3  [동시]
+tick=15120  note=60  len=300  vel=90   # C4  [동시]
+tick=15120  note=72  len=300  vel=90   # C5  [동시]
+tick=15120  note=84  len=300  vel=90   # C6  [동시]
+# 마지막 C major 화음 (넓은 보이싱, 2박)
+tick=15480  note=48  len=960  vel=90   # C3
+tick=15480  note=60  len=960  vel=90   # C4  [동시]
+tick=15480  note=64  len=960  vel=85   # E4  [동시]
+tick=15480  note=67  len=960  vel=85   # G4  [동시]
+tick=15480  note=72  len=960  vel=85   # C5  [동시]
 
 [Track:10]
-# Kick(36) 1/3박, Snare(38) 2/4박 (총 29박 = 13920 ticks)
-tick=0      note=36  len=60   vel=100
-tick=480    note=38  len=60   vel=90
-tick=960    note=36  len=60   vel=100
-tick=1440   note=38  len=60   vel=90
-tick=1920   note=36  len=60   vel=100
-tick=2400   note=38  len=60   vel=90
-tick=2880   note=36  len=60   vel=100
-tick=3360   note=38  len=60   vel=90
-tick=3840   note=36  len=60   vel=100
-tick=4320   note=38  len=60   vel=90
-tick=4800   note=36  len=60   vel=100
-tick=5280   note=38  len=60   vel=90
-tick=5760   note=36  len=60   vel=100
-tick=6240   note=38  len=60   vel=90
-tick=6720   note=36  len=60   vel=100
-tick=7200   note=38  len=60   vel=90
-tick=7680   note=36  len=60   vel=100
-tick=8160   note=38  len=60   vel=90
-tick=8640   note=36  len=60   vel=100
-tick=9120   note=38  len=60   vel=90
-tick=9600   note=36  len=60   vel=100
-tick=10080  note=38  len=60   vel=90
-tick=10560  note=36  len=60   vel=100
-tick=11040  note=38  len=60   vel=90
-tick=11520  note=36  len=60   vel=100
-tick=12000  note=38  len=60   vel=90
-tick=12480  note=36  len=60   vel=100
-tick=12960  note=38  len=60   vel=90
-tick=13440  note=36  len=60   vel=100
+# 8-bar drum test — 8개 파츠 전체 + 동시 히트 확인
+# 36=Kick  38=Snare  42=HiHat  43=FloorTom  45=MidTom  48=HighTom  49=Crash  51=Ride
+# 1beat=480t  8th=240t  16th=120t  1bar=1920t  100BPM
+
+# ── BAR 1 (0-1919): Kick + Snare + HiHat 기본 패턴 ──
+tick=0      note=36  len=60  vel=100   # Kick (beat 1)
+tick=0      note=42  len=60  vel=80    # HiHat [동시]
+tick=240    note=42  len=60  vel=65
+tick=480    note=38  len=60  vel=90    # Snare (beat 2)
+tick=480    note=42  len=60  vel=80    # HiHat [동시]
+tick=720    note=42  len=60  vel=65
+tick=960    note=36  len=60  vel=100   # Kick (beat 3)
+tick=960    note=42  len=60  vel=80    # HiHat [동시]
+tick=1200   note=42  len=60  vel=65
+tick=1440   note=38  len=60  vel=90    # Snare (beat 4)
+tick=1440   note=42  len=60  vel=80    # HiHat [동시]
+tick=1680   note=42  len=60  vel=65
+
+# ── BAR 2 (1920-3839): Kick + Snare + HiHat + Ride 3중 동시 히트 ──
+tick=1920   note=36  len=60  vel=100   # Kick
+tick=1920   note=42  len=60  vel=80    # HiHat [동시]
+tick=1920   note=51  len=60  vel=75    # Ride  [3중]
+tick=2160   note=42  len=60  vel=65
+tick=2400   note=38  len=60  vel=90    # Snare
+tick=2400   note=42  len=60  vel=80    # HiHat [동시]
+tick=2400   note=51  len=60  vel=75    # Ride  [3중]
+tick=2640   note=42  len=60  vel=65
+tick=2880   note=36  len=60  vel=100   # Kick
+tick=2880   note=42  len=60  vel=80    # HiHat [동시]
+tick=2880   note=51  len=60  vel=75    # Ride  [3중]
+tick=3120   note=42  len=60  vel=65
+tick=3360   note=38  len=60  vel=90    # Snare
+tick=3360   note=42  len=60  vel=80    # HiHat [동시]
+tick=3360   note=51  len=60  vel=75    # Ride  [3중]
+tick=3600   note=42  len=60  vel=65
+
+# ── BAR 3 (3840-5759): Crash 등장 + HighTom → MidTom → FloorTom 폭포 ──
+tick=3840   note=36  len=60  vel=100   # Kick + Crash 동시 (beat 1)
+tick=3840   note=49  len=60  vel=95    # Crash [동시]
+tick=4080   note=48  len=60  vel=85    # HighTom
+tick=4200   note=48  len=60  vel=85    # HighTom
+tick=4320   note=48  len=60  vel=80    # HighTom
+tick=4320   note=45  len=60  vel=80    # MidTom  [동시]
+tick=4440   note=45  len=60  vel=85    # MidTom
+tick=4560   note=45  len=60  vel=85    # MidTom
+tick=4560   note=43  len=60  vel=85    # FloorTom [동시]
+tick=4680   note=43  len=60  vel=90    # FloorTom
+tick=4800   note=43  len=60  vel=95    # FloorTom
+tick=5040   note=36  len=60  vel=100   # Kick
+tick=5040   note=38  len=60  vel=90    # Snare  [동시]
+tick=5280   note=43  len=60  vel=85    # FloorTom
+tick=5520   note=36  len=60  vel=100   # Kick
+
+# ── BAR 4 (5760-7679): 8개 파츠 전부 등장하는 풀 패턴 ──
+tick=5760   note=36  len=60  vel=100   # Kick
+tick=5760   note=49  len=60  vel=90    # Crash [동시]
+tick=5760   note=42  len=60  vel=80    # HiHat [3중]
+tick=5880   note=51  len=60  vel=75    # Ride
+tick=6000   note=48  len=60  vel=85    # HighTom
+tick=6120   note=38  len=60  vel=90    # Snare
+tick=6120   note=42  len=60  vel=80    # HiHat [동시]
+tick=6240   note=45  len=60  vel=85    # MidTom
+tick=6360   note=51  len=60  vel=75    # Ride
+tick=6480   note=36  len=60  vel=100   # Kick
+tick=6480   note=42  len=60  vel=80    # HiHat [동시]
+tick=6600   note=43  len=60  vel=85    # FloorTom
+tick=6720   note=38  len=60  vel=90    # Snare
+tick=6720   note=51  len=60  vel=75    # Ride  [동시]
+tick=6840   note=42  len=60  vel=65
+
+# ── BAR 5 (7680-9599): 동시 히트 집중 테스트 ──
+tick=7680   note=36  len=60  vel=100   # Kick + Snare + Crash (3중)
+tick=7680   note=38  len=60  vel=90    # [동시]
+tick=7680   note=49  len=60  vel=95    # [동시]
+tick=7920   note=42  len=60  vel=80    # HiHat
+tick=8160   note=36  len=60  vel=100   # Kick + HighTom (2중)
+tick=8160   note=48  len=60  vel=85    # [동시]
+tick=8400   note=38  len=60  vel=90    # Snare + MidTom + FloorTom (3중)
+tick=8400   note=45  len=60  vel=85    # [동시]
+tick=8400   note=43  len=60  vel=85    # [동시]
+tick=8640   note=36  len=60  vel=100   # Kick + HiHat + Ride (3중)
+tick=8640   note=42  len=60  vel=80    # [동시]
+tick=8640   note=51  len=60  vel=75    # [동시]
+tick=8880   note=42  len=60  vel=65    # HiHat
+tick=9120   note=38  len=60  vel=90    # Snare + HiHat
+tick=9120   note=42  len=60  vel=80    # [동시]
+tick=9360   note=43  len=60  vel=85    # FloorTom
+
+# ── BAR 6 (9600-11519): 16분음표 톰 롤 ──
+tick=9600   note=36  len=60  vel=100   # Kick + Crash
+tick=9600   note=49  len=60  vel=95    # [동시]
+tick=9720   note=48  len=60  vel=90    # HighTom
+tick=9840   note=48  len=60  vel=85    # HighTom
+tick=9960   note=48  len=60  vel=80    # HighTom
+tick=10080  note=45  len=60  vel=90    # MidTom
+tick=10200  note=45  len=60  vel=85    # MidTom
+tick=10320  note=45  len=60  vel=80    # MidTom
+tick=10440  note=43  len=60  vel=90    # FloorTom
+tick=10560  note=43  len=60  vel=85    # FloorTom
+tick=10680  note=43  len=60  vel=80    # FloorTom
+tick=10800  note=36  len=60  vel=100   # Kick + Snare
+tick=10800  note=38  len=60  vel=90    # [동시]
+tick=10920  note=42  len=60  vel=80    # HiHat
+tick=11040  note=36  len=60  vel=100   # Kick + HiHat
+tick=11040  note=42  len=60  vel=80    # [동시]
+tick=11160  note=38  len=60  vel=90    # Snare
+tick=11280  note=42  len=60  vel=75    # HiHat
+tick=11400  note=51  len=60  vel=75    # Ride
+
+# ── BAR 7 (11520-13439): 혼합 패턴 ──
+tick=11520  note=36  len=60  vel=100   # Kick + HiHat
+tick=11520  note=42  len=60  vel=80    # [동시]
+tick=11640  note=51  len=60  vel=75    # Ride
+tick=11760  note=48  len=60  vel=85    # HighTom
+tick=11880  note=38  len=60  vel=90    # Snare + HiHat
+tick=11880  note=42  len=60  vel=80    # [동시]
+tick=12000  note=36  len=60  vel=100   # Kick + MidTom
+tick=12000  note=45  len=60  vel=85    # [동시]
+tick=12120  note=42  len=60  vel=65    # HiHat
+tick=12240  note=38  len=60  vel=90    # Snare + Ride
+tick=12240  note=51  len=60  vel=75    # [동시]
+tick=12360  note=43  len=60  vel=85    # FloorTom
+tick=12480  note=36  len=60  vel=100   # Kick + HiHat
+tick=12480  note=42  len=60  vel=80    # [동시]
+tick=12600  note=48  len=60  vel=85    # HighTom
+tick=12720  note=38  len=60  vel=90    # Snare + Crash
+tick=12720  note=49  len=60  vel=90    # [동시]
+tick=12840  note=43  len=60  vel=85    # FloorTom
+
+# ── BAR 8 (13440-15359): 피날레 — 최대 동시 히트 ──
+tick=13440  note=36  len=60  vel=100   # Kick + Snare + Crash (3중)
+tick=13440  note=38  len=60  vel=90    # [동시]
+tick=13440  note=49  len=60  vel=100   # [동시]
+tick=13560  note=42  len=60  vel=80    # HiHat + Ride (2중)
+tick=13560  note=51  len=60  vel=75    # [동시]
+tick=13680  note=48  len=60  vel=90    # HighTom + MidTom + FloorTom (3중 톰)
+tick=13680  note=45  len=60  vel=85    # [동시]
+tick=13680  note=43  len=60  vel=85    # [동시]
+tick=13800  note=36  len=60  vel=100   # Kick
+tick=13920  note=36  len=60  vel=100   # Kick + Snare + HiHat + Ride (4중)
+tick=13920  note=38  len=60  vel=90    # [동시]
+tick=13920  note=42  len=60  vel=80    # [동시]
+tick=13920  note=51  len=60  vel=75    # [동시]
+tick=14040  note=48  len=60  vel=90    # HighTom + MidTom + FloorTom (3중 톰)
+tick=14040  note=45  len=60  vel=85    # [동시]
+tick=14040  note=43  len=60  vel=85    # [동시]
+tick=14160  note=36  len=60  vel=100   # Kick + Crash
+tick=14160  note=49  len=60  vel=100   # [동시]
+tick=14280  note=36  len=60  vel=100   # Kick + Snare + 3톰 (5중)
+tick=14280  note=38  len=60  vel=90    # [동시]
+tick=14280  note=48  len=60  vel=90    # [동시]
+tick=14280  note=45  len=60  vel=85    # [동시]
+tick=14280  note=43  len=60  vel=85    # [동시]
+tick=14400  note=36  len=60  vel=100   # 마지막 Kick + Snare + Crash
+tick=14400  note=38  len=60  vel=90    # [동시]
+tick=14400  note=49  len=60  vel=100   # [동시]

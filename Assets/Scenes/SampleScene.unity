@@ -155,6 +155,7 @@ MonoBehaviour:
   noteDisplayPanel: {fileID: 200000005}
   targetInstrument: {fileID: 1530775798}
   accompaniment: {fileID: 300000001}
+  leadInSeconds: 3
 --- !u!4 &100000003
 Transform:
   m_ObjectHideFlags: 0
@@ -278,7 +279,10 @@ MonoBehaviour:
   lookAheadSeconds: 2
   panelHeight: 600
   noteVisualPrefab: {fileID: 0}
+  whiteKeySkinPrefab: {fileID: 0}
+  blackKeySkinPrefab: {fileID: 0}
   judgmentPopup: {fileID: 428457633}
+  panelTiltDegrees: 0
 --- !u!4 &200000007
 Transform:
   m_ObjectHideFlags: 0
@@ -313,7 +317,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1181393932831831023, guid: 5d113da57d1dd5342847ea83b2ec3383, type: 3}
   m_PrefabInstance: {fileID: 2757961452950761299}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1997247676}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dc0b7437a354a5f48900fdf7aadfdca5, type: 3}
@@ -329,8 +333,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 38f6bf3d943ac7945842268c9ef1dca6, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   m_InteractionManager: {fileID: 0}
   m_Colliders: []
   m_InteractionLayers:
@@ -412,7 +416,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fac62b9698e746c5a0b1302e228c71a2, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RhythmAccompaniment
   channelBindings:
   - channel: 1
@@ -705,6 +709,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Piano
       objectReference: {fileID: 0}
+    - target: {fileID: 9058356871178726819, guid: 20c3ebc0d8a60954b9bf428c65c948ce, type: 3}
+      propertyPath: targetInstrument
+      value: 
+      objectReference: {fileID: 1530775798}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -1325,6 +1333,26 @@ PhysicsMaterial:
   m_Bounciness: 0
   m_FrictionCombine: 0
   m_BounceCombine: 0
+--- !u!1 &1997247676 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6302550580367909687, guid: 5d113da57d1dd5342847ea83b2ec3383, type: 3}
+  m_PrefabInstance: {fileID: 2757961452950761299}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1997247678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1997247676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b4573a9705d407eada504393f34bc2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RhythmGame.Runtime::DrumNoteDisplayAdapter
+  noteDisplayPanelPrefab: {fileID: 7000000004, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
+  yOffset: -0.1
+  panelTiltDegrees: 35
 --- !u!1001 &2000000000000000001
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1475,6 +1503,10 @@ PrefabInstance:
       propertyPath: m_Material
       value: 
       objectReference: {fileID: 919163888}
+    - target: {fileID: 1181393932831831023, guid: 5d113da57d1dd5342847ea83b2ec3383, type: 3}
+      propertyPath: laneConfig
+      value: 
+      objectReference: {fileID: 11400000, guid: f887c38da5cc4f35ab720e8144a4ccd1, type: 2}
     - target: {fileID: 1389948746950216113, guid: 5d113da57d1dd5342847ea83b2ec3383, type: 3}
       propertyPath: m_Material
       value: 
@@ -1571,7 +1603,10 @@ PrefabInstance:
     - {fileID: 4523561678784135695, guid: 5d113da57d1dd5342847ea83b2ec3383, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6302550580367909687, guid: 5d113da57d1dd5342847ea83b2ec3383, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1997247678}
   m_SourcePrefab: {fileID: 100100000, guid: 5d113da57d1dd5342847ea83b2ec3383, type: 3}
 --- !u!1001 &3141592653589793238
 PrefabInstance:
@@ -1752,5 +1787,4 @@ SceneRoots:
   - {fileID: 3141592653589793238}
   - {fileID: 2000000000000000001}
   - {fileID: 2000000000000000002}
-  - {fileID: 46134115}
   - {fileID: 100000003}
