@@ -32,10 +32,10 @@ public sealed class RhythmClock : IRhythmClock
 
     public event System.Action<RhythmClockState> StateChanged;
 
-    public void Start(VmSongChart chart, double leadInSeconds = 0)
+    public void Start(VmSongChart chart)
     {
         _chart = chart;
-        _pausedAccumulated = -leadInSeconds;
+        _pausedAccumulated = 0.0;
         _anchorRealTime = _provider.Now;
         SetState(RhythmClockState.Running);
     }

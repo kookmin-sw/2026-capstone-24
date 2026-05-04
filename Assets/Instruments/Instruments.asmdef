@@ -3,8 +3,7 @@
     "rootNamespace": "",
     "references": [
         "Unity.InputSystem",
-        "Hands",
-        "RhythmGame.Data"
+        "Hands"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

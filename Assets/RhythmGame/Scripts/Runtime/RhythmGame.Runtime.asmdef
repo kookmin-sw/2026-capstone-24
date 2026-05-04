@@ -4,8 +4,7 @@
     "references": [
         "RhythmGame.Data",
         "RhythmGame.Runtime.Clock",
-        "Instruments",
-        "Unity.InputSystem"
+        "Instruments"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
