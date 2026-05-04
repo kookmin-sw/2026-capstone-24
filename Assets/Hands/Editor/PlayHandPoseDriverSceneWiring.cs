@@ -6,10 +6,10 @@ static class PlayHandPoseDriverSceneWiring
 {
     const string LeftPlayHandPath = "VR Player/Camera Offset/Hands/Left/LeftPlayHand";
     const string LeftPhysicsHandPath = "VR Player/Camera Offset/Hands/Left/LeftPhysicsHand";
-    const string LeftGhostHandPath = "VR Player/Camera Offset/Hands/Left/LeftHandTrackingHandRoot/LeftHandTrackingGhostHand";
+    const string LeftGhostHandPath = "VR Player/Camera Offset/Hands/Left/LeftHandTrackingGhostHand";
     const string RightPlayHandPath = "VR Player/Camera Offset/Hands/Right/RightPlayHand";
     const string RightPhysicsHandPath = "VR Player/Camera Offset/Hands/Right/RightPhysicsHand";
-    const string RightGhostHandPath = "VR Player/Camera Offset/Hands/Right/RightHandTrackingHandRoot/RightHandTrackingGhostHand";
+    const string RightGhostHandPath = "VR Player/Camera Offset/Hands/Right/RightHandTrackingGhostHand";
 
     [MenuItem("Tools/Hands/Wire Play Hand Pose Drivers")]
     static void WirePlayHandPoseDrivers()
