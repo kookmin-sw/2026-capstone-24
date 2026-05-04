@@ -139,6 +139,7 @@ docs/specs/
 |---|---|---|---|---|
 | [rhythm-game](rhythm-game/_index.md) | Active | 6 | 5/5 | |
 | [hands](hands/_index.md) | Active | 2 | 1/1 | |
+| [session-panel](session-panel/_index.md) | Draft | 3 | 0/1 | |
 | [teleport-locomotion](_archive/teleport-locomotion/_index.md) | Done | 3 | 4/4 | |
 
 > Status 값: `Draft` / `Active` / `Done` / `Abandoned`
