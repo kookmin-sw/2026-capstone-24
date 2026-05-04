@@ -26,6 +26,10 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
     [Header("Note Prefab (optional – plain RectTransform if null)")]
     [SerializeField] NoteVisual noteVisualPrefab;
 
+    [Header("Note Skin Prefabs (optional – falls back to noteVisualPrefab then Image)")]
+    [SerializeField] NoteVisual whiteKeySkinPrefab;
+    [SerializeField] NoteVisual blackKeySkinPrefab;
+
     [Header("Judgment Popup (optional)")]
     [SerializeField] JudgmentPopup judgmentPopup;
 
@@ -272,33 +276,47 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
         // 노트 너비: 흰 건반 80%, 검은 건반 55%
         float wLane = pw / WHITE_KEY_COUNT;
         float noteW = IsWhiteKey(pn.midiNote) ? wLane * 0.80f : wLane * 0.55f;
-        float noteH = panelHeight * 0.05f;
+        float noteH = Mathf.Max(fallSpeed * pn.durationSec, 4f);  // min 4px guaranteed
+        noteH = Mathf.Min(noteH, panelHeight);                    // panel top clipping
 
         NoteVisual nv;
-        if (noteVisualPrefab != null)
+        NoteVisual skinPrefab = IsWhiteKey(pn.midiNote) ? whiteKeySkinPrefab : blackKeySkinPrefab;
+        if (skinPrefab == null) skinPrefab = noteVisualPrefab;  // fallback to generic
+
+        if (skinPrefab != null)
         {
-            nv = Instantiate(noteVisualPrefab, transform);
+            nv = Instantiate(skinPrefab, transform);
         }
         else
         {
+            // code-generated 2D Image (legacy fallback)
             var go = new GameObject("Note", typeof(RectTransform), typeof(Image));
             go.transform.SetParent(transform, false);
             go.GetComponent<Image>().color = IsWhiteKey(pn.midiNote)
-                ? new Color(0.25f, 0.90f, 0.25f, 1f)          // 흰 건반 → 밝은 초록
-                : new Color(0.10f, 0.55f, 0.10f, 1f);          // 반음 건반 → 진한 초록
+                ? new Color(0.25f, 0.90f, 0.25f, 1f)
+                : new Color(0.10f, 0.55f, 0.10f, 1f);
             nv = go.AddComponent<NoteVisual>();
         }
 
-        // anchorMin/Max = 패널 중앙 하단(0.5, 0)으로 고정하고 localPosition으로 위치 지정
-        // → NoteVisual.Update()의 transform.localPosition.y 감소와 완전히 호환됨
-        var rt        = nv.GetComponent<RectTransform>();
-        rt.anchorMin  = new Vector2(0.5f, 0f);
-        rt.anchorMax  = new Vector2(0.5f, 0f);
-        rt.pivot      = new Vector2(0.5f, 0f);
-        rt.sizeDelta  = new Vector2(noteW, noteH);
-        rt.localPosition = new Vector3(localX, localY, 0f);
+        // 2D (RectTransform) vs 3D branch
+        var rt = nv.GetComponent<RectTransform>();
+        if (rt != null)
+        {
+            // 2D UI mode (has RectTransform)
+            rt.anchorMin  = new Vector2(0.5f, 0f);
+            rt.anchorMax  = new Vector2(0.5f, 0f);
+            rt.pivot      = new Vector2(0.5f, 0f);
+            rt.sizeDelta  = new Vector2(noteW, noteH);
+            rt.localPosition = new Vector3(localX, localY, 0f);
+        }
+        else
+        {
+            // 3D object mode
+            nv.transform.localScale    = new Vector3(noteW, noteH, noteW);
+            nv.transform.localPosition = new Vector3(localX, localY + noteH * 0.5f, 0f);
+        }
 
-        float noteLifetime = startY / fallSpeed + 0.5f;
+        float noteLifetime = (startY + noteH) / fallSpeed + 0.5f;
         nv.Init(fallSpeed, noteLifetime);
         activeNotes.Add(nv);
     }

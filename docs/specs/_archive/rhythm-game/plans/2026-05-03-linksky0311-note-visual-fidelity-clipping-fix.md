@@ -2,7 +2,7 @@
 
 **Linked Spec:** [`../specs/02-note-visual-fidelity.md`](../specs/02-note-visual-fidelity.md)
 **Caused By:** [`2026-05-03-linksky0311-note-visual-fidelity-height-and-skin.md`](./2026-05-03-linksky0311-note-visual-fidelity-height-and-skin.md)
-**Status:** `Ready`
+**Status:** `Done`
 
 ## Goal
 
@@ -84,5 +84,8 @@ _해당 없음 — 순수 로직 변경_
 - 애니메이션·파티클 효과.
 
 ## Notes
+
+- 자동 reflect 매칭 실패 — 선행 plan `2026-05-03-linksky0311-note-visual-fidelity-height-and-skin.md`의 per_plan_history 항목이 orchestrator-state.json에 없음 (검증 실패로 commit 전 중단됨). 해당 plan의 manual-hard AC 재검증은 사용자가 수동으로 처리 필요.
+- AC 3, 4 (whiteKeySkinPrefab / 런타임 교체): skip-and-continue — 커스텀 prefab 없어 테스트 불가. 이후 prefab 생성 시 별도 검증 필요.
 
 ## Handoff
