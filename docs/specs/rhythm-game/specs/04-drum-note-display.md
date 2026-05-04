@@ -54,7 +54,7 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| _아직 없음_ | — | — | — |
+| 2026-05-04 | Drum Note Display — 씬 설정 및 프리팹 생성 | Ready | [2026-05-04-linksky0311-drum-note-display-scene-setup.md](../plans/2026-05-04-linksky0311-drum-note-display-scene-setup.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/plan-new` 사용. 파일명은 날짜·작성자·slug 기반.
