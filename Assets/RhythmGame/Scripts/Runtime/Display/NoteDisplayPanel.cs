@@ -33,6 +33,9 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
     [Header("Judgment Popup (optional)")]
     [SerializeField] JudgmentPopup judgmentPopup;
 
+    [Header("Billboard Tilt (0 = 수직 고정, >0 = 카메라 방향 + 기울기)")]
+    [SerializeField, Range(0f, 70f)] float panelTiltDegrees = 0f;
+
     // ─── Runtime ─────────────────────────────────────────────────────────────
     struct PendingNote
     {
@@ -56,6 +59,13 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
         _panelRt = GetComponent<RectTransform>();
         if (GetComponent<RectMask2D>() == null)
             gameObject.AddComponent<RectMask2D>();
+
+        if (panelTiltDegrees > 0f)
+        {
+            var billboard = GetComponent<BillboardUI>();
+            if (billboard == null) billboard = gameObject.AddComponent<BillboardUI>();
+            billboard.tiltDegrees = panelTiltDegrees;
+        }
     }
 
     // ─── 건반 분류 유틸 ──────────────────────────────────────────────────────
@@ -108,6 +118,9 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
     // ─── Public API ──────────────────────────────────────────────────────────
 
     public float LookAheadSeconds => lookAheadSeconds;
+
+    /// <summary>laneConfig가 정확히 1개 노트일 때 단일 레인 모드(드럼 파츠 패널 등).</summary>
+    bool IsSingleLane => laneConfig != null && laneConfig.LaneCount == 1;
 
     /// <summary>런타임에 laneConfig를 교체한다. Show() 호출 전에 사용해야 한다.</summary>
     public void SetLaneConfig(InstrumentLaneConfig config)
@@ -231,7 +244,33 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
         for (int c = transform.childCount - 1; c >= 0; c--)
             Destroy(transform.GetChild(c).gameObject);
 
-        // ── 검은 배경 (최하위 레이어) ──
+        // ── 단일 레인 모드(드럼 파츠 패널): 좌우 경계선 + 판정선만 구성 ──
+        if (IsSingleLane)
+        {
+            // 판정선 (하단)
+            var jlGo   = MakeUI("JudgeLine", transform);
+            var jlRect = jlGo.GetComponent<RectTransform>();
+            jlRect.anchorMin = new Vector2(0f, 0f);
+            jlRect.anchorMax = new Vector2(1f, 0f);
+            jlRect.pivot     = new Vector2(0.5f, 0f);
+            jlRect.offsetMin = Vector2.zero;
+            jlRect.offsetMax = new Vector2(0f, 4f);
+            jlGo.AddComponent<Image>().color = new Color(1f, 1f, 0f, 0.9f);
+
+            // 중앙 가이드선 (노트 낙하 기준)
+            var centerDiv  = MakeUI("LaneDivC", transform);
+            var centerRect = centerDiv.GetComponent<RectTransform>();
+            centerRect.anchorMin = new Vector2(0.5f, 0f);
+            centerRect.anchorMax = new Vector2(0.5f, 1f);
+            centerRect.pivot     = new Vector2(0.5f, 0f);
+            centerRect.offsetMin = Vector2.zero;
+            centerRect.offsetMax = new Vector2(1f, 0f);
+            centerDiv.AddComponent<Image>().color = new Color(1f, 1f, 1f, 0.6f);
+
+            return;
+        }
+
+        // ── 피아노 모드: 검은 배경 + 판정선 + 88건반 구분선 ──
         var bg = MakeUI("Background", transform);
         var bgRect = bg.GetComponent<RectTransform>();
         bgRect.anchorMin = Vector2.zero;
@@ -241,14 +280,14 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
         bg.AddComponent<Image>().color = new Color(0f, 0f, 0f, 0f); // 투명
 
         // ── 판정선 (패널 하단) ──
-        var jlGo   = MakeUI("JudgeLine", transform);
-        var jlRect = jlGo.GetComponent<RectTransform>();
-        jlRect.anchorMin = new Vector2(0f, 0f);
-        jlRect.anchorMax = new Vector2(1f, 0f);
-        jlRect.pivot     = new Vector2(0.5f, 0f);
-        jlRect.offsetMin = Vector2.zero;
-        jlRect.offsetMax = new Vector2(0f, 4f); // 4px 높이
-        jlGo.AddComponent<Image>().color = new Color(1f, 1f, 0f, 0.8f);
+        var pjlGo   = MakeUI("JudgeLine", transform);
+        var pjlRect = pjlGo.GetComponent<RectTransform>();
+        pjlRect.anchorMin = new Vector2(0f, 0f);
+        pjlRect.anchorMax = new Vector2(1f, 0f);
+        pjlRect.pivot     = new Vector2(0.5f, 0f);
+        pjlRect.offsetMin = Vector2.zero;
+        pjlRect.offsetMax = new Vector2(0f, 4f);
+        pjlGo.AddComponent<Image>().color = new Color(1f, 1f, 0f, 0.8f);
 
         // ── 세로 구분선: 흰 건반 경계 (0 ~ WHITE_KEY_COUNT = 53개) ──
         // 피아노 Y=180° 반전 → normX가 클수록 화면 왼쪽
@@ -295,15 +334,23 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
         Rect  pr = _panelRt.rect;
         float pw = pr.width  > 1f ? pr.width  : 1326f;
 
-        // Y=180 반전 포함 canvasNormX → 패널 로컬 X
-        float normX       = NoteToNormalizedX(pn.midiNote);
-        float canvasNormX = 1f - normX;
-        float localX      = pr.x + canvasNormX * pw;          // 패널 내 X (피봇 보정)
-        float localY      = pr.y + startY;                     // 패널 하단 + startY
-
-        // 노트 너비: 흰 건반 80%, 검은 건반 55%
-        float wLane = pw / WHITE_KEY_COUNT;
-        float noteW = IsWhiteKey(pn.midiNote) ? wLane * 0.80f : wLane * 0.55f;
+        float localX, noteW;
+        if (IsSingleLane)
+        {
+            // 단일 레인 모드: 중앙 배치, 패널 폭의 80%
+            localX = pr.x + pw * 0.5f;
+            noteW  = pw * 0.80f;
+        }
+        else
+        {
+            // 피아노 모드: 건반 위치 기반 X
+            float normX       = NoteToNormalizedX(pn.midiNote);
+            float canvasNormX = 1f - normX;
+            localX = pr.x + canvasNormX * pw;
+            float wLane = pw / WHITE_KEY_COUNT;
+            noteW = IsWhiteKey(pn.midiNote) ? wLane * 0.80f : wLane * 0.55f;
+        }
+        float localY = pr.y + startY;                          // 패널 하단 + startY
         float noteH = Mathf.Max(fallSpeed * pn.durationSec, 4f);  // min 4px guaranteed
         noteH = Mathf.Min(noteH, panelHeight);                    // panel top clipping
 
