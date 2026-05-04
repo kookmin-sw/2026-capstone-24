@@ -6,7 +6,9 @@ using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
 
 /// <summary>
 /// DrumKitAnchor scene root에 부착.
-/// selectExited → stick attach, locomotionStarted → stick detach.
+/// selectExited → pending 플래그만 설정. locomotionStarted가 pending 윈도우 안에 fire되면 stick attach,
+/// 윈도우 밖에서 fire되면 (anchor 외부로 이동) stick detach.
+/// pending 우회는 SendTeleportRequest가 silent fail해도 stick이 잘못 attach되지 않도록 막는다.
 /// ARD 01: anchor 자체-컴포넌트로 신호 발행.
 /// ARD 02: PlayHandPoseDriver.PushSourceOverride / PopSourceOverride로 grip override 슬롯 점유.
 /// ARD 03: Instantiate / Destroy 모델.
@@ -24,8 +26,10 @@ public sealed class DrumKitStickAnchor : MonoBehaviour
     [SerializeField] PlayHandPoseDriver leftPlayHandDriver;
     [SerializeField] PlayHandPoseDriver rightPlayHandDriver;
 
+    const int k_PendingAttachWindowFrames = 2;
+
     bool m_IsAttached;
-    int m_AttachFrame;
+    int m_PendingAttachFrame = -1;
     GameObject m_LeftStickInstance;
     GameObject m_RightStickInstance;
 
@@ -54,31 +58,34 @@ public sealed class DrumKitStickAnchor : MonoBehaviour
 
     void OnAnchorSelectExited(SelectExitEventArgs args)
     {
-        // 이미 attach 상태면 재선택 방어.
-        if (m_IsAttached)
+        // cancel exit는 XRI 측에서 SendTeleportRequest를 건너뛰므로 (BaseTeleportationInteractable.OnSelectExited
+        // line 418), 본 핸들러도 pending을 설정하지 않는다.
+        if (args.isCanceled)
             return;
 
+        // 실제 attach는 locomotionStarted가 pending 윈도우 안에 fire될 때 수행된다.
+        // SendTeleportRequest가 silent fail (ray drift 등)하는 케이스에서는 locomotionStarted가 fire되지 않아
+        // pending이 자연 expire → stick attach가 일어나지 않는다.
+        m_PendingAttachFrame = Time.frameCount;
+    }
+
+    void AttachSticks()
+    {
         if (leftStickPrefab == null || rightStickPrefab == null)
             return;
 
-        // Left stick instantiate
         m_LeftStickInstance = Instantiate(leftStickPrefab);
         if (leftGhostWristSource != null)
             m_LeftStickInstance.transform.SetPositionAndRotation(leftGhostWristSource.position, leftGhostWristSource.rotation);
 
-        // Right stick instantiate
         m_RightStickInstance = Instantiate(rightStickPrefab);
         if (rightGhostWristSource != null)
             m_RightStickInstance.transform.SetPositionAndRotation(rightGhostWristSource.position, rightGhostWristSource.rotation);
 
-        // Left: bind follower + push source override
         BindStickAndPushOverride(m_LeftStickInstance, leftGhostWristSource, leftPlayHandDriver, "L_Wrist");
-
-        // Right: bind follower + push source override
         BindStickAndPushOverride(m_RightStickInstance, rightGhostWristSource, rightPlayHandDriver, "R_Wrist");
 
         m_IsAttached = true;
-        m_AttachFrame = Time.frameCount;
     }
 
     void BindStickAndPushOverride(GameObject stickInstance, Transform ghostWristSource, PlayHandPoseDriver driver, string wristChildName)
@@ -106,15 +113,27 @@ public sealed class DrumKitStickAnchor : MonoBehaviour
 
     void OnLocomotionStarted(LocomotionProvider _)
     {
-        if (!m_IsAttached)
-            return;
-
-        // frame guard: attach와 동일 텔레포트의 locomotionStarted (Frame N 또는 N+1) 무시.
         var frame = Time.frameCount;
-        if (frame == m_AttachFrame || frame == m_AttachFrame + 1)
-            return;
+        var withinPendingWindow =
+            m_PendingAttachFrame >= 0 &&
+            frame - m_PendingAttachFrame <= k_PendingAttachWindowFrames;
 
-        Detach();
+        if (withinPendingWindow)
+        {
+            // 본 anchor로 가는 텔레포트가 실제 발동됨.
+            m_PendingAttachFrame = -1;
+
+            // 같은 anchor 재텔레포트면 no-op.
+            if (m_IsAttached)
+                return;
+
+            AttachSticks();
+            return;
+        }
+
+        // pending이 아니면 anchor 외부로 이동 — 기존 detach 경로.
+        if (m_IsAttached)
+            Detach();
     }
 
     void Detach()
