@@ -30,7 +30,7 @@ orchestrator(`/spec-build`)가 정확히 다음 3개만 전달한다. 메인 세
 
 1. **AC 라벨 부착.** plan의 `## Acceptance Criteria` 섹션 모든 `- [ ] ...` 항목이 `[auto-hard]` / `[auto-soft]` / `[manual-hard]` 중 하나를 인라인 코드로 갖는지. 라벨 미부여 1건이라도 fail.
 2. **AC 검증 가능성.** 각 AC가 모호 표현 없이 *명확히 검증 가능한* 형태인지. "잘 동작한다", "성능이 충분하다" 같은 측정 불가 표현이 있으면 fail.
-3. **Verified Structural Assumptions 채움.** plan에 `## Verified Structural Assumptions` 섹션이 존재하고, 비어 있지 않거나 `_해당 없음 — 순수 로직 변경_` 같은 명시 표기가 있는지. 각 항목에 출처(예: `MCP <tool> <action>`, `Read <경로>`)가 명시됐는지.
+3. **Verified Structural Assumptions 채움.** plan에 `## Verified Structural Assumptions` 섹션이 존재하고, 비어 있지 않거나 `_해당 없음 — 순수 로직 변경_` 같은 명시 표기가 있는지. 각 항목에 출처(예: `unity-scene-reader`, `Read <경로>`)가 명시됐는지.
 4. **Spec What 정합 (Coverage Matrix).** Linked Spec의 `## What` 섹션에서 모든 항목을 enumerate해, 각 What 항목별로 "plan의 Approach·Deliverables가 적용된 결과로 이 What이 만족되는가"를 pass/partial/fail 3분류로 판정한다.
    - **pass**: plan 본문(Approach·Verified Structural Assumptions·AC) 안에 그 What을 만족시키는 메커니즘이 박제되어 있고, AC가 그 만족을 검증하는 항목을 갖고 있다.
    - **partial**: 메커니즘은 박제됐으나 AC 검증이 누락됐거나, AC는 있으나 메커니즘 박제가 모호하다.
