@@ -119,6 +119,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!4 &45021259 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5274399653974701141, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
+  m_PrefabInstance: {fileID: 7187747401014242035}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &46134113
 GameObject:
   m_ObjectHideFlags: 0
@@ -193,6 +198,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc0b7437a354a5f48900fdf7aadfdca5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DrumKit
+--- !u!4 &256669989 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 811324780445496628, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
+  m_PrefabInstance: {fileID: 7187747401014242035}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &281270978
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -948,11 +958,11 @@ PrefabInstance:
     - target: {fileID: 3275038625828609090, guid: 5d113da57d1dd5342847ea83b2ec3383, type: 3}
       propertyPath: leftGhostWristSource
       value: 
-      objectReference: {fileID: 7187747401014242043}
+      objectReference: {fileID: 45021259}
     - target: {fileID: 3275038625828609090, guid: 5d113da57d1dd5342847ea83b2ec3383, type: 3}
       propertyPath: rightGhostWristSource
       value: 
-      objectReference: {fileID: 7187747401014242042}
+      objectReference: {fileID: 256669989}
     - target: {fileID: 4900272252746847565, guid: 5d113da57d1dd5342847ea83b2ec3383, type: 3}
       propertyPath: m_Material
       value: 
@@ -1162,22 +1172,22 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
 --- !u!4 &7187747401014242036 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 5282249856627015518, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
+  m_CorrespondingSourceObject: {fileID: 6876756374393558649, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
   m_PrefabInstance: {fileID: 7187747401014242035}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &7187747401014242037 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 3872540163036783424, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
+  m_CorrespondingSourceObject: {fileID: 2566895641204640359, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
   m_PrefabInstance: {fileID: 7187747401014242035}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &7187747401014242038 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 2976319809083046861, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
+  m_CorrespondingSourceObject: {fileID: 2916725535348638774, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
   m_PrefabInstance: {fileID: 7187747401014242035}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &7187747401014242039 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 6052689650612780148, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
+  m_CorrespondingSourceObject: {fileID: 5965915286701540239, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
   m_PrefabInstance: {fileID: 7187747401014242035}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &7187747401014242040 stripped
@@ -1202,16 +1212,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b8c6ba1f6c347b0a4d912e3c5f7ab21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayHandPoseDriver
---- !u!4 &7187747401014242042 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2029781540904023521, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
-  m_PrefabInstance: {fileID: 7187747401014242035}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &7187747401014242043 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1529978669613951316, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
-  m_PrefabInstance: {fileID: 7187747401014242035}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
