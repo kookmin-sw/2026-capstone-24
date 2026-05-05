@@ -25,6 +25,14 @@ public sealed class AnchoredStickGhostFollower : MonoBehaviour
     Matrix4x4 m_WristLocalToRoot;
     bool m_HasWristCache;
 
+    // ghost wrist 이동량으로 계산한 attach 중 스틱 속도.
+    // DrumHitZone이 kinematic Rigidbody 대신 이 값으로 hit 속도를 판정한다.
+    Vector3 m_Velocity;
+    Vector3 m_PrevGhostPos;
+    bool m_HasPrevGhostPos;
+
+    public Vector3 Velocity => m_IsBound ? m_Velocity : Vector3.zero;
+
     /// <summary>
     /// anchor 컴포넌트가 Instantiate 직후 호출.
     /// </summary>
@@ -53,6 +61,9 @@ public sealed class AnchoredStickGhostFollower : MonoBehaviour
         if (rb != null)
             rb.isKinematic = true;
 
+        m_HasPrevGhostPos = false;
+        m_Velocity = Vector3.zero;
+
         // XRGrabInteractable을 비활성화해 grip/trigger로 떼어지지 않게 한다.
         var grab = GetComponent<XRGrabInteractable>();
         if (grab != null)
@@ -67,6 +78,27 @@ public sealed class AnchoredStickGhostFollower : MonoBehaviour
     void OnDisable()
     {
         Application.onBeforeRender -= OnBeforeRender;
+        m_HasPrevGhostPos = false;
+        m_Velocity = Vector3.zero;
+    }
+
+    void FixedUpdate()
+    {
+        if (!m_IsBound || m_GhostWristSource == null)
+            return;
+
+        Vector3 current = m_GhostWristSource.position;
+        if (!m_HasPrevGhostPos)
+        {
+            m_PrevGhostPos = current;
+            m_HasPrevGhostPos = true;
+            m_Velocity = Vector3.zero;
+            return;
+        }
+
+        float dt = Time.fixedDeltaTime;
+        m_Velocity = dt > 0f ? (current - m_PrevGhostPos) / dt : Vector3.zero;
+        m_PrevGhostPos = current;
     }
 
     void LateUpdate()
