@@ -15939,6 +15939,7 @@ GameObject:
   - component: {fileID: 7100990362155429990}
   - component: {fileID: 6658207107864551913}
   - component: {fileID: 1730288064487381645}
+  - component: {fileID: 6713634880827034657}
   m_Layer: 0
   m_Name: InstrumentAnchor
   m_TagString: Untagged
@@ -16066,6 +16067,24 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_TeleportAnchorTransform: {fileID: 7100990362155429990}
+--- !u!114 &6713634880827034657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8465825593271265159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d98b1a763f0d0644bd6c04fbf197c74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Instruments::InstrumentTeleportColliderBinder
+  searchRoot: {fileID: 0}
+  includeInactive: 0
+  excludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  excludeTriggers: 0
 --- !u!1 &8471274803557382121
 GameObject:
   m_ObjectHideFlags: 0

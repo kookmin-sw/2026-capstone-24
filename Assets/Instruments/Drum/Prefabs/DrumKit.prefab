@@ -87,6 +87,7 @@ GameObject:
   - component: {fileID: 2123342954557586726}
   - component: {fileID: 908260681381169209}
   - component: {fileID: 3275038625828609090}
+  - component: {fileID: 3887742320122833032}
   m_Layer: 0
   m_Name: InstrumentAnchor
   m_TagString: Untagged
@@ -232,6 +233,24 @@ MonoBehaviour:
   rightGhostWristSource: {fileID: 0}
   leftPlayHandDriver: {fileID: 0}
   rightPlayHandDriver: {fileID: 0}
+--- !u!114 &3887742320122833032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3244876639285643126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d98b1a763f0d0644bd6c04fbf197c74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Instruments::InstrumentTeleportColliderBinder
+  searchRoot: {fileID: 0}
+  includeInactive: 0
+  excludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  excludeTriggers: 0
 --- !u!1 &6302550580367909687
 GameObject:
   m_ObjectHideFlags: 0
