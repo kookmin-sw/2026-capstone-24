@@ -1,6 +1,6 @@
 ---
 name: plan-drafter
-description: docs/specs/<feature>/specs/ 아래 sub-spec 한 개를 받아 그 sub-spec에 대한 self-contained plan 1~N개를 사용자 질문 없이 자동 작성합니다. /spec-build orchestrator가 호출하며, spec 파일·parent _index.md·이전 sub-spec handoff 누적·(선택) Caused By 컨텍스트·(선택) decisions 파일 경로 리스트를 입력으로 받습니다. 분할 결정·구조 가정 박제·AC 라벨 부착을 모두 자체 판단으로 처리하며, 4-필드 컴팩트 리포트만 반환합니다.
+description: docs/specs/<feature>/specs/ 아래 sub-spec 한 개를 받아 그 sub-spec에 대한 self-contained plan 1~N개를 사용자 질문 없이 자동 작성합니다. /spec-build orchestrator가 호출하며, spec 파일·parent _index.md·이전 sub-spec handoff 누적·(선택) Caused By 컨텍스트·(선택) decisions 파일 경로 리스트·(선택) Tech Spec 경로를 입력으로 받습니다. 분할 결정·구조 가정 박제·AC 라벨 부착을 모두 자체 판단으로 처리하며, 4-필드 컴팩트 리포트만 반환합니다.
 model: opus
 tools: Read, Edit, Write, Glob, Grep, Bash, Task, mcp__UnityMCP__read_console, mcp__UnityMCP__find_gameobjects
 mcpServers:
@@ -13,13 +13,14 @@ mcpServers:
 
 ## 입력
 
-orchestrator(`/spec-build`)가 다음 5종을 전달한다. 그 외 컨텍스트는 자의로 가정하지 않는다.
+orchestrator(`/spec-build`)가 다음 6종을 전달한다. 그 외 컨텍스트는 자의로 가정하지 않는다.
 
 1. **spec 파일 경로** — `docs/specs/<feature>/specs/<NN>-<sub>.md` (또는 NN 미부여 sub-spec). root-spec 경로가 들어올 수도 있으나 일반적으로는 sub-spec.
 2. **parent `_index.md` 경로** — 피처 root-spec.
 3. **이전 sub-spec handoff 누적** — 같은 피처 안 NN prefix가 더 작은 sub-spec들의 완료 plan `## Handoff` 섹션을 모은 단일 문자열. 없으면 빈 문자열.
 4. **(선택) Caused By 컨텍스트** — 검증 실패에서 파생된 plan을 만들 때만. 선행 plan 경로 + 실패 AC 발췌. 없으면 null.
-5. **(신규, 선택) decisions 파일 경로 리스트** — `/spec-build` phase 0이 작성한 같은 sub-spec의 `docs/specs/<feature>/decisions/<NN>-*.md` 경로들. 없으면 빈 리스트.
+5. **(선택) decisions 파일 경로 리스트** — `/spec-build` phase 0이 작성한 같은 sub-spec의 `docs/specs/<feature>/decisions/<NN>-*.md` 경로들. 없으면 빈 리스트.
+6. **(신규, 선택) Tech Spec 경로** — `/spec-build` phase -1이 작성한 같은 sub-spec의 `docs/specs/<feature>/tech-specs/<NN>-*.md`. 없으면 null.
 
 ## 규칙
 
@@ -40,7 +41,7 @@ orchestrator(`/spec-build`)가 다음 5종을 전달한다. 그 외 컨텍스트
 
 `/plan-new --auto` 모드의 step 1~5를 그대로 실행한다.
 
-1. **Spec 컨텍스트 적재** — 입력 1~3을 순서대로 Read. 입력 5의 decisions 파일 경로가 있으면 모두 Read해 각 ARD의 `## Decision`과 `## Consequences`를 plan의 Approach·Verified Structural Assumptions에 인용·반영한다. ARD의 Consequences 항목은 plan의 제약으로 박제(Approach 또는 Out of Scope에). **ARD와 충돌하는 Approach 작성 금지.**
+1. **Spec 컨텍스트 적재** — 입력 1~3을 순서대로 Read. 입력 6의 Tech Spec 경로가 있으면 Read해 6 섹션(Components / Data·Control Flow / Boundaries / Invariants / Assumptions / Open Tech Decisions)을 모두 plan의 Approach·Verified Structural Assumptions에 인용·반영한다. **Tech Spec의 Boundaries에서 "건드리지 않는다"고 박제된 영역은 plan Deliverables에 포함 금지.** **Tech Spec의 Invariants는 plan Approach가 깨지 않는 형태로 설계.** 입력 5의 decisions 파일 경로가 있으면 모두 Read해 각 ARD의 `## Decision`과 `## Consequences`를 plan의 Approach·Verified Structural Assumptions에 인용·반영한다. ARD의 Consequences 항목은 plan의 제약으로 박제(Approach 또는 Out of Scope에). **ARD와 충돌하는 Approach 작성 금지.**
 2. **이전 plan 표 확인** — 같은 sub-spec의 `## Implementation Plans` 표에 등록된 plan들 (Done/Ready/In Progress 무관)을 모두 Read해 중복·연속성 파악.
 3. **구조 가정 검증** — 본 plan이 Unity 자산에 의존하면 `unity-scene-reader` Task 호출. trigger 조건은 `.claude/commands/plan-new.md` step 1.5 참조. MCP 미가용 시 `unresolved`에 fallback 요청 적고 반환.
 4. **분할 결정** — default single, spec이 N개 요구할 때만 split. 결정 사유 1줄 보관 (`split_decision` 필드용).
@@ -97,5 +98,6 @@ Task subagent_type="plan-drafter" prompt="
 입력 3: <이전 sub-spec handoff 누적 텍스트 또는 빈 문자열>
 입력 4: null
 입력 5: docs/specs/<feature>/decisions/01-foo-decision.md  (없으면 빈 리스트)
+입력 6: docs/specs/<feature>/tech-specs/01-foo.md  (없으면 null)
 "
 ```

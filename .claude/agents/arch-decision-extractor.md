@@ -16,11 +16,12 @@ sub-spec 한 개를 받아 그 spec에서 **사용자 입력이 필요한 설계
 
 ## 입력
 
-/spec-build phase 0이 다음 3종만 전달한다.
+/spec-build phase 0이 다음 4종만 전달한다.
 
 1. **sub-spec 경로** — `docs/specs/<feature>/specs/<NN>-<sub>.md`
 2. **parent `_index.md` 경로** — 피처 root-spec
 3. **기존 decisions 누적** — 같은 feature의 `decisions/<NN>-*.md` 파일 내용 합본. 없으면 빈 문자열.
+4. **(선택) Tech Spec 경로** — phase -1에서 작성된 `docs/specs/<feature>/tech-specs/<NN>-*.md`. 없으면 null.
 
 ## 규칙
 
@@ -34,23 +35,25 @@ sub-spec 한 개를 받아 그 spec에서 **사용자 입력이 필요한 설계
 
 1. **sub-spec + _index.md 읽기** — 입력 1·2를 Read.
 2. **기존 decisions 읽기** — 입력 3이 있으면 이미 결정된 항목을 파악해 중복 후보 생성 방지.
-3. **컴포넌트·시스템·자산 추출** — sub-spec의 What/Behavior 본문에서 언급된 컴포넌트명·스크립트명·자산 경로를 grep으로 추출.
-4. **관련 소스 파일 Read** — 추출된 후보 중 `Assets/` 경로로 존재하는 파일 Read. 없으면 Glob으로 탐색.
-5. **결정 후보 식별** — 다음 4개 휴리스틱으로 "사용자 결정이 필요한 후보" 판별:
+3. **(신규) Tech Spec 읽기** — 입력 4가 채워져 있으면 Read. `## Open Tech Decisions` 항목을 후보 시드로 우선 사용한다 (5단계 휴리스틱보다 우선). Tech Spec의 `## Components`·`## Data / Control Flow`·`## Boundaries`·`## Invariants`·`## Assumptions`는 후보 작성 시 context 박제에 인용한다. Tech Spec과 충돌하는 후보(예: Boundaries에서 "건드리지 않는다"고 박제된 영역을 손대는 옵션)는 추출하지 않는다.
+4. **컴포넌트·시스템·자산 추출** — sub-spec의 What/Behavior 본문에서 언급된 컴포넌트명·스크립트명·자산 경로를 grep으로 추출.
+5. **관련 소스 파일 Read** — 추출된 후보 중 `Assets/` 경로로 존재하는 파일 Read. 없으면 Glob으로 탐색.
+6. **결정 후보 식별** — Tech Spec이 있으면 그 `## Open Tech Decisions` 항목을 후보로 1:1 변환 (각 항목 = ARD 후보 1건). Tech Spec이 없거나 부족하면 다음 5개 휴리스틱으로 보강:
    - **외부 컴포넌트 public API 호출 전략**: plan에서 API 호출 strategy(reparent vs code-driven follow vs proxy 등) 결정 필요한가.
    - **Unity 직렬화 자산 수정 경로**: plan에서 MCP vs propertyPath Edit override 결정 필요한가.
    - **frame-level transform sync / parent-child 관계 변경 / physics integration 변경**: 실행 순서·cycle 회피 전략 결정 필요한가.
    - **enum/Flags 필드 신규 셋업**: 의도 값 결정 필요한가.
    - **Spec What 만족 메커니즘 분기**: sub-spec의 What/Behavior 항목 중 *물리/시스템 거동*에 의존하는 항목이 있고(예: "표면에서 멈춤", "동시에 발생", "통과 안 함"), 그 항목을 만족시킬 수 있는 후보 메커니즘이 2개 이상 존재하며, 후보별로 spec의 What을 만족시킬 수 있는 능력이 다르면 결정 후보로 추출한다.
-6. **후보별 결정 요청 작성** — 각 후보에 대해 title·context·options·recommended 4항목 구성. **recommended 결정 룰:** `spec_what_coverage` 전부 "만족"인 옵션이 있으면 그 옵션을 추천한다. 없으면 "만족 못 함" 항목이 가장 적은 옵션을 추천한다. 동점이면 "부분 만족" 항목이 더 적은 옵션을 우선한다. 이유를 `recommended` 필드 옆에 한 줄로 명시한다.
-7. **컴팩트 리포트 반환.**
+7. **후보별 결정 요청 작성** — 각 후보에 대해 title·context·options·recommended 4항목 구성. Tech Spec에서 도출된 후보는 추가로 `from_tech_spec` 필드에 출처(`<tech-spec-path> §Open Tech Decisions #N`)를 박제한다. **recommended 결정 룰:** `spec_what_coverage` 전부 "만족"인 옵션이 있으면 그 옵션을 추천한다. 없으면 "만족 못 함" 항목이 가장 적은 옵션을 추천한다. 동점이면 "부분 만족" 항목이 더 적은 옵션을 우선한다. 이유를 `recommended` 필드 옆에 한 줄로 명시한다.
+8. **컴팩트 리포트 반환.**
 
 ## 반환 형식
 
 ```
 ## decisions_to_resolve
 - title: <한 문장>
-  context: <왜 이 결정이 필요한가. 한 단락.>
+  from_tech_spec: <tech-specs/<NN>-*.md §Open Tech Decisions #N> (또는 _없음 — 휴리스틱에서 도출_)
+  context: <왜 이 결정이 필요한가. 한 단락. Tech Spec이 있으면 그 Components/Boundaries/Invariants 인용.>
   options:
     - label: <짧은 라벨>
       spec_what_coverage:

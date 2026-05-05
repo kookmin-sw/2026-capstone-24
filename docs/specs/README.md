@@ -11,17 +11,22 @@ docs/specs/
 ├── _templates/                     # 새 spec/plan 작성 시 베이스
 │   ├── root-spec.md                # 큰 피처의 _index.md 템플릿
 │   ├── sub-spec.md                 # 하위 spec 템플릿
+│   ├── tech-spec.md                # Tech Spec 템플릿 (시스템 설계 윤곽)
+│   ├── decision.md                 # Architecture Decision Record (ARD) 템플릿
 │   └── plan.md                     # 구현 plan 템플릿
 ├── _archive/                       # 완료된 feature 전체 보관 (feature 단위 이동)
 │   └── <feature-kebab>/
 │       ├── _index.md               # 루트 spec (이동됨)
 │       ├── specs/                  # 하위 spec 전체 (이동됨)
+│       ├── tech-specs/             # Tech Spec 전체 (이동됨, sub-spec과 1:1 대응되는 항목만 존재)
 │       ├── decisions/              # ARD 전체 (이동됨, drum-stick부터 포함)
 │       └── plans/                  # 구현 plan 전체 (plan Done 시점에 먼저 이동됨)
 └── <feature-kebab>/                # 큰 피처 = 폴더 하나
     ├── _index.md                   # 루트 spec (What/Why + 하위 spec 링크)
     ├── specs/
     │   └── <NN>-<sub-name>.md      # 하위 spec (NN: 구현 순서 zero-pad 2자리)
+    ├── tech-specs/
+    │   └── <NN>-<title>.md         # Tech Spec — /spec-build phase -1 (Tech Spec gate) 또는 /tech-spec 수동 작성. sub-spec 1:1
     ├── decisions/
     │   └── <NN>-<title>.md         # Architecture Decision Record (ARD) — /spec-build phase 0 자동 생성
     └── plans/
@@ -33,9 +38,9 @@ docs/specs/
 - **plan 단위**: `Status: Done` 직후 `_archive/<feature>/plans/`로 자동 이동.
 - **sub-spec 단위**: Done 되어도 feature 전체 Done 시점까지 `specs/` 안에 보류. 중간 이동 없음.
 - **feature 단위**: 모든 sub-spec Done + Open Q 0건 + 검증 pass + working tree clean 조건 모두 충족 시, 다음 항목을 `_archive/<feature>/`로 이동. 사용자 승인 1회.
-  - `_index.md` / `specs/` / `decisions/` / `plans/`(이미 `_archive`에 있으면 병합)
+  - `_index.md` / `specs/` / `tech-specs/` / `decisions/` / `plans/`(이미 `_archive`에 있으면 병합)
   - `.feature-build-state.json`은 삭제(`.gitignore`라 git 영향 없음)
-- **archive 포맷 사례**: `teleport-locomotion`은 decisions/ 없는 구형식, `drum-stick`부터는 decisions/ 포함 신형식.
+- **archive 포맷 사례**: `teleport-locomotion`은 decisions/ 없는 구형식, `drum-stick`은 decisions/ 포함 중간형식, Tech Spec 도입 이후 신규 feature는 tech-specs/ 까지 포함하는 신형식. 기존 feature에 회고적으로 tech-specs/를 채우지 않는다.
 - **archive 행 표기**: `| [<feature>](_archive/<feature>/_index.md) | Done | ... |`
 
 ## 워크플로우
@@ -53,6 +58,7 @@ docs/specs/
 |---|---|
 | 새 피처의 spec 시작 | `/spec-new` |
 | 기존 spec의 Open Questions 닫기 | `/spec-resolve <spec-path>` |
+| sub-spec의 Tech Spec(시스템 설계 윤곽) 작성 | `/tech-spec <sub-spec-path>` |
 | 기존 spec에 plan 추가 | `/plan-new <spec-path>` |
 | 검증 실패에서 후속 plan 시드 | `/plan-new --from-failure <failed-plan-path>` (또는 `/spec-implement`가 자동 분기) |
 | 작성된 plan대로 구현 | `/spec-implement <plan-path>` (기본 dry-run, `--apply`로 실제 실행) |
@@ -63,8 +69,9 @@ docs/specs/
 | Command | 입력 | 책임 | 사용자 게이트 |
 |---|---|---|---|
 | `/spec-interview` | 자유 텍스트(아이디어) | 인터뷰 → spec(루트+서브) 박제. Open Q 0건 강제. | Q&A 라운드 N회 + 초안 확인 1회 |
-| `/spec-build` | root-spec `_index.md` | sub-spec 큐 자동 실행: **phase 0 Architecture Decision** → plan-drafter → plan-quality-reviewer → spec-implement 워크플로우 inline 답습 | phase 0 설계 결정 Q&A·manual-hard 검증·destructive 가드 |
+| `/spec-build` | root-spec `_index.md` | sub-spec 큐 자동 실행: **phase -1 Tech Spec gate** → **phase 0 Architecture Decision** → plan-drafter → plan-quality-reviewer → spec-implement 워크플로우 inline 답습 | phase -1 Tech Spec yes/no/skip-permanently 3택·phase -1 인터뷰 라운드(yes 시)·phase 0 설계 결정 Q&A·manual-hard 검증·destructive 가드 |
 | `/spec-implement` | plan 또는 sub-spec 경로 | 미완료 plan들 순차 실행 + manual-hard 4택 분기 + Caused By max-cascade 제한 | manual-hard 검증, handoff 승인 |
+| `/tech-spec` | sub-spec 경로 | sub-spec 1개의 시스템 설계 윤곽(Tech Spec)을 인터뷰로 박제. 결정은 하지 않고 분기만 골라 후속 ARD에 시드. `/spec-build` phase -1이 `--auto` 모드로도 inline 답습. | 인터뷰 라운드(최대 3회) + 1:1·skip 가드 |
 | `/plan-new` | spec 경로 또는 `--from-failure` | plan 1~N개 인터랙티브 작성. plan-drafter sub-agent가 `--auto` 모드로도 호출. | 분할 결정·slug 확인 (인터랙티브 모드만) |
 | `/spec-new`·`/spec-resolve` | spec 경로 | 단계별 spec 작성·Open Q 닫기 (`/spec-interview`로 흡수됨, 수동 호출용) | 라운드별 사용자 결정 |
 
@@ -108,6 +115,23 @@ docs/specs/
 - 새 sub-spec 추가 시 같은 피처에 등록된 가장 큰 번호 + 1을 부여한다.
 - 사이 삽입이 필요하면 영향받는 sub-spec 전체를 재번호하고, `_index.md`의 Sub-Specs 표 및 sub-spec 본문의 상호 참조 링크를 함께 갱신한다.
 
+### Tech Spec 파일명 + 1:1 룰
+
+- 형식: `docs/specs/<feature>/tech-specs/<NN>-<title>.md`
+- `<NN>`: 대응하는 sub-spec과 **동일한** zero-pad 2자리 (NN 미부여 sub-spec이면 sub-spec 파일명 베이스 사용).
+- **sub-spec 1개 ↔ Tech Spec 1개 1:1 강제.** 같은 sub-spec에 Tech Spec 2개 이상 만들지 않는다 — 그 신호가 보이면 sub-spec을 쪼갠다.
+- 새 Tech Spec은 `/spec-build` phase -1 게이트 또는 `/tech-spec` 수동 호출로 작성.
+
+### Tech Spec 트리거 (단일 진실원)
+
+`/spec-build` phase -1이 `tech-spec-extractor`를 호출해 다음 양성 신호 3종 중 1건이라도 발화하는지 점검한다. 1건 이상이면 사용자에게 Tech Spec 작성 여부를 1회 묻는다(yes / no / skip-permanently).
+
+1. **신규 클래스/컴포넌트 2개 이상 + 그들 사이 통신·의존**이 있는 sub-spec.
+2. **기존 클래스의 public API 접속 또는 frame loop·event 구독에 끼어들기**가 필요한 sub-spec.
+3. **데이터/제어 흐름이 한 컴포넌트 안에서 닫히지 않는** sub-spec.
+
+양성 신호 0건이면 phase -1을 통째로 skip한다. `skip-permanently` 선택 시 sub-spec 헤더에 `**Tech Spec:** skipped` 한 줄 박제 → 다음 호출에 안 묻힘.
+
 ### Plan 파일명
 
 - 형식: `docs/specs/<feature>/plans/<YYYY-MM-DD>-<author>-<slug>.md`
@@ -118,7 +142,7 @@ docs/specs/
 
 ## 작성 규칙 요약
 
-- **ARD 우선.** plan-drafter는 plan 작성 전에 같은 sub-spec의 `decisions/<NN>-*.md`를 모두 읽고, 그 결정을 plan의 Approach·Verified Structural Assumptions에 그대로 반영한다. ARD와 충돌하는 plan 본문 작성 금지.
+- **Tech Spec → ARD → plan 우선.** plan-drafter는 plan 작성 전에 같은 sub-spec의 `tech-specs/<NN>-*.md`(있으면)와 `decisions/<NN>-*.md`(있으면)를 모두 읽고, 그 내용을 plan의 Approach·Verified Structural Assumptions에 그대로 반영한다. **Tech Spec의 Boundaries에서 "건드리지 않는다"고 박제된 영역은 plan Deliverables에 포함 금지**, **Tech Spec의 Invariants는 plan Approach가 깨지 않는 형태로 설계**, **ARD와 충돌하는 plan 본문 작성 금지.** Tech Spec ↔ ARD 짝 검증: ARD가 Tech Spec의 `Open Tech Decisions`에서 도출됐으면 ARD 헤더에 `**From Tech Spec:** <path> §Open Tech Decisions #N`이 박제돼야 하고, 동시에 Tech Spec의 대응 항목 끝에 `→ decisions/<NN>-*.md`가 추가돼야 한다.
 - **Spec은 얇게.** What/Why만. 함수명·파일 경로·자료구조 같은 구현 디테일 금지.
 - **방대하면 쪼갠다.** 한 spec에 무관한 피처를 섞지 않는다.
 - **Plan은 self-contained.** 다른 plan이나 이전 세션 컨텍스트를 가정하지 않는다. 필요한 배경은 `Context` 섹션에 모두 담는다.
