@@ -20,7 +20,7 @@ VR 환경에서 사용자는 (a) 리듬게임 세션을 시작하고, (b) 자기
 
 | 이름 | 상태 | 링크 |
 |---|---|---|
-| Anchoring | Draft | [`specs/01-anchoring.md`](specs/01-anchoring.md) |
+| Anchoring | Active | [`specs/01-anchoring.md`](specs/01-anchoring.md) |
 | Start Menu Section | Draft | [`specs/02-start-menu-section.md`](specs/02-start-menu-section.md) |
 | Volume Section | Draft | [`specs/03-volume-section.md`](specs/03-volume-section.md) |
 
@@ -32,4 +32,4 @@ _현재 열린 질문 없음._
 
 ## Status
 
-`Draft`
+`Active`

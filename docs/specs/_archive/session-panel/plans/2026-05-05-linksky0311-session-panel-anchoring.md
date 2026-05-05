@@ -1,7 +1,7 @@
 # Session Panel Anchoring
 
-**Linked Spec:** [`01-anchoring.md`](../specs/01-anchoring.md)
-**Status:** `Ready`
+**Linked Spec:** [`01-anchoring.md`](../../../session-panel/specs/01-anchoring.md)
+**Status:** `Done`
 
 ## Goal
 
@@ -122,4 +122,9 @@ session-panel 피처의 첫 plan이다. spec [`01-anchoring.md`](../specs/01-anc
 
 ## Handoff
 
-<!-- /spec-implement가 plan 완료 시 자동 갱신 -->
+- 공개 인터페이스 `IActiveInstrumentProvider` / `IActiveInstrument`는 `Instruments` namespace (`Assets/Instruments/_Core/Scripts/IActiveInstrumentProvider.cs`). 후속 plan이 구현체를 만들어 `SessionPanelController._activeInstrumentProviderObject`에 컴포넌트 reference로 주입하면 동작.
+- `PanelToggle` Action은 `InputSystem_Actions.inputactions`의 `Player/PanelToggle` (LeftHand menuButton·secondaryButton binding 2개). 후속 hands plan(`hands/03-left-pinch-gesture`)이 같은 action에 핀치 binding을 추가해 swap한다.
+- `Piano/PanelAnchor` (local (0, 1, 0.3)), `DrumKit/PanelAnchor` (local (0, 1.4, 0))는 prefab 루트 직속 빈 GameObject. 정확한 오프셋은 후속 plan에서 자유 조정 가능.
+- `pinchSpawnLocalOffset` default (0, 0.05, 0.15). VR 미연결 Editor 환경에선 `LeftHandTrackingHandRoot`가 default position에 머물러 패널이 바닥 근처에 노출되는 양상이 manual 검증에서 확인됨 — VR 환경에서 wrist 추적 활성 시 정상. 정밀 튜닝·fallback 위치 로직은 후속 plan(또는 spec resolve)이 처리.
+- `SessionPanel.prefab`은 WorldSpace Canvas + 회색 backdrop + 주황(StartMenu, 상단) + 청록(Volume, 하단) placeholder Image. 후속 plan(`02-start-menu-section`, `03-volume-section`)이 섹션 컨텐츠를 채울 때 placeholder Image는 자유 교체/제거.
+- `DummyActiveInstrumentProvider` / `DummyActiveInstrument`는 `Assets/SessionPanel/Tests/` (SessionPanel.Tests asmdef). SampleScene의 `SessionPanelManager`와 `TestInstrumentTarget`도 검증용. production IActiveInstrumentProvider wire-up plan 완료 시 Tests 폴더·asmdef·TestInstrumentTarget GameObject 일괄 제거 예정.
