@@ -4,15 +4,20 @@ public class RhythmGameHost : MonoBehaviour
 {
     [SerializeField] RhythmSongDatabase songDatabase;
     [SerializeField] Transform uiRoot;
+    [SerializeField] NoteDisplayPanel noteDisplayPanel;
+    [SerializeField] InstrumentBase targetInstrument;
+    [SerializeField] RhythmAccompaniment accompaniment;
+    [SerializeField] float leadInSeconds = 3f;
 
-    InstrumentBase instrument;
-    RhythmClock    clock;
-    RhythmJudge    judge;
-    RhythmSession  activeSession;
+    InstrumentBase         instrument;
+    RhythmClock            clock;
+    RhythmJudge            judge;
+    RhythmSession          activeSession;
+    INoteDisplayController activeNoteDisplay;
 
     void Awake()
     {
-        instrument = GetComponentInParent<InstrumentBase>();
+        instrument = targetInstrument != null ? targetInstrument : GetComponentInParent<InstrumentBase>();
         clock = new RhythmClock(new DspTimeProvider());
         judge = new RhythmJudge(clock);
     }
@@ -26,10 +31,33 @@ public class RhythmGameHost : MonoBehaviour
     public RhythmSession StartSession(VmSongChart chart, RhythmSong song, int judgedChannel)
     {
         StopSession();
-        clock.Start(chart);
+        float lookAhead = noteDisplayPanel != null ? noteDisplayPanel.LookAheadSeconds : 0f;
+        double effectiveLeadIn = System.Math.Max(leadInSeconds, lookAhead);
+        clock.Start(chart, effectiveLeadIn);
+        accompaniment?.Begin(chart, judgedChannel, clock);
         judge.Start(chart, judgedChannel);
         activeSession = new RhythmSession(instrument, song, clock, judge);
         activeSession.Start();
+
+        // 드럼이면 DrumNoteDisplayAdapter, 그 외엔 단일 NoteDisplayPanel 사용
+        if (instrument is DrumKit)
+        {
+            DrumNoteDisplayAdapter adapter = instrument.GetComponent<DrumNoteDisplayAdapter>();
+            if (adapter != null && instrument.LaneConfig != null)
+            {
+                adapter.Init(instrument.LaneConfig, chart, judgedChannel, clock);
+                activeNoteDisplay = adapter;
+            }
+        }
+        else if (noteDisplayPanel != null)
+        {
+            noteDisplayPanel.Show(chart, judgedChannel, clock);
+            activeNoteDisplay = noteDisplayPanel;
+        }
+
+        if (activeNoteDisplay != null)
+            judge.Judged += activeNoteDisplay.OnJudged;
+
         return activeSession;
     }
 
@@ -37,6 +65,14 @@ public class RhythmGameHost : MonoBehaviour
     {
         if (activeSession != null)
         {
+            if (activeNoteDisplay != null)
+            {
+                judge.Judged -= activeNoteDisplay.OnJudged;
+                activeNoteDisplay.Hide();
+                activeNoteDisplay = null;
+            }
+
+            accompaniment?.End();
             activeSession.Stop();
             judge.Stop();
             clock.Stop();
