@@ -1,4 +1,4 @@
-%YAML 1.1
+﻿%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!1 &618647493018728085
 GameObject:
@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6c799792358da843a6dc90a15159a01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InstrumentAudioOutput
+  voiceMixerGroup: {fileID: 24300002, guid: 1124759cd1e26b04f82873d6bf999d88, type: 2}
 --- !u!1 &1952736698320187851
 GameObject:
   m_ObjectHideFlags: 0
@@ -142,6 +143,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e2e6b963b932f214a80f1d7401cf1288, type: 3}
   - {fileID: 8300000, guid: 0ad64276452446648851603dca420531, type: 3}
   laneConfig: {fileID: 0}
+  instrumentId: DrumKit
+  instanceVolume: 0.5
   maxVoices: 4
   spatialize: 1
   spatializePostEffects: 1

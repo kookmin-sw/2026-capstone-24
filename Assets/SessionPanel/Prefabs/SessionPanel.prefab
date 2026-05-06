@@ -1,4 +1,4 @@
-%YAML 1.1
+﻿%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!1 &359858877287309328
 GameObject:
@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8208115897820070913}
   - component: {fileID: 739110367879888472}
   - component: {fileID: 6847711742356453028}
+  - component: {fileID: 1234567890123456789}
   m_Layer: 0
   m_Name: VolumeSectionContainer
   m_TagString: Untagged
@@ -87,6 +88,7 @@ GameObject:
   - component: {fileID: 4133534144176991557}
   - component: {fileID: 7818053236610482369}
   - component: {fileID: 6978322903708735215}
+  - component: {fileID: 6978322903708735216}
   - component: {fileID: 8242491607887272947}
   - component: {fileID: 3501293914087151377}
   m_Layer: 0
@@ -172,14 +174,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1151033334272281024}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_Script: {fileID: 11500000, guid: 7951c64acb0fa62458bf30a60089fe2d, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: UnityEngine.XR.Interaction.Toolkit.UI::UnityEngine.XR.Interaction.Toolkit.UI.TrackedDeviceGraphicRaycaster
   m_IgnoreReversedGraphics: 1
   m_BlockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  checkFor2DOcclusion: 0
+  checkFor3DOcclusion: 0
 --- !u!222 &8242491607887272947
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -293,3 +297,36 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+
+--- !u!114 &6978322903708735216
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1151033334272281024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!114 &1234567890123456789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 359858877287309328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2acac792cb91354a88b036586da5dfa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SessionPanel::SessionPanel.VolumeSectionController
+  volumeSliderPrefab: {fileID: 100000, guid: 1492b1d8b5ac4f1d86cba2c033ee988b, type: 3}
+  sliderParent: {fileID: 8208115897820070913}
+  activeInstrumentProviderObject: {fileID: 0}

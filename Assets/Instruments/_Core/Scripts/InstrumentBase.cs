@@ -1,11 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Instruments;
 
-/// <summary>
-/// 모든 악기의 공통 속성과 초기화 로직을 관리하는 베이스 클래스입니다.
-/// </summary>
-public abstract class InstrumentBase : MonoBehaviour, IPlayable
+public abstract class InstrumentBase : MonoBehaviour, IPlayable, IActiveInstrument
 {
     protected readonly struct NotePlayback
     {
@@ -21,6 +19,8 @@ public abstract class InstrumentBase : MonoBehaviour, IPlayable
         public float Volume { get; }
     }
 
+    const string VolumeKeyPrefix = "SessionPanel.Volume.";
+
     [Tooltip("이 악기에서 출력될 스피커(Voice Pool) 컴포넌트입니다. 생략 시 자식에서 자동 탐색합니다.")]
     [SerializeField] protected InstrumentAudioOutput audioOutput;
 
@@ -30,10 +30,28 @@ public abstract class InstrumentBase : MonoBehaviour, IPlayable
     [Tooltip("이 악기의 레인-MIDI 노트 매핑 데이터입니다.")]
     [SerializeField] InstrumentLaneConfig laneConfig;
 
-    /// <summary>
-    /// 레인-MIDI 노트 매핑 설정 자산입니다. 노트 디스플레이 패널이 이 값을 참조합니다.
-    /// </summary>
+    [Tooltip("PlayerPrefs 키 및 IActiveInstrument.InstrumentId로 사용되는 고유 식별자입니다.")]
+    [SerializeField] string instrumentId = "";
+
+    [Tooltip("인스턴스 볼륨 (0~1).")]
+    [SerializeField, Range(0f, 1f)] float instanceVolume = 0.5f;
+
     public InstrumentLaneConfig LaneConfig => laneConfig;
+
+    public string InstrumentId => instrumentId;
+
+    // IActiveInstrument: 패널 앵커 위치. 잡기 wiring plan에서 전용 child transform으로 교체 예정.
+    public Transform PanelAnchor => transform;
+
+    public float InstanceVolume
+    {
+        get => instanceVolume;
+        set
+        {
+            instanceVolume = Mathf.Clamp01(value);
+            PersistInstanceVolume();
+        }
+    }
 
     public event Action<MidiEvent> MidiTriggered;
 
@@ -41,17 +59,31 @@ public abstract class InstrumentBase : MonoBehaviour, IPlayable
 
     protected virtual void Awake()
     {
+        if (!string.IsNullOrEmpty(instrumentId))
+        {
+            string key = VolumeKeyPrefix + instrumentId;
+            instanceVolume = PlayerPrefs.GetFloat(key, 0.5f);
+        }
+
         if (audioOutput == null)
             audioOutput = GetComponentInChildren<InstrumentAudioOutput>(true);
 
         Initialize();
     }
 
+    void PersistInstanceVolume()
+    {
+        if (string.IsNullOrEmpty(instrumentId))
+            return;
+        string key = VolumeKeyPrefix + instrumentId;
+        PlayerPrefs.SetFloat(key, instanceVolume);
+    }
+
     protected virtual void Initialize()
     {
         if (audioOutput == null)
         {
-            Debug.LogError($"[{gameObject.name}] InstrumentAudioOutput child is missing.", this);
+            Debug.LogError(string.Format("[{0}] InstrumentAudioOutput child is missing.", gameObject.name), this);
             enabled = false;
             return;
         }
@@ -75,14 +107,10 @@ public abstract class InstrumentBase : MonoBehaviour, IPlayable
         if (string.IsNullOrEmpty(currentPlugin))
         {
             Debug.LogWarning(
-                $"[{gameObject.name}] 'Spatialize' is enabled, but no Spatializer Plugin is selected in Project Settings -> Audio. " +
-                "Please install a Spatializer SDK (e.g. Meta XR Audio SDK, Microsoft Spatializer, or Resonance Audio) and select it.");
+                string.Format("[{0}] 'Spatialize' is enabled, but no Spatializer Plugin is selected in Project Settings -> Audio.", gameObject.name));
         }
     }
 
-    /// <summary>
-    /// 외부 입력이 이 악기에 MIDI 이벤트를 전달하는 공식 창구입니다.
-    /// </summary>
     public virtual void TriggerMidi(MidiEvent midiEvent)
     {
         if (audioOutput == null)
@@ -92,7 +120,10 @@ public abstract class InstrumentBase : MonoBehaviour, IPlayable
         {
             case MidiEventType.NoteOn:
                 if (TryResolveNoteOn(midiEvent, out NotePlayback playback))
-                    audioOutput.PlayNote(midiEvent.Note, playback.Clip, playback.Pitch, playback.Volume);
+                {
+                    float finalVolume = playback.Volume * instanceVolume;
+                    audioOutput.PlayNote(midiEvent.Note, playback.Clip, playback.Pitch, finalVolume);
+                }
                 break;
 
             case MidiEventType.NoteOff:
@@ -110,14 +141,8 @@ public abstract class InstrumentBase : MonoBehaviour, IPlayable
 
     protected abstract bool TryResolveNoteOn(MidiEvent midiEvent, out NotePlayback playback);
 
-    protected virtual void OnNoteOff(MidiEvent midiEvent)
-    {
-    }
+    protected virtual void OnNoteOff(MidiEvent midiEvent) { }
 
-    /// <summary>
-    /// 사운드를 즉시 정지합니다. 드럼 심벌 뮤트 등 즉각 컷이 필요한 경우 오버라이드하세요.
-    /// 기본 동작은 NoteOff와 동일합니다.
-    /// </summary>
     protected virtual void OnChoke(MidiEvent midiEvent)
     {
         audioOutput.StopNote(midiEvent.Note);
@@ -135,7 +160,7 @@ public abstract class InstrumentBase : MonoBehaviour, IPlayable
             }
 
             if (audioBank.Count == 0)
-                Debug.LogWarning($"[{GetType().Name}] soundClips가 비어 있습니다. Inspector에서 오디오 클립을 할당해 주세요.", this);
+                Debug.LogWarning(string.Format("[{0}] soundClips가 비어 있습니다. Inspector에서 오디오 클립을 할당해 주세요.", GetType().Name), this);
         }
 
         bank = audioBank;

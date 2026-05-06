@@ -126,6 +126,14 @@ namespace SessionPanel
             _panelInstance = Instantiate(panelPrefab);
             _startMenuContainer = FindChildByName(_panelInstance.transform, "StartMenuSectionContainer");
             _volumeContainer    = FindChildByName(_panelInstance.transform, "VolumeSectionContainer");
+
+            // VolumeSectionController에 provider 주입 (prefab 내 SerializeField는 씬 오브젝트를 참조할 수 없으므로 코드로 주입)
+            if (_volumeContainer != null && _activeInstrumentProviderObject != null)
+            {
+                var volCtrl = _volumeContainer.GetComponentInChildren<VolumeSectionController>(true);
+                if (volCtrl != null)
+                    volCtrl.InjectProvider(_activeInstrumentProviderObject);
+            }
         }
 
         private void PositionAtWrist()
