@@ -1,7 +1,7 @@
 # Session Panel Spawn Position Refinement
 
 **Linked Spec:** [`01-anchoring.md`](../specs/01-anchoring.md)
-**Status:** `Ready`
+**Status:** `Done`
 
 ## Goal
 
@@ -111,4 +111,12 @@
 
 ## Handoff
 
-<!-- /spec-implement가 plan 완료 시 자동 갱신 -->
+- `SessionPanelController.cs`: PinchOpened spawn은 카메라(눈) 높이에서 수평 전방
+  `fallbackSpawnLocalOffset.z`(0.6m)에 world-lock. 손 위치·각도와 무관.
+- InstrumentOpened: `LateUpdate`에서 `provider.Current.PanelAnchor`를 매 프레임 추적.
+- `headFallbackTransform` → Main Camera (SampleScene wire, fileID `7187747401014242040`).
+- `leftHandSpawnTransform` → `LeftHandTrackingGhostHand/L_Wrist` (fileID `7187747401014242036`).
+  핸드 트래킹 비활성 시 PinchOpened spawn에는 미사용. 추후 트래킹 활성화 시 `ResolveSpawnContext` 재활용 가능.
+- `fallbackSpawnLocalOffset` default `(0, 0, 0.6)`. Inspector에서 튜닝 가능.
+- `pinchSpawnLocalOffset` default `(0, 0.08, 0.1)`. 현재 미사용 (`PositionAtWrist` 카메라 기준).
+- `trackingEpsilon` default `0.001f`.

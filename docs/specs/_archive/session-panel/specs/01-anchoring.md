@@ -45,7 +45,7 @@
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
 | 2026-05-05 | Session Panel Anchoring | Done | [2026-05-05-linksky0311-session-panel-anchoring.md](../../_archive/session-panel/plans/2026-05-05-linksky0311-session-panel-anchoring.md) |
-| 2026-05-06 | Session Panel Spawn Position Refinement | Ready | [2026-05-06-linksky0311-session-panel-spawn-position-refinement.md](../plans/2026-05-06-linksky0311-session-panel-spawn-position-refinement.md) |
+| 2026-05-06 | Session Panel Spawn Position Refinement | Done | [2026-05-06-linksky0311-session-panel-spawn-position-refinement.md](../../_archive/session-panel/plans/2026-05-06-linksky0311-session-panel-spawn-position-refinement.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/plan-new` 사용. 파일명은 날짜·작성자·slug 기반.

@@ -1339,8 +1339,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SessionPanel.SessionPanelController
   panelPrefab: {fileID: 1151033334272281024, guid: de3370b2fc1b18d41b6edc032096cae9, type: 3}
-  leftHandSpawnTransform: {fileID: 1212732325}
-  pinchSpawnLocalOffset: {x: 0, y: 0.05, z: 0.15}
+  leftHandSpawnTransform: {fileID: 7187747401014242036}
+  pinchSpawnLocalOffset: {x: 0, y: 0.08, z: 0.1}
+  headFallbackTransform: {fileID: 7187747401014242040}
+  fallbackSpawnLocalOffset: {x: 0, y: 0, z: 0.6}
+  trackingEpsilon: 0.001
   _activeInstrumentProviderObject: {fileID: 1008756552}
   panelToggleAction: {fileID: 6276339513826019528, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!4 &1008756554
@@ -1371,11 +1374,6 @@ PhysicsMaterial:
   m_Bounciness: 0
   m_FrictionCombine: 0
   m_BounceCombine: 0
---- !u!4 &1212732325 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5629048054344987016, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
-  m_PrefabInstance: {fileID: 7187747401014242035}
-  m_PrefabAsset: {fileID: 0}
 --- !u!134 &1435238959
 PhysicsMaterial:
   m_ObjectHideFlags: 0
@@ -1887,6 +1885,11 @@ Transform:
 --- !u!4 &7187747401014242039 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6052689650612780148, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
+  m_PrefabInstance: {fileID: 7187747401014242035}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &7187747401014242040 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 652725695442906022, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
   m_PrefabInstance: {fileID: 7187747401014242035}
   m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807

@@ -10,7 +10,10 @@ namespace SessionPanel
 
         [SerializeField] private GameObject panelPrefab;
         [SerializeField] private Transform leftHandSpawnTransform;
-        [SerializeField] private Vector3 pinchSpawnLocalOffset = new Vector3(0f, 0.05f, 0.15f);
+        [SerializeField] private Vector3 pinchSpawnLocalOffset = new Vector3(0f, 0.08f, 0.1f);
+        [SerializeField] private Transform headFallbackTransform;
+        [SerializeField] private Vector3 fallbackSpawnLocalOffset = new Vector3(0f, 0f, 0.6f);
+        [SerializeField] private float trackingEpsilon = 0.001f;
         [SerializeField] private UnityEngine.Object _activeInstrumentProviderObject;
         [SerializeField] private InputActionReference panelToggleAction;
 
@@ -90,6 +93,7 @@ namespace SessionPanel
                     break;
 
                 case PanelState.PinchOpened:
+                    // 카메라 눈 높이 + 수평 전방 기준으로 1회 spawn 후 world-lock
                     PositionAtWrist();
                     _startMenuContainer.gameObject.SetActive(false);
                     _volumeContainer.gameObject.SetActive(true);
@@ -105,29 +109,43 @@ namespace SessionPanel
             }
         }
 
+        private void LateUpdate()
+        {
+            if (_panelInstance == null || !_panelInstance.activeSelf) return;
+
+            // InstrumentOpened만 매 프레임 업데이트 (악기가 움직이면 PanelAnchor를 따라옴)
+            // PinchOpened는 spawn 시 1회 위치·각도 고정 → world-lock (업데이트 없음)
+            if (_state == PanelState.InstrumentOpened)
+                PositionAtInstrument();
+        }
+
         private void EnsurePanelInstance()
         {
             if (_panelInstance != null) return;
 
             _panelInstance = Instantiate(panelPrefab);
             _startMenuContainer = FindChildByName(_panelInstance.transform, "StartMenuSectionContainer");
-            _volumeContainer = FindChildByName(_panelInstance.transform, "VolumeSectionContainer");
+            _volumeContainer    = FindChildByName(_panelInstance.transform, "VolumeSectionContainer");
         }
 
         private void PositionAtWrist()
         {
-            if (leftHandSpawnTransform == null) return;
+            // PinchOpened spawn 위치:
+            // L_Wrist는 핸드 트래킹 미동작 시 rest position(손목 높이)에 고정돼
+            // 눈 높이와 맞지 않으므로 카메라를 기준점으로 사용.
+            // 카메라(눈) 높이에서 수평 전방 fallbackSpawnLocalOffset.z(0.5m)에 spawn.
+            if (_mainCamera == null) return;
 
-            Vector3 worldPos = leftHandSpawnTransform.TransformPoint(pinchSpawnLocalOffset);
-            _panelInstance.transform.position = worldPos;
+            Vector3 horizontalForward = _mainCamera.transform.forward;
+            horizontalForward.y = 0f;
+            if (horizontalForward.sqrMagnitude < 0.001f)
+                horizontalForward = Vector3.forward;
+            else
+                horizontalForward.Normalize();
 
-            if (_mainCamera != null)
-            {
-                Vector3 camForward = _mainCamera.transform.forward;
-                camForward.y = 0f;
-                if (camForward.sqrMagnitude > 0.001f)
-                    _panelInstance.transform.rotation = Quaternion.LookRotation(camForward);
-            }
+            _panelInstance.transform.position = _mainCamera.transform.position
+                                                + horizontalForward * fallbackSpawnLocalOffset.z;
+            _panelInstance.transform.rotation = Quaternion.LookRotation(horizontalForward);
         }
 
         private void PositionAtInstrument()
