@@ -62,8 +62,10 @@ Photon Fusion을 통해 룸을 생성하거나 기존 룸에 입장·퇴장할 �
 |---|---|---|---|
 | 2026-04-28 | Photon Fusion SDK 패키지 준비 | `Done` | [2026-04-28-namae1128-photon-fusion-import.md](../plans/2026-04-28-namae1128-photon-fusion-import.md) |
 | 2026-05-01 | 룸 세션 라이프사이클 (비밀번호 옵션 포함) | `Done` | [2026-05-01-namae1128-room-session-lifecycle.md](../plans/2026-05-01-namae1128-room-session-lifecycle.md) |
-| 2026-05-01 | Dedicated Server 빌드 파이프라인 (Windows 로컬 + Linux 산출) | `In Progress` | [2026-05-01-namae1128-dedicated-server-build-pipeline.md](../plans/2026-05-01-namae1128-dedicated-server-build-pipeline.md) |
+| 2026-05-01 | Linux Dedicated Server 산출 + 단독 Dockerfile | `In Progress` | [2026-05-01-namae1128-dedicated-server-build-pipeline.md](../plans/2026-05-01-namae1128-dedicated-server-build-pipeline.md) |
 | 2026-05-01 | 공개 룸 목록 조회 (잠금 표시 포함) | `Ready` | [2026-05-01-namae1128-room-list-query.md](../plans/2026-05-01-namae1128-room-list-query.md) |
+| 2026-05-07 | docker-compose 로컬 통합 스택 (spring + mariadb + dedicated-server) | `Ready` | [2026-05-07-namae1128-docker-compose-local-stack.md](../plans/2026-05-07-namae1128-docker-compose-local-stack.md) |
+| 2026-05-07 | AWS EC2 docker-compose 배포 | `Ready` | [2026-05-07-namae1128-aws-ec2-compose-deployment.md](../plans/2026-05-07-namae1128-aws-ec2-compose-deployment.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/plan-new` 사용.
