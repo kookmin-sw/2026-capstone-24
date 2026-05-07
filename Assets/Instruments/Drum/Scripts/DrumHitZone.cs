@@ -52,22 +52,30 @@ public sealed class DrumHitZone : MonoBehaviour
         if (targetPiece == null || other == null)
             return;
 
-        if ((allowedLayers.value & (1 << other.gameObject.layer)) == 0)
-            return;
-
         if (!TryGetSourceVelocity(other, out Vector3 sourceVelocity))
             return;
+
+        TryProcessHit(other, sourceVelocity);
+    }
+
+    public bool TryProcessHit(Collider other, Vector3 sourceVelocity)
+    {
+        if (targetPiece == null || other == null)
+            return false;
+
+        if ((allowedLayers.value & (1 << other.gameObject.layer)) == 0)
+            return false;
 
         Vector3 zoneUp = transform.up;
         float impactSpeed = Mathf.Max(0f, Vector3.Dot(sourceVelocity, -zoneUp));
         if (impactSpeed < minImpactSpeed)
-            return;
+            return false;
 
         int colliderId = other.GetInstanceID();
         float now = Time.time;
         if (m_LastHitTimeByCollider.TryGetValue(colliderId, out float lastHitTime) &&
             now - lastHitTime < retriggerCooldown)
-            return;
+            return false;
 
         m_LastHitTimeByCollider[colliderId] = now;
 
@@ -76,6 +84,7 @@ public sealed class DrumHitZone : MonoBehaviour
             : Mathf.InverseLerp(minImpactSpeed, maxImpactSpeed, impactSpeed);
 
         targetPiece.ReportHit(midiNote, Mathf.Clamp01(velocity));
+        return true;
     }
 
     void ResolveReferences()
@@ -94,21 +103,31 @@ public sealed class DrumHitZone : MonoBehaviour
     {
         sourceVelocity = Vector3.zero;
 
-        if (other.attachedRigidbody != null)
+        if (other.attachedRigidbody != null && !other.attachedRigidbody.isKinematic)
         {
             sourceVelocity = other.attachedRigidbody.linearVelocity;
             if (sourceVelocity.sqrMagnitude > 0f)
                 return true;
         }
 
-        if (!useFingertipVelocityFallback)
-            return false;
+        if (useFingertipVelocityFallback)
+        {
+            Fingertip fingertip = other.GetComponentInParent<Fingertip>();
+            if (fingertip != null)
+            {
+                sourceVelocity = fingertip.WorldVelocity;
+                if (sourceVelocity.sqrMagnitude > 0f)
+                    return true;
+            }
+        }
 
-        Fingertip fingertip = other.GetComponentInParent<Fingertip>();
-        if (fingertip == null)
-            return false;
+        AnchoredStickGhostFollower stickFollower = other.GetComponentInParent<AnchoredStickGhostFollower>();
+        if (stickFollower != null)
+        {
+            sourceVelocity = stickFollower.Velocity;
+            return sourceVelocity.sqrMagnitude > 0f;
+        }
 
-        sourceVelocity = fingertip.WorldVelocity;
-        return sourceVelocity.sqrMagnitude > 0f;
+        return false;
     }
 }

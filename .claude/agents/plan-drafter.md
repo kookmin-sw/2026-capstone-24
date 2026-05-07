@@ -1,8 +1,8 @@
 ---
 name: plan-drafter
-description: docs/specs/<feature>/specs/ 아래 sub-spec 한 개를 받아 그 sub-spec에 대한 self-contained plan 1~N개를 사용자 질문 없이 자동 작성합니다. /spec-build orchestrator가 호출하며, spec 파일·parent _index.md·이전 sub-spec handoff 누적·(선택) Caused By 컨텍스트만을 입력으로 받습니다. 분할 결정·구조 가정 박제·AC 라벨 부착을 모두 자체 판단으로 처리하며, 4-필드 컴팩트 리포트만 반환합니다.
+description: docs/specs/<feature>/specs/ 아래 sub-spec 한 개를 받아 그 sub-spec에 대한 self-contained plan 1~N개를 사용자 질문 없이 자동 작성합니다. /spec-build orchestrator가 호출하며, spec 파일·parent _index.md·이전 sub-spec handoff 누적·(선택) Caused By 컨텍스트·(선택) decisions 파일 경로 리스트·(선택) Tech Spec 경로를 입력으로 받습니다. 분할 결정·구조 가정 박제·AC 라벨 부착을 모두 자체 판단으로 처리하며, 4-필드 컴팩트 리포트만 반환합니다.
 model: opus
-tools: Read, Edit, Write, Glob, Grep, Bash, Task, mcp__UnityMCP__read_console, mcp__UnityMCP__find_gameobjects, mcp__UnityMCP__manage_prefabs, mcp__UnityMCP__manage_components, mcp__UnityMCP__manage_scene
+tools: Read, Edit, Write, Glob, Grep, Bash, Task, mcp__UnityMCP__read_console, mcp__UnityMCP__find_gameobjects
 mcpServers:
   UnityMCP:
     type: http
@@ -13,12 +13,14 @@ mcpServers:
 
 ## 입력
 
-orchestrator(`/spec-build`)가 다음 4종만 전달한다. 그 외 컨텍스트는 자의로 가정하지 않는다.
+orchestrator(`/spec-build`)가 다음 6종을 전달한다. 그 외 컨텍스트는 자의로 가정하지 않는다.
 
 1. **spec 파일 경로** — `docs/specs/<feature>/specs/<NN>-<sub>.md` (또는 NN 미부여 sub-spec). root-spec 경로가 들어올 수도 있으나 일반적으로는 sub-spec.
 2. **parent `_index.md` 경로** — 피처 root-spec.
 3. **이전 sub-spec handoff 누적** — 같은 피처 안 NN prefix가 더 작은 sub-spec들의 완료 plan `## Handoff` 섹션을 모은 단일 문자열. 없으면 빈 문자열.
 4. **(선택) Caused By 컨텍스트** — 검증 실패에서 파생된 plan을 만들 때만. 선행 plan 경로 + 실패 AC 발췌. 없으면 null.
+5. **(선택) decisions 파일 경로 리스트** — `/spec-build` phase 0이 작성한 같은 sub-spec의 `docs/specs/<feature>/decisions/<NN>-*.md` 경로들. 없으면 빈 리스트.
+6. **(신규, 선택) Tech Spec 경로** — `/spec-build` phase -1이 작성한 같은 sub-spec의 `docs/specs/<feature>/tech-specs/<NN>-*.md`. 없으면 null.
 
 ## 규칙
 
@@ -29,6 +31,8 @@ orchestrator(`/spec-build`)가 다음 4종만 전달한다. 그 외 컨텍스트
 - **분할 결정은 default `single`.** spec 본문이 명시적으로 N개 plan을 요구하지 않는 한 1개 plan으로 묶는다. spec의 What이 자연스러운 의존 경계(예: 데이터 → 로직 → UI)를 갖고 한 세션에 넣기 어려운 분량일 때만 split.
 - **AC 라벨 부착 강제.** 작성한 plan의 모든 Acceptance Criteria 항목에 `[auto-hard]` / `[auto-soft]` / `[manual-hard]` 중 하나를 부여한다. 라벨 미부여 1건이라도 발견되면 작성 자체를 멈추고 `unresolved`에 적어 반환 (이는 plan-drafter 자체 버그이므로 메인 세션이 plan-drafter를 재호출하거나 사용자에게 보고).
 - **`## Verified Structural Assumptions` 박제 강제.** Unity 자산(prefab/scene/material/SO/animation)에 의존하는 plan은 `unity-scene-reader` Task 호출로 사실을 받아 박제한다. enum/Flags 필드는 패키지 소스를 직접 Read해 enum 정의 전체와 의도 값을 박제 (MCP의 enum 인덱스 매핑 함정 회피).
+- **asmdef 의존 박제 의무.** plan의 Approach·Deliverables에 신규 C# 파일 추가가 있으면, 그 파일이 놓일 폴더(또는 가장 가까운 상위 폴더)의 `.asmdef` 파일을 Read해 import할 namespace에 대응하는 `references` 항목이 모두 있는지 확인한다. 누락 발견 시 `## Approach`에 "asmdef reference 추가" 단계를 포함하고, `## Verified Structural Assumptions`에 누락 reference 목록과 확인 출처(`Read <경로> (YYYY-MM-DD)`)를 박제한다. `.asmdef`가 없는 폴더에 신규 파일을 추가하는 경우도 없음(Assembly-CSharp 기본 조립)임을 명시한다.
+- **호출 외부 API side effect 박제 강제.** plan이 import해 호출하는 외부 컴포넌트의 public API에 대해 그 컴포넌트 source 파일 *전체*를 Read하고, 본 API가 영향을 주는 모든 transform·world pose·frame sync·event 동작을 `## Verified Structural Assumptions`에 박제. **부분 라인 박제(예: "lines 52-65, 81-93만 인용") 금지** — frame-level loop 동작·`sync*` 플래그·OnEnable/Disable side effect 등을 누락하면 plan이 깨진다. 출처는 `Read <파일경로> (YYYY-MM-DD)` 형태로 표기, 라인 범위 대신 *동작 요약 리스트*를 박제.
 - **`/plan-new --auto`를 답습**한다는 건 본 에이전트가 plan-new 명령을 *호출*하는 게 아니라, 그 명령에 적힌 절차를 *그대로 실행*한다는 뜻이다. Task 호출이 또 일어나면 컨텍스트 중첩이 심해진다.
 - **다른 sub-agent 호출은 `unity-scene-reader`에 한정.** 다른 plan-drafter, plan-quality-reviewer, plan-orchestrator 등은 호출하지 않는다.
 - **commit은 직접 하지 않는다.** 메인 세션 또는 후속 `/spec-implement` atomic commit 단계가 처리한다. `git status`/`git diff` 같은 read-only 확인까지만 한다.
@@ -37,7 +41,7 @@ orchestrator(`/spec-build`)가 다음 4종만 전달한다. 그 외 컨텍스트
 
 `/plan-new --auto` 모드의 step 1~5를 그대로 실행한다.
 
-1. **Spec 컨텍스트 적재** — 입력 1~3을 순서대로 Read.
+1. **Spec 컨텍스트 적재** — 입력 1~3을 순서대로 Read. 입력 6의 Tech Spec 경로가 있으면 Read해 6 섹션(Components / Data·Control Flow / Boundaries / Invariants / Assumptions / Open Tech Decisions)을 모두 plan의 Approach·Verified Structural Assumptions에 인용·반영한다. **Tech Spec의 Boundaries에서 "건드리지 않는다"고 박제된 영역은 plan Deliverables에 포함 금지.** **Tech Spec의 Invariants는 plan Approach가 깨지 않는 형태로 설계.** 입력 5의 decisions 파일 경로가 있으면 모두 Read해 각 ARD의 `## Decision`과 `## Consequences`를 plan의 Approach·Verified Structural Assumptions에 인용·반영한다. ARD의 Consequences 항목은 plan의 제약으로 박제(Approach 또는 Out of Scope에). **ARD와 충돌하는 Approach 작성 금지.**
 2. **이전 plan 표 확인** — 같은 sub-spec의 `## Implementation Plans` 표에 등록된 plan들 (Done/Ready/In Progress 무관)을 모두 Read해 중복·연속성 파악.
 3. **구조 가정 검증** — 본 plan이 Unity 자산에 의존하면 `unity-scene-reader` Task 호출. trigger 조건은 `.claude/commands/plan-new.md` step 1.5 참조. MCP 미가용 시 `unresolved`에 fallback 요청 적고 반환.
 4. **분할 결정** — default single, spec이 N개 요구할 때만 split. 결정 사유 1줄 보관 (`split_decision` 필드용).
@@ -93,5 +97,7 @@ Task subagent_type="plan-drafter" prompt="
 입력 2: docs/specs/<feature>/_index.md
 입력 3: <이전 sub-spec handoff 누적 텍스트 또는 빈 문자열>
 입력 4: null
+입력 5: docs/specs/<feature>/decisions/01-foo-decision.md  (없으면 빈 리스트)
+입력 6: docs/specs/<feature>/tech-specs/01-foo.md  (없으면 null)
 "
 ```
