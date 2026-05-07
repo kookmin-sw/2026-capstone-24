@@ -174,6 +174,53 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &113620543
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 113620545}
+  - component: {fileID: 113620544}
+  m_Layer: 0
+  m_Name: RhythmGameAutoLauncher_Piano
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &113620544
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 113620543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af1fc24f081a43648e3232025673d4ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RhythmGame.Runtime::RhythmGameAutoLauncher
+  host: {fileID: 2078871757}
+  songRelativePath: Songs/test.vmsong
+  judgedChannel: 1
+--- !u!4 &113620545
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 113620543}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!134 &200605284
 PhysicsMaterial:
   m_ObjectHideFlags: 0
@@ -467,7 +514,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 7410730392459195338, guid: 20c3ebc0d8a60954b9bf428c65c948ce, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1229096219}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 20c3ebc0d8a60954b9bf428c65c948ce, type: 3}
 --- !u!1 &591792874
@@ -481,7 +531,7 @@ GameObject:
   - component: {fileID: 591792876}
   - component: {fileID: 591792875}
   m_Layer: 0
-  m_Name: RhythmGameAutoLauncher
+  m_Name: RhythmGameAutoLauncher_Drum
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -501,7 +551,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: RhythmGame.Runtime::RhythmGameAutoLauncher
   host: {fileID: 800309070}
   songRelativePath: Songs/test.vmsong
-  judgedChannel: 1
+  judgedChannel: 10
 --- !u!4 &591792876
 Transform:
   m_ObjectHideFlags: 0
@@ -588,7 +638,7 @@ GameObject:
   - component: {fileID: 800309070}
   - component: {fileID: 800309071}
   m_Layer: 0
-  m_Name: RhythmGameHost
+  m_Name: RhythmGameHost_Drum
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -954,6 +1004,128 @@ PhysicsMaterial:
   m_Bounciness: 0
   m_FrictionCombine: 0
   m_BounceCombine: 0
+--- !u!4 &1097173054 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7410730392459195338, guid: 20c3ebc0d8a60954b9bf428c65c948ce, type: 3}
+  m_PrefabInstance: {fileID: 447916926}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1229096218
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1097173054}
+    m_Modifications:
+    - target: {fileID: 7000000001, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
+      propertyPath: m_Name
+      value: NoteDisplayPanel_Piano
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1.016
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.091
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.084
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000000004, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
+      propertyPath: laneConfig
+      value: 
+      objectReference: {fileID: 11400000, guid: 41b8ff354d6e4d73b01e35018c3f6b7b, type: 2}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
+--- !u!224 &1229096219 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
+  m_PrefabInstance: {fileID: 1229096218}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1229096220 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7000000004, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
+  m_PrefabInstance: {fileID: 1229096218}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 713ece9fb55d4098acead8501e30600e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NoteDisplayPanel
 --- !u!134 &1435238959
 PhysicsMaterial:
   m_ObjectHideFlags: 0
@@ -1030,6 +1202,56 @@ PhysicsMaterial:
   m_Bounciness: 0
   m_FrictionCombine: 0
   m_BounceCombine: 0
+--- !u!1 &2078871756
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2078871758}
+  - component: {fileID: 2078871757}
+  m_Layer: 0
+  m_Name: RhythmGameHost_Piano
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2078871757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2078871756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d13a917061a5fe4494bd64fa722585d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RhythmGame.Runtime::RhythmGameHost
+  songDatabase: {fileID: 0}
+  uiRoot: {fileID: 0}
+  noteDisplayPanel: {fileID: 1229096220}
+  targetInstrument: {fileID: 1530775798}
+  accompaniment: {fileID: 0}
+  leadInSeconds: 3
+--- !u!4 &2078871758
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2078871756}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2757961452950761299
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1366,3 +1588,5 @@ SceneRoots:
   - {fileID: 46134115}
   - {fileID: 800309072}
   - {fileID: 591792876}
+  - {fileID: 2078871758}
+  - {fileID: 113620545}
