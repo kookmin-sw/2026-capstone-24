@@ -9,7 +9,9 @@
       "mcp__UnityMCP__manage_gameobject",
       "mcp__UnityMCP__manage_scene",
       "mcp__UnityMCP__find_gameobjects",
-      "mcp__UnityMCP__refresh_unity"
+      "mcp__UnityMCP__refresh_unity",
+      "mcp__UnityMCP__manage_prefabs",
+      "mcp__UnityMCP__manage_script"
     ]
   },
   "hooks": {
