@@ -1047,11 +1047,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 20
+      value: 1326
       objectReference: {fileID: 0}
     - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 300
+      value: 600
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.001
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.001
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.001
       objectReference: {fileID: 0}
     - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1063,31 +1075,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.016
+      value: -0.045
       objectReference: {fileID: 0}
     - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0.091
+      value: -0.01
       objectReference: {fileID: 0}
     - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.084
+      value: 1.225
       objectReference: {fileID: 0}
     - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1105,6 +1117,10 @@ PrefabInstance:
       propertyPath: laneConfig
       value: 
       objectReference: {fileID: 11400000, guid: 41b8ff354d6e4d73b01e35018c3f6b7b, type: 2}
+    - target: {fileID: 7000000004, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
+      propertyPath: panelHeight
+      value: 600
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
