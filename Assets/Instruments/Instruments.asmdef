@@ -4,6 +4,7 @@
     "references": [
         "Unity.InputSystem",
         "Hands",
+        "RhythmGame.Data",
         "Unity.XR.Interaction.Toolkit"
     ],
     "includePlatforms": [],
