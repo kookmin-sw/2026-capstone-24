@@ -1,0 +1,48 @@
+# Unity 프로젝트 루트에서 컨테이너에 들어가지 않아야 하는 전체 목록.
+# 컨테이너에는 Builds/RoomAutomation/LinuxServer/ 만 포함되어야 한다.
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Unity 에디터 임시·캐시 디렉터리
+Library/
+Temp/
+Logs/
+obj/
+UserSettings/
+
+# Unity 프로젝트 원본 소스
+Assets/
+Packages/
+ProjectSettings/
+
+# 빌드 산출물 중 이번 이미지 대상이 아닌 것
+Builds/RoomAutomation/WindowsServer/
+Builds/RoomAutomation/WindowsClient/
+
+# 소스 메타 파일
+*.csproj
+*.sln
+*.suo
+*.user
+*.pidb
+*.booproj
+
+# 문서·설정
+docs/
+docker/
+tools/
+TestResults/
+
+# 에디터 설정
+.vscode/
+.vs/
+.idea/
+.editorconfig
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
