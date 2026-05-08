@@ -387,6 +387,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Mediator: {fileID: 5840713679125083423}
   m_TransformationPriority: 0
+  m_DelayTime: 0
 --- !u!114 &4447065500933490382
 MonoBehaviour:
   m_ObjectHideFlags: 0

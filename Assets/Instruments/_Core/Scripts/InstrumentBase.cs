@@ -36,12 +36,15 @@ public abstract class InstrumentBase : MonoBehaviour, IPlayable, IActiveInstrume
     [Tooltip("인스턴스 볼륨 (0~1).")]
     [SerializeField, Range(0f, 1f)] float instanceVolume = 0.5f;
 
+    [Tooltip("세션 패널이 표시될 앵커 Transform. 미설정 시 루트 transform(바닥)을 사용합니다. 눈 높이 위치의 child 오브젝트를 할당해 주세요.")]
+    [SerializeField] Transform _panelAnchor;
+
     public InstrumentLaneConfig LaneConfig => laneConfig;
 
     public string InstrumentId => instrumentId;
 
-    // IActiveInstrument: 패널 앵커 위치. 잡기 wiring plan에서 전용 child transform으로 교체 예정.
-    public Transform PanelAnchor => transform;
+    // IActiveInstrument: 패널 앵커 위치. _panelAnchor child가 설정되면 그 위치를, 아니면 루트 transform을 반환.
+    public Transform PanelAnchor => _panelAnchor != null ? _panelAnchor : transform;
 
     public float InstanceVolume
     {

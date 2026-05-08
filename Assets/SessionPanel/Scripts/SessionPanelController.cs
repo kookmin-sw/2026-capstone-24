@@ -23,6 +23,8 @@ namespace SessionPanel
         private Transform _volumeContainer;
         private IActiveInstrumentProvider _provider;
         private Camera _mainCamera;
+        private bool _trackInstrument;
+        private VolumeSectionController _volCtrl;
 
         private void Awake()
         {
@@ -72,10 +74,26 @@ namespace SessionPanel
         {
             if (instrument != null)
             {
-                TransitionTo(PanelState.InstrumentOpened);
+                if (_state == PanelState.Hidden)
+                {
+                    // 패널이 닫혀 있을 때: 악기 위치에 auto-open + 이후 tracking 활성화
+                    _trackInstrument = true;
+                    TransitionTo(PanelState.InstrumentOpened);
+                }
+                else
+                {
+                    // 패널이 이미 열려 있을 때: 위치를 유지하고 콘텐츠만 업데이트
+                    // (PinchOpened → InstrumentOpened 상태 승격, 위치 이동 없음)
+                    _trackInstrument = false;
+                    _state = PanelState.InstrumentOpened;
+                    EnsurePanelInstance();
+                    if (_startMenuContainer != null)
+                        _startMenuContainer.gameObject.SetActive(true);
+                }
             }
             else
             {
+                _trackInstrument = false;
                 if (_state != PanelState.Hidden)
                     TransitionTo(PanelState.Hidden);
             }
@@ -89,10 +107,12 @@ namespace SessionPanel
             switch (next)
             {
                 case PanelState.Hidden:
+                    _trackInstrument = false;
                     _panelInstance.SetActive(false);
                     break;
 
                 case PanelState.PinchOpened:
+                    _trackInstrument = false;
                     // 카메라 눈 높이 + 수평 전방 기준으로 1회 spawn 후 world-lock
                     PositionAtWrist();
                     _startMenuContainer.gameObject.SetActive(false);
@@ -101,10 +121,15 @@ namespace SessionPanel
                     break;
 
                 case PanelState.InstrumentOpened:
+                    _trackInstrument = true;
                     PositionAtInstrument();
                     _startMenuContainer.gameObject.SetActive(true);
                     _volumeContainer.gameObject.SetActive(true);
                     _panelInstance.SetActive(true);
+                    // 패널이 Hidden에서 재활성화될 때 VolumeSectionController가 OnEnable에서 재구독하지만
+                    // 이미 이벤트가 지나간 후이므로 현재 악기 정보를 명시적으로 다시 주입한다.
+                    if (_volCtrl != null && _activeInstrumentProviderObject != null)
+                        _volCtrl.InjectProvider(_activeInstrumentProviderObject);
                     break;
             }
         }
@@ -115,7 +140,7 @@ namespace SessionPanel
 
             // InstrumentOpened만 매 프레임 업데이트 (악기가 움직이면 PanelAnchor를 따라옴)
             // PinchOpened는 spawn 시 1회 위치·각도 고정 → world-lock (업데이트 없음)
-            if (_state == PanelState.InstrumentOpened)
+            if (_state == PanelState.InstrumentOpened && _trackInstrument)
                 PositionAtInstrument();
         }
 
@@ -130,9 +155,9 @@ namespace SessionPanel
             // VolumeSectionController에 provider 주입 (prefab 내 SerializeField는 씬 오브젝트를 참조할 수 없으므로 코드로 주입)
             if (_volumeContainer != null && _activeInstrumentProviderObject != null)
             {
-                var volCtrl = _volumeContainer.GetComponentInChildren<VolumeSectionController>(true);
-                if (volCtrl != null)
-                    volCtrl.InjectProvider(_activeInstrumentProviderObject);
+                _volCtrl = _volumeContainer.GetComponentInChildren<VolumeSectionController>(true);
+                if (_volCtrl != null)
+                    _volCtrl.InjectProvider(_activeInstrumentProviderObject);
             }
         }
 
@@ -162,7 +187,23 @@ namespace SessionPanel
 
             Transform anchor = _provider.Current.PanelAnchor;
             _panelInstance.transform.position = anchor.position;
-            _panelInstance.transform.rotation = anchor.rotation;
+
+            // Canvas가 항상 플레이어(카메라) 쪽을 향하도록:
+            // World Space Canvas는 local -Z 방향으로 렌더링하므로,
+            // local +Z를 카메라 반대 방향으로 설정하면 canvas face가 카메라를 향한다.
+            if (_mainCamera != null)
+            {
+                Vector3 awayFromCam = anchor.position - _mainCamera.transform.position;
+                awayFromCam.y = 0f;
+                if (awayFromCam.sqrMagnitude > 0.001f)
+                    _panelInstance.transform.rotation = Quaternion.LookRotation(awayFromCam.normalized);
+                else
+                    _panelInstance.transform.rotation = anchor.rotation;
+            }
+            else
+            {
+                _panelInstance.transform.rotation = anchor.rotation;
+            }
         }
 
         private static Transform FindChildByName(Transform parent, string name)

@@ -2,7 +2,7 @@
 
 **Linked Spec:** [`03-volume-section.md`](../specs/03-volume-section.md)
 **Caused By:** [`2026-05-05-linksky0311-session-panel-volume-section.md`](../../_archive/session-panel/plans/2026-05-05-linksky0311-session-panel-volume-section.md)
-**Status:** `Ready`
+**Status:** `Done`
 
 ## Goal
 
@@ -83,7 +83,18 @@ _없음 — 코드·씬 변경 없는 순수 검증 plan._
 
 - 검증은 Editor Play mode(헤드셋 불필요, Inspector 드래그 가능)에서 수행한다. Inspector에서 `_current` 드래그 후 `Update()`가 다음 프레임에 감지 → 이벤트 발생하므로 즉시 반응이 보임.
 - `_current`를 null로 되돌리면 인스턴스 슬라이더가 SetActive(false)됨 (AC #15 추가 확인 가능).
+- 이 plan은 검증 전용으로 설계됐으나 실제로 코드·씬 변경이 수반됨: SessionPanelController, InstrumentBase, SampleScene, SessionPanel.prefab.
+- DrumKit PanelAnchor 세계 좌표 높이 보정 필요 (Play 모드 기준 약 1.2m 목표이나 실제 scale 차이로 UI가 높을 수 있음).
+- 패널 방향(악기 정면 vs 상단 고정 등)과 잡기 wiring은 별도 plan 범위.
+- 자동 reflect 매칭 실패 — 상태 파일에 선행 plan 이력 없음. 선행 plan(2026-05-05-linksky0311-session-panel-volume-section.md)의 실패 AC #12/#13은 사용자가 수동으로 통과 처리 필요 (수동 폴백 필요).
 
 ## Handoff
 
-<!-- /spec-implement가 plan 완료 시 자동 갱신 -->
+- `SessionPanelController.cs` 주요 변경:
+  - `_trackInstrument` 플래그: PinchOpened→InstrumentOpened 전환 시 패널 위치 유지 (Hidden에서만 악기 위치 auto-open)
+  - `PositionAtInstrument()`: anchor.rotation 대신 카메라 facing 방식으로 수정 (canvas front face가 항상 플레이어를 향함)
+  - `_volCtrl` 캐싱 + InstrumentOpened 전환 시 `InjectProvider` 재호출: Hidden 상태에서 악기 변경 시 인스턴스 슬라이더 미노출 버그 수정
+- `InstrumentBase.cs`: `[SerializeField] Transform _panelAnchor` 추가 — null이면 루트 transform 반환
+- SampleScene: Piano/PanelAnchor child (로컬 y+1.2, z+0.3) + DrumKit/PanelAnchor child (로컬 y+0.3, z+0.3) + 각 `_panelAnchor` 할당
+- `SessionPanel.prefab` VolumeSectionContainer: `VerticalLayoutGroup` 추가 (padding 5px, spacing 10px, child force expand width) — 마스터/인스턴스 슬라이더 겹침 해결
+- 미완료 UX (잡기 wiring plan 범위): 패널이 악기 상단 고정 위치에 부착되는 방식, DrumKit PanelAnchor 세계 좌표 높이 보정

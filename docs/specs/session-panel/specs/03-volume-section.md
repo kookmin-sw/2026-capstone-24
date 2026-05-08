@@ -47,7 +47,7 @@ VR 환경에서 사용자는 자기 악기 사운드와 전체 마스터 사운�
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
 | 2026-05-05 | Session Panel Volume Section | Done | [2026-05-05-linksky0311-session-panel-volume-section.md](../../_archive/session-panel/plans/2026-05-05-linksky0311-session-panel-volume-section.md) |
-| 2026-05-07 | Instance Volume Slider Verification | Ready | [2026-05-07-linksky0311-session-panel-instance-volume-verification.md](../plans/2026-05-07-linksky0311-session-panel-instance-volume-verification.md) |
+| 2026-05-07 | Instance Volume Slider Verification | Done | [2026-05-07-linksky0311-session-panel-instance-volume-verification.md](../../_archive/session-panel/plans/2026-05-07-linksky0311-session-panel-instance-volume-verification.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/plan-new` 사용. 파일명은 날짜·작성자·slug 기반.
