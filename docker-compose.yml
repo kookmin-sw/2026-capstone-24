@@ -1,0 +1,53 @@
+# docker-compose 로컬 통합 스택 — spring + mariadb + dedicated-server
+# 사용법: docs/dev/local-stack.md 참조
+# 환경변수: 루트의 .env 파일에 정의 (.env.example 복사 후 채움)
+services:
+  mariadb:
+    image: mariadb:11.4
+    environment:
+      MARIADB_DATABASE: ${MARIADB_DATABASE}
+      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    healthcheck:
+      # mariadb:11.x 공식 이미지에 동봉된 healthcheck.sh 사용
+      # --connect: TCP 연결 가능 여부, --innodb_initialized: InnoDB 초기화 완료 여부
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+  spring:
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
+      # datasource — dev 프로파일의 DB_URL 을 컨테이너 호스트명으로 override
+      DB_URL: jdbc:mariadb://mariadb:3306/${MARIADB_DATABASE}?sslMode=disable
+      DB_USERNAME: ${MARIADB_USER}
+      DB_PASSWORD: ${MARIADB_PASSWORD}
+      # JWT
+      MURANG_JWT_SECRET: ${JWT_SECRET}
+      # Meta 인증: mock 모드 (real verifier 는 후속 plan)
+      MURANG_META_MOCK_PREFIX: ${MURANG_META_MOCK_PREFIX:-mock-meta:}
+    depends_on:
+      mariadb:
+        condition: service_healthy
+
+  dedicated-server:
+    build:
+      context: .
+      dockerfile: docker/dedicated-server/Dockerfile
+    image: room-server:latest
+    restart: "no"
+    # Photon Cloud Relay outbound 만 사용 — 인바운드 포트 매핑 불필요
+    # network_mode 기본 bridge
+
+volumes:
+  mariadb-data:

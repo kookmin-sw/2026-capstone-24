@@ -1,7 +1,7 @@
 # docker-compose 로컬 통합 스택 (spring + mariadb + dedicated-server)
 
 **Linked Spec:** [`03-room-session.md`](../specs/03-room-session.md)
-**Status:** `Ready`
+**Status:** `Done`
 
 ## Goal
 
@@ -38,23 +38,22 @@
 
 - `docker-compose.yml`
 - `.env.example`
-- `.env` (gitignore)
-- `.gitignore` 갱신 (필요 시)
+- `.gitignore` 갱신 (`.env` 추가)
 - `backend/Dockerfile`
 - `backend/.dockerignore`
-- `tools/run-stack-smoke.ps1` 또는 `tools/run-stack-smoke.sh`
 - `docs/dev/local-stack.md` — 로컬 stack 기동·정지·검증 절차 짧은 가이드
 - (선행 plan 산출인) `docker/dedicated-server/Dockerfile` 재사용
 
+> `tools/run-stack-smoke` 자동화 스크립트는 본 plan에서 분리되어 후속 plan [`2026-05-08-namae1128-stack-smoke-automation.md`](2026-05-08-namae1128-stack-smoke-automation.md)에서 다룬다.
+
 ## Acceptance Criteria
 
-- [ ] `[auto-hard]` `docker compose config`가 에러 없이 통과한다.
-- [ ] `[auto-hard]` `docker compose build`가 spring/dedicated-server 두 이미지에 대해 성공한다.
-- [ ] `[manual-hard]` `docker compose up -d` 직후 spring `/api/v1/users/me`(또는 health)가 200을 반환할 수 있는 상태가 된다.
-- [ ] `[manual-hard]` `meta-login` mock 호출이 200을 반환하고 MariaDB에 user 레코드가 적재된다.
-- [ ] `[manual-hard]` `docker compose down` 후 `docker compose up`을 다시 실행해도 같은 `metaAccountId` 로그인 시 동일한 `playerId`가 유지된다.
-- [ ] `[manual-hard]` Editor의 `RoomClientSmokeTest.unity`가 Photon Cloud 경유로 컨테이너 Dedicated Server에 합류해 서버 로그에 입장이 기록된다.
-- [ ] `[manual-hard]` `tools/run-stack-smoke` 스크립트가 5개 룸 라이프사이클 시나리오(`same-session`, `room-full`, `wrong-password`, `correct-password`, `room-cleanup`)를 모두 통과시킨다.
+- [x] `[auto-hard]` `docker compose config`가 에러 없이 통과한다.
+- [x] `[auto-hard]` `docker compose build`가 spring/dedicated-server 두 이미지에 대해 성공한다.
+- [x] `[manual-hard]` `docker compose up -d` 직후 spring `/api/v1/users/me`(또는 health)가 200을 반환할 수 있는 상태가 된다.
+- [x] `[manual-hard]` `meta-login` mock 호출이 200을 반환하고 MariaDB에 user 레코드가 적재된다.
+- [x] `[manual-hard]` `docker compose down` 후 `docker compose up`을 다시 실행해도 같은 `metaAccountId` 로그인 시 동일한 `playerId`가 유지된다.
+- [x] `[manual-hard]` Editor의 `RoomClientSmokeTest.unity`가 Photon Cloud 경유로 컨테이너 Dedicated Server에 합류해 서버 로그에 입장이 기록된다.
 
 ## Out of Scope
 
@@ -70,11 +69,22 @@
 - 헤드리스 클라이언트의 컨테이너화는 OpenGL/그래픽 의존성 때문에 까다로워 본 plan에서는 시도하지 않는다. e2e 자동화의 클라이언트 측은 호스트에서 Linux Server 빌드 또는 Editor batch로 실행한다.
 - Photon AppId와 JWT secret은 `.env`에만 두고 `.env.example`에는 placeholder만 남긴다. 절대 커밋되지 않도록 `.gitignore` 점검이 필요하다.
 - Dedicated Server 컨테이너는 stateless하지 않다(룸 상태 보유). 단일 인스턴스를 가정하며, 동시 다수 룸은 단일 프로세스 내에서 처리된다.
+- 2026-05-08: `docker compose config --quiet` exit 0으로 AC #1 pass.
+- 2026-05-08: `docker compose build`(AC #2)는 사용자 WSL2 + Docker Desktop 환경에서 spring/dedicated-server 두 이미지 모두 통과. 검증 중 발견된 사실 두 가지를 산출에 반영했다 — (1) `backend/gradlew`가 Windows git core.autocrlf로 CRLF 저장되어 `/bin/sh: ./gradlew: not found`로 실패, Dockerfile build stage에 `sed -i 's/\r$//' gradlew && chmod +x gradlew` 라인 추가로 해결. (2) MariaDB healthcheck를 `mysqladmin ping ...`에서 mariadb:11.x 표준인 `healthcheck.sh --connect --innodb_initialized`로 교체 + `start_period: 15s` 추가.
+- 2026-05-08: AC #3~#6 manual-hard 통과. 검증 흐름은 `docker compose up -d` → mariadb (healthy) + spring Up → `meta-login` mock 호출(요청 키 `metaIdToken`, `nickname`) → 200 응답 + ULID `playerId` + access/refresh 토큰 + MariaDB `users` 레코드 적재 → `docker compose down` 후 재기동 시 동일 `playerId` 유지 → Unity Editor `RoomClientSmokeTest` Play → Photon Cloud kr 리전 → 컨테이너 Dedicated Server에 `adding player [Player:2]` 기록.
+- 2026-05-08: 사용자 결정으로 원래 AC #7(`tools/run-stack-smoke` 5시나리오 자동화)는 본 plan에서 분리하고 별도 후속 plan [`2026-05-08-namae1128-stack-smoke-automation.md`](2026-05-08-namae1128-stack-smoke-automation.md)으로 옮겼다. 본 plan은 docker-compose 통합 + 통합 smoke까지로 닫는다.
+- 2026-05-08: 사용자 환경(WSL2 + Docker Desktop)에서 호스트 8080 포트가 점유되는 사례가 발생할 수 있으므로, 충돌 시 `docker-compose.yml`의 spring `ports` 매핑을 `"8081:8080"`처럼 변경하면 된다(컨테이너 내부 포트 8080은 그대로 유지).
 
 ## Handoff
 
-<!-- /spec-implement 가 plan 완료 후 채움. 후속 AWS 배포 plan이 의존하는 산출:
-- `docker-compose.yml` 의 서비스 정의/볼륨/네트워크
-- `.env.example` 키 목록 (운영에서는 별도 secrets manager로 주입)
-- `tools/run-stack-smoke` 의 검증 시나리오 (배포 후 prod-smoke로 재활용)
--->
+다음 plan(`AWS EC2 docker-compose 배포`, `tools/run-stack-smoke 자동화`)이 의존하는 산출과 제약:
+
+- **`docker-compose.yml` 3서비스 정의**: `spring`(build: backend/Dockerfile, ports 8080:8080), `mariadb`(image: mariadb:11.4, named volume `mariadb-data`, healthcheck: `healthcheck.sh --connect --innodb_initialized` + `start_period: 15s`), `dedicated-server`(build: docker/dedicated-server/Dockerfile). depends_on은 spring → mariadb(condition: service_healthy)로 직렬화.
+- **환경변수 키 (`.env.example`)**: `MARIADB_DATABASE`, `MARIADB_USER`, `MARIADB_PASSWORD`, `MARIADB_ROOT_PASSWORD`, `JWT_SECRET`, `SPRING_PROFILES_ACTIVE`(기본 `dev`), `MURANG_META_MOCK_PREFIX`(기본 `mock-meta:`). 운영에서는 동일 키를 secrets manager 또는 CI 환경변수로 주입.
+- **`backend/Dockerfile`**: multi-stage(`gradle:8-jdk21-jammy` build → `eclipse-temurin:21-jre` runtime). build stage에 `sed -i 's/\r$//' gradlew && chmod +x gradlew` 라인 포함 — Windows git CRLF 변환된 wrapper를 컨테이너에서 그대로 받기 위함. 운영에서도 그대로 사용.
+- **MariaDB 영속성**: named volume `mariadb-data`가 `docker compose down`에서 살아남음. `docker compose down -v`만 데이터 초기화에 사용. 운영에서는 host bind mount 또는 RDS로 교체 가능.
+- **dedicated-server 빌드 사전 조건**: `Builds/RoomAutomation/LinuxServer/` 산출이 build context(워크트리/리포 루트)에 있어야 함(선행 plan).
+- **호스트 포트 매핑**: 8080 충돌 시 `docker-compose.yml`의 spring `ports`만 변경(컨테이너 내부 8080 고정). Editor `MultiplayerAuthConfig.editorBackendBaseUrl`도 같이 변경 필요.
+- **Photon AppId**: 현재 `Assets/Photon/Fusion/Resources/NetworkProjectConfig.fusion`에 동봉되어 dedicated-server 이미지에 포함됨. 운영 분리(dev/prod AppId)는 추가 후속 plan.
+- **메인 인증 흐름**: `POST /api/v1/auth/meta-login` 요청 키는 `metaIdToken`(NotBlank, 12~4096자) + `nickname`(2~32자, `^[\p{L}\p{N} ]+$`). mock 모드에서는 `mock-meta:` prefix가 붙은 토큰만 통과.
+- **자동화 회귀 분리**: `tools/run-stack-smoke` 5시나리오 검증은 후속 plan [`2026-05-08-namae1128-stack-smoke-automation.md`](2026-05-08-namae1128-stack-smoke-automation.md)에서 본 plan의 docker-compose 환경 위에 작성.

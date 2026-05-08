@@ -99,3 +99,6 @@ crashlytics-build.properties
 
 # Claude Code local launcher config
 .claude/launch.json
+
+# Local environment secrets (docker-compose)
+.env

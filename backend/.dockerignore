@@ -1,0 +1,23 @@
+# Gradle 빌드 산출물 / 캐시 — build stage가 컨테이너 내부에서 다시 빌드한다
+build/
+.gradle/
+.gradle-user-home/
+
+# IDE 설정
+.idea/
+*.iml
+out/
+bin/
+
+# 로컬 실행 스크립트 / 로그
+run-dev.ps1
+verify-local-auth.ps1
+*.log
+
+# 환경변수 파일 (로컬 전용, 이미지에 포함되면 안 됨)
+.env
+.env.*
+!.env.example
+
+# README
+README.md
