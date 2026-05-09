@@ -1,7 +1,7 @@
 # 공개 룸 목록 조회 (잠금 표시 포함)
 
 **Linked Spec:** [`03-room-session.md`](../specs/03-room-session.md)
-**Status:** `Ready`
+**Status:** `Done`
 
 ## Goal
 
@@ -60,11 +60,18 @@ UI 표시(잠금 아이콘 시각화, 룸 클릭 시 비밀번호 입력 다이�
 
 - `RoomListQuery`는 룸에 합류하지 않은 상태에서만 lobby에 머문다. 룸에 합류하면 Photon Fusion 규칙상 lobby에서 자동 분리될 수 있는데, 본 plan은 "로비에서 목록 조회"만 다루므로 룸 합류 후 목록 갱신이 끊겨도 의도된 동작으로 본다(UI 측에서 룸 합류 후에는 목록을 숨기는 게 자연스러움).
 - SessionInfo가 비공개 룸을 노출하지 않도록 Photon Cloud 측에서 막혀 있는지는 Plan 1의 SessionProperties 등록 방식에 의존한다. 만약 비공개 정책이 필요해지면 spec을 갱신해야 한다(현 spec은 "모든 룸 목록 노출").
+- 검증 산출물 보강: 본래 Deliverables는 "RoomListQuery만 올린 검증용 씬"이었으나, `OnRoomListUpdated` 이벤트·항목 내용을 Console에서 관찰할 수단이 없어 manual-hard 검증이 불가능했다. `Assets/Multiplayer/Scripts/Room/Client/RoomListSmokeProbe.cs`를 추가하고 `RoomListSmokeTest.unity` 씬에 같이 올려 사용하기로 결정 (2026-05-09 수동 검증 단계에서 사용자 승인). 04-presence-ui 도입 시 본 SmokeProbe는 그대로 유지 가능.
+- `RoomListMapper.FromSessionInfo`의 `IsLocked` 판정은 처음에 `prop.Equals((SessionProperty)true)` 비교로 구현됐는데, Photon Cloud lobby가 bool SessionProperty를 int(0/1)로 coerce하는 동작 때문에 항상 false를 반환하는 것이 manual-hard 검증에서 드러났다. `(bool)prop` → `(int)prop != 0` 순으로 try cast하는 fallback 패턴으로 교체 (2026-05-09).
+- 검증 중 관찰: dedicated-server 컨테이너만 띄운 상태에서 `SessionInfo.PlayerCount`가 1로, `MaxPlayers`가 입력값(4)보다 1 큰 5로 표시됨. dedicated-server 자체가 Photon 측 Player 카운터에 포함되거나 Photon이 host 자리를 +1 추가하는 것으로 의심됨. 본 plan AC는 "현재 인원/정원 매핑 정확성"까지 요구하지 않아 통과 처리했으나, 04-presence-ui 또는 후속 plan에서 표시 정확성을 다룰 때 재확인 필요.
 
 ## Handoff
 
-<!-- /spec-implement 가 plan 완료 후 채움. 04-presence-ui 가 의존하는 공개 API:
-- `RoomListQuery.OnRoomListUpdated` 이벤트
-- `RoomListQuery.CurrentList` 프로퍼티
-- `RoomListEntry { roomName, currentPlayers, maxPlayers, isLocked }`
--->
+04-presence-ui가 이어서 의존하는 공개 API와 자산:
+
+- `RoomListQuery.OnRoomListUpdated` (`event Action<IReadOnlyList<RoomListEntry>>`) — 룸 목록 변경 시 전체 스냅샷 전달.
+- `RoomListQuery.CurrentList` (`IReadOnlyList<RoomListEntry>`) — 늦은 구독자가 즉시 현재 상태를 읽기 위한 프로퍼티.
+- `RoomListEntry` (`readonly struct { RoomName, CurrentPlayers, MaxPlayers, IsLocked }`) — 04 측이 소비하는 불변 데이터 모델, `IEquatable<RoomListEntry>` 구현.
+- `RoomListMapper.FromSessionInfo(SessionInfo)` / `FromSessionInfoList(IList<SessionInfo>)` — SessionInfo → RoomListEntry 순수 변환 함수. **`IsLocked` 판정은 Photon Cloud lobby가 bool SessionProperty를 int(0/1)로 coerce하는 동작이 관찰되어 bool/int 양쪽 fallback으로 처리**(2026-05-09 수동 검증으로 확인).
+- `RoomListSmokeTest.unity` 씬 + `RoomListSmokeProbe` MonoBehaviour — `OnRoomListUpdated` 콘솔 로깅 검증 도구. 04 측에서도 새 UI 와이어업 시 동일 패턴으로 디버깅 가능.
+- `AssemblyInfo.cs` — `InternalsVisibleTo("Murang.Multiplayer.Room.Tests")` 추가. 04 plan 작성 시 `Murang.Multiplayer` 어셈블리 구조 변경 없음.
+- 서버 측 publish는 [`RoomServerBootstrap.BuildSessionProperties`](../../../../Assets/Multiplayer/Scripts/Room/Server/RoomServerBootstrap.cs)·[`RoomServerConfig.BuildSessionProperties`](../../../../Assets/Multiplayer/Scripts/Room/Server/RoomServerConfig.cs) 두 경로가 모두 `[IsLocked] = bool` 형태로 송신 — 향후 다른 publish 경로 추가 시 동일 키·표현 사용 권장.
