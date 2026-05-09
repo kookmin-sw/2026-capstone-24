@@ -113,7 +113,7 @@
   }
 
   .team-grid {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .panel,
@@ -428,7 +428,7 @@
   <section id="team" class="section">
     <p class="eyebrow">Team</p>
     <h2>팀명은 밴드로 하겠습니다. 근데 이제 클래식을 곁들인</h2>
-    <p class="section-intro">캡스톤 팀은 기획, 개발, 사운드, 그래픽, 멀티플레이, 마케팅을 나누어 MU:RANG을 만들고 있습니다.</p>
+    <p class="section-intro">캡스톤 팀은 기획, 개발, 사운드, 핸드 트래킹, 멀티플레이를 중심으로 MU:RANG을 만들고 있습니다.</p>
 
     <div class="team-grid">
       <div class="team-card">
@@ -446,36 +446,15 @@
         <span>20223157</span>
         <p>프로젝트 기획, 멀티플레이 구현, DB 연결, 서류 작성</p>
       </div>
-      <div class="team-card">
-        <strong>강태찬</strong>
-        <span>20251345</span>
-        <p>악기·플레이어·스튜디오 에셋 제작, 앱 아이콘 제작, PPT 디자인</p>
-      </div>
-      <div class="team-card">
-        <strong>홍희성</strong>
-        <span>20190221</span>
-        <p>MU:RANG SNS 운영, SNS 광고 집행, 인플루언서 협찬, 펀딩·와디즈 운영, PPT 디자인</p>
-      </div>
     </div>
   </section>
 
-  <section id="usage" class="section">
-    <p class="eyebrow">How To Run</p>
-    <h2>실행 방법</h2>
-    <div class="summary-grid">
-      <div class="panel">
-        <strong>1. 프로젝트 열기</strong>
-        <p>Unity Hub에서 Unity 6000.3.10f1 환경으로 저장소를 열고 패키지 임포트가 끝날 때까지 기다립니다.</p>
-      </div>
-      <div class="panel">
-        <strong>2. 씬 실행</strong>
-        <p>주요 씬은 <code>Assets/Scenes/SampleScene.unity</code>입니다. XR 장비 연결 후 에디터 또는 빌드에서 실행합니다.</p>
-      </div>
-      <div class="panel">
-        <strong>3. 연주 체험</strong>
-        <p>가상 스튜디오에서 악기를 선택하고 곡·난이도를 고른 뒤 리듬게임 또는 합주 모드를 플레이합니다.</p>
-      </div>
-    </div>
+  <section class="section">
+    <p class="eyebrow">Release Plan</p>
+    <h2>출시 채널</h2>
+    <p class="section-intro">
+      MU:RANG은 완성 이후 Meta App Store 또는 Steam 출시를 목표로 합니다. 정식 체험 링크와 다운로드 안내는 출시 준비가 끝난 뒤 이 페이지에 연결할 예정입니다.
+    </p>
     <div class="quick-links">
       <a href="https://github.com/kookmin-sw/2026-capstone-24">GitHub Repository</a>
       <a href="docs/specs/">Spec System</a>
