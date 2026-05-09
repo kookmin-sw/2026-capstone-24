@@ -62,6 +62,11 @@
 - [x] `[manual-hard]` Standalone XR Plug-in Management 탭에서 OpenXR loader가 **활성** 상태인 그대로 `Tools/Multiplayer/Build Dedicated Server (Linux)`를 호출하면 OpenXR Build Failed 없이 `Builds/RoomAutomation/LinuxServer/RoomServer.x86_64`가 산출되고, 빌드 직후 같은 탭을 다시 열었을 때 OpenXR loader가 여전히 활성 상태로 유지된다.
 - [ ] `[manual-hard]` 위 빌드 직후 Editor에서 `SampleScene` 또는 임의의 OpenXR 사용 씬을 Play하면 OpenXR이 정상 초기화된다 (콘솔에 OpenXR 관련 init 실패 0건, XR Origin/Hand Tracking 동작 확인).
 
+보류 사유 (2026-05-09):
+- 현재 팀 장비 제약상 `Windows x64 + Meta Quest Link` 기반 Editor Play 실검증 경로가 없다.
+- macOS에서의 Meta Quest Link Editor Play는 Unity 공식 지원 검증 경로가 아니므로 본 acceptance의 대체 근거로 쓰지 않는다.
+- 따라서 마지막 항목은 추후 `Windows x64 Standalone` 타깃 + Quest Link 가능 환경이 준비되면 재검증 후 닫는다.
+
 ## Out of Scope
 
 - Windows Dedicated Server 빌드 모듈 자동 설치(별 plan, 또는 사용자가 Hub로 직접 처리).
