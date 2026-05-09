@@ -5,6 +5,7 @@ public class DrumKit : InstrumentBase
 {
     [Header("Piece Audio Settings")]
     [SerializeField, Min(1)] int maxVoices = 4;
+    [SerializeField, Range(1f, 4f)] float volumeGain = 2f;
     [SerializeField] bool spatialize = true;
     [SerializeField] bool spatializePostEffects = true;
     [SerializeField, Range(0f, 1f)] float spatialBlend = 1f;
@@ -55,7 +56,7 @@ public class DrumKit : InstrumentBase
         if (!TryFindClipByPrefix(bank, midiEvent.Note.ToString(), out AudioClip clip))
             return false;
 
-        playback = new NotePlayback(clip, 1f, midiEvent.Velocity);
+        playback = new NotePlayback(clip, 1f, midiEvent.Velocity * volumeGain);
         return true;
     }
 }

@@ -12,7 +12,7 @@ public sealed class DrumHitZone : MonoBehaviour
     [SerializeField] BoxCollider triggerCollider;
     [SerializeField] LayerMask allowedLayers = ~0;
     [SerializeField, Min(0f)] float minImpactSpeed = 0.2f;
-    [SerializeField, Min(0f)] float maxImpactSpeed = 4f;
+    [SerializeField, Min(0f)] float maxImpactSpeed = 1.5f;
     [SerializeField, Min(0f)] float retriggerCooldown = 0.05f;
     [SerializeField] bool useFingertipVelocityFallback = true;
 

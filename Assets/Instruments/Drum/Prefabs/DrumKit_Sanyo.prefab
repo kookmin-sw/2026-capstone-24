@@ -233,6 +233,8 @@ MonoBehaviour:
   rightGhostWristSource: {fileID: 0}
   leftPlayHandDriver: {fileID: 0}
   rightPlayHandDriver: {fileID: 0}
+  leftPhysicsHand: {fileID: 0}
+  rightPhysicsHand: {fileID: 0}
 --- !u!114 &3887742320122833032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -319,6 +321,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 0ad64276452446648851603dca420531, type: 3}
   laneConfig: {fileID: 0}
   maxVoices: 4
+  volumeGain: 2
   spatialize: 1
   spatializePostEffects: 1
   spatialBlend: 1
@@ -435,6 +438,10 @@ PrefabInstance:
       propertyPath: targetPiece
       value: 
       objectReference: {fileID: 5444793844628304712}
+    - target: {fileID: 4435546699169796912, guid: 498a57e217b93b8429756a99f6fb19fb, type: 3}
+      propertyPath: maxImpactSpeed
+      value: 1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 5615501292710821363, guid: 498a57e217b93b8429756a99f6fb19fb, type: 3}
       propertyPath: m_LocalPosition.y
       value: -0.0686
@@ -528,6 +535,10 @@ PrefabInstance:
       propertyPath: targetPiece
       value: 
       objectReference: {fileID: 7915219057496428026}
+    - target: {fileID: 8785570786561467669, guid: 9abc6e2a5896871468d0c23cf8d167b5, type: 3}
+      propertyPath: maxImpactSpeed
+      value: 1.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -561,6 +572,10 @@ PrefabInstance:
       propertyPath: targetPiece
       value: 
       objectReference: {fileID: 3158429580001639234}
+    - target: {fileID: 470484035483227660, guid: 5a82f8ba8376a5345a416be52b19628c, type: 3}
+      propertyPath: maxImpactSpeed
+      value: 1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 2023516062849488057, guid: 5a82f8ba8376a5345a416be52b19628c, type: 3}
       propertyPath: m_Name
       value: FloorTom
@@ -682,6 +697,10 @@ PrefabInstance:
       propertyPath: targetPiece
       value: 
       objectReference: {fileID: 3343311390039844092}
+    - target: {fileID: 6372275601102581212, guid: 687b0e71b46f53b4396ed7f7ca7a276c, type: 3}
+      propertyPath: maxImpactSpeed
+      value: 1.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -715,6 +734,10 @@ PrefabInstance:
       propertyPath: targetPiece
       value: 
       objectReference: {fileID: 7777614892825327226}
+    - target: {fileID: 860376190814420904, guid: 584dd2d7809f8c343a159d09f3374433, type: 3}
+      propertyPath: maxImpactSpeed
+      value: 1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 1055056541254304700, guid: 584dd2d7809f8c343a159d09f3374433, type: 3}
       propertyPath: m_Name
       value: BassDrum
@@ -796,6 +819,10 @@ PrefabInstance:
       propertyPath: targetPiece
       value: 
       objectReference: {fileID: 3238246797775486575}
+    - target: {fileID: 6209753519844141203, guid: 88fba63d31ff5384b835adb148206b97, type: 3}
+      propertyPath: maxImpactSpeed
+      value: 1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 8648529258213501258, guid: 88fba63d31ff5384b835adb148206b97, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.177
@@ -869,6 +896,10 @@ PrefabInstance:
       propertyPath: targetPiece
       value: 
       objectReference: {fileID: 5299799060911324864}
+    - target: {fileID: 1247705253952356991, guid: 25d36ab354006c94b8227233dc1602b6, type: 3}
+      propertyPath: maxImpactSpeed
+      value: 1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 8744420917128976635, guid: 25d36ab354006c94b8227233dc1602b6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.386
@@ -990,6 +1021,10 @@ PrefabInstance:
       propertyPath: targetPiece
       value: 
       objectReference: {fileID: 856577831009878542}
+    - target: {fileID: 5632843045847236141, guid: 2e7682fc50f7089459636091324e4f80, type: 3}
+      propertyPath: maxImpactSpeed
+      value: 1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 6662698489975394866, guid: 2e7682fc50f7089459636091324e4f80, type: 3}
       propertyPath: m_Size.x
       value: 0.01149974
