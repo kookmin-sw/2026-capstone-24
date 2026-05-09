@@ -282,7 +282,7 @@
       <h1>MU:RANG</h1>
       <p class="lead">연습실이 없어도, 악기가 없어도, 함께할 사람이 멀리 있어도 연주가 계속되는 VR 악기 연주 플랫폼</p>
       <div class="hero-actions">
-        <a href="#project">프로젝트 소개</a>
+        <a href="#project">서비스 소개</a>
         <a href="#features">핵심 기능</a>
         <a href="#team">팀 소개</a>
       </div>
@@ -314,24 +314,24 @@
   </section>
 
   <section class="section">
-    <p class="eyebrow">Midterm Feedback → Final Direction</p>
-    <h2>중간평가 피드백을 서비스 정의로 구체화했습니다.</h2>
+    <p class="eyebrow">Player Journey</p>
+    <h2>처음 잡는 순간부터 한 곡을 완성하는 흐름.</h2>
     <p class="section-intro">
-      중간평가에서는 "VR기기를 활용한 악기 연주는 흥미롭고 참신하지만, 시장성과 서비스 구체성, 단계별 협주의 난이도 정의가 필요하다"는 피드백을 받았습니다.
-      최종 발표 방향은 이 지점을 정면으로 보완합니다.
+      MU:RANG은 연습을 숙제처럼 시작하게 만들지 않습니다. 사용자는 가상 스튜디오에 들어와 악기를 고르고, 자기 수준에 맞는 곡을 선택한 뒤,
+      직접 연주하는 파트와 자동 반주가 어우러지는 한 곡의 경험을 완성합니다.
     </p>
 
     <div class="milestone">
-      <strong>타깃 구체화</strong>
-      <p>메인 타깃은 악기를 배우고 싶지만 중단 경험이 있는 20대 초중반 사용자, 보조 타깃은 합주 경험은 있으나 시간·공간 제약을 느끼는 사용자로 정의했습니다.</p>
+      <strong>Choose</strong>
+      <p>피아노, 드럼 등 가상 악기를 둘러보고 지금 연주하고 싶은 악기를 바로 선택합니다.</p>
     </div>
     <div class="milestone">
-      <strong>난이도 구체화</strong>
-      <p>곡 선택 후 난이도를 고르고, 차트 파일을 기반으로 노트 생성·이동·판정·피드백이 이어지는 리듬게임 학습 흐름을 명확히 했습니다.</p>
+      <strong>Play</strong>
+      <p>곡과 난이도를 고른 뒤 노트 가이드를 따라 연주하고, 박자와 입력 정확도를 즉시 피드백받습니다.</p>
     </div>
     <div class="milestone">
-      <strong>시장 진입 구체화</strong>
-      <p>마케팅 제안서는 "연주 유목민, 이제 정착할 시간"이라는 메시지 아래 인플루언서 시딩, 체험형 이벤트, SNS 확산 캠페인을 결합합니다.</p>
+      <strong>Jam</strong>
+      <p>혼자 연주할 때도 자동 반주가 곡을 채워주고, 함께 접속한 사용자와는 같은 공간에서 합주합니다.</p>
     </div>
   </section>
 
@@ -375,43 +375,30 @@
   </section>
 
   <section class="section strategy-band">
-    <p class="eyebrow">Business & Marketing</p>
-    <h2>사업성은 "체험 → 공유 → 정착"의 흐름으로 설계합니다.</h2>
+    <p class="eyebrow">Brand Vision</p>
+    <h2>어디서든 연주가 시작되는 세계를 만듭니다.</h2>
     <p class="section-intro">
-      최종 발표용 마케팅 제안서는 악기 연주 입문자, 음악 게임 사용자, VR 기반 개인 연습 사용자를 핵심 오디언스로 보고,
-      MU:RANG을 "연주 시작의 가장 쉬운 진입점"으로 포지셔닝합니다.
+      MU:RANG은 악기 입문자, 음악 게임 사용자, VR 콘텐츠 사용자 모두에게 연주를 더 가볍게 시작하고 오래 머물 수 있는 경험을 제안합니다.
+      배워야 하는 콘텐츠가 아니라, 들어가면 바로 음악이 시작되는 공간을 지향합니다.
     </p>
     <div class="strategy-list">
       <div>
-        <h3>인지</h3>
-        <p>연주·기타·VR 게임 크리에이터 협업으로 "이건 게임인가, 진짜 연주인가?"라는 호기심을 만듭니다.</p>
+        <h3>Start</h3>
+        <p>악기와 연습실을 갖추기 전에도 VR 기기만으로 음악을 시작할 수 있습니다.</p>
       </div>
       <div>
-        <h3>경험</h3>
-        <p>영화관·체험관형 VR 콘서트 이벤트로 혼자가 아닌 연주 경험을 직접 느끼게 합니다.</p>
+        <h3>Stay</h3>
+        <p>목표, 난이도, 판정 피드백이 연습을 짧은 성취의 반복으로 바꿉니다.</p>
       </div>
       <div>
-        <h3>확산</h3>
-        <p>포스트잇형 옥외 캠페인과 SNS 인증을 통해 "연주를 붙이다"라는 컨셉을 공유 행동으로 연결합니다.</p>
+        <h3>Share</h3>
+        <p>멀티플레이 합주와 공연형 경험을 통해 혼자 치던 음악을 함께 나누는 순간으로 확장합니다.</p>
       </div>
       <div>
-        <h3>목표</h3>
-        <p>제안서 초안 기준 총 노출 500만 회, QR 유입 5만 건, VR 체험 1.5만 건, SNS 게시물 5천 건을 캠페인 목표로 검토합니다.</p>
+        <h3>Expand</h3>
+        <p>새로운 곡, 악기, 가상 공간을 추가하며 하나의 연주 플랫폼으로 성장합니다.</p>
       </div>
     </div>
-  </section>
-
-  <section class="section">
-    <p class="eyebrow">Technology</p>
-    <h2>핸드 트래킹과 사운드 파이프라인 위에 리듬게임 세션을 올립니다.</h2>
-    <p class="section-intro">
-      Unity 6000.3.10f1, URP, OpenXR 기반으로 VR 입력을 처리하고, 악기 입력 이벤트를 MIDI 이벤트로 표준화해 사운드 엔진으로 전달합니다.
-      리듬게임은 텍스트 차트 파일을 곡의 단일 진실원으로 삼아 노트 생성, 판정, 자동 반주를 구성합니다.
-    </p>
-    <figure class="wide-figure">
-      <img src="docs/assets/pages/system-architecture.png" alt="MU:RANG 시스템 아키텍처 다이어그램">
-      <figcaption>시스템 흐름: OpenXR 입력, 핸드 레이어, 악기 물리, MIDI 매핑, 사운드 엔진, 리듬게임 판정, 네트워크 동기화</figcaption>
-    </figure>
   </section>
 
   <section id="video" class="section">
@@ -419,8 +406,7 @@
     <h2>소개 영상</h2>
     <div class="video-panel">
       <p>
-        최종 발표용 시연 영상은 제작 중입니다. 영상이 완성되면 이 영역에 YouTube 또는 발표 데모 링크를 연결하고,
-        현재 페이지의 서비스 화면·핵심 기능 설명과 함께 최종 산출물을 소개할 예정입니다.
+        플레이 영상은 공개 준비가 끝나는 대로 이 영역에 연결됩니다. 가상 악기 선택, 리듬게임 연주, 원격 합주 장면을 한 번에 확인할 수 있는 영상으로 업데이트할 예정입니다.
       </p>
     </div>
   </section>
@@ -457,7 +443,6 @@
     </p>
     <div class="quick-links">
       <a href="https://github.com/kookmin-sw/2026-capstone-24">GitHub Repository</a>
-      <a href="docs/specs/">Spec System</a>
     </div>
   </section>
 </div>
