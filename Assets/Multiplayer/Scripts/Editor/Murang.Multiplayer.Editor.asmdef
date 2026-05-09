@@ -3,6 +3,8 @@
     "rootNamespace": "Murang.Multiplayer.Editor",
     "references": [
         "Murang.Multiplayer",
+        "Unity.XR.Management",
+        "Unity.XR.Management.Editor",
         "UnityEditor.TestRunner",
         "UnityEngine.TestRunner"
     ],

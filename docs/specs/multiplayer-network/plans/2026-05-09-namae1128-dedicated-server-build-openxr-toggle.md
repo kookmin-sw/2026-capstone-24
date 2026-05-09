@@ -1,7 +1,7 @@
 # dedicated-server 빌드 시 Standalone OpenXR loader 임시 토글
 
 **Linked Spec:** [`03-room-session.md`](../specs/03-room-session.md)
-**Status:** `Ready`
+**Status:** `In Progress`
 
 ## Goal
 
@@ -58,8 +58,8 @@
 
 ## Acceptance Criteria
 
-- [ ] `[auto-hard]` `Assets/Multiplayer/Scripts/Editor/RoomServerBuildMenu.cs` 변경분이 컴파일 에러 없이 빌드된다 (Unity 콘솔 에러 0건).
-- [ ] `[manual-hard]` Standalone XR Plug-in Management 탭에서 OpenXR loader가 **활성** 상태인 그대로 `Tools/Multiplayer/Build Dedicated Server (Linux)`를 호출하면 OpenXR Build Failed 없이 `Builds/RoomAutomation/LinuxServer/RoomServer.x86_64`가 산출되고, 빌드 직후 같은 탭을 다시 열었을 때 OpenXR loader가 여전히 활성 상태로 유지된다.
+- [x] `[auto-hard]` `Assets/Multiplayer/Scripts/Editor/RoomServerBuildMenu.cs` 변경분이 컴파일 에러 없이 빌드된다 (Unity 콘솔 에러 0건).
+- [x] `[manual-hard]` Standalone XR Plug-in Management 탭에서 OpenXR loader가 **활성** 상태인 그대로 `Tools/Multiplayer/Build Dedicated Server (Linux)`를 호출하면 OpenXR Build Failed 없이 `Builds/RoomAutomation/LinuxServer/RoomServer.x86_64`가 산출되고, 빌드 직후 같은 탭을 다시 열었을 때 OpenXR loader가 여전히 활성 상태로 유지된다.
 - [ ] `[manual-hard]` 위 빌드 직후 Editor에서 `SampleScene` 또는 임의의 OpenXR 사용 씬을 Play하면 OpenXR이 정상 초기화된다 (콘솔에 OpenXR 관련 init 실패 0건, XR Origin/Hand Tracking 동작 확인).
 
 ## Out of Scope
@@ -78,7 +78,15 @@
 
 ## Handoff
 
-<!-- /spec-implement 가 plan 완료 후 채움. 후속 plan이 알아야 할 공개 동작:
-- BuildDedicatedServer 호출은 진입 시점의 Standalone XR loader 상태를 보존한다.
-- 동일 가드를 다른 빌드 진입점(예: 미래의 RoomServerBuildMenu 추가 메뉴)에 확장하려면 BackupAndClearStandaloneXrLoaders/RestoreStandaloneXrLoaders 헬퍼를 같은 try/finally 패턴으로 재사용한다.
--->
+### 2026-05-09 Codex 진행 기록
+
+- `Assets/Multiplayer/Scripts/Editor/Murang.Multiplayer.Editor.asmdef`에 `Unity.XR.Management`, `Unity.XR.Management.Editor` 참조를 추가해 `RoomServerBuildMenu.cs`의 XR Management API 컴파일 에러를 복구했다.
+- `Assets/Multiplayer/Scripts/Editor/RoomServerBuildMenu.cs`에서 dedicated-server 빌드 경로만 Standalone XR loader를 `backup -> clear -> build -> restore` 순서로 감싸도록 구현했다.
+- Unity MCP로 `Tools/Multiplayer/Build Dedicated Server (Linux)`를 실행해 `Built dedicated server at D:\2026-capstone-24\Builds\RoomAutomation\LinuxServer\RoomServer.x86_64` 로그를 확인했고, 산출물 타임스탬프도 갱신됐다.
+- 빌드 후 `Assets/XR/XRGeneralSettingsPerBuildTarget.asset`를 확인했을 때 Standalone `m_Loaders`에 OpenXR loader GUID(`cdf7e1d665a9ccb4eb23295a8cd09435`)가 다시 들어와 있어 복원이 유지됨을 확인했다.
+- 남은 검증은 `Windows x64 Standalone` 타깃으로 되돌린 뒤 `Assets/Scenes/SampleScene.unity`를 Editor Play + Meta Quest Link 환경에서 다시 확인하는 것이다. 이번 세션에서 본 OpenXR Play 에러는 Linux Standalone 타깃이 활성인 상태에서 발생한 로그라 최종 acceptance로 닫지 않았다.
+- Unity 검증 중 `Assets/XR/XRGeneralSettingsPerBuildTarget.asset`와 일부 ProjectSettings/URP 자산이 touched 상태가 되었지만, 이번 변경 세트에는 semantic diff가 있는 코드/문서만 포함한다.
+
+후속 plan이 알아야 할 공개 동작:
+- `BuildDedicatedServer` 호출은 진입 시점의 Standalone XR loader 상태를 보존한다.
+- 동일 가드를 다른 빌드 진입점(예: 미래의 `RoomServerBuildMenu` 추가 메뉴)에 확장하려면 `BackupAndClearStandaloneXrLoaders` / `RestoreStandaloneXrLoaders` 헬퍼를 같은 try/finally 패턴으로 재사용한다.
