@@ -1,0 +1,484 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MU:RANG Preview</title>
+  <style>
+    body {
+      margin: 0;
+      background: #f2f4ec;
+      color: #1d211f;
+      font-family: Arial, sans-serif;
+    }
+
+    main {
+      max-width: 1100px;
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 24px;
+      background: #ffffff;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.08);
+    }
+
+    @media (max-width: 900px) {
+      main {
+        padding: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+<style>
+  .murang-page {
+    color: #1d211f;
+    font-family: "Pretendard", "Noto Sans KR", "Segoe UI", sans-serif;
+    line-height: 1.65;
+  }
+
+  .murang-page * {
+    box-sizing: border-box;
+  }
+
+  .murang-page a {
+    color: inherit;
+  }
+
+  .hero {
+    min-height: 540px;
+    margin: -24px -24px 36px;
+    padding: 52px min(7vw, 72px);
+    display: grid;
+    align-items: end;
+    background:
+      linear-gradient(90deg, rgba(5, 7, 8, 0.94), rgba(5, 7, 8, 0.72) 48%, rgba(5, 7, 8, 0.28)),
+      url("docs/assets/pages/performance-stage.jpg") center / cover no-repeat;
+    border-radius: 0 0 8px 8px;
+    color: #f6f7ef;
+  }
+
+  .eyebrow {
+    margin: 0 0 12px;
+    color: #d7ff45;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .hero h1 {
+    margin: 0;
+    color: #ffffff;
+    font-size: clamp(48px, 9vw, 112px);
+    line-height: 0.94;
+    letter-spacing: 0;
+  }
+
+  .hero .lead {
+    max-width: 740px;
+    margin: 22px 0 28px;
+    color: #f3f4e9;
+    font-size: clamp(20px, 2.2vw, 30px);
+    font-weight: 650;
+  }
+
+  .hero-actions,
+  .quick-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .hero-actions a,
+  .quick-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 10px 16px;
+    border: 1px solid rgba(215, 255, 69, 0.55);
+    border-radius: 999px;
+    background: rgba(215, 255, 69, 0.12);
+    color: #faffda;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .section {
+    margin: 54px 0;
+  }
+
+  .section h2 {
+    margin: 0 0 14px;
+    color: #121412;
+    font-size: clamp(30px, 4vw, 48px);
+    line-height: 1.12;
+    letter-spacing: 0;
+  }
+
+  .section h3 {
+    margin: 0 0 10px;
+    color: #171917;
+    font-size: 22px;
+  }
+
+  .section-intro {
+    max-width: 820px;
+    margin: 0 0 26px;
+    color: #3f4742;
+    font-size: 18px;
+  }
+
+  .summary-grid,
+  .feature-grid,
+  .team-grid {
+    display: grid;
+    gap: 18px;
+  }
+
+  .summary-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .feature-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .team-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .panel,
+  .feature,
+  .team-card,
+  .video-panel {
+    border: 1px solid #dbe2d4;
+    border-radius: 8px;
+    background: #fbfcf4;
+    box-shadow: 0 10px 26px rgba(22, 28, 20, 0.08);
+  }
+
+  .panel,
+  .team-card,
+  .video-panel {
+    padding: 22px;
+  }
+
+  .panel strong {
+    display: block;
+    margin-bottom: 8px;
+    color: #151815;
+    font-size: 19px;
+  }
+
+  .panel p,
+  .feature p,
+  .team-card p,
+  .video-panel p {
+    margin: 0;
+    color: #465049;
+  }
+
+  .image-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 18px;
+    align-items: stretch;
+  }
+
+  .image-row figure,
+  .feature figure,
+  .wide-figure {
+    margin: 0;
+  }
+
+  .image-row img,
+  .feature img,
+  .wide-figure img {
+    display: block;
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid #d9dfd2;
+    background: #eef1e8;
+  }
+
+  .image-row figcaption,
+  .wide-figure figcaption {
+    margin-top: 8px;
+    color: #667069;
+    font-size: 14px;
+  }
+
+  .feature {
+    overflow: hidden;
+  }
+
+  .feature .feature-body {
+    padding: 20px;
+  }
+
+  .strategy-band {
+    padding: 34px;
+    border-radius: 8px;
+    background: #101312;
+    color: #f5f7ef;
+  }
+
+  .strategy-band h2,
+  .strategy-band h3 {
+    color: #ffffff;
+  }
+
+  .strategy-band .section-intro,
+  .strategy-band p {
+    color: #d6ded5;
+  }
+
+  .strategy-list {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 22px;
+  }
+
+  .strategy-list div {
+    min-height: 142px;
+    padding: 18px;
+    border-left: 4px solid #d7ff45;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+  }
+
+  .milestone {
+    display: grid;
+    grid-template-columns: 180px minmax(0, 1fr);
+    gap: 18px;
+    padding: 18px 0;
+    border-top: 1px solid #dbe2d4;
+  }
+
+  .milestone strong {
+    color: #151815;
+  }
+
+  .team-card strong {
+    display: block;
+    color: #111411;
+    font-size: 18px;
+  }
+
+  .team-card span {
+    display: block;
+    margin: 4px 0 12px;
+    color: #71806d;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .quick-links {
+    margin-top: 18px;
+  }
+
+  .quick-links a {
+    border-color: #c7d61f;
+    background: #edf7ac;
+    color: #1d211f;
+  }
+
+  @media (max-width: 900px) {
+    .hero {
+      min-height: 460px;
+      margin: -18px -18px 28px;
+      padding: 38px 24px;
+    }
+
+    .summary-grid,
+    .feature-grid,
+    .image-row,
+    .strategy-list,
+    .team-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .milestone {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+  }
+</style>
+
+<div class="murang-page">
+  <section class="hero">
+    <div>
+      <p class="eyebrow">Kookmin SW Capstone Design</p>
+      <h1>MU:RANG</h1>
+      <p class="lead">연습실이 없어도, 악기가 없어도, 함께할 사람이 멀리 있어도 연주가 계속되는 VR 악기 연주 플랫폼</p>
+      <div class="hero-actions">
+        <a href="#project">서비스 소개</a>
+        <a href="#features">핵심 기능</a>
+        <a href="#team">팀 소개</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="project" class="section">
+    <p class="eyebrow">Why MU:RANG</p>
+    <h2>연주를 포기하게 만드는 것은 의지보다 환경입니다.</h2>
+    <p class="section-intro">
+      MU:RANG은 MUsic과 유랑(RANG)을 결합한 이름입니다. 악기 연주를 배우고 싶지만 공간, 소음, 악기 구매 비용, 합주 인원 부족, 악보와 박자의 난이도 때문에 지속하지 못하는 사람들에게
+      "누구나 즉시 즐길 수 있는 VR 연주 경험"을 제공하는 것이 목표입니다.
+    </p>
+
+    <div class="summary-grid">
+      <div class="panel">
+        <strong>공간의 한계 해소</strong>
+        <p>가상 스튜디오에서 피아노, 드럼 등 여러 악기를 선택하고 소음 부담 없이 연주 경험을 시작합니다.</p>
+      </div>
+      <div class="panel">
+        <strong>학습 장벽 완화</strong>
+        <p>리듬게임 방식의 노트 가이드와 판정 피드백으로 악보를 바로 읽기 어려운 사용자도 곡을 따라갈 수 있습니다.</p>
+      </div>
+      <div class="panel">
+        <strong>합주의 단절 해소</strong>
+        <p>멀티플레이 기반 원격 합주를 통해 혼자 연습하던 사용자가 다른 연주자와 같은 공간감을 공유합니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <p class="eyebrow">Player Journey</p>
+    <h2>처음 잡는 순간부터 한 곡을 완성하는 흐름.</h2>
+    <p class="section-intro">
+      MU:RANG은 연습을 숙제처럼 시작하게 만들지 않습니다. 사용자는 가상 스튜디오에 들어와 악기를 고르고, 자기 수준에 맞는 곡을 선택한 뒤,
+      직접 연주하는 파트와 자동 반주가 어우러지는 한 곡의 경험을 완성합니다.
+    </p>
+
+    <div class="milestone">
+      <strong>Choose</strong>
+      <p>피아노, 드럼 등 가상 악기를 둘러보고 지금 연주하고 싶은 악기를 바로 선택합니다.</p>
+    </div>
+    <div class="milestone">
+      <strong>Play</strong>
+      <p>곡과 난이도를 고른 뒤 노트 가이드를 따라 연주하고, 박자와 입력 정확도를 즉시 피드백받습니다.</p>
+    </div>
+    <div class="milestone">
+      <strong>Jam</strong>
+      <p>혼자 연주할 때도 자동 반주가 곡을 채워주고, 함께 접속한 사용자와는 같은 공간에서 합주합니다.</p>
+    </div>
+  </section>
+
+  <section id="features" class="section">
+    <p class="eyebrow">Service Structure</p>
+    <h2>가상 악기, 리듬게임, 원격 합주를 하나의 연주 경험으로 묶습니다.</h2>
+    <p class="section-intro">
+      사용자는 가상 스튜디오에서 악기를 선택하고, 곡과 난이도를 고른 뒤 리듬게임 방식으로 연주합니다. 플레이어가 선택하지 않은 트랙은 자동 반주로 발화되어 한 명이 연주해도 곡 전체가 완성됩니다.
+    </p>
+
+    <div class="feature-grid">
+      <article class="feature">
+        <figure><img src="docs/assets/pages/instrument-selection.png" alt="MU:RANG 가상 스튜디오 악기 선택 화면 예시"></figure>
+        <div class="feature-body">
+          <h3>다양한 악기 선택</h3>
+          <p>스튜디오를 이동하며 악기를 선택하고, 선택한 악기에 맞는 입력·사운드·시각 피드백을 제공합니다.</p>
+        </div>
+      </article>
+      <article class="feature">
+        <figure><img src="docs/assets/pages/rhythm-play.png" alt="MU:RANG 리듬게임 기반 연주 화면 예시"></figure>
+        <div class="feature-body">
+          <h3>리듬게임 연주 가이드</h3>
+          <p>곡과 난이도 선택 후 노트 가이드를 따라 연주하며 Perfect, Good, Miss 판정으로 박자 정확도를 확인합니다.</p>
+        </div>
+      </article>
+      <article class="feature">
+        <figure><img src="docs/assets/pages/ensemble-play.png" alt="MU:RANG 합주 및 리듬게임 합주 화면 예시"></figure>
+        <div class="feature-body">
+          <h3>멀티플레이 원격 합주</h3>
+          <p>리듬게임 없이 자유롭게 합주하거나, 리듬게임 세션에서 여러 사용자가 각자의 파트를 맡아 협주할 수 있습니다.</p>
+        </div>
+      </article>
+      <article class="feature">
+        <figure><img src="docs/assets/pages/service-overview.png" alt="MU:RANG 서비스 개요 슬라이드"></figure>
+        <div class="feature-body">
+          <h3>MU:RANG 브랜드 경험</h3>
+          <p>연주를 배우고 싶지만 떠돌던 사용자가 한 공간에 머물며 음악을 계속하게 만드는 경험을 지향합니다.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section strategy-band">
+    <p class="eyebrow">Brand Vision</p>
+    <h2>어디서든 연주가 시작되는 세계를 만듭니다.</h2>
+    <p class="section-intro">
+      MU:RANG은 악기 입문자, 음악 게임 사용자, VR 콘텐츠 사용자 모두에게 연주를 더 가볍게 시작하고 오래 머물 수 있는 경험을 제안합니다.
+      배워야 하는 콘텐츠가 아니라, 들어가면 바로 음악이 시작되는 공간을 지향합니다.
+    </p>
+    <div class="strategy-list">
+      <div>
+        <h3>Start</h3>
+        <p>악기와 연습실을 갖추기 전에도 VR 기기만으로 음악을 시작할 수 있습니다.</p>
+      </div>
+      <div>
+        <h3>Stay</h3>
+        <p>목표, 난이도, 판정 피드백이 연습을 짧은 성취의 반복으로 바꿉니다.</p>
+      </div>
+      <div>
+        <h3>Share</h3>
+        <p>멀티플레이 합주와 공연형 경험을 통해 혼자 치던 음악을 함께 나누는 순간으로 확장합니다.</p>
+      </div>
+      <div>
+        <h3>Expand</h3>
+        <p>새로운 곡, 악기, 가상 공간을 추가하며 하나의 연주 플랫폼으로 성장합니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="video" class="section">
+    <p class="eyebrow">Demo Video</p>
+    <h2>소개 영상</h2>
+    <div class="video-panel">
+      <p>
+        플레이 영상은 공개 준비가 끝나는 대로 이 영역에 연결됩니다. 가상 악기 선택, 리듬게임 연주, 원격 합주 장면을 한 번에 확인할 수 있는 영상으로 업데이트할 예정입니다.
+      </p>
+    </div>
+  </section>
+
+  <section id="team" class="section">
+    <p class="eyebrow">Team</p>
+    <h2>팀명은 밴드로 하겠습니다. 근데 이제 클래식을 곁들인</h2>
+    <p class="section-intro">캡스톤 팀은 기획, 개발, 사운드, 핸드 트래킹, 멀티플레이를 중심으로 MU:RANG을 만들고 있습니다.</p>
+
+    <div class="team-grid">
+      <div class="team-card">
+        <strong>박하늘</strong>
+        <span>20211343</span>
+        <p>팀장·PM, 프로젝트 기획, 사운드 로직, 리듬게임 로직·악보 제작, 서류 작성</p>
+      </div>
+      <div class="team-card">
+        <strong>권상혁</strong>
+        <span>20212958</span>
+        <p>프로젝트 기획, 핸드 트래킹, 컴퓨터 그래픽스, 악기 물리 상호작용, GitHub 총괄 관리</p>
+      </div>
+      <div class="team-card">
+        <strong>허가림</strong>
+        <span>20223157</span>
+        <p>프로젝트 기획, 멀티플레이 구현, DB 연결, 서류 작성</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <p class="eyebrow">Release Plan</p>
+    <h2>출시 채널</h2>
+    <p class="section-intro">
+      MU:RANG은 완성 이후 Meta App Store 또는 Steam 출시를 목표로 합니다. 정식 체험 링크와 다운로드 안내는 출시 준비가 끝난 뒤 이 페이지에 연결할 예정입니다.
+    </p>
+    <div class="quick-links">
+      <a href="https://github.com/kookmin-sw/2026-capstone-24">GitHub Repository</a>
+    </div>
+  </section>
+</div>
+
+  </main>
+</body>
+</html>
