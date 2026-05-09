@@ -1,4 +1,4 @@
-﻿%YAML 1.1
+%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!29 &1
 OcclusionCullingSettings:
@@ -245,6 +245,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc0b7437a354a5f48900fdf7aadfdca5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DrumKit
+--- !u!1 &247458534 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2805429515459502346, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
+  m_PrefabInstance: {fileID: 7187747401014242035}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &256669989 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 811324780445496628, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
@@ -2385,6 +2390,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1532815122}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1661679355 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1919956086949746809, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
+  m_PrefabInstance: {fileID: 7187747401014242035}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1699638000
 GameObject:
   m_ObjectHideFlags: 0
@@ -2591,6 +2601,14 @@ PrefabInstance:
       propertyPath: m_Material
       value: 
       objectReference: {fileID: 1780661520}
+    - target: {fileID: 3275038625828609090, guid: d748963236ff3f44eb592a3eaa377e08, type: 3}
+      propertyPath: leftPhysicsHand
+      value: 
+      objectReference: {fileID: 1661679355}
+    - target: {fileID: 3275038625828609090, guid: d748963236ff3f44eb592a3eaa377e08, type: 3}
+      propertyPath: rightPhysicsHand
+      value: 
+      objectReference: {fileID: 247458534}
     - target: {fileID: 3275038625828609090, guid: d748963236ff3f44eb592a3eaa377e08, type: 3}
       propertyPath: leftPlayHandDriver
       value: 

@@ -26,6 +26,9 @@ public sealed class DrumKitStickAnchor : MonoBehaviour
     [SerializeField] PlayHandPoseDriver leftPlayHandDriver;
     [SerializeField] PlayHandPoseDriver rightPlayHandDriver;
 
+    [SerializeField] GameObject leftPhysicsHand;
+    [SerializeField] GameObject rightPhysicsHand;
+
     const int k_PendingAttachWindowFrames = 2;
 
     bool m_IsAttached;
@@ -54,6 +57,17 @@ public sealed class DrumKitStickAnchor : MonoBehaviour
 
         if (m_LocomotionProvider != null)
             m_LocomotionProvider.locomotionStarted -= OnLocomotionStarted;
+
+        if (m_IsAttached)
+            SetPhysicsHandsActive(true);
+    }
+
+    void SetPhysicsHandsActive(bool active)
+    {
+        if (leftPhysicsHand != null)
+            leftPhysicsHand.SetActive(active);
+        if (rightPhysicsHand != null)
+            rightPhysicsHand.SetActive(active);
     }
 
     void OnAnchorSelectExited(SelectExitEventArgs args)
@@ -85,6 +99,7 @@ public sealed class DrumKitStickAnchor : MonoBehaviour
         BindStickAndPushOverride(m_LeftStickInstance, leftGhostWristSource, leftPlayHandDriver, "L_Wrist");
         BindStickAndPushOverride(m_RightStickInstance, rightGhostWristSource, rightPlayHandDriver, "R_Wrist");
 
+        SetPhysicsHandsActive(false);
         m_IsAttached = true;
     }
 
@@ -138,6 +153,8 @@ public sealed class DrumKitStickAnchor : MonoBehaviour
 
     void Detach()
     {
+        SetPhysicsHandsActive(true);
+
         // pop → destroy 순서 (deterministic, PlayHand fallback 깜빡임 방지).
         if (leftPlayHandDriver != null)
             leftPlayHandDriver.PopSourceOverride();
