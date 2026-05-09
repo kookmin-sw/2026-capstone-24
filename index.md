@@ -20,8 +20,8 @@
     display: grid;
     align-items: end;
     background:
-      linear-gradient(90deg, rgba(8, 10, 11, 0.92), rgba(8, 10, 11, 0.58) 54%, rgba(8, 10, 11, 0.22)),
-      url("docs/assets/pages/murang-cover.png") center / cover no-repeat;
+      linear-gradient(90deg, rgba(5, 7, 8, 0.94), rgba(5, 7, 8, 0.72) 48%, rgba(5, 7, 8, 0.28)),
+      url("docs/assets/pages/performance-stage.jpg") center / cover no-repeat;
     border-radius: 0 0 8px 8px;
     color: #f6f7ef;
   }
