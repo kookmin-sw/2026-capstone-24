@@ -17,6 +17,10 @@
 
 `.prefab` / `.unity` / `.asset` / ScriptableObject 수정은 manage_* MCP 우선. 텍스트 직접 Edit은 plan 명시 또는 사용자 승인이 선행돼야 하며, **sub-agent 단독 판단 금지**. 결정 트리·예외 조건·YAML 보존 절차는 [`.claude/skills/unity-asset-edit/SKILL.md`](.claude/skills/unity-asset-edit/SKILL.md).
 
+### Unity MCP 워크플로우
+
+스크립트·씬·컴포넌트·프리팹·애니메이션·카메라·물리·UI를 Unity MCP로 변경할 때는 [`.claude/skills/unity-mcp-workflow/SKILL.md`](.claude/skills/unity-mcp-workflow/SKILL.md)을 호출해 사전 점검(Resource-First)·스크립트 컴파일 대기·`read_console`/screenshot 검증·`batch_execute` 의존성 처리·UI Toolkit/uGUI 분기·VR/리듬 도메인(Animation·Camera·Physics) 가이드·`precondition_sha256` stale-file 방지·error recovery 절차를 컨텍스트에 적재한다.
+
 ## Spec 시스템
 
 Spec/plan 분리 구조, 파일명 규칙, `/spec-implement` 진입점(dry-run 기본, `--apply`로 실행), plan 실행 읽기 순서, 상태 보드는 [`docs/specs/README.md`](docs/specs/README.md)가 단일 진실원이다.

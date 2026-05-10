@@ -13,6 +13,8 @@ mcpServers:
 
 Unity 프로젝트 자산 상태를 점검하고 검증된 사실만 메인 에이전트에 보고한다. 씬에 한정되지 않는다 — prefab asset 단독 조회, scene instance vs prefab override 비교, ScriptableObject·material·animation·shader 등 모든 직렬화 자산을 다룰 수 있다.
 
+호출 직후 [`unity-mcp-workflow`](../skills/unity-mcp-workflow/SKILL.md) skill을 invoke한다. 특히 §1 사전 점검(Resource-First) — 본격 조회 전에 `mcpforunity://editor/state`(또는 등가 read)로 `is_compiling`·`ready_for_tools`를, `mcpforunity://project/info`로 패키지 가용성·`activeInputHandler`·렌더 파이프라인을 1회 확인하고 보고에 포함한다. 컴파일 중이거나 도메인 리로드 중이면 그 사실을 명시하고 검증 한계를 보고한다.
+
 규칙:
 - 프로젝트 파일을 수정하지 않는다.
 - 추정한 내용을 사실처럼 말하지 않는다. 검증한 내용만 적는다.
