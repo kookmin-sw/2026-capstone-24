@@ -1,5 +1,5 @@
 ---
-description: sub-spec 한 개를 받아 그 sub-spec의 시스템 설계 윤곽(Tech Spec)을 인터뷰 라운드로 박제한다. /spec-build phase -1이 자동 호출하거나 사용자가 수동 호출한다. ARD 작성 직전 단계로, 결정 자체는 하지 않고 결정해야 할 분기 지점만 골라 ARD로 넘긴다. docs/specs/ 외부는 절대 수정하지 않는다.
+description: sub-spec 한 개를 받아 자유 Q&A 인터뷰로 그 sub-spec의 시스템 설계 윤곽(Tech Spec)을 박제한다. /spec-build phase -1이 자동 호출하거나 사용자가 수동 호출한다. ARD 작성 직전 단계로, 결정 자체는 하지 않고 결정해야 할 분기 지점만 골라 ARD로 넘긴다. 라운드는 `/spec-interview` 사상을 답습해 무제한, 박제 직전 단일 사용자 확인 게이트 1회. docs/specs/ 외부는 절대 수정하지 않는다.
 argument-hint: "<sub-spec 파일 경로>"
 allowed-tools: Read, Glob, Grep, Edit, Write, AskUserQuestion, Bash, Task, Skill
 ---
@@ -15,7 +15,7 @@ allowed-tools: Read, Glob, Grep, Edit, Write, AskUserQuestion, Bash, Task, Skill
 3. **본문에 알고리즘·구현 디테일 금지.** 함수 시그니처·의사코드·필드 레이아웃은 plan으로 미룬다.
 4. **sub-spec 1개 ↔ Tech Spec 1개 1:1 강제.** 같은 sub-spec에 Tech Spec 2개 이상 만들지 않는다 — 그 신호가 보이면 sub-spec을 쪼개라고 사용자에게 알린다.
 5. **사용자 결정 직후 즉시 Edit 적용.** AskUserQuestion으로 받은 결정을 그대로 본문에 반영하고 별도 "이 Edit을 적용해도 될까요?" 식의 명시 승인 라운드를 추가하지 않는다 (`/spec-resolve`와 동일).
-6. **무한 라운드 금지.** 한 번의 호출에서 최대 3라운드. 남은 항목은 Open Tech Decisions로 유지한다.
+6. **자유 Q&A 우선.** 한 라운드에 미리 정해진 섹션을 묶어 옵션화하지 않는다. 사용자가 자기 안을 먼저 자유 텍스트로 던지면 모델이 평가·검증·코드 점검·반박·강화로 응답한다. `AskUserQuestion`은 분기가 명백히 옵션화되고 사용자가 답하기 어려운 항목에만 사용. 라운드 수 제한 없음.
 7. **commit은 직접 하지 않는다.** 마무리에서 사용자에게 한 번 묻고 동의 시 `git-workflow` skill에 위임만.
 
 ## 입력
@@ -32,15 +32,12 @@ allowed-tools: Read, Glob, Grep, Edit, Write, AskUserQuestion, Bash, Task, Skill
 
 ## 워크플로우
 
-### 1. 컨텍스트 적재 (read-only)
+### 1. 컨텍스트 적재 (read-only, lazy)
 
-순서대로 읽는다.
+처음부터 모든 것을 읽지 않는다. 시작 시점엔 최소만 읽고, 인터뷰 도중 분기 평가에 필요할 때 추가로 읽는다 (`/spec-interview` §1 사상 답습).
 
-1. 대상 sub-spec 파일.
-2. 같은 feature의 `_index.md` (parent root-spec).
-3. 같은 feature의 sibling sub-specs 전부 (cross-cutting 컴포넌트 이름 일관성 확인용).
-4. 같은 feature의 기존 `tech-specs/<NN>-*.md` 전부 (있으면).
-5. 필요시 관련 코드 read-only Read. Assumptions 박제 시 출처로 인용 (`Read <경로> (YYYY-MM-DD)` 표기).
+1. **시작 시점**: 대상 sub-spec 파일 + 같은 feature의 `_index.md`(parent root-spec) 1회 read.
+2. **(lazy)** 같은 feature의 sibling sub-specs / 기존 `tech-specs/<NN>-*.md` / 인접 코드는 인터뷰 도중 분기 평가에 필요할 때만 read. Assumptions 박제 시 출처로 인용 (`Read <경로> (YYYY-MM-DD)` 표기).
 
 ### 2. 1:1 가드 + skip 가드 점검
 
@@ -53,21 +50,62 @@ allowed-tools: Read, Glob, Grep, Edit, Write, AskUserQuestion, Bash, Task, Skill
 
 수동 호출 모드는 [`tech-spec-extractor`](../agents/tech-spec-extractor.md)의 양성 신호 3종을 사용자에게 짧게 보여주고 "이 sub-spec에 Tech Spec이 정말 필요한가"를 한 번 확인한다. 사용자가 no면 종료.
 
-### 4. 인터뷰 라운드 (최대 3회)
+### 4. 자유 Q&A 인터뷰 (라운드 무제한)
 
-각 라운드마다 `AskUserQuestion`으로 항목 1~4개를 묶어 묻는다. 6 섹션을 라운드별로 분배:
+`/spec-interview`의 운영 사상을 답습한다. 라운드별 주제 강제 분배 없음. 한 번에 옵션 3~4개를 `AskUserQuestion`으로 묶어 던지지 않는다.
 
-- **라운드 1**: Components + Data/Control Flow.
-- **라운드 2**: Boundaries + Invariants.
-- **라운드 3**: Assumptions + Open Tech Decisions.
+#### 4-1. 시작 제안 (1회)
 
-질문 작성 가이드:
+양성 신호 점검 yes 직후 모델은 sub-spec을 한 번 더 정리해 다음을 짧게 출력한다.
 
-- 한 항목 = 한 질문. 옵션 형태가 자연스러우면 옵션화, 자유 텍스트가 자연스러우면 자유 텍스트.
-- 사용자가 답하기 어려운 추상적 항목은 default 후보 2~3개로 쪼개 제시 (`/spec-interview` 패턴).
+- 이 sub-spec에서 모델이 미리 본 분기 후보 1~3개 (자유 텍스트, 옵션 묶음 아님).
+- 사용자에게 묻기: *"어디서 시작할까요? 다른 안이 있으면 자유 텍스트로 알려주세요."*
+
+질문은 자유 텍스트 또는 1건의 `AskUserQuestion`. 사용자가 자기 안을 먼저 자유 텍스트로 던지면 모델은 옵션 묶음을 폐기한다.
+
+#### 4-2. 자유 Q&A 라운드 (제한 없음)
+
+각 라운드마다:
+
+- 사용자 자유 텍스트 답을 받음 → 모델이 평가·검증·코드 점검·반박·강화로 응답한다.
+- 라운드 끝에 짧은 누적 요약 1~3줄 + 다음에 풀 분기 1개 제안.
+- 모델이 옵션을 미리 정해 묶어 던지지 않는다. 사용자가 자유 텍스트로 답하기 어려운 분기(예: 카테고리·범위)에 한해서만 `AskUserQuestion` 1건. 묶음 3~4개 강제 안 함.
 - Open Tech Decisions 후보가 도출되면 그 항목이 ARD로 넘어갈 분기인지 확인 — 즉, "Tech Spec에서 닫을 수 있는 사실"인지 "ARD에서 결정해야 할 분기"인지.
 
-`--auto` 모드는 tech-spec-extractor의 초안이 충분하면 라운드 0~2회로 단축한다. 초안이 모든 섹션을 채우고 Open Tech Decisions 후보가 1+개면 라운드 0회 (5단계 직진).
+질문 우선순위 (참고용, 강제 분배 아님):
+
+1. 메커니즘 / 핵심 데이터·제어 흐름 (Components·Data/Control Flow에 들어갈 사실)
+2. 경계 (Boundaries)
+3. 깨지면 안 되는 사실 (Invariants)
+4. 외부에서 받아오는 사실 (Assumptions, 출처 표기 가능)
+5. 닫지 않는 분기 (Open Tech Decisions, ARD 후보)
+
+#### 4-3. 라운드 종료 판정
+
+다음 5가지가 모두 충족되면 5-0(박제 직전 단일 게이트)으로 진입한다.
+
+- **Components**: 등장하는 컴포넌트(신규/기존)가 한 줄 역할로 1+개씩 명시.
+- **Data/Control Flow**: 단일 시퀀스 또는 보조 시퀀스 1+개로 frame/event 단위 흐름이 서술 가능.
+- **Boundaries**: "건드린다" 1+개, "건드리지 않는다" 1+개.
+- **Invariants**: 1+개. plan-drafter가 깨면 안 되는 사실.
+- **Assumptions**: 1+개. 출처 표기(`Read <경로> (YYYY-MM-DD)` 등) 가능한 외부 사실.
+
+Open Tech Decisions는 0~N개 어떤 값이든 라운드 종료 판정에 영향을 주지 않는다 (없어도 박제 가능, 있으면 각 항목이 후속 ARD 1건과 1:1).
+
+`--auto` 모드는 tech-spec-extractor의 6 섹션 초안이 충분하면 4-1·4-2를 0회로 통과해 5-0으로 직진한다.
+
+### 5-0. 박제 직전 단일 게이트
+
+`/spec-interview` §3 답습. 4단계가 끝나면 곧장 파일을 작성하지 않고, 사용자 검토 1회를 받는다.
+
+- 6 섹션 본문을 모두 채운 마크다운 블록 1개로 사용자에게 보여준다.
+- 옆에 박제 직전 사실 확인 한 줄: *"Open Tech Decisions N건. 박제 직후 `/spec-build <root-spec> --apply`로 phase 0(ARD) 진입 가능."*
+- `AskUserQuestion`으로 3택:
+  - **그대로 박제** → 5단계로.
+  - **일부 수정** → 사용자 자유 텍스트 답 → 4-2로 회귀해 짧은 보강 라운드 1회.
+  - **다른 라운드** → 4-1 또는 4-2 처음으로 회귀.
+
+`--auto` 모드는 본 게이트를 생략하지 않는다. tech-spec-extractor 초안만으로 박제하지 않는다 — 라운드 0회로 통과해도 본 게이트 1회는 받는다.
 
 ### 5. 파일 작성
 
@@ -98,7 +136,9 @@ sub-spec 본문에는 역링크를 박지 않는다 (ARD 패턴 답습 — ARD�
 
 ## /spec-build phase -1과의 관계
 
-`/spec-build`가 per-sub-spec 루프 3-2(ARD/phase 0) 직전에 phase -1으로 본 워크플로우를 inline 답습한다. 그때는 `--auto` 모드로 동작하며, 메인 세션이 직접 step 1·2·4·5를 inline 실행한다 (Task로 본 command를 재호출하지 않음 — 컨텍스트 중첩 회피). step 3 양성 신호 점검은 tech-spec-extractor sub-agent가 phase -1 진입 직전에 수행.
+`/spec-build`가 per-sub-spec 루프 3-2(ARD/phase 0) 직전에 phase -1으로 본 워크플로우를 inline 답습한다. 그때는 `--auto` 모드로 동작하며, 메인 세션이 직접 step 1·2·4·5-0·5를 inline 실행한다 (Task로 본 command를 재호출하지 않음 — 컨텍스트 중첩 회피). step 3 양성 신호 점검은 tech-spec-extractor sub-agent가 phase -1 진입 직전에 수행.
+
+phase -1 inline 답습 시에도 "5-0. 박제 직전 단일 게이트"는 메인 세션이 그대로 답습한다. tech-spec-extractor 초안만으로 박제하지 않는다.
 
 수동 호출은 phase -1 게이트를 우회해 사용자가 직접 sub-spec 1개에 Tech Spec을 박을 때 사용한다.
 
