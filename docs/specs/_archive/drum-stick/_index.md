@@ -20,8 +20,8 @@
 
 | 이름 | 상태 | 링크 |
 |---|---|---|
-| Anchor Auto Attach/Detach | Done | [01-anchor-auto-attach-detach.md](../_archive/drum-stick/specs/01-anchor-auto-attach-detach.md) |
-| Stick No-Penetration | Done | [specs/02-stick-no-penetration.md](specs/02-stick-no-penetration.md) |
+| Anchor Auto Attach/Detach | Done | [01-anchor-auto-attach-detach.md](specs/01-anchor-auto-attach-detach.md) |
+| Stick No-Penetration | Done | [02-stick-no-penetration.md](specs/02-stick-no-penetration.md) |
 
 > 상태 값: `Draft` / `Active` / `Done` / `Abandoned`
 

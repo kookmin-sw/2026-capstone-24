@@ -57,7 +57,7 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| 2026-05-10 | Stick Velocity Driver — Surface Stop via Non-Kinematic Rigidbody | Done | [2026-05-10-sanyoentertain-stick-velocity-driver.md](../../_archive/drum-stick/plans/2026-05-10-sanyoentertain-stick-velocity-driver.md) |
+| 2026-05-10 | Stick Velocity Driver — Surface Stop via Non-Kinematic Rigidbody | Done | [2026-05-10-sanyoentertain-stick-velocity-driver.md](../plans/2026-05-10-sanyoentertain-stick-velocity-driver.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/plan-new` 사용. 파일명은 날짜·작성자·slug 기반.
