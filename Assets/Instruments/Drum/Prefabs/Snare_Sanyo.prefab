@@ -279,8 +279,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.015266603, y: 0.015266606, z: 0.005396053}
-  m_Center: {x: -0.0000000016298145, y: -0.000000009778887, z: 6.617445e-23}
+  m_Size: {x: 0.010232659, y: 0.009804218, z: 0.004753418}
+  m_Center: {x: -0.00037486965, y: -0.00016066506, z: 0.0000000010881984}
 --- !u!1 &8167647143852203691
 GameObject:
   m_ObjectHideFlags: 0
@@ -347,7 +347,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c223de5ab44e29146a54163dad9b6c7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DrumHitZone
-  targetPiece: {fileID: 0}
+  targetPiece: {fileID: 4660191757230314556}
   midiNote: 38
   panelYOffset: 0.025
   triggerCollider: {fileID: 7179719225880315969}

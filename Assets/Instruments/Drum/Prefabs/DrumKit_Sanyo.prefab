@@ -263,6 +263,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6839219354136266365}
   - component: {fileID: 1181393932831831023}
+  - component: {fileID: 8370854004255928939}
   m_Layer: 0
   m_Name: DrumKit_Sanyo
   m_TagString: Untagged
@@ -319,7 +320,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 189ba6cb36ff90349812b97c04a7cfeb, type: 3}
   - {fileID: 8300000, guid: e2e6b963b932f214a80f1d7401cf1288, type: 3}
   - {fileID: 8300000, guid: 0ad64276452446648851603dca420531, type: 3}
-  laneConfig: {fileID: 0}
+  laneConfig: {fileID: 11400000, guid: f887c38da5cc4f35ab720e8144a4ccd1, type: 2}
   maxVoices: 4
   volumeGain: 2
   spatialize: 1
@@ -332,6 +333,21 @@ MonoBehaviour:
   spread: 0
   reverbZoneMix: 1
   releaseDuration: 0.05
+--- !u!114 &8370854004255928939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6302550580367909687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b4573a9705d407eada504393f34bc2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RhythmGame.Runtime::DrumNoteDisplayAdapter
+  noteDisplayPanelPrefab: {fileID: 7000000004, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
+  yOffset: 0.15
+  panelTiltDegrees: 50
 --- !u!1 &9193468048282879514
 GameObject:
   m_ObjectHideFlags: 0
@@ -434,22 +450,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0.1210022
       objectReference: {fileID: 0}
-    - target: {fileID: 4435546699169796912, guid: 498a57e217b93b8429756a99f6fb19fb, type: 3}
-      propertyPath: targetPiece
-      value: 
-      objectReference: {fileID: 5444793844628304712}
-    - target: {fileID: 4435546699169796912, guid: 498a57e217b93b8429756a99f6fb19fb, type: 3}
-      propertyPath: maxImpactSpeed
-      value: 1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5615501292710821363, guid: 498a57e217b93b8429756a99f6fb19fb, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.0686
-      objectReference: {fileID: 0}
-    - target: {fileID: 5615501292710821363, guid: 498a57e217b93b8429756a99f6fb19fb, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -460,17 +460,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3935597811336544332, guid: 498a57e217b93b8429756a99f6fb19fb, type: 3}
   m_PrefabInstance: {fileID: 698888174453874010}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &5444793844628304712 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4773032962789142034, guid: 498a57e217b93b8429756a99f6fb19fb, type: 3}
-  m_PrefabInstance: {fileID: 698888174453874010}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d1b908c8d869c64eaaea8f2f1d813ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DrumPiece
 --- !u!1001 &739168270244242057
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -482,14 +471,6 @@ PrefabInstance:
     - target: {fileID: 1893472487862125273, guid: 9abc6e2a5896871468d0c23cf8d167b5, type: 3}
       propertyPath: m_Name
       value: MidTom
-      objectReference: {fileID: 0}
-    - target: {fileID: 3316999575847740983, guid: 9abc6e2a5896871468d0c23cf8d167b5, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.0202
-      objectReference: {fileID: 0}
-    - target: {fileID: 3316999575847740983, guid: 9abc6e2a5896871468d0c23cf8d167b5, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 8648416541822245412, guid: 9abc6e2a5896871468d0c23cf8d167b5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -531,30 +512,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8785570786561467669, guid: 9abc6e2a5896871468d0c23cf8d167b5, type: 3}
-      propertyPath: targetPiece
-      value: 
-      objectReference: {fileID: 7915219057496428026}
-    - target: {fileID: 8785570786561467669, guid: 9abc6e2a5896871468d0c23cf8d167b5, type: 3}
-      propertyPath: maxImpactSpeed
-      value: 1.5
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9abc6e2a5896871468d0c23cf8d167b5, type: 3}
---- !u!114 &7915219057496428026 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7465433727542226803, guid: 9abc6e2a5896871468d0c23cf8d167b5, type: 3}
-  m_PrefabInstance: {fileID: 739168270244242057}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d1b908c8d869c64eaaea8f2f1d813ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DrumPiece
 --- !u!4 &8234643516245457069 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8648416541822245412, guid: 9abc6e2a5896871468d0c23cf8d167b5, type: 3}
@@ -568,14 +530,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6839219354136266365}
     m_Modifications:
-    - target: {fileID: 470484035483227660, guid: 5a82f8ba8376a5345a416be52b19628c, type: 3}
-      propertyPath: targetPiece
-      value: 
-      objectReference: {fileID: 3158429580001639234}
-    - target: {fileID: 470484035483227660, guid: 5a82f8ba8376a5345a416be52b19628c, type: 3}
-      propertyPath: maxImpactSpeed
-      value: 1.5
-      objectReference: {fileID: 0}
     - target: {fileID: 2023516062849488057, guid: 5a82f8ba8376a5345a416be52b19628c, type: 3}
       propertyPath: m_Name
       value: FloorTom
@@ -625,17 +579,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5a82f8ba8376a5345a416be52b19628c, type: 3}
---- !u!114 &3158429580001639234 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1496735534645483398, guid: 5a82f8ba8376a5345a416be52b19628c, type: 3}
-  m_PrefabInstance: {fileID: 4544562971995204804}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d1b908c8d869c64eaaea8f2f1d813ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DrumPiece
 --- !u!4 &5583872557836491928 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8245072153046659164, guid: 5a82f8ba8376a5345a416be52b19628c, type: 3}
@@ -693,30 +636,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: CrashCymbal
       objectReference: {fileID: 0}
-    - target: {fileID: 6372275601102581212, guid: 687b0e71b46f53b4396ed7f7ca7a276c, type: 3}
-      propertyPath: targetPiece
-      value: 
-      objectReference: {fileID: 3343311390039844092}
-    - target: {fileID: 6372275601102581212, guid: 687b0e71b46f53b4396ed7f7ca7a276c, type: 3}
-      propertyPath: maxImpactSpeed
-      value: 1.5
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 687b0e71b46f53b4396ed7f7ca7a276c, type: 3}
---- !u!114 &3343311390039844092 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7807194637425464677, guid: 687b0e71b46f53b4396ed7f7ca7a276c, type: 3}
-  m_PrefabInstance: {fileID: 4773087549818401177}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d1b908c8d869c64eaaea8f2f1d813ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DrumPiece
 --- !u!4 &5996098670731167910 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1228077722595260735, guid: 687b0e71b46f53b4396ed7f7ca7a276c, type: 3}
@@ -730,14 +654,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6839219354136266365}
     m_Modifications:
-    - target: {fileID: 860376190814420904, guid: 584dd2d7809f8c343a159d09f3374433, type: 3}
-      propertyPath: targetPiece
-      value: 
-      objectReference: {fileID: 7777614892825327226}
-    - target: {fileID: 860376190814420904, guid: 584dd2d7809f8c343a159d09f3374433, type: 3}
-      propertyPath: maxImpactSpeed
-      value: 1.5
-      objectReference: {fileID: 0}
     - target: {fileID: 1055056541254304700, guid: 584dd2d7809f8c343a159d09f3374433, type: 3}
       propertyPath: m_Name
       value: BassDrum
@@ -792,17 +708,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2234559292386458669, guid: 584dd2d7809f8c343a159d09f3374433, type: 3}
   m_PrefabInstance: {fileID: 4986145861698039668}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7777614892825327226 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3377130962745792782, guid: 584dd2d7809f8c343a159d09f3374433, type: 3}
-  m_PrefabInstance: {fileID: 4986145861698039668}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d1b908c8d869c64eaaea8f2f1d813ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DrumPiece
 --- !u!1001 &7808331325460359763
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -814,14 +719,6 @@ PrefabInstance:
     - target: {fileID: 24558755500863635, guid: 88fba63d31ff5384b835adb148206b97, type: 3}
       propertyPath: m_Name
       value: Snare
-      objectReference: {fileID: 0}
-    - target: {fileID: 6209753519844141203, guid: 88fba63d31ff5384b835adb148206b97, type: 3}
-      propertyPath: targetPiece
-      value: 
-      objectReference: {fileID: 3238246797775486575}
-    - target: {fileID: 6209753519844141203, guid: 88fba63d31ff5384b835adb148206b97, type: 3}
-      propertyPath: maxImpactSpeed
-      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 8648529258213501258, guid: 88fba63d31ff5384b835adb148206b97, type: 3}
       propertyPath: m_LocalPosition.x
@@ -873,17 +770,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8648529258213501258, guid: 88fba63d31ff5384b835adb148206b97, type: 3}
   m_PrefabInstance: {fileID: 7808331325460359763}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &3238246797775486575 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4660191757230314556, guid: 88fba63d31ff5384b835adb148206b97, type: 3}
-  m_PrefabInstance: {fileID: 7808331325460359763}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d1b908c8d869c64eaaea8f2f1d813ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DrumPiece
 --- !u!1001 &8163694613738581100
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -892,14 +778,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6839219354136266365}
     m_Modifications:
-    - target: {fileID: 1247705253952356991, guid: 25d36ab354006c94b8227233dc1602b6, type: 3}
-      propertyPath: targetPiece
-      value: 
-      objectReference: {fileID: 5299799060911324864}
-    - target: {fileID: 1247705253952356991, guid: 25d36ab354006c94b8227233dc1602b6, type: 3}
-      propertyPath: maxImpactSpeed
-      value: 1.5
-      objectReference: {fileID: 0}
     - target: {fileID: 8744420917128976635, guid: 25d36ab354006c94b8227233dc1602b6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.386
@@ -954,17 +832,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8744420917128976635, guid: 25d36ab354006c94b8227233dc1602b6, type: 3}
   m_PrefabInstance: {fileID: 8163694613738581100}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &5299799060911324864 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4091502484935742124, guid: 25d36ab354006c94b8227233dc1602b6, type: 3}
-  m_PrefabInstance: {fileID: 8163694613738581100}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d1b908c8d869c64eaaea8f2f1d813ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DrumPiece
 --- !u!1001 &9196300739635332636
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1017,54 +884,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5632843045847236141, guid: 2e7682fc50f7089459636091324e4f80, type: 3}
-      propertyPath: targetPiece
-      value: 
-      objectReference: {fileID: 856577831009878542}
-    - target: {fileID: 5632843045847236141, guid: 2e7682fc50f7089459636091324e4f80, type: 3}
-      propertyPath: maxImpactSpeed
-      value: 1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6662698489975394866, guid: 2e7682fc50f7089459636091324e4f80, type: 3}
-      propertyPath: m_Size.x
-      value: 0.01149974
-      objectReference: {fileID: 0}
-    - target: {fileID: 6662698489975394866, guid: 2e7682fc50f7089459636091324e4f80, type: 3}
-      propertyPath: m_Size.y
-      value: 0.010841281
-      objectReference: {fileID: 0}
-    - target: {fileID: 6662698489975394866, guid: 2e7682fc50f7089459636091324e4f80, type: 3}
-      propertyPath: m_Size.z
-      value: 0.0014706417
-      objectReference: {fileID: 0}
-    - target: {fileID: 6662698489975394866, guid: 2e7682fc50f7089459636091324e4f80, type: 3}
-      propertyPath: m_Center.x
-      value: 0.000010544607
-      objectReference: {fileID: 0}
-    - target: {fileID: 6662698489975394866, guid: 2e7682fc50f7089459636091324e4f80, type: 3}
-      propertyPath: m_Center.y
-      value: -0.000042530588
-      objectReference: {fileID: 0}
-    - target: {fileID: 6662698489975394866, guid: 2e7682fc50f7089459636091324e4f80, type: 3}
-      propertyPath: m_Center.z
-      value: 0.0002884286
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2e7682fc50f7089459636091324e4f80, type: 3}
---- !u!114 &856577831009878542 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8393863303905002514, guid: 2e7682fc50f7089459636091324e4f80, type: 3}
-  m_PrefabInstance: {fileID: 9196300739635332636}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d1b908c8d869c64eaaea8f2f1d813ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DrumPiece
 --- !u!4 &5321857827435387800 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3910491938658934148, guid: 2e7682fc50f7089459636091324e4f80, type: 3}

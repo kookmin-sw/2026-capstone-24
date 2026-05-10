@@ -221,25 +221,12 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!134 &200605284
-PhysicsMaterial:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  serializedVersion: 2
-  m_DynamicFriction: 0.6
-  m_StaticFriction: 0.6
-  m_Bounciness: 0
-  m_FrictionCombine: 0
-  m_BounceCombine: 0
 --- !u!114 &233044943 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1181393932831831023, guid: d748963236ff3f44eb592a3eaa377e08, type: 3}
   m_PrefabInstance: {fileID: 2757961452950761299}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2757961452950761300}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dc0b7437a354a5f48900fdf7aadfdca5, type: 3}
@@ -1558,19 +1545,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!134 &919163888
-PhysicsMaterial:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  serializedVersion: 2
-  m_DynamicFriction: 0.6
-  m_StaticFriction: 0.6
-  m_Bounciness: 0
-  m_FrictionCombine: 0
-  m_BounceCombine: 0
 --- !u!1 &949974130
 GameObject:
   m_ObjectHideFlags: 0
@@ -1939,32 +1913,6 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
---- !u!134 &1044326333
-PhysicsMaterial:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  serializedVersion: 2
-  m_DynamicFriction: 0.6
-  m_StaticFriction: 0.6
-  m_Bounciness: 0
-  m_FrictionCombine: 0
-  m_BounceCombine: 0
---- !u!134 &1063244468
-PhysicsMaterial:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  serializedVersion: 2
-  m_DynamicFriction: 0.6
-  m_StaticFriction: 0.6
-  m_Bounciness: 0
-  m_FrictionCombine: 0
-  m_BounceCombine: 0
 --- !u!4 &1097173054 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7410730392459195338, guid: cc028d833fcdc0a43a5d6e26a72825cb, type: 3}
@@ -2254,19 +2202,6 @@ Transform:
   - {fileID: 999638534}
   m_Father: {fileID: 1699638001}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!134 &1435238959
-PhysicsMaterial:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  serializedVersion: 2
-  m_DynamicFriction: 0.6
-  m_StaticFriction: 0.6
-  m_Bounciness: 0
-  m_FrictionCombine: 0
-  m_BounceCombine: 0
 --- !u!114 &1530775798 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5428658257290346933, guid: cc028d833fcdc0a43a5d6e26a72825cb, type: 3}
@@ -2431,45 +2366,6 @@ Transform:
   - {fileID: 1177072533}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!134 &1780661520
-PhysicsMaterial:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  serializedVersion: 2
-  m_DynamicFriction: 0.6
-  m_StaticFriction: 0.6
-  m_Bounciness: 0
-  m_FrictionCombine: 0
-  m_BounceCombine: 0
---- !u!134 &1953209025
-PhysicsMaterial:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  serializedVersion: 2
-  m_DynamicFriction: 0.6
-  m_StaticFriction: 0.6
-  m_Bounciness: 0
-  m_FrictionCombine: 0
-  m_BounceCombine: 0
---- !u!134 &1972177220
-PhysicsMaterial:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  serializedVersion: 2
-  m_DynamicFriction: 0.6
-  m_StaticFriction: 0.6
-  m_Bounciness: 0
-  m_FrictionCombine: 0
-  m_BounceCombine: 0
 --- !u!1 &1977748801
 GameObject:
   m_ObjectHideFlags: 0
@@ -2506,19 +2402,6 @@ Transform:
   - {fileID: 375138388}
   m_Father: {fileID: 1699638001}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!134 &1979801343
-PhysicsMaterial:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  serializedVersion: 2
-  m_DynamicFriction: 0.6
-  m_StaticFriction: 0.6
-  m_Bounciness: 0
-  m_FrictionCombine: 0
-  m_BounceCombine: 0
 --- !u!1 &2078871756
 GameObject:
   m_ObjectHideFlags: 0
@@ -2577,30 +2460,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1152850451943465490, guid: d748963236ff3f44eb592a3eaa377e08, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 919163888}
-    - target: {fileID: 1181393932831831023, guid: d748963236ff3f44eb592a3eaa377e08, type: 3}
-      propertyPath: laneConfig
-      value: 
-      objectReference: {fileID: 11400000, guid: f887c38da5cc4f35ab720e8144a4ccd1, type: 2}
-    - target: {fileID: 1389948746950216113, guid: d748963236ff3f44eb592a3eaa377e08, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 1953209025}
-    - target: {fileID: 2123342954557586726, guid: d748963236ff3f44eb592a3eaa377e08, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 1063244468}
-    - target: {fileID: 2337800301747082257, guid: d748963236ff3f44eb592a3eaa377e08, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 1044326333}
-    - target: {fileID: 3120735757521099485, guid: d748963236ff3f44eb592a3eaa377e08, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 1780661520}
     - target: {fileID: 3275038625828609090, guid: d748963236ff3f44eb592a3eaa377e08, type: 3}
       propertyPath: leftPhysicsHand
       value: 
@@ -2625,18 +2484,6 @@ PrefabInstance:
       propertyPath: rightGhostWristSource
       value: 
       objectReference: {fileID: 256669989}
-    - target: {fileID: 4900272252746847565, guid: d748963236ff3f44eb592a3eaa377e08, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 1972177220}
-    - target: {fileID: 5518732146393064276, guid: d748963236ff3f44eb592a3eaa377e08, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 1979801343}
-    - target: {fileID: 5900985175718784500, guid: d748963236ff3f44eb592a3eaa377e08, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 200605284}
     - target: {fileID: 6302550580367909687, guid: d748963236ff3f44eb592a3eaa377e08, type: 3}
       propertyPath: m_Name
       value: DrumKit
@@ -2681,38 +2528,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7292677937803238821, guid: d748963236ff3f44eb592a3eaa377e08, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 1435238959}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6302550580367909687, guid: d748963236ff3f44eb592a3eaa377e08, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2757961452950761301}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d748963236ff3f44eb592a3eaa377e08, type: 3}
---- !u!1 &2757961452950761300 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6302550580367909687, guid: d748963236ff3f44eb592a3eaa377e08, type: 3}
-  m_PrefabInstance: {fileID: 2757961452950761299}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &2757961452950761301
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2757961452950761300}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b4573a9705d407eada504393f34bc2a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: RhythmGame.Runtime::DrumNoteDisplayAdapter
-  noteDisplayPanelPrefab: {fileID: 7000000004, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
-  yOffset: 0.15
-  panelTiltDegrees: 50
 --- !u!1001 &3141592653589793238
 PrefabInstance:
   m_ObjectHideFlags: 0
