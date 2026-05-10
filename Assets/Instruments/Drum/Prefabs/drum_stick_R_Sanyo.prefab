@@ -1100,10 +1100,6 @@ PrefabInstance:
       propertyPath: m_AttachTransform
       value: 
       objectReference: {fileID: 2454769859228384774}
-    - target: {fileID: 3395273403126989518, guid: fe086597558106146ab900d46b9d5a59, type: 3}
-      propertyPath: m_UseGravity
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8004441565049108403, guid: fe086597558106146ab900d46b9d5a59, type: 3}
       propertyPath: m_Name
       value: drum_stick_R
