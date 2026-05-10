@@ -12,6 +12,7 @@ using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
 /// ARD 01: anchor 자체-컴포넌트로 신호 발행.
 /// ARD 02: PlayHandPoseDriver.PushSourceOverride / PopSourceOverride로 grip override 슬롯 점유.
 /// ARD 03: Instantiate / Destroy 모델.
+/// ARD 07: Physics.IgnoreCollision으로 stick-stick 충돌 비활성화.
 /// </summary>
 [RequireComponent(typeof(TeleportationAnchor))]
 [DisallowMultipleComponent]
@@ -98,6 +99,13 @@ public sealed class DrumKitStickAnchor : MonoBehaviour
 
         BindStickAndPushOverride(m_LeftStickInstance, leftGhostWristSource, leftPlayHandDriver, "L_Wrist");
         BindStickAndPushOverride(m_RightStickInstance, rightGhostWristSource, rightPlayHandDriver, "R_Wrist");
+
+        // ARD 07: 양손 stick끼리 서로 통과하도록 collider 충돌 비활성화.
+        // stick instance Destroy 시 Unity가 IgnoreCollision pair를 자동 정리하므로 복원 호출 불요.
+        var leftCol = m_LeftStickInstance != null ? m_LeftStickInstance.GetComponent<Collider>() : null;
+        var rightCol = m_RightStickInstance != null ? m_RightStickInstance.GetComponent<Collider>() : null;
+        if (leftCol != null && rightCol != null)
+            Physics.IgnoreCollision(leftCol, rightCol, true);
 
         SetPhysicsHandsActive(false);
         m_IsAttached = true;

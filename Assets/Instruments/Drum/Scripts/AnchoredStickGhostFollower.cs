@@ -3,7 +3,8 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 /// <summary>
 /// drum_stick_L / drum_stick_R variant root에 부착.
-/// attach 중 ghost wrist world pose를 매 frame stick root에 강제한다.
+/// attach 중 ghost wrist world pose를 목표로 FixedUpdate에서 Rigidbody velocity/angularVelocity를 할당해 추종한다.
+/// non-kinematic Rigidbody이므로 drum piece solid collider에 막혀 표면 정지 가능.
 /// push/pop 책임은 DrumKitStickAnchor가 담당; 본 컴포넌트는 정상 경로에서 PlayHandPoseDriver를 직접 호출하지 않는다.
 /// </summary>
 [DefaultExecutionOrder(10005)]
@@ -21,15 +22,17 @@ public sealed class AnchoredStickGhostFollower : MonoBehaviour
     bool m_IsBound;
 
     // wrist의 stick-root-local 변환 (prefab-fixed 정적 pose) — Bind 시점 1회 캐시.
-    // SyncToGhost가 stick root world pose를 ghostWrist.world × wristLocalToRoot⁻¹ 로 역산할 때 사용.
+    // driver가 stick root world pose를 ghostWrist.world × wristLocalToRoot⁻¹ 로 역산할 때 사용.
     Matrix4x4 m_WristLocalToRoot;
     bool m_HasWristCache;
 
     // ghost wrist 이동량으로 계산한 attach 중 스틱 속도.
-    // DrumHitZone이 kinematic Rigidbody 대신 이 값으로 hit 속도를 판정한다.
+    // DrumHitZone이 이 값으로 hit 속도를 판정한다.
     Vector3 m_Velocity;
     Vector3 m_PrevGhostPos;
     bool m_HasPrevGhostPos;
+
+    Rigidbody m_Rigidbody;
 
     public Vector3 Velocity => m_IsBound ? m_Velocity : Vector3.zero;
 
@@ -56,10 +59,13 @@ public sealed class AnchoredStickGhostFollower : MonoBehaviour
             m_HasWristCache = false;
         }
 
-        // attach 중 Rigidbody가 물리 영향 받지 않도록 kinematic 강제.
-        var rb = GetComponent<Rigidbody>();
-        if (rb != null)
-            rb.isKinematic = true;
+        // non-kinematic + 중력 없음으로 설정해 drum piece solid collider에 막혀 자연 정지하게 한다.
+        m_Rigidbody = GetComponent<Rigidbody>();
+        if (m_Rigidbody != null)
+        {
+            m_Rigidbody.isKinematic = false;
+            m_Rigidbody.useGravity = false;
+        }
 
         m_HasPrevGhostPos = false;
         m_Velocity = Vector3.zero;
@@ -68,6 +74,20 @@ public sealed class AnchoredStickGhostFollower : MonoBehaviour
         var grab = GetComponent<XRGrabInteractable>();
         if (grab != null)
             grab.enabled = false;
+
+        // Bind 시점 1회 초기 정렬 — ghost wrist 기준으로 stick root를 정확히 맞춘다.
+        // Instantiate 직후 DrumKitStickAnchor가 ghost wrist 위치로 SetPositionAndRotation하나
+        // 그 시점은 m_WristLocalToRoot가 없어 stick 내부 wrist-local 차이만큼 어긋날 수 있다.
+        if (m_GhostWristSource != null)
+        {
+            var ghostWorld = Matrix4x4.TRS(m_GhostWristSource.position, m_GhostWristSource.rotation, Vector3.one);
+            Matrix4x4 stickWorld;
+            if (m_HasWristCache)
+                stickWorld = ghostWorld * m_WristLocalToRoot.inverse;
+            else
+                stickWorld = ghostWorld;
+            transform.SetPositionAndRotation(stickWorld.GetPosition(), stickWorld.rotation);
+        }
     }
 
     void OnEnable()
@@ -87,51 +107,60 @@ public sealed class AnchoredStickGhostFollower : MonoBehaviour
         if (!m_IsBound || m_GhostWristSource == null)
             return;
 
+        // ghost wrist 이동량으로 Velocity 산출 (StickHitSweeper hit 판정용).
         Vector3 current = m_GhostWristSource.position;
         if (!m_HasPrevGhostPos)
         {
             m_PrevGhostPos = current;
             m_HasPrevGhostPos = true;
             m_Velocity = Vector3.zero;
-            return;
+        }
+        else
+        {
+            float dt = Time.fixedDeltaTime;
+            m_Velocity = dt > 0f ? (current - m_PrevGhostPos) / dt : Vector3.zero;
+            m_PrevGhostPos = current;
         }
 
-        float dt = Time.fixedDeltaTime;
-        m_Velocity = dt > 0f ? (current - m_PrevGhostPos) / dt : Vector3.zero;
-        m_PrevGhostPos = current;
+        // velocity driver: ghost wrist world pose에서 목표 stick world pose를 역산해
+        // Rigidbody.linearVelocity / angularVelocity를 직접 할당한다.
+        if (m_Rigidbody == null)
+            return;
+
+        var ghostWorld = Matrix4x4.TRS(m_GhostWristSource.position, m_GhostWristSource.rotation, Vector3.one);
+        Matrix4x4 targetStickWorld;
+        if (m_HasWristCache)
+            targetStickWorld = ghostWorld * m_WristLocalToRoot.inverse;
+        else
+            targetStickWorld = ghostWorld;
+
+        float fixedDt = Time.fixedDeltaTime;
+        if (fixedDt <= 0f)
+            return;
+
+        // 선속도 할당
+        Vector3 targetPos = targetStickWorld.GetPosition();
+        Vector3 dPos = targetPos - m_Rigidbody.position;
+        m_Rigidbody.linearVelocity = dPos / fixedDt;
+
+        // 각속도 할당 (axis-angle, 180°+ wrap 처리)
+        Quaternion targetRot = targetStickWorld.rotation;
+        Quaternion dRot = targetRot * Quaternion.Inverse(m_Rigidbody.rotation);
+        dRot.ToAngleAxis(out float angle, out Vector3 axis);
+        if (angle > 180f)
+            angle -= 360f;
+        m_Rigidbody.angularVelocity = axis * (angle * Mathf.Deg2Rad / fixedDt);
     }
 
     void LateUpdate()
     {
-        SyncToGhost();
+        // velocity driver 모드: transform 직접 변경 금지 (Tech Spec Invariants).
+        // SyncToGhost 호출 제거됨.
     }
 
     void OnBeforeRender()
     {
-        if (!isActiveAndEnabled)
-            return;
-        SyncToGhost();
-    }
-
-    void SyncToGhost()
-    {
-        if (!m_IsBound || m_GhostWristSource == null)
-            return;
-
-        if (m_HasWristCache)
-        {
-            // stickRoot.world = ghostWrist.world × wristLocalToRoot⁻¹
-            // 이렇게 두면 stick root 위에서 prefab-fixed wrist가 다시 ghostWrist.world와 정확히 일치.
-            // 결과: PlayHandPoseDriver(syncRootTransform=true)가 source root(=GripPoseHand)를 따라가도
-            // PlayHand world == ghostWrist world == 컨트롤러 위치로 정렬된다.
-            var ghostWorld = Matrix4x4.TRS(m_GhostWristSource.position, m_GhostWristSource.rotation, Vector3.one);
-            var stickWorld = ghostWorld * m_WristLocalToRoot.inverse;
-            transform.SetPositionAndRotation(stickWorld.GetPosition(), stickWorld.rotation);
-        }
-        else
-        {
-            // fallback: Bind가 wrist를 못 받았을 때만. 정상 경로에서는 사용되지 않음.
-            transform.SetPositionAndRotation(m_GhostWristSource.position, m_GhostWristSource.rotation);
-        }
+        // velocity driver 모드: transform 직접 변경 금지 (Tech Spec Invariants).
+        // SyncToGhost 호출 제거됨.
     }
 }
