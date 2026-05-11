@@ -2,7 +2,8 @@
     "name": "Murang.Multiplayer",
     "rootNamespace": "Murang.Multiplayer",
     "references": [
-        "Fusion.Unity"
+        "Fusion.Unity",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -1,7 +1,7 @@
 # Quest 실기기 멀티 plan 통합 검증
 
 **Linked Spec:** [`01-user-auth.md`](../specs/01-user-auth.md)
-**Caused By:** [`2026-05-08-namae1128-multiplayer-auth-gate.md`](./2026-05-08-namae1128-multiplayer-auth-gate.md)
+**Caused By:** [`2026-05-08-namae1128-multiplayer-auth-gate.md`](../../_archive/multiplayer-network/plans/2026-05-08-namae1128-multiplayer-auth-gate.md)
 **Status:** `Ready`
 
 ## Goal
@@ -10,11 +10,9 @@
 
 ## Context
 
-> **선행 plan 검증 실패에서 파생됨.** 선행: `2026-05-08-namae1128-multiplayer-auth-gate.md`.
-> 실패한 Acceptance Criteria:
-> - `[manual-hard]` Quest USB 실기기 빌드(Android)에서 같은 흐름이 동작한다 — 버튼 누르기 전 인증 시도 0건, 누른 후 mock 또는 real 토큰으로 인증 진행. — 2026-05-09 사용자가 본 plan에서 Quest 빌드 검증을 보류 결정. 후속 plan으로 분리.
->
-> 본 plan은 위 항목을 다시 통과 가능하게 만드는 부속 작업을 다룬다.
+> **선행 plan에서 Quest 실기기 검증 책임을 이관받음.** 선행: `2026-05-08-namae1128-multiplayer-auth-gate.md`.
+> 이관 사유: Quest USB 빌드 + 사이드로드 + 헤드셋 장착은 검증 비용이 큰 절차라 plan별로 반복하면 부담이 크다. auth-gate plan은 Editor mock/down 검증까지만 책임지고 Done 처리됐으며, Quest 실기기 manual-hard는 본 plan으로 흡수.
+> 본 plan은 auth-gate가 다루지 못한 Quest 실기기 시나리오와, real-meta-verifier·aws-ec2-compose-deployment의 Quest manual-hard를 한 빌드/사이드로드 사이클로 일괄 검증한다.
 
 ### 왜 통합 검증인가
 
@@ -22,7 +20,7 @@ Quest USB 빌드 + Android 사이드로드 + 헤드셋 장착·로그 캡처는 
 
 ### 다루는 선행 plan과 흡수 AC
 
-1. **[`2026-05-08-namae1128-multiplayer-auth-gate.md`](./2026-05-08-namae1128-multiplayer-auth-gate.md)** (sub-spec `01-user-auth`, In Progress)
+1. **[`2026-05-08-namae1128-multiplayer-auth-gate.md`](../../_archive/multiplayer-network/plans/2026-05-08-namae1128-multiplayer-auth-gate.md)** (sub-spec `01-user-auth`, Done — Editor 검증까지 완료. Quest 실기기 검증은 본 plan으로 이관)
    - World-Space `MultiplayerAuthGate` 버튼이 Editor에선 통과(2026-05-10/11 검증). Quest 실기기에서 같은 흐름 재검증.
 2. **[`2026-05-08-namae1128-real-meta-verifier.md`](./2026-05-08-namae1128-real-meta-verifier.md)** (sub-spec `01-user-auth`, Ready — 본 plan 시드 시점에는 미구현)
    - real Meta verifier 흐름을 Quest 실기기에서 검증. real verifier 구현이 끝난 뒤에 본 plan 실행 가능.
@@ -67,7 +65,7 @@ Quest USB 빌드 + Android 사이드로드 + 헤드셋 장착·로그 캡처는 
 
 ## Acceptance Criteria
 
-- [ ] `[manual-hard]` 선행 plan `2026-05-08-namae1128-multiplayer-auth-gate.md`의 실패 AC ("Quest USB 실기기 빌드(Android)에서 같은 흐름이 동작한다 — 버튼 누르기 전 인증 시도") 가 이 plan 적용 후 재검증에서 통과한다.
+- [ ] `[manual-hard]` `auth-gate` plan에서 이관된 Quest USB 실기기 검증: Quest USB 빌드(Android) Play 직후 `[AuthBootstrap]` 로그 0건 + `AuthSmokeProbe` 오버레이 미표시 확인 → `MultiplayerAuthGate` 버튼을 ray로 누른 후 mock 또는 real 토큰으로 인증 진행, StatusLabel이 `Multiplayer Active — <nickname>`(성공) 또는 `Failed: <message>`(실패)로 갱신.
 - [ ] `[manual-hard]` 선행 plan `2026-05-08-namae1128-real-meta-verifier.md`의 Quest AC ("Spring MURANG_META_VERIFIER_MODE=real + 유효한 MURANG_META_APP_ID/MURANG_META_APP_SECRET으로 띄운 상태에서 Quest") 가 이 plan 적용 후 재검증에서 통과한다.
 - [ ] `[manual-hard]` 선행 plan `2026-05-08-namae1128-real-meta-verifier.md`의 Quest AC ("Quest 실기기에서 두 번째 로그인 시 동일 metaAccountId(= Oculus userId)에 대해 동일 playerId") 가 이 plan 적용 후 재검증에서 통과한다.
 - [ ] `[manual-hard]` 선행 plan `2026-05-08-namae1128-real-meta-verifier.md`의 Quest AC ("MURANG_META_APP_SECRET을 잘못된 값으로 주입한 상태에서 Quest 빌드가 인증 시도하면 AUTH_INVALID_TOKEN(401)") 가 이 plan 적용 후 재검증에서 통과한다.
