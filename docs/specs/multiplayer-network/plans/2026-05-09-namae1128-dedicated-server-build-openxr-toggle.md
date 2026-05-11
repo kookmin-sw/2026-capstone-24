@@ -83,7 +83,7 @@
 
 ## Handoff
 
-### 2026-05-09 Codex 진행 기록
+### 2026-05-09 진행 기록
 
 - `Assets/Multiplayer/Scripts/Editor/Murang.Multiplayer.Editor.asmdef`에 `Unity.XR.Management`, `Unity.XR.Management.Editor` 참조를 추가해 `RoomServerBuildMenu.cs`의 XR Management API 컴파일 에러를 복구했다.
 - `Assets/Multiplayer/Scripts/Editor/RoomServerBuildMenu.cs`에서 dedicated-server 빌드 경로만 Standalone XR loader를 `backup -> clear -> build -> restore` 순서로 감싸도록 구현했다.
