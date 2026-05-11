@@ -1,7 +1,7 @@
 # Session Panel Start Menu Section
 
 **Linked Spec:** [`02-start-menu-section.md`](../specs/02-start-menu-section.md)
-**Status:** `Ready`
+**Status:** `In Progress`
 
 ## Goal
 

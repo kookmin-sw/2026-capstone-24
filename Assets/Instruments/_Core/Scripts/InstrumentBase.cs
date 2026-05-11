@@ -45,6 +45,7 @@ public abstract class InstrumentBase : MonoBehaviour, IPlayable, IActiveInstrume
 
     // IActiveInstrument: 패널 앵커 위치. _panelAnchor child가 설정되면 그 위치를, 아니면 루트 transform을 반환.
     public Transform PanelAnchor => _panelAnchor != null ? _panelAnchor : transform;
+    public Transform InstrumentRoot => transform;
 
     public float InstanceVolume
     {

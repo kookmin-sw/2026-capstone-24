@@ -119,6 +119,53 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &33976914
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 33976916}
+  - component: {fileID: 33976915}
+  m_Layer: 0
+  m_Name: StubSongCatalog
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &33976915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 33976914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5467f8327b26a84a87b3c2992539de7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SessionPanel.StubSongCatalog
+  sourceDatabases:
+  - {fileID: 11400000, guid: de6fec7c8d5abe04887bc7dc22e08a29, type: 2}
+  - {fileID: 11400000, guid: 9b7785221d8a3c5409d752aff6368e29, type: 2}
+--- !u!4 &33976916
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 33976914}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &100000001
 GameObject:
   m_ObjectHideFlags: 0
@@ -186,6 +233,24 @@ MonoBehaviour:
   host: {fileID: 100000002}
   songRelativePath: Songs/test.vmsong
   judgedChannel: 1
+--- !u!1 &150503108 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1000000000000000001, guid: a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6, type: 3}
+  m_PrefabInstance: {fileID: 2000000000000000002}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &150503112
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 150503108}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad0c16491a2ceb84ea270f982bc684bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Instruments::Instruments.InstrumentTeleportLink
+  linkedInstrument: {fileID: 233044943}
 --- !u!1 &200000001
 GameObject:
   m_ObjectHideFlags: 0
@@ -323,6 +388,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc0b7437a354a5f48900fdf7aadfdca5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DrumKit
+--- !u!1 &267537922 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6918866489272853956, guid: 20c3ebc0d8a60954b9bf428c65c948ce, type: 3}
+  m_PrefabInstance: {fileID: 447916926}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &267537925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 267537922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fac62b9698e746c5a0b1302e228c71a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RhythmGame.Runtime::RhythmAccompaniment
 --- !u!114 &281270978
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -418,11 +500,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fac62b9698e746c5a0b1302e228c71a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RhythmAccompaniment
-  channelBindings:
-  - channel: 1
-    instrument: {fileID: 1530775798}
-  - channel: 10
-    instrument: {fileID: 233044943}
 --- !u!4 &315617210 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 302339979849568233, guid: 20c3ebc0d8a60954b9bf428c65c948ce, type: 3}
@@ -662,6 +739,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 428457631}
   m_CullTransparentMesh: 1
+--- !u!1 &438356170 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1000000000000000001, guid: a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6, type: 3}
+  m_PrefabInstance: {fileID: 2000000000000000001}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &438356174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 438356170}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad0c16491a2ceb84ea270f982bc684bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Instruments::Instruments.InstrumentTeleportLink
+  linkedInstrument: {fileID: 1530775798}
 --- !u!1001 &447916926
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -719,6 +814,10 @@ PrefabInstance:
       value: Piano
       objectReference: {fileID: 0}
     - target: {fileID: 9058356871178726819, guid: 20c3ebc0d8a60954b9bf428c65c948ce, type: 3}
+      propertyPath: accompaniment
+      value: 
+      objectReference: {fileID: 267537925}
+    - target: {fileID: 9058356871178726819, guid: 20c3ebc0d8a60954b9bf428c65c948ce, type: 3}
       propertyPath: targetInstrument
       value: 
       objectReference: {fileID: 1530775798}
@@ -731,7 +830,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8472210992546831164, guid: 20c3ebc0d8a60954b9bf428c65c948ce, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1922732154}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6918866489272853956, guid: 20c3ebc0d8a60954b9bf428c65c948ce, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 267537925}
   m_SourcePrefab: {fileID: 100100000, guid: 20c3ebc0d8a60954b9bf428c65c948ce, type: 3}
 --- !u!4 &447916927 stripped
 Transform:
@@ -769,6 +871,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: SessionPanel.Tests::SessionPanel.DummyActiveInstrument
   _panelAnchor: {fileID: 315617210}
   _instrumentId: dummy
+  _instrumentRoot: {fileID: 0}
 --- !u!4 &492665178
 Transform:
   m_ObjectHideFlags: 0
@@ -1131,6 +1234,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!134 &823070872
+PhysicsMaterial:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  serializedVersion: 2
+  m_DynamicFriction: 0.6
+  m_StaticFriction: 0.6
+  m_Bounciness: 0
+  m_FrictionCombine: 0
+  m_BounceCombine: 0
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1211,6 +1327,7 @@ GameObject:
   - component: {fileID: 949974132}
   - component: {fileID: 949974131}
   - component: {fileID: 281270978}
+  - component: {fileID: 949974135}
   m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
@@ -1312,6 +1429,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &949974135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 949974130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad0c16491a2ceb84ea270f982bc684bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Instruments::Instruments.InstrumentTeleportLink
+  linkedInstrument: {fileID: 0}
 --- !u!1001 &985637251
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1405,7 +1535,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e6f746d9b4034f428653d039f39cfd9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: SessionPanel.Tests::SessionPanel.DummyActiveInstrumentProvider
-  _current: {fileID: 0}
+  _current: {fileID: 1530775798}
 --- !u!114 &1008756553
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1424,7 +1554,8 @@ MonoBehaviour:
   headFallbackTransform: {fileID: 7187747401014242040}
   fallbackSpawnLocalOffset: {x: 0, y: 0, z: 0.6}
   trackingEpsilon: 0.001
-  _activeInstrumentProviderObject: {fileID: 1008756552}
+  _activeInstrumentProviderObject: {fileID: 1319103813}
+  _songCatalogObject: {fileID: 33976915}
   panelToggleAction: {fileID: 6276339513826019528, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!4 &1008756554
 Transform:
@@ -1467,6 +1598,63 @@ PhysicsMaterial:
   m_Bounciness: 0
   m_FrictionCombine: 0
   m_BounceCombine: 0
+--- !u!134 &1216328531
+PhysicsMaterial:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  serializedVersion: 2
+  m_DynamicFriction: 0.6
+  m_StaticFriction: 0.6
+  m_Bounciness: 0
+  m_FrictionCombine: 0
+  m_BounceCombine: 0
+--- !u!1 &1319103812
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1319103814}
+  - component: {fileID: 1319103813}
+  m_Layer: 0
+  m_Name: InstrumentSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1319103813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1319103812}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bb93744547bbbe46b6c0a02f816ed78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Instruments::Instruments.TeleportInstrumentProvider
+--- !u!4 &1319103814
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1319103812}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1337736652
 GameObject:
   m_ObjectHideFlags: 0
@@ -1492,7 +1680,7 @@ Transform:
   m_GameObject: {fileID: 1337736652}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.2, z: 0.3}
+  m_LocalPosition: {x: -0.6, y: 0.8, z: -0.2}
   m_LocalScale: {x: 0.6666667, y: 0.6666667, z: 0.6666667}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1535,6 +1723,23 @@ PhysicsMaterial:
   m_Bounciness: 0
   m_FrictionCombine: 0
   m_BounceCombine: 0
+--- !u!1 &1860645933 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9193468048282879514, guid: 5d113da57d1dd5342847ea83b2ec3383, type: 3}
+  m_PrefabInstance: {fileID: 2757961452950761299}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1860645936
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1860645933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fac62b9698e746c5a0b1302e228c71a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RhythmGame.Runtime::RhythmAccompaniment
 --- !u!1001 &1872699449
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1622,7 +1827,7 @@ Transform:
   m_GameObject: {fileID: 1922732153}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.2, z: 0.3}
+  m_LocalPosition: {x: 0.7, y: 1.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1843,10 +2048,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1000000000000000003, guid: a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 1216328531}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1000000000000000001, guid: a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 438356174}
   m_SourcePrefab: {fileID: 100100000, guid: a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6, type: 3}
 --- !u!1001 &2000000000000000002
 PrefabInstance:
@@ -1912,10 +2124,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1000000000000000003, guid: a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 823070872}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1000000000000000001, guid: a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 150503112}
   m_SourcePrefab: {fileID: 100100000, guid: a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6, type: 3}
 --- !u!1001 &2757961452950761299
 PrefabInstance:
@@ -1957,6 +2176,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -0
       objectReference: {fileID: 0}
+    - target: {fileID: 2954525712387258519, guid: 5d113da57d1dd5342847ea83b2ec3383, type: 3}
+      propertyPath: accompaniment
+      value: 
+      objectReference: {fileID: 1860645936}
     - target: {fileID: 3120735757521099485, guid: 5d113da57d1dd5342847ea83b2ec3383, type: 3}
       propertyPath: m_Material
       value: 
@@ -2029,6 +2252,10 @@ PrefabInstance:
       propertyPath: m_Material
       value: 
       objectReference: {fileID: 1435238959}
+    - target: {fileID: 8301764062871047269, guid: 5d113da57d1dd5342847ea83b2ec3383, type: 3}
+      propertyPath: yOffset
+      value: -0.1
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 4523561678784135695, guid: 5d113da57d1dd5342847ea83b2ec3383, type: 3}
     m_RemovedGameObjects: []
@@ -2040,6 +2267,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6302550580367909687, guid: 5d113da57d1dd5342847ea83b2ec3383, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1997247678}
+    - targetCorrespondingSourceObject: {fileID: 9193468048282879514, guid: 5d113da57d1dd5342847ea83b2ec3383, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1860645936}
   m_SourcePrefab: {fileID: 100100000, guid: 5d113da57d1dd5342847ea83b2ec3383, type: 3}
 --- !u!1001 &3141592653589793238
 PrefabInstance:
@@ -2235,3 +2465,5 @@ SceneRoots:
   - {fileID: 100000003}
   - {fileID: 1008756554}
   - {fileID: 492665178}
+  - {fileID: 33976916}
+  - {fileID: 1319103814}

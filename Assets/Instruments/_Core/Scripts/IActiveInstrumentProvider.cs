@@ -12,5 +12,6 @@ namespace Instruments
     {
         Transform PanelAnchor { get; }
         string InstrumentId { get; }
+        Transform InstrumentRoot { get; }
     }
 }

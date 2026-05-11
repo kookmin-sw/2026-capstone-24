@@ -4,7 +4,8 @@
     "references": [
         "Unity.InputSystem",
         "Hands",
-        "RhythmGame.Data"
+        "RhythmGame.Data",
+        "GUID:fe685ec1767f73d42b749ea8045bfe43"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

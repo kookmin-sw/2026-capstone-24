@@ -27,6 +27,8 @@ namespace SessionPanel
 
             Transform masterParent = sliderParent != null ? sliderParent : transform;
             GameObject masterGO = Instantiate(volumeSliderPrefab, masterParent);
+            var masterLE = masterGO.GetComponent<LayoutElement>() ?? masterGO.AddComponent<LayoutElement>();
+            masterLE.preferredHeight = 60f;
             _masterSlider = masterGO.GetComponentInChildren<Slider>(true);
             _masterLabel = masterGO.GetComponentInChildren<TMP_Text>(true);
 
@@ -96,6 +98,8 @@ namespace SessionPanel
             {
                 Transform parent = sliderParent != null ? sliderParent : transform;
                 _instanceSliderGO = Instantiate(volumeSliderPrefab, parent);
+                var instLE = _instanceSliderGO.GetComponent<LayoutElement>() ?? _instanceSliderGO.AddComponent<LayoutElement>();
+                instLE.preferredHeight = 60f;
                 _instanceSlider = _instanceSliderGO.GetComponentInChildren<Slider>(true);
                 _instanceLabel = _instanceSliderGO.GetComponentInChildren<TMP_Text>(true);
 

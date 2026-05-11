@@ -1,4 +1,5 @@
 {
+    "version": 1,
     "name": "InputSystem_Actions",
     "maps": [
         {
@@ -90,7 +91,7 @@
                     "name": "PanelToggle",
                     "type": "Button",
                     "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -500,6 +501,17 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "XR",
+                    "action": "PanelToggle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4b86eabd-4877-470e-b56c-fbc9dd73585a",
+                    "path": "<Keyboard>/m",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
                     "action": "PanelToggle",
                     "isComposite": false,
                     "isPartOfComposite": false
