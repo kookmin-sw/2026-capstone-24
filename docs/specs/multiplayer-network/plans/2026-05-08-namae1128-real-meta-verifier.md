@@ -79,9 +79,6 @@ Quest Android 빌드의 `RealMetaTokenProvider`가 발급한 `meta-user-proof:` 
 - [ ] `[auto-hard]` `cd backend && ./gradlew test`가 통과한다(신규 단위 테스트 7개 포함).
 - [ ] `[auto-hard]` `RealMetaIdTokenVerifierTest`의 7개 시나리오(정상/prefix누락/base64깨짐/is_valid:false/4xx/5xx/timeout)가 모두 통과한다.
 - [ ] `[auto-hard]` Spring `MURANG_META_VERIFIER_MODE=mock`으로 띄우면 기존 mock 흐름이 그대로 동작한다(회귀 없음).
-- [ ] `[manual-hard]` Spring `MURANG_META_VERIFIER_MODE=real` + 유효한 `MURANG_META_APP_ID`/`MURANG_META_APP_SECRET`으로 띄운 상태에서 Quest 실기기 빌드의 `MultiplayerAuthGate`를 누르면, Graph API에 호출이 가고 spring 로그에 `is_valid: true` 응답 확인 후 200 + ULID `playerId` 응답이 반환된다.
-- [ ] `[manual-hard]` Quest 실기기에서 두 번째 로그인 시 동일 `metaAccountId`(= Oculus userId)에 대해 동일 `playerId`가 반환된다(MariaDB 영속성 + 실 Meta 계정 매칭).
-- [ ] `[manual-hard]` `MURANG_META_APP_SECRET`을 잘못된 값으로 주입한 상태에서 Quest 빌드가 인증 시도하면 `AUTH_INVALID_TOKEN(401)` 응답 확인.
 
 ## Out of Scope
 
@@ -90,6 +87,7 @@ Quest Android 빌드의 `RealMetaTokenProvider`가 발급한 `meta-user-proof:` 
 - Quest 외 Meta 플랫폼(예: Meta Quest PC App) 지원.
 - App ID/Secret 발급 절차(외부 작업 — Meta Developer Dashboard).
 - Editor에서 real verifier 검증(Editor는 mock 유지가 자연스러움).
+- **Quest USB 실기기 빌드(Android)에서의 end-to-end 검증** — `MultiplayerAuthGate` 클릭으로 real verifier 흐름 동작/두 번째 로그인 동일 `playerId`/invalid secret 401 응답 등 Quest 실기기 manual-hard 3건은 후속 plan [`2026-05-11-namae1128-quest-onsite-integration-verification.md`](./2026-05-11-namae1128-quest-onsite-integration-verification.md)으로 책임 이관. auth-gate·aws-ec2의 Quest 시나리오와 함께 한 빌드/사이드로드 사이클로 일괄 검증한다. 본 plan은 백엔드 단위 테스트와 mock 회귀까지로 책임 범위 한정.
 
 ## Notes
 

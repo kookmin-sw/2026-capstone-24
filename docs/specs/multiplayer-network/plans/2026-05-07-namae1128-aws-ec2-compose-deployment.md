@@ -54,7 +54,6 @@
 - [ ] `[manual-hard]` 부트스트랩 가이드를 따라 새 EC2 인스턴스에서 `docker compose up -d`까지 도달한다.
 - [ ] `[manual-hard]` `https://api.<도메인>/api/v1/auth/meta-login` 호출이 200을 반환한다.
 - [ ] `[manual-hard]` 동일 `metaAccountId`로 두 번째 로그인 시 같은 `playerId`가 반환된다 (DB 영속성 확인).
-- [ ] `[manual-hard]` Quest 빌드(또는 Editor에서 device backend URL을 EC2로 가리킨 빌드)가 EC2 Dedicated Server에 룸 합류해 서버 로그에 입장이 기록된다.
 - [ ] `[manual-hard]` `docker compose restart` 또는 EC2 재부팅 후 모든 서비스가 자동 복구된다.
 - [ ] `[manual-hard]` 일 1회 `mysqldump` 백업이 cron으로 실행되고 결과 파일이 생성된다.
 
@@ -68,6 +67,7 @@
 - 다중 Dedicated Server 인스턴스 또는 매치메이커 분리
 - 실 Meta SDK verifier 활성화
 - Photon AppId의 dev/prod 환경 분리
+- **Quest USB 실기기 빌드(Android)에서의 EC2 Dedicated Server 룸 합류 검증** — Quest 실기기 manual-hard 1건은 후속 plan [`2026-05-11-namae1128-quest-onsite-integration-verification.md`](../plans/2026-05-11-namae1128-quest-onsite-integration-verification.md)으로 책임 이관 (cross sub-spec: 본 plan은 `03-room-session`, 후속 plan은 `01-user-auth` 소관). auth-gate·real-meta-verifier의 Quest 시나리오와 함께 한 빌드/사이드로드 사이클로 일괄 검증한다. 본 plan은 EC2 배포·인프라 동작 검증까지로 책임 범위 한정.
 
 ## Notes
 
