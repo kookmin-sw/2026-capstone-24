@@ -67,7 +67,7 @@ Photon Fusion을 통해 룸을 생성하거나 기존 룸에 입장·퇴장할 �
 | 2026-05-07 | docker-compose 로컬 통합 스택 (spring + mariadb + dedicated-server) | `Done` | [2026-05-07-namae1128-docker-compose-local-stack.md](../../_archive/multiplayer-network/plans/2026-05-07-namae1128-docker-compose-local-stack.md) |
 | 2026-05-07 | AWS EC2 docker-compose 배포 | `Ready` | [2026-05-07-namae1128-aws-ec2-compose-deployment.md](../plans/2026-05-07-namae1128-aws-ec2-compose-deployment.md) |
 | 2026-05-08 | tools/run-stack-smoke 5시나리오 자동화 (docker-compose 기반) | `Ready` | [2026-05-08-namae1128-stack-smoke-automation.md](../plans/2026-05-08-namae1128-stack-smoke-automation.md) |
-| 2026-05-09 | dedicated-server 빌드 시 Standalone OpenXR loader 임시 토글 | `Ready` | [2026-05-09-namae1128-dedicated-server-build-openxr-toggle.md](../plans/2026-05-09-namae1128-dedicated-server-build-openxr-toggle.md) |
+| 2026-05-09 | dedicated-server 빌드 시 Standalone OpenXR loader 임시 토글 | `Done` | [2026-05-09-namae1128-dedicated-server-build-openxr-toggle.md](../../_archive/multiplayer-network/plans/2026-05-09-namae1128-dedicated-server-build-openxr-toggle.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/plan-new` 사용.
