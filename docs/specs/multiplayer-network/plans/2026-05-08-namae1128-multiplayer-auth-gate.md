@@ -1,7 +1,7 @@
 # 인-게임 멀티플레이어 진입 게이트
 
 **Linked Spec:** [`01-user-auth.md`](../specs/01-user-auth.md)
-**Status:** `Ready`
+**Status:** `In Progress`
 
 ## Goal
 
@@ -30,7 +30,7 @@ Quest 빌드(또는 에디터 Play)에서 사용자가 명시적으로 멀티플
    - `[SerializeField] AuthBootstrap authBootstrap` — 같은 GameObject의 컴포넌트 참조.
    - `[SerializeField] UnityEngine.UI.Button activateButton` 또는 World-Space `Button` 컴포넌트 참조.
    - `[SerializeField] TMPro.TMP_Text statusLabel` — 상태 텍스트.
-   - 버튼 클릭 → `multiplayerAuthBootstrap.SetActive(true)` → `authBootstrap.EnsureAuthenticatedAsync()` await → 성공 시 `statusLabel`에 "Multiplayer 활성화 — <닉네임>" / 실패 시 "실패: <메시지>" 표시.
+   - 버튼 클릭 → `multiplayerAuthBootstrap.SetActive(true)` → `authBootstrap.EnsureAuthenticatedAsync()` await → 성공 시 `statusLabel`에 "Multiplayer Active — <nickname>" / 실패 시 "Failed: <message>" 표시. (영문 표기는 LiberationSans SDF 호환 — 한글 SDF/fallback 도입은 별도 plan으로 분리)
    - 이미 활성화된 상태면 중복 호출 무시.
 2. **씬 변경 — `Assets/Scenes/SampleScene.unity`**:
    - `MultiplayerAuthBootstrap` GameObject의 `m_IsActive` 0(비활성)으로 변경.
@@ -48,8 +48,8 @@ Quest 빌드(또는 에디터 Play)에서 사용자가 명시적으로 멀티플
 
 - [ ] `[auto-hard]` `Assets/Multiplayer/Scripts/Auth/MultiplayerAuthGate.cs`가 Editor 컴파일 에러 없이 로드된다.
 - [ ] `[manual-hard]` SampleScene Play 시 콘솔에 `[AuthBootstrap]` 관련 로그가 0건이고 `AuthSmokeProbe` 오버레이 패널이 표시되지 않는다(GameObject 비활성).
-- [ ] `[manual-hard]` SampleScene 안의 `MultiplayerAuthGate` 버튼을 누르면 `MultiplayerAuthBootstrap`이 활성화되고 백엔드 인증이 실행되며 상태 라벨이 "Multiplayer 활성화 — <닉네임>"으로 갱신된다(백엔드가 떠 있을 때).
-- [ ] `[manual-hard]` 백엔드가 떠 있지 않을 때 버튼을 누르면 상태 라벨이 "실패: <연결 거부 메시지>"로 표시되고 게임 다른 부분은 정상 동작한다.
+- [ ] `[manual-hard]` SampleScene 안의 `MultiplayerAuthGate` 버튼을 누르면 `MultiplayerAuthBootstrap`이 활성화되고 백엔드 인증이 실행되며 상태 라벨이 "Multiplayer Active — <nickname>"으로 갱신된다(백엔드가 떠 있을 때).
+- [ ] `[manual-hard]` 백엔드가 떠 있지 않을 때 버튼을 누르면 상태 라벨이 "Failed: <connection refused message>"로 표시되고 게임 다른 부분은 정상 동작한다.
 - [ ] `[manual-hard]` Quest USB 실기기 빌드(Android)에서 같은 흐름이 동작한다 — 버튼 누르기 전 인증 시도 0건, 누른 후 mock 또는 real 토큰으로 인증 진행.
 
 ## Out of Scope
@@ -65,6 +65,7 @@ Quest 빌드(또는 에디터 Play)에서 사용자가 명시적으로 멀티플
 - `AuthBootstrap.authenticateOnStart`를 false로 바꾸면 기존 `AuthSmokeTest.unity` 씬은 영향이 없다(그 씬은 SmokeProbe 흐름이 별개).
 - World-Space UI는 XR Interaction Toolkit의 ray interactor와 호환되도록 Canvas의 `Render Mode: World Space` + `Tracked Device Graphic Raycaster`(또는 동등)를 설정한다.
 - 향후 멀티플레이어 진입 후 룸 합류 UI까지 같은 World-Space 패널에서 다루도록 확장할 수 있다(04-presence-ui plan에서 다룸).
+- 2026-05-11: 검증 실패(보류)에서 파생된 후속 plan [`2026-05-11-namae1128-quest-onsite-integration-verification.md`](./2026-05-11-namae1128-quest-onsite-integration-verification.md) 추가. 완료 후 본 plan의 `[manual-hard]` "Quest USB 실기기 빌드(Android)에서 같은 흐름이 동작한다 — 버튼 누르기 전 인증 시도" 항목 재검증 필요.
 
 ## Handoff
 
