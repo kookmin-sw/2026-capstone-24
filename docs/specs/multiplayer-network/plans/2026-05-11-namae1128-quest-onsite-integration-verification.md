@@ -22,7 +22,7 @@ Quest USB 빌드 + Android 사이드로드 + 헤드셋 장착·로그 캡처는 
 
 1. **[`2026-05-08-namae1128-multiplayer-auth-gate.md`](../../_archive/multiplayer-network/plans/2026-05-08-namae1128-multiplayer-auth-gate.md)** (sub-spec `01-user-auth`, Done — Editor 검증까지 완료. Quest 실기기 검증은 본 plan으로 이관)
    - World-Space `MultiplayerAuthGate` 버튼이 Editor에선 통과(2026-05-10/11 검증). Quest 실기기에서 같은 흐름 재검증.
-2. **[`2026-05-08-namae1128-real-meta-verifier.md`](./2026-05-08-namae1128-real-meta-verifier.md)** (sub-spec `01-user-auth`, Ready — Quest 실기기 manual-hard 3건이 본 plan으로 책임 이관됨. 선행 plan은 백엔드 단위 테스트와 mock 회귀까지만 책임지고 Done 처리 가능. 단 본 plan 실행 전에 real verifier 구현이 끝나야 시나리오 (2)~(4) 검증 가능.)
+2. **[`2026-05-08-namae1128-real-meta-verifier.md`](../../_archive/multiplayer-network/plans/2026-05-08-namae1128-real-meta-verifier.md)** (sub-spec `01-user-auth`, Done — Quest 실기기 manual-hard 3건이 본 plan으로 책임 이관됨. 선행 plan은 백엔드 단위 테스트와 mock 회귀까지만 책임지고 Done 처리됨. real verifier 구현 완료.)
 3. **[`2026-05-07-namae1128-aws-ec2-compose-deployment.md`](./2026-05-07-namae1128-aws-ec2-compose-deployment.md)** (sub-spec `03-room-session`, Ready — Quest 빌드 → EC2 룸 합류 manual-hard 1건이 본 plan으로 책임 이관됨. 선행 plan은 EC2 배포·인프라 동작 검증까지만 책임지고 Done 처리 가능. 단 본 plan 실행 전에 EC2 배포가 끝나야 시나리오 (5) 검증 가능.)
 
 ### 실행 전제

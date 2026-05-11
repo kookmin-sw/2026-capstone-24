@@ -89,6 +89,12 @@ public class SecurityProperties {
         @NotBlank
         private String mockTokenPrefix = "mock-meta:";
 
+        private String appId = "";
+
+        private String appSecret = "";
+
+        private String graphBaseUrl = "https://graph.oculus.com";
+
         public String getVerifierMode() {
             return verifierMode;
         }
@@ -103,6 +109,30 @@ public class SecurityProperties {
 
         public void setMockTokenPrefix(String mockTokenPrefix) {
             this.mockTokenPrefix = mockTokenPrefix;
+        }
+
+        public String getAppId() {
+            return appId;
+        }
+
+        public void setAppId(String appId) {
+            this.appId = appId;
+        }
+
+        public String getAppSecret() {
+            return appSecret;
+        }
+
+        public void setAppSecret(String appSecret) {
+            this.appSecret = appSecret;
+        }
+
+        public String getGraphBaseUrl() {
+            return graphBaseUrl;
+        }
+
+        public void setGraphBaseUrl(String graphBaseUrl) {
+            this.graphBaseUrl = graphBaseUrl;
         }
     }
 }

@@ -9,6 +9,7 @@ public enum ErrorCode {
     AUTH_NICKNAME_DUPLICATE(HttpStatus.CONFLICT, "이미 사용 중인 닉네임입니다."),
     VALIDATION_REQUEST(HttpStatus.BAD_REQUEST, "요청 값이 유효하지 않습니다."),
     VALIDATION_NAME(HttpStatus.BAD_REQUEST, "닉네임 형식이 유효하지 않습니다."),
+    META_VERIFIER_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE, "Meta 인증 서버에 일시적으로 접근할 수 없습니다."),
     INTERNAL_UNEXPECTED(HttpStatus.INTERNAL_SERVER_ERROR, "예상하지 못한 서버 오류가 발생했습니다.");
 
     private final HttpStatus status;

@@ -41,4 +41,8 @@ public class ApiException extends RuntimeException {
     public static ApiException invalidNickname(String message) {
         return new ApiException(ErrorCode.VALIDATION_NAME, message);
     }
+
+    public static ApiException metaVerifierUnavailable() {
+        return new ApiException(ErrorCode.META_VERIFIER_UNAVAILABLE);
+    }
 }

@@ -107,3 +107,44 @@ docker compose down -v
 ## 다음 단계
 
 로컬 스택 검증 완료 후 AWS EC2 배포는 후속 plan `2026-05-07-namae1128-aws-ec2-compose-deployment.md`를 참조.
+
+## Real Meta Verifier 사용 절차
+
+Quest 실기기에서 Oculus Graph API 실제 검증을 사용하려면 아래 절차를 따른다.
+
+### 사전 조건
+
+- Meta Developer Dashboard에서 **App ID**와 **App Secret** 발급 완료.
+- Quest 빌드에 이미 App ID가 박혀 있는지(`OculusPlatformSettings`) 확인.
+
+### 환경변수 설정
+
+`.env` 파일에 다음 값을 추가/수정한다:
+
+```
+MURANG_META_VERIFIER_MODE=real
+MURANG_META_APP_ID=<Meta Developer Dashboard에서 발급한 App ID>
+MURANG_META_APP_SECRET=<Meta Developer Dashboard에서 발급한 App Secret>
+```
+
+경고: `MURANG_META_APP_SECRET`은 절대 git에 커밋하지 않는다.
+
+### 스택 기동
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+```
+
+### 검증
+
+1. Quest 실기기에 Unity 빌드를 사이드로드한다.
+2. `MultiplayerAuthGate` 버튼을 누른다.
+3. Spring 컨테이너 로그에서 `RealMetaIdTokenVerifier`가 Graph API를 호출하는 로그와 `is_valid: true` 응답을 확인한다:
+   ```bash
+   docker compose logs -f spring
+   ```
+4. `statusLabel`에 `Multiplayer Active — <nickname>`이 표시되면 인증 성공.
+
+### mock 모드 복귀
+
+실기기 검증 후 개발 환경을 mock 모드로 되돌리려면 `.env`에서 `MURANG_META_VERIFIER_MODE=mock`으로 변경하고 스택을 재기동한다.

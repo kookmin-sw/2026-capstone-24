@@ -1,7 +1,7 @@
 # 백엔드 real Meta 토큰 verifier (Oculus Graph API)
 
 **Linked Spec:** [`01-user-auth.md`](../specs/01-user-auth.md)
-**Status:** `Ready`
+**Status:** `Done`
 
 ## Goal
 
@@ -76,9 +76,9 @@ Quest Android 빌드의 `RealMetaTokenProvider`가 발급한 `meta-user-proof:` 
 
 ## Acceptance Criteria
 
-- [ ] `[auto-hard]` `cd backend && ./gradlew test`가 통과한다(신규 단위 테스트 7개 포함).
-- [ ] `[auto-hard]` `RealMetaIdTokenVerifierTest`의 7개 시나리오(정상/prefix누락/base64깨짐/is_valid:false/4xx/5xx/timeout)가 모두 통과한다.
-- [ ] `[auto-hard]` Spring `MURANG_META_VERIFIER_MODE=mock`으로 띄우면 기존 mock 흐름이 그대로 동작한다(회귀 없음).
+- [x] `[auto-hard]` `cd backend && ./gradlew test`가 통과한다(신규 단위 테스트 7개 포함).
+- [x] `[auto-hard]` `RealMetaIdTokenVerifierTest`의 7개 시나리오(정상/prefix누락/base64깨짐/is_valid:false/4xx/5xx/timeout)가 모두 통과한다.
+- [x] `[auto-hard]` Spring `MURANG_META_VERIFIER_MODE=mock`으로 띄우면 기존 mock 흐름이 그대로 동작한다(회귀 없음).
 
 ## Out of Scope
 
@@ -98,4 +98,10 @@ Quest Android 빌드의 `RealMetaTokenProvider`가 발급한 `meta-user-proof:` 
 
 ## Handoff
 
-<!-- /spec-implement 가 plan 완료 후 채움. -->
+- `RealMetaIdTokenVerifier`는 `meta-user-proof:` prefix 검증 → base64url 디코딩 → `MetaUserProofPayload{userId, userProof}` 파싱 → Oculus Graph API `GET /user_proof_validate` 호출 순서로 동작한다. `RestClient` connect/read timeout은 각 5초.
+- `MetaVerifierConfiguration`이 `@ConditionalOnProperty(app.security.meta.verifier-mode)`로 mock/real 빈을 분기 등록한다. `MockMetaIdTokenVerifier`에서 `@Service`와 mode 내부 검사를 제거했다.
+- `ErrorCode.META_VERIFIER_UNAVAILABLE(503)` 추가. `ApiException.metaVerifierUnavailable()` factory 추가.
+- `application.yml`의 `verifier-mode`가 `${MURANG_META_VERIFIER_MODE:mock}`으로 외부화됨. 환경변수 미설정 시 mock 유지.
+- `.env.example`(루트/backend 양쪽)에 `MURANG_META_VERIFIER_MODE`, `MURANG_META_APP_ID`, `MURANG_META_APP_SECRET` placeholder 추가.
+- `Assets/Multiplayer/Resources/MultiplayerAuthConfig.asset`의 `useMockMetaToken`이 `0`으로 변경됨 — Editor Play 시 `RealMetaTokenProvider`가 비-Android 안전 실패로 동작하므로 Quest 실기기 없이도 빌드/씬 로드는 정상.
+- Quest 실기기 end-to-end 검증(real verifier 경로)은 후속 plan [`2026-05-11-namae1128-quest-onsite-integration-verification.md`](./2026-05-11-namae1128-quest-onsite-integration-verification.md)에서 처리.
