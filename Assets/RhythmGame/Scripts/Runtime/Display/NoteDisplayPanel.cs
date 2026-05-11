@@ -50,7 +50,11 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
     List<NoteVisual>   activeNotes  = new List<NoteVisual>();
     bool               layoutBuilt;
     bool               active;
+    bool               _notesEverQueued;
     RectTransform      _panelRt;
+
+    /// <summary>모든 노트가 화면에서 사라지면 발생. RhythmGameHost가 자동 StopSession에 활용한다.</summary>
+    public event System.Action Completed;
 
     // ─── Lifecycle ───────────────────────────────────────────
 
@@ -174,6 +178,7 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
 
         pendingQueue.Sort((a, b) => a.spawnTime.CompareTo(b.spawnTime));
 
+        _notesEverQueued = pendingQueue.Count > 0;
         active = true;
         gameObject.SetActive(true);
     }
@@ -182,6 +187,7 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
     public void Hide()
     {
         active = false;
+        _notesEverQueued = false;
 
         foreach (NoteVisual nv in activeNotes)
             if (nv != null) Destroy(nv.gameObject);
@@ -233,6 +239,13 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
                 Destroy(nv.gameObject);
                 activeNotes.RemoveAt(j);
             }
+        }
+
+        // 모든 노트가 소진됐으면 Completed 이벤트 발생
+        if (active && _notesEverQueued && pendingQueue.Count == 0 && activeNotes.Count == 0)
+        {
+            active = false;
+            Completed?.Invoke();
         }
     }
 

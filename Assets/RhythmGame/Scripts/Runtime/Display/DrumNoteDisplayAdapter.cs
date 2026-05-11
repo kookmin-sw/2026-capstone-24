@@ -18,6 +18,11 @@ public class DrumNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
     readonly List<InstrumentLaneConfig>          runtimeConfigs = new List<InstrumentLaneConfig>();
     readonly Dictionary<byte, NoteDisplayPanel>  noteToPanel    = new Dictionary<byte, NoteDisplayPanel>();
 
+    int _pendingPanelCount;
+
+    /// <summary>모든 드럼 파츠 패널의 노트가 소진되면 발생. RhythmGameHost가 자동 StopSession에 활용한다.</summary>
+    public event System.Action Completed;
+
     /// <summary>
     /// 드럼 세션 시작 시 호출.
     /// config에 등록된 DrumHitZone의 midiNote를 매칭해 파츠마다 패널을 생성한다.
@@ -54,6 +59,22 @@ public class DrumNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
             spawnedPanels.Add(panel);
             noteToPanel[note] = panel;
         }
+
+        _pendingPanelCount = spawnedPanels.Count;
+        if (_pendingPanelCount == 0)
+        {
+            Completed?.Invoke();
+            return;
+        }
+        foreach (var p in spawnedPanels)
+            p.Completed += OnPanelCompleted;
+    }
+
+    void OnPanelCompleted()
+    {
+        _pendingPanelCount--;
+        if (_pendingPanelCount <= 0)
+            Completed?.Invoke();
     }
 
     /// <summary>
@@ -64,11 +85,13 @@ public class DrumNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
         foreach (NoteDisplayPanel panel in spawnedPanels)
         {
             if (panel == null) continue;
+            panel.Completed -= OnPanelCompleted;
             panel.Hide();
             Destroy(panel.gameObject);
         }
         spawnedPanels.Clear();
         noteToPanel.Clear();
+        _pendingPanelCount = 0;
 
         foreach (InstrumentLaneConfig cfg in runtimeConfigs)
         {

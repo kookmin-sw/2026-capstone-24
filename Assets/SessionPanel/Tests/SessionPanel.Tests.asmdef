@@ -1,0 +1,16 @@
+{
+    "name": "SessionPanel.Tests",
+    "rootNamespace": "SessionPanel",
+    "references": [
+        "Instruments"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,19 +1,15 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 리듬게임 반주 재생기.
+/// Begin() 호출 시 씬에 있는 모든 InstrumentBase를 자동으로 탐색해
+/// chart.channelMap의 instrumentKey와 매칭한다.
+/// judgedChannel을 제외한 모든 채널 이벤트를 해당 악기로 자동 재생하므로
+/// 악기가 새로 추가돼도 별도 설정 없이 바로 반주에 포함된다.
+/// </summary>
 public class RhythmAccompaniment : MonoBehaviour
 {
-    [Serializable]
-    public struct ChannelBinding
-    {
-        [Tooltip("1~16 (.vmsong 채널 번호)")]
-        public int channel;
-        public InstrumentBase instrument;
-    }
-
-    [SerializeField] ChannelBinding[] channelBindings = Array.Empty<ChannelBinding>();
-
     readonly struct ScheduledEvent
     {
         public readonly double        fireTime;
@@ -32,18 +28,19 @@ public class RhythmAccompaniment : MonoBehaviour
     int                             _next;
     bool                            _playing;
 
+    /// <summary>
+    /// 반주 세션을 시작한다.
+    /// 씬의 InstrumentBase 목록을 chart.channelMap과 자동 매칭해 judgedChannel 외 채널을 재생한다.
+    /// </summary>
     public void Begin(VmSongChart chart, int judgedChannel, IRhythmClock clock)
     {
         End();
         _clock = clock;
-        _map   = new Dictionary<int, InstrumentBase>();
-        foreach (var b in channelBindings)
-            if (b.instrument != null && b.channel != judgedChannel)
-                _map[b.channel] = b.instrument;
+        _map   = BuildInstrumentMap(chart, judgedChannel);
 
         _events = BuildEvents(chart, judgedChannel);
         _events.Sort((a, b) => a.fireTime.CompareTo(b.fireTime));
-        _next   = 0;
+        _next    = 0;
         _playing = true;
     }
 
@@ -66,6 +63,31 @@ public class RhythmAccompaniment : MonoBehaviour
 
         if (_next >= _events.Count)
             _playing = false;
+    }
+
+    /// <summary>
+    /// 씬에 있는 모든 InstrumentBase를 instrumentKey로 인덱싱한 뒤
+    /// channelMap 에서 judgedChannel 을 제외한 채널에 매핑한다.
+    /// </summary>
+    Dictionary<int, InstrumentBase> BuildInstrumentMap(VmSongChart chart, int judgedChannel)
+    {
+        // 씬 내 모든 InstrumentBase를 InstrumentId → instance 로 수집
+        var byKey = new Dictionary<string, InstrumentBase>(System.StringComparer.OrdinalIgnoreCase);
+        foreach (var inst in FindObjectsByType<InstrumentBase>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            if (inst != null && !string.IsNullOrEmpty(inst.InstrumentId))
+                byKey[inst.InstrumentId] = inst;
+        }
+
+        // channelMap 순회 → judgedChannel 제외한 채널에 악기 할당
+        var map = new Dictionary<int, InstrumentBase>();
+        foreach (var entry in chart.channelMap.entries)
+        {
+            if (entry.channel == judgedChannel) continue;
+            if (byKey.TryGetValue(entry.instrumentKey, out var inst))
+                map[entry.channel] = inst;
+        }
+        return map;
     }
 
     static List<ScheduledEvent> BuildEvents(VmSongChart chart, int judgedChannel)

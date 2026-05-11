@@ -1,19 +1,11 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
-/// <summary>
-/// 개별 악기 3D 모델에 부착되어 실제 소리를 입체적으로 출력하는 스피커 역할을 합니다.
-/// 여러 음이 겹쳐서 재생될 수 있도록 보이스 풀을 유지합니다.
-/// </summary>
 [DisallowMultipleComponent]
 public class InstrumentAudioOutput : MonoBehaviour
 {
-    enum VoiceState
-    {
-        Idle,
-        Active,
-        Releasing
-    }
+    enum VoiceState { Idle, Active, Releasing }
 
     sealed class Voice
     {
@@ -25,9 +17,6 @@ public class InstrumentAudioOutput : MonoBehaviour
         public float ReleaseStartVolume;
     }
 
-    /// <summary>
-    /// InstrumentBase에서 전달받아 모든 AudioSource에 일괄 적용할 설정값들입니다.
-    /// </summary>
     public struct AudioSourceSettings
     {
         public int MaxVoices;
@@ -61,15 +50,14 @@ public class InstrumentAudioOutput : MonoBehaviour
         }
     }
 
-    readonly List<Voice> m_Voices = new List<Voice>();
+    [Tooltip("voice AudioSource에 적용할 AudioMixerGroup. SessionMixer/Master를 할당.")]
+    [SerializeField] AudioMixerGroup voiceMixerGroup;
 
+    readonly List<Voice> m_Voices = new List<Voice>();
     Transform m_VoicePoolRoot;
     AudioSourceSettings m_CurrentSettings = AudioSourceSettings.CreateDefault();
 
-    void Awake()
-    {
-        EnsureVoicePool();
-    }
+    void Awake() { EnsureVoicePool(); }
 
     void Update()
     {
@@ -77,57 +65,30 @@ public class InstrumentAudioOutput : MonoBehaviour
         for (int i = 0; i < m_Voices.Count; i++)
         {
             Voice voice = m_Voices[i];
-            if (voice.State != VoiceState.Releasing)
-                continue;
-
-            if (voice.Source == null)
-            {
-                ResetVoice(voice);
-                continue;
-            }
-
-            if (m_CurrentSettings.ReleaseDuration <= 0f)
-            {
-                StopVoice(voice);
-                continue;
-            }
-
+            if (voice.State != VoiceState.Releasing) continue;
+            if (voice.Source == null) { ResetVoice(voice); continue; }
+            if (m_CurrentSettings.ReleaseDuration <= 0f) { StopVoice(voice); continue; }
             float elapsed = now - voice.ReleaseStartedAt;
-            if (elapsed >= m_CurrentSettings.ReleaseDuration)
-            {
-                StopVoice(voice);
-                continue;
-            }
-
+            if (elapsed >= m_CurrentSettings.ReleaseDuration) { StopVoice(voice); continue; }
             float t = 1f - (elapsed / m_CurrentSettings.ReleaseDuration);
             voice.Source.volume = voice.ReleaseStartVolume * Mathf.Clamp01(t);
         }
     }
 
-    void OnDisable()
-    {
-        StopAllVoices();
-    }
+    void OnDisable() { StopAllVoices(); }
 
     public void PlayNote(int note, AudioClip clip, float pitch, float volume)
     {
-        if (clip == null)
-            return;
-
+        if (clip == null) return;
         EnsureVoicePool();
-
         Voice voice = GetBestVoice();
-        if (voice == null || voice.Source == null)
-            return;
-
+        if (voice == null || voice.Source == null) return;
         StopVoice(voice);
-
         voice.Source.clip = clip;
         voice.Source.pitch = pitch;
         voice.Source.volume = Mathf.Clamp01(volume);
         voice.Source.loop = false;
         voice.Source.Play();
-
         voice.Note = note;
         voice.State = VoiceState.Active;
         voice.StartedAt = Time.time;
@@ -138,15 +99,8 @@ public class InstrumentAudioOutput : MonoBehaviour
     public void StopNote(int note)
     {
         Voice voice = GetOldestVoiceForNote(note);
-        if (voice == null || voice.Source == null)
-            return;
-
-        if (m_CurrentSettings.ReleaseDuration <= 0f || !voice.Source.isPlaying)
-        {
-            StopVoice(voice);
-            return;
-        }
-
+        if (voice == null || voice.Source == null) return;
+        if (m_CurrentSettings.ReleaseDuration <= 0f || !voice.Source.isPlaying) { StopVoice(voice); return; }
         voice.State = VoiceState.Releasing;
         voice.ReleaseStartedAt = Time.time;
         voice.ReleaseStartVolume = voice.Source.volume;
@@ -157,17 +111,13 @@ public class InstrumentAudioOutput : MonoBehaviour
         for (int i = 0; i < m_Voices.Count; i++)
         {
             Voice voice = m_Voices[i];
-            if (voice.Note == note && voice.State != VoiceState.Idle)
-                StopVoice(voice);
+            if (voice.Note == note && voice.State != VoiceState.Idle) StopVoice(voice);
         }
     }
 
     public void StopAllVoices()
     {
-        for (int i = 0; i < m_Voices.Count; i++)
-        {
-            StopVoice(m_Voices[i]);
-        }
+        for (int i = 0; i < m_Voices.Count; i++) StopVoice(m_Voices[i]);
     }
 
     public virtual void InitializePoolSettings(AudioSourceSettings settings)
@@ -176,20 +126,13 @@ public class InstrumentAudioOutput : MonoBehaviour
         m_CurrentSettings.MaxVoices = Mathf.Max(1, m_CurrentSettings.MaxVoices);
         m_CurrentSettings.SpatialBlend = Mathf.Clamp01(m_CurrentSettings.SpatialBlend);
         m_CurrentSettings.ReleaseDuration = Mathf.Max(0f, m_CurrentSettings.ReleaseDuration);
-
         EnsureVoicePool();
-
-        for (int i = 0; i < m_Voices.Count; i++)
-        {
-            ApplySettingsToSource(m_Voices[i].Source, m_CurrentSettings);
-        }
+        for (int i = 0; i < m_Voices.Count; i++) ApplySettingsToSource(m_Voices[i].Source, m_CurrentSettings);
     }
 
     void ApplySettingsToSource(AudioSource source, AudioSourceSettings settings)
     {
-        if (source == null)
-            return;
-
+        if (source == null) return;
         source.spatialize = settings.Spatialize;
         source.spatializePostEffects = settings.SpatializePostEffects;
         source.spatialBlend = settings.SpatialBlend;
@@ -201,19 +144,17 @@ public class InstrumentAudioOutput : MonoBehaviour
         source.reverbZoneMix = settings.ReverbZoneMix;
         source.playOnAwake = false;
         source.loop = false;
+        source.outputAudioMixerGroup = voiceMixerGroup;
     }
 
     void EnsureVoicePool()
     {
-        if (m_Voices.Count == m_CurrentSettings.MaxVoices && m_VoicePoolRoot != null)
-            return;
-
+        if (m_Voices.Count == m_CurrentSettings.MaxVoices && m_VoicePoolRoot != null) return;
         if (m_VoicePoolRoot == null)
         {
-            string poolName = $"VoicePool_{gameObject.name}";
+            string poolName = string.Format("VoicePool_{0}", gameObject.name);
             Transform existingRoot = transform.Find(poolName);
-            if (existingRoot != null)
-                m_VoicePoolRoot = existingRoot;
+            if (existingRoot != null) m_VoicePoolRoot = existingRoot;
             else
             {
                 GameObject poolRoot = new GameObject(poolName);
@@ -221,28 +162,17 @@ public class InstrumentAudioOutput : MonoBehaviour
                 m_VoicePoolRoot = poolRoot.transform;
             }
         }
-
         while (m_Voices.Count < m_CurrentSettings.MaxVoices)
         {
             AudioSource source = m_VoicePoolRoot.gameObject.AddComponent<AudioSource>();
             ApplySettingsToSource(source, m_CurrentSettings);
-
-            m_Voices.Add(new Voice
-            {
-                Source = source,
-                State = VoiceState.Idle
-            });
+            m_Voices.Add(new Voice { Source = source, State = VoiceState.Idle });
         }
     }
 
     void StopVoice(Voice voice)
     {
-        if (voice.Source != null)
-        {
-            voice.Source.Stop();
-            voice.Source.clip = null;
-        }
-
+        if (voice.Source != null) { voice.Source.Stop(); voice.Source.clip = null; }
         ResetVoice(voice);
     }
 
@@ -259,20 +189,12 @@ public class InstrumentAudioOutput : MonoBehaviour
     {
         Voice best = null;
         float oldestTime = float.MaxValue;
-
         for (int i = 0; i < m_Voices.Count; i++)
         {
             Voice voice = m_Voices[i];
-            if (voice.State == VoiceState.Idle)
-                return voice;
-
-            if (voice.StartedAt < oldestTime)
-            {
-                oldestTime = voice.StartedAt;
-                best = voice;
-            }
+            if (voice.State == VoiceState.Idle) return voice;
+            if (voice.StartedAt < oldestTime) { oldestTime = voice.StartedAt; best = voice; }
         }
-
         return best;
     }
 
@@ -280,20 +202,12 @@ public class InstrumentAudioOutput : MonoBehaviour
     {
         Voice best = null;
         float oldestTime = float.MaxValue;
-
         for (int i = 0; i < m_Voices.Count; i++)
         {
             Voice voice = m_Voices[i];
-            if (voice.Note != note || voice.Source == null || voice.State == VoiceState.Idle)
-                continue;
-
-            if (voice.StartedAt < oldestTime)
-            {
-                oldestTime = voice.StartedAt;
-                best = voice;
-            }
+            if (voice.Note != note || voice.Source == null || voice.State == VoiceState.Idle) continue;
+            if (voice.StartedAt < oldestTime) { oldestTime = voice.StartedAt; best = voice; }
         }
-
         return best;
     }
 }
