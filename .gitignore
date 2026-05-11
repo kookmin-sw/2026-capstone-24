@@ -98,3 +98,6 @@ crashlytics-build.properties
 
 # Claude Code local launcher config
 .claude/launch.json
+.claude/scheduled_tasks.lock
+.feature-build-state.json
+.orchestrator-state.json

@@ -10,8 +10,9 @@ allowed-tools: Read, Edit, Glob, Grep, mcp__UnityMCP__manage_asset, mcp__UnityMC
 
 1. **자산 *생성*** (`.mat`, `.asset`, `.prefab` 신규) → `manage_material` / `manage_asset` / `manage_prefabs`. YAML hand-write 금지. `.meta` GUID는 Unity가 만들도록 한다.
 2. **단일 필드 *변경*** (머터리얼 교체, `m_Enabled`, 컴포넌트 값 등) → `manage_components` / `manage_prefabs` 우선. MCP가 그 필드를 못 다룰 때만 텍스트 Edit으로 폴백.
-3. **스칼라 텍스트 Edit이 불가피한 경우** → 아래 YAML 보존 규칙을 따른다.
+3. **스칼라 텍스트 Edit이 불가피한 경우** → 아래 YAML 보존 규칙을 따른다. 텍스트 편집 도구가 `precondition_sha256`을 지원하면(예: `apply_text_edits`) 다음 절차로 stale-file 사고를 막는다 — `Read <대상 파일>`(또는 `mcp__UnityMCP__get_sha`)로 SHA 취득 → 편집 호출에 `precondition_sha256=<SHA>` 전달 → SHA 불일치 실패 시 SHA 재취득 → 편집 내용 재계산 → 재시도. 동시 편집(IDE에서 사용자가 같은 파일을 저장한 케이스)을 silent overwrite하지 않기 위함.
 4. **MCP 도구가 세션에 노출돼 있지 않으면** 사용자에게 묻고 진행한다 (AGENTS.md "Unity MCP 사용 정책"과 동일).
+5. **`.cs` 스크립트 변경**은 본 skill 범위 외다 — 컴파일 대기·`read_console` 검증·attach 순서는 [`unity-mcp-workflow`](../unity-mcp-workflow/SKILL.md) §2.
 
 ## 일반 규칙
 
@@ -39,6 +40,6 @@ allowed-tools: Read, Edit, Glob, Grep, mcp__UnityMCP__manage_asset, mcp__UnityMC
 다음 두 단계로 함정을 차단한다.
 
 1. **plan 작성 단계.** plan `## Verified Structural Assumptions`에 enum 정의(클래스명·각 값 인덱스)와 본 plan 의도 값을 박제한다. 출처는 패키지 소스 `Read <패키지 경로>/<파일>.cs`. 강제 룰 단일 진실원: `docs/specs/README.md` "작성 규칙 요약" + `/plan-new` step 1.5 Trigger (e).
-2. **자산 적용 직후.** MCP 호출 결과를 직렬화 `Grep`으로 다시 읽어 의도 값과 일치하는지 대조한다. 어긋났으면 단일 propertyPath 스칼라 변경이라 직접 텍스트 Edit 예외(`AGENTS.md` 직렬화 자산 수정 MCP 우선 정책의 (b) 조건)로 우회 가능 — sub-agent 단독 판단 금지, plan 명시 또는 메인 승인 후에만.
+2. **자산 적용 직후.** MCP 호출 결과를 직렬화 `Grep`으로 다시 읽어 의도 값과 일치하는지 대조한다. 어긋났으면 단일 propertyPath 스칼라 변경이라 직접 텍스트 Edit 예외로 우회 가능 — sub-agent 단독 판단 금지, plan 명시 또는 메인 승인 후에만.
 
 AC는 의도 값 단일 매치 grep을 `[auto-hard]`로 둔다 (예: "`Plane TeleportationArea` 부착 + `m_TeleportTrigger == 0`을 grep 단일 매치"). AC 라벨/문구 가이드는 `docs/specs/README.md` "작성 규칙 요약"이 단일 진실원.

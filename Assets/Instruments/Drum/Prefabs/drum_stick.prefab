@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 7940141684065473265}
   - component: {fileID: 3388106492048230779}
   - component: {fileID: 1180727047589355096}
+  - component: {fileID: 7287703969488373893}
   m_Layer: 9
   m_Name: drum_stick
   m_TagString: Untagged
@@ -285,5 +286,22 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.00045581034, y: 0.00045581025, z: 0.0122698825}
-  m_Center: {x: 0.0000000028594518, y: 2.4738261e-10, z: 0.00020546632}
+  m_Size: {x: 0.02, y: 0.02, z: 0.37041306}
+  m_Center: {x: 0.0000000027939677, y: 0, z: 0.0073297024}
+--- !u!114 &7287703969488373893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8004441565049108403}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cbdf8cd26235714080dde23639d370f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Instruments::StickHitSweeper
+  stickCollider: {fileID: 0}
+  ghostFollower: {fileID: 0}
+  sweepLayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295

@@ -5,7 +5,7 @@
         "Unity.InputSystem",
         "Hands",
         "RhythmGame.Data",
-        "GUID:fe685ec1767f73d42b749ea8045bfe43"
+        "Unity.XR.Interaction.Toolkit"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

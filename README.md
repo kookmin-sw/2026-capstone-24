@@ -1,77 +1,37 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/Lvs6kcL8)
-# Welcome to GitHub
+# MU:RANG
 
-캡스톤 팀 생성을 축하합니다.
+> 연습실이 없어도, 악기가 없어도, 함께할 사람이 멀리 있어도 연주가 계속되는 VR 악기 연주 플랫폼
 
-## 팀소개 및 페이지를 꾸며주세요.
+MU:RANG은 **MUsic + 유랑(RANG)** 을 결합한 이름입니다. 악기 연주를 배우고 싶지만 공간, 소음, 악기 구매 비용, 합주 인원 부족, 악보와 박자의 난이도 때문에 지속하지 못하는 사용자가 VR 환경에서 악기 연주를 쉽고 재미있게 경험하도록 돕습니다.
 
-- 프로젝트 소개
-  - 프로젝트 설치방법 및 데모, 사용방법, 프리뷰등을 readme.md에 작성.
-  - Api나 사용방법등 내용이 많을경우 wiki에 꾸미고 링크 추가.
+- 팀 페이지: <https://kookmin-sw.github.io/2026-capstone-24/>
+- Unity: `6000.3.10f1`
+- 렌더 파이프라인: URP
 
-- 팀페이지 꾸미기
-  - 프로젝트 소개 및 팀원 소개
-  - index.md 예시보고 수정.
+## 핵심 기능
 
-- GitHub Pages 리파지토리 Settings > Options > GitHub Pages 
-  - Source를 marster branch
-  - Theme Chooser에서 태마선택
-  - 수정후 팀페이지 확인하여 점검.
+- **핸드 트래킹 기반 악기 연주**: VR 입력을 기반으로 가상 손과 악기가 상호작용합니다.
+- **리듬게임 연주 가이드**: 곡과 난이도를 선택하고 노트 가이드를 따라 연주하며 박자 정확도를 피드백받습니다.
+- **자동 반주**: 플레이어가 맡지 않은 악기 트랙은 게임이 시간에 맞춰 발화해 곡을 완성합니다.
+- **멀티플레이 원격 합주**: 여러 사용자가 같은 VR 공간에서 각자의 파트를 연주하는 경험을 목표로 합니다.
+- **다양한 악기 확장**: 피아노, 드럼을 시작으로 현악기·관악기 등 여러 악기군으로 확장할 수 있는 구조를 지향합니다.
 
-**팀페이지 주소** -> https://kookmin-sw.github.io/ '{{자신의 리파지토리 아이디}}'
+## 출시 계획
 
-**예시)** 2023년 0조  https://kookmin-sw.github.io/capstone-2023-00/
+MU:RANG은 완성 이후 Meta App Store 또는 Steam 출시를 목표로 합니다. 정식 체험 링크와 다운로드 안내는 출시 준비가 끝난 뒤 팀 페이지에 연결할 예정입니다.
 
+## 팀
 
-## 내용에 아래와 같은 내용들을 추가하세요.
+팀명: **팀명은 밴드로 하겠습니다. 근데 이제 클래식을 곁들인**
 
-### 1. 프로잭트 소개
+| 이름 | 학번 | 담당 |
+|---|---:|---|
+| 박하늘 | 20211343 | 팀장·PM, 프로젝트 기획, 사운드 로직, 리듬게임 로직·악보 제작, 서류 작성 |
+| 권상혁 | 20212958 | 프로젝트 기획, 핸드 트래킹, 컴퓨터 그래픽스, 악기 물리 상호작용, GitHub 총괄 관리 |
+| 허가림 | 20223157 | 프로젝트 기획, 멀티플레이 구현, DB 연결, 서류 작성 |
 
-프로젝트
+## 문서
 
-### 2. 소개 영상
-
-프로젝트 소개하는 영상을 추가하세요
-
-### 3. 팀 소개
-
-팀을 소개하세요.
-
-팀원정보 및 담당이나 사진 및 SNS를 이용하여 소개하세요.
-
-### 4. 사용법
-
-소스코드제출시 설치법이나 사용법을 작성하세요.
-
-### 5. 기타
-
-추가적인 내용은 자유롭게 작성하세요.
-
-
-## Markdown을 사용하여 내용꾸미기
-
-Markdown은 작문을 스타일링하기위한 가볍고 사용하기 쉬운 구문입니다. 여기에는 다음을위한 규칙이 포함됩니다.
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-자세한 내용은 [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Support or Contact
-
-readme 파일 생성에 추가적인 도움이 필요하면 [도움말](https://help.github.com/articles/about-readmes/) 이나 [contact support](https://github.com/contact) 을 이용하세요.
+- Spec 시스템: [`docs/specs/README.md`](docs/specs/README.md)
+- 리듬게임 spec: [`docs/specs/rhythm-game/_index.md`](docs/specs/rhythm-game/_index.md)
+- 핸드 트래킹 spec: [`docs/specs/hands/_index.md`](docs/specs/hands/_index.md)
