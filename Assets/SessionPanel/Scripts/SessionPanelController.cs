@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
+using UnityEngine.XR.Interaction.Toolkit.Interactors.Visuals;
 using UnityEngine.InputSystem;
 using Instruments;
 
@@ -19,8 +20,12 @@ namespace SessionPanel
         [SerializeField] private UnityEngine.Object _activeInstrumentProviderObject;
         [SerializeField] private UnityEngine.Object _songCatalogObject;
         [SerializeField] private InputActionReference panelToggleAction;
-        // 리듬게임 중 비활성화할 인터랙터 GO 목록 (런타임에 자동 수집)
-        readonly List<GameObject> _interactorObjects = new List<GameObject>();
+        // 양 손 NearFarInteractor + 자식 LineRenderer/CurveVisualController (런타임에 자동 수집).
+        // gameObject.SetActive 대신 .enabled 토글 — ControllerInputActionManager.OnCancelTeleport 가
+        // NearFar.gameObject.SetActive(true) 로 부활시키는 동작과 직교(orthogonal)하기 위함.
+        // LineRenderer는 Renderer 계열, CurveVisualController/NearFarInteractor는 Behaviour 계열이라 분리.
+        readonly List<Behaviour> _nearFarBehaviours = new List<Behaviour>();
+        readonly List<Renderer> _nearFarRenderers = new List<Renderer>();
 
         private PanelState _state = PanelState.Hidden;
         private GameObject _panelInstance;
@@ -46,10 +51,17 @@ namespace SessionPanel
 
         private void CollectInteractors()
         {
-            _interactorObjects.Clear();
+            _nearFarBehaviours.Clear();
+            _nearFarRenderers.Clear();
             // NearFarInteractor (양 손 UI 레이)만 수집 — 텔레포트(XRRayInteractor)는 제외
-            foreach (var c in FindObjectsByType<NearFarInteractor>(FindObjectsInactive.Include, FindObjectsSortMode.None))
-                _interactorObjects.Add(c.gameObject);
+            foreach (var nf in FindObjectsByType<NearFarInteractor>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                _nearFarBehaviours.Add(nf);
+                var curve = nf.GetComponentInChildren<CurveVisualController>(true);
+                if (curve != null) _nearFarBehaviours.Add(curve);
+                var line = nf.GetComponentInChildren<LineRenderer>(true);
+                if (line != null) _nearFarRenderers.Add(line);
+            }
         }
 
         private void OnEnable()
@@ -192,8 +204,10 @@ namespace SessionPanel
 
         private void SetInteractorsActive(bool active)
         {
-            foreach (var go in _interactorObjects)
-                if (go != null) go.SetActive(active);
+            foreach (var b in _nearFarBehaviours)
+                if (b != null) b.enabled = active;
+            foreach (var r in _nearFarRenderers)
+                if (r != null) r.enabled = active;
         }
 
         private void PositionAtWrist()
