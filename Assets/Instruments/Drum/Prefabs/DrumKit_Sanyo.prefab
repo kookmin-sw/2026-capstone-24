@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6c799792358da843a6dc90a15159a01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InstrumentAudioOutput
+  voiceMixerGroup: {fileID: 0}
 --- !u!1 &1952736698320187851
 GameObject:
   m_ObjectHideFlags: 0
@@ -88,6 +89,7 @@ GameObject:
   - component: {fileID: 908260681381169209}
   - component: {fileID: 3275038625828609090}
   - component: {fileID: 3887742320122833032}
+  - component: {fileID: 811368726411212909}
   m_Layer: 0
   m_Name: InstrumentAnchor
   m_TagString: Untagged
@@ -253,6 +255,50 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   excludeTriggers: 0
+--- !u!114 &811368726411212909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3244876639285643126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad0c16491a2ceb84ea270f982bc684bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Instruments::Instruments.InstrumentTeleportLink
+  linkedInstrument: {fileID: 1181393932831831023}
+--- !u!1 &3716779064653313039
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1479758216802493830}
+  m_Layer: 0
+  m_Name: PanelAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1479758216802493830
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3716779064653313039}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.6, y: 0.8, z: -0.2}
+  m_LocalScale: {x: 0.6666667, y: 0.6666667, z: 0.6666667}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6839219354136266365}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6302550580367909687
 GameObject:
   m_ObjectHideFlags: 0
@@ -296,6 +342,7 @@ Transform:
   - {fileID: 2101227801437210112}
   - {fileID: 8554759681546309594}
   - {fileID: 2385839403602672910}
+  - {fileID: 1479758216802493830}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1181393932831831023
@@ -321,6 +368,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e2e6b963b932f214a80f1d7401cf1288, type: 3}
   - {fileID: 8300000, guid: 0ad64276452446648851603dca420531, type: 3}
   laneConfig: {fileID: 11400000, guid: f887c38da5cc4f35ab720e8144a4ccd1, type: 2}
+  instrumentId: 
+  instanceVolume: 0.5
+  _panelAnchor: {fileID: 1479758216802493830}
   maxVoices: 4
   volumeGain: 2
   spatialize: 1
