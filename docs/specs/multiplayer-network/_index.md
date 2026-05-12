@@ -21,6 +21,9 @@ VirtualMusicStudio의 핵심 경험은 여러 유저가 같은 VR 공간에서 �
 | 유저 데이터 영속화 | `Done` | [02-user-persistence.md](specs/02-user-persistence.md) |
 | 멀티플레이어 룸 세션 | `Active` | [03-room-session.md](specs/03-room-session.md) |
 | 접속 상태 UI | `Draft` | [04-presence-ui.md](specs/04-presence-ui.md) |
+| 룸 오케스트레이션 | `Draft` | [05-room-orchestration.md](specs/05-room-orchestration.md) |
+| 빌드 타깃 분리 | `Draft` | [06-build-targets.md](specs/06-build-targets.md) |
+| 룸 상태 snapshot | `Draft` | [07-room-state-snapshot.md](specs/07-room-state-snapshot.md) |
 
 > 상태 값은 `Draft` / `Active` / `Done` / `Abandoned`
 
