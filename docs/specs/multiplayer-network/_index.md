@@ -18,7 +18,7 @@ VirtualMusicStudio의 핵심 경험은 여러 유저가 같은 VR 공간에서 �
 | 이름 | 상태 | 링크 |
 |---|---|---|
 | 유저 인증 | `Active` | [01-user-auth.md](specs/01-user-auth.md) |
-| 유저 데이터 영속화 | `Done` | [02-user-persistence.md](specs/02-user-persistence.md) |
+| 유저 데이터 영속화 | `Active` | [02-user-persistence.md](specs/02-user-persistence.md) |
 | 멀티플레이어 룸 세션 | `Active` | [03-room-session.md](specs/03-room-session.md) |
 | 접속 상태 UI | `Draft` | [04-presence-ui.md](specs/04-presence-ui.md) |
 | 룸 오케스트레이션 | `Draft` | [05-room-orchestration.md](specs/05-room-orchestration.md) |
@@ -29,6 +29,7 @@ VirtualMusicStudio의 핵심 경험은 여러 유저가 같은 VR 공간에서 �
 
 ## Out of Scope
 
+- 구체적인 멀티플레이 콘텐츠 동기화 — 아바타·손 동작, 악기 움직임, MIDI event 등 (별도 피처/브랜치에서 다룬다. 본 피처는 빌드 파이프라인·실행 환경·인프라·아키텍처·룸 lifecycle·접속 상태까지로 책임 한정)
 - 텍스트 채팅
 - 리플레이/녹화
 - 관전 모드
