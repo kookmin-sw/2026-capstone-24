@@ -21,6 +21,14 @@
 
 스크립트·씬·컴포넌트·프리팹·애니메이션·카메라·물리·UI를 Unity MCP로 변경할 때는 [`.claude/skills/unity-mcp-workflow/SKILL.md`](.claude/skills/unity-mcp-workflow/SKILL.md)을 호출해 사전 점검(Resource-First)·스크립트 컴파일 대기·`read_console`/screenshot 검증·`batch_execute` 의존성 처리·UI Toolkit/uGUI 분기·VR/리듬 도메인(Animation·Camera·Physics) 가이드·`precondition_sha256` stale-file 방지·error recovery 절차를 컨텍스트에 적재한다.
 
+## 테스트 정책
+
+- Unity 런타임 코드(`.cs`) 수정 후에는 `unity-test-runner` 서브에이전트를 1회 호출해 회귀를 확인한다.
+- `unity-test-runner`는 **코드·자산을 절대 수정하지 않는다** — 검증 전용.
+- plan-orchestrator는 `plan-implementer` 완료 직후, `plan-reviewer` 호출 전에 `unity-test-runner`를 호출한다.
+- `unity-test-runner` FAIL → `next_action: test-failed`로 메인에 보고 후 대기. 자동 수정 시도 금지.
+- MCP 미가용으로 테스트 실행 불가 시 → `MCP UNAVAILABLE` 리포트 후 plan-reviewer는 그대로 진행한다.
+
 ## Spec 시스템
 
 Spec/plan 분리 구조, 파일명 규칙, `/spec-implement` 진입점(dry-run 기본, `--apply`로 실행), plan 실행 읽기 순서, 상태 보드는 [`docs/specs/README.md`](docs/specs/README.md)가 단일 진실원이다.
