@@ -130,10 +130,7 @@ namespace SessionPanel
             if (_currentInstrument == null)
                 return;
 
-            if (_currentInstrument is InstrumentBase instrumentBase)
-                instrumentBase.InstanceVolume = value;
-            else
-                SessionVolume.PersistInstance(_currentInstrument.InstrumentId, value);
+            _currentInstrument.InstanceVolume = value;
 
             if (_instanceLabel != null)
                 _instanceLabel.text = $"{_currentInstrument.InstrumentId}\n{Mathf.RoundToInt(value * 100)}%";
