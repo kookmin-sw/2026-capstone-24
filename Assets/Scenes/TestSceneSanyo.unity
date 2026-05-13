@@ -1627,6 +1627,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &868124236 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4466217632400179204, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
+  m_PrefabInstance: {fileID: 7187747401014242035}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &949974130
 GameObject:
   m_ObjectHideFlags: 0
@@ -2654,6 +2659,7 @@ MonoBehaviour:
   _activeInstrumentProviderObject: {fileID: 1368118598}
   _songCatalogObject: {fileID: 1857833108}
   panelToggleAction: {fileID: 6276339513826019528, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  nearFarInteractorRoot: {fileID: 868124236}
 --- !u!4 &2039824627
 Transform:
   m_ObjectHideFlags: 0
