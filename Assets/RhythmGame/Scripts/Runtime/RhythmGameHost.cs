@@ -4,6 +4,8 @@ using RhythmGame.Data;
 using RhythmGame.Runtime.Clock;
 using UnityEngine;
 
+namespace RhythmGame.Runtime
+{
 public class RhythmGameHost : MonoBehaviour
 {
     [SerializeField] RhythmSongDatabase songDatabase;
@@ -104,4 +106,5 @@ public class RhythmGameHost : MonoBehaviour
             SessionEnded?.Invoke();
         }
     }
+}
 }

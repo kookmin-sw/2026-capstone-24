@@ -1,5 +1,7 @@
 using UnityEngine;
 
+namespace RhythmGame.Runtime
+{
 /// <summary>
 /// 낙하 노트 단위 오브젝트. NoteDisplayPanel이 스폰할 때 Init()으로 초기화한다.
 /// </summary>
@@ -35,4 +37,5 @@ public class NoteVisual : MonoBehaviour
         pos.y -= fallSpeed * Time.deltaTime;
         transform.localPosition = pos;
     }
+}
 }

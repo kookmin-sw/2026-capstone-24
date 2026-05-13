@@ -3,6 +3,8 @@ using RhythmGame.Data;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+namespace RhythmGame.Runtime
+{
 /// <summary>
 /// 테스트용 세션 런처.
 /// Play 모드 진입 후 키보드 O 키를 누르면 .vmsong 파일을 파싱해 RhythmGameHost.StartSession()을 호출한다.
@@ -55,4 +57,5 @@ public class RhythmGameAutoLauncher : MonoBehaviour
         Debug.Log($"[RhythmGameAutoLauncher] '{result.chart.title}' 차트 파싱 완료", this);
         return result.chart;
     }
+}
 }

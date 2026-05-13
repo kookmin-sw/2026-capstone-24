@@ -5,6 +5,8 @@ using RhythmGame.Runtime.Clock;
 using UnityEngine;
 using UnityEngine.UI;
 
+namespace RhythmGame.Runtime
+{
 /// <summary>
 /// World Space Canvas 위에서 88건반 피아노 레이아웃 기반 노트를 표시하는 패널.
 /// 흰 건반(52개)은 각자의 레인 중앙에, 검은 건반은 인접 흰 건반 경계선에 낙하한다.
@@ -419,4 +421,5 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
     // ─── ContextMenu (에디터 테스트용) ───────────────────────────────────────
     [ContextMenu("Debug: Force Hide")]
     void DebugHide() => Hide();
+}
 }

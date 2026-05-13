@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Instruments;
 using RhythmGame.Data;
+using RhythmGame.Runtime;
 
 namespace SessionPanel
 {

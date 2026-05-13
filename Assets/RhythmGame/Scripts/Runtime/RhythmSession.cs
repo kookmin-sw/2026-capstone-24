@@ -3,6 +3,8 @@ using Instruments;
 using RhythmGame.Data;
 using RhythmGame.Runtime.Clock;
 
+namespace RhythmGame.Runtime
+{
 public class RhythmSession
 {
     public event Action OnNoteWindow;
@@ -41,4 +43,5 @@ public class RhythmSession
     {
         judge.OnInput(midiEvent);
     }
+}
 }

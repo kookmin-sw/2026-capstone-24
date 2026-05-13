@@ -4,6 +4,8 @@ using Instruments;
 using RhythmGame.Data;
 using RhythmGame.Runtime.Clock;
 
+namespace RhythmGame.Runtime
+{
 public class RhythmJudge
 {
     const double PERFECT_WINDOW_SEC = 0.050;
@@ -121,4 +123,5 @@ public class RhythmJudge
             }
         }
     }
+}
 }

@@ -4,6 +4,8 @@ using RhythmGame.Data;
 using RhythmGame.Runtime.Clock;
 using UnityEngine;
 
+namespace RhythmGame.Runtime
+{
 /// <summary>
 /// 드럼 전용 패널 자동 배치 컴포넌트.
 /// DrumKit의 DrumHitZone 자식 목록을 순회해 각 파츠 위에 NoteDisplayPanel을 Instantiate·배치한다.
@@ -151,4 +153,5 @@ public class DrumNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
 
         return new Vector3(t.position.x, worldY, t.position.z);
     }
+}
 }
