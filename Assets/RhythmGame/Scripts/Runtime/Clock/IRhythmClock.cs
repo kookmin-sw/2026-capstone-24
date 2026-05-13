@@ -1,16 +1,21 @@
-public enum RhythmClockState { Idle, Running, Paused, Stopped }
+using RhythmGame.Data;
 
-public interface IRhythmClock
+namespace RhythmGame.Runtime.Clock
 {
-    RhythmClockState State { get; }
-    double CurrentTime { get; }
+    public enum RhythmClockState { Idle, Running, Paused, Stopped }
 
-    event System.Action<RhythmClockState> StateChanged;
+    public interface IRhythmClock
+    {
+        RhythmClockState State { get; }
+        double CurrentTime { get; }
 
-    void Start(VmSongChart chart, double leadInSeconds = 0);
-    void Pause();
-    void Resume();
-    void Stop();
+        event System.Action<RhythmClockState> StateChanged;
 
-    double TickToSeconds(int tick);
+        void Start(VmSongChart chart, double leadInSeconds = 0);
+        void Pause();
+        void Resume();
+        void Stop();
+
+        double TickToSeconds(int tick);
+    }
 }

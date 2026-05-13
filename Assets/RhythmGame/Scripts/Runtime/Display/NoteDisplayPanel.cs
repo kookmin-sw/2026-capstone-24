@@ -1,7 +1,12 @@
 using System.Collections.Generic;
+using Instruments;
+using RhythmGame.Data;
+using RhythmGame.Runtime.Clock;
 using UnityEngine;
 using UnityEngine.UI;
 
+namespace RhythmGame.Runtime
+{
 /// <summary>
 /// World Space Canvas 위에서 88건반 피아노 레이아웃 기반 노트를 표시하는 패널.
 /// 흰 건반(52개)은 각자의 레인 중앙에, 검은 건반은 인접 흰 건반 경계선에 낙하한다.
@@ -132,6 +137,10 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
         laneConfig  = config;
         layoutBuilt = false;
     }
+
+    /// <summary>INoteDisplayController.Begin 구현 — 기존 Show 위임 호출.</summary>
+    public void Begin(VmSongChart chart, int judgedChannel, IRhythmClock clock)
+        => Show(chart, judgedChannel, clock);
 
     /// <summary>세션 시작 시 호출. 노트를 큐에 적재하고 패널을 활성화한다.</summary>
     public void Show(VmSongChart chart, int judgedChannel, IRhythmClock clock)
@@ -412,4 +421,5 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
     // ─── ContextMenu (에디터 테스트용) ───────────────────────────────────────
     [ContextMenu("Debug: Force Hide")]
     void DebugHide() => Hide();
+}
 }

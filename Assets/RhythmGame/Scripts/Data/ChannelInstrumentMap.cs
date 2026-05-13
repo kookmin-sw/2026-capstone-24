@@ -1,15 +1,18 @@
 using System;
 using System.Collections.Generic;
 
-[Serializable]
-public sealed class ChannelInstrumentMap
+namespace RhythmGame.Data
 {
     [Serializable]
-    public struct Entry
+    public sealed class ChannelInstrumentMap
     {
-        public int    channel;
-        public string instrumentKey;
-    }
+        [Serializable]
+        public struct Entry
+        {
+            public int    channel;
+            public string instrumentKey;
+        }
 
-    public List<Entry> entries = new();
+        public List<Entry> entries = new();
+    }
 }

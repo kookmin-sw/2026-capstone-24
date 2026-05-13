@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Instruments;
 
+namespace Instruments
+{
 public abstract class InstrumentBase : MonoBehaviour, IPlayable, IActiveInstrument
 {
+    const float DefaultInstanceVolume = 0.5f;
+
     protected readonly struct NotePlayback
     {
         public NotePlayback(AudioClip clip, float pitch, float volume)
@@ -19,8 +22,6 @@ public abstract class InstrumentBase : MonoBehaviour, IPlayable, IActiveInstrume
         public float Volume { get; }
     }
 
-    const string VolumeKeyPrefix = "SessionPanel.Volume.";
-
     [Tooltip("이 악기에서 출력될 스피커(Voice Pool) 컴포넌트입니다. 생략 시 자식에서 자동 탐색합니다.")]
     [SerializeField] protected InstrumentAudioOutput audioOutput;
 
@@ -34,7 +35,7 @@ public abstract class InstrumentBase : MonoBehaviour, IPlayable, IActiveInstrume
     [SerializeField] string instrumentId = "";
 
     [Tooltip("인스턴스 볼륨 (0~1).")]
-    [SerializeField, Range(0f, 1f)] float instanceVolume = 0.5f;
+    [SerializeField, Range(0f, 1f)] float instanceVolume = DefaultInstanceVolume;
 
     [Tooltip("세션 패널이 표시될 앵커 Transform. 미설정 시 루트 transform(바닥)을 사용합니다. 눈 높이 위치의 child 오브젝트를 할당해 주세요.")]
     [SerializeField] Transform _panelAnchor;
@@ -53,7 +54,8 @@ public abstract class InstrumentBase : MonoBehaviour, IPlayable, IActiveInstrume
         set
         {
             instanceVolume = Mathf.Clamp01(value);
-            PersistInstanceVolume();
+            if (!string.IsNullOrEmpty(instrumentId))
+                InstanceVolumeStore.Active.Persist(instrumentId, instanceVolume);
         }
     }
 
@@ -64,23 +66,12 @@ public abstract class InstrumentBase : MonoBehaviour, IPlayable, IActiveInstrume
     protected virtual void Awake()
     {
         if (!string.IsNullOrEmpty(instrumentId))
-        {
-            string key = VolumeKeyPrefix + instrumentId;
-            instanceVolume = PlayerPrefs.GetFloat(key, 0.5f);
-        }
+            instanceVolume = InstanceVolumeStore.Active.Load(instrumentId, DefaultInstanceVolume);
 
         if (audioOutput == null)
             audioOutput = GetComponentInChildren<InstrumentAudioOutput>(true);
 
         Initialize();
-    }
-
-    void PersistInstanceVolume()
-    {
-        if (string.IsNullOrEmpty(instrumentId))
-            return;
-        string key = VolumeKeyPrefix + instrumentId;
-        PlayerPrefs.SetFloat(key, instanceVolume);
     }
 
     protected virtual void Initialize()
@@ -191,4 +182,5 @@ public abstract class InstrumentBase : MonoBehaviour, IPlayable, IActiveInstrume
         if (audioOutput != null)
             audioOutput.StopAllVoices();
     }
+}
 }

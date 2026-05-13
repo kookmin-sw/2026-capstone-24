@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
+namespace Instruments
+{
 /// <summary>
 /// drum_stick_L / drum_stick_R variant root에 부착.
 /// attach 중 ghost wrist world pose를 매 frame stick root에 강제한다.
@@ -134,4 +136,5 @@ public sealed class AnchoredStickGhostFollower : MonoBehaviour
             transform.SetPositionAndRotation(m_GhostWristSource.position, m_GhostWristSource.rotation);
         }
     }
+}
 }

@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
 
-[Serializable]
-public sealed class ChartTrack
+namespace RhythmGame.Data
 {
-    public int channel;
-    public List<ChartNote> notes = new();
+    [Serializable]
+    public sealed class ChartTrack
+    {
+        public int channel;
+        public List<ChartNote> notes = new();
+    }
 }

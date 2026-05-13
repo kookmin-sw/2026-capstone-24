@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace Instruments
+{
 /// <summary>
 /// 피아노 악기의 MIDI 입력을 처리하고 피아노 샘플을 재생합니다.
 /// </summary>
@@ -217,4 +219,5 @@ public class Piano : InstrumentBase
         Debug.LogWarning($"[Piano] 유효하지 않은 건반 인덱스가 전달되었습니다: {keyIndex}", this);
         return false;
     }
+}
 }

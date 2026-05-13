@@ -1,10 +1,13 @@
 using System;
 
-[Serializable]
-public struct TempoSegment
+namespace RhythmGame.Data
 {
-    public int   tick;
-    public float bpm;
-    public int   beatsPerBar;
-    public int   beatUnit;
+    [Serializable]
+    public struct TempoSegment
+    {
+        public int   tick;
+        public float bpm;
+        public int   beatsPerBar;
+        public int   beatUnit;
+    }
 }

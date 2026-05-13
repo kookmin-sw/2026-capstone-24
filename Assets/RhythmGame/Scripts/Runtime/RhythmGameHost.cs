@@ -1,6 +1,11 @@
 using System.Collections.Generic;
+using Instruments;
+using RhythmGame.Data;
+using RhythmGame.Runtime.Clock;
 using UnityEngine;
 
+namespace RhythmGame.Runtime
+{
 public class RhythmGameHost : MonoBehaviour
 {
     [SerializeField] RhythmSongDatabase songDatabase;
@@ -17,7 +22,6 @@ public class RhythmGameHost : MonoBehaviour
     INoteDisplayController activeNoteDisplay;
 
     IReadOnlyDictionary<int, bool> lastAccompanimentEnabled;
-    DrumNoteDisplayAdapter _activeAdapter;
 
     public RhythmSongDatabase SongDatabase => songDatabase;
     public NoteDisplayPanel NoteDisplayPanel => noteDisplayPanel;
@@ -57,33 +61,23 @@ public class RhythmGameHost : MonoBehaviour
         activeSession = new RhythmSession(instrument, song, clock, judge);
         activeSession.Start();
 
-        // 드럼이면 DrumNoteDisplayAdapter 우선, 없으면 NoteDisplayPanel 폴백
-        if (instrument is DrumKit)
-        {
-            DrumNoteDisplayAdapter adapter = instrument.GetComponent<DrumNoteDisplayAdapter>();
-            if (adapter != null && instrument.LaneConfig != null)
-            {
-                adapter.Init(instrument.LaneConfig, chart, judgedChannel, clock);
-                adapter.Completed += OnNoteDisplayCompleted;
-                _activeAdapter = adapter;
-                activeNoteDisplay = adapter;
-            }
-            else if (noteDisplayPanel != null)
-            {
-                noteDisplayPanel.Completed += OnNoteDisplayCompleted;
-                noteDisplayPanel.Show(chart, judgedChannel, clock);
-                activeNoteDisplay = noteDisplayPanel;
-            }
-        }
-        else if (noteDisplayPanel != null)
-        {
-            noteDisplayPanel.Completed += OnNoteDisplayCompleted;
-            noteDisplayPanel.Show(chart, judgedChannel, clock);
-            activeNoteDisplay = noteDisplayPanel;
-        }
+        // 악기 본인이 자식 INoteDisplayController(예: DrumNoteDisplayAdapter)를 제공하면 우선 사용,
+        // 없으면 host의 SerializedField noteDisplayPanel 폴백. 콘크리트 타입 분기 없음.
+        INoteDisplayController custom = instrument != null
+            ? instrument.GetComponentInChildren<INoteDisplayController>(true)
+            : null;
 
-        if (activeNoteDisplay != null)
+        INoteDisplayController nextDisplay = custom != null
+            ? custom
+            : (INoteDisplayController)noteDisplayPanel;
+
+        if (nextDisplay != null && (UnityEngine.Object)nextDisplay != null)
+        {
+            nextDisplay.Completed += OnNoteDisplayCompleted;
+            nextDisplay.Begin(chart, judgedChannel, clock);
+            activeNoteDisplay = nextDisplay;
             judge.Judged += activeNoteDisplay.OnJudged;
+        }
 
         SessionStarted?.Invoke();
         return activeSession;
@@ -95,16 +89,9 @@ public class RhythmGameHost : MonoBehaviour
     {
         if (activeSession != null)
         {
-            if (_activeAdapter != null)
-            {
-                _activeAdapter.Completed -= OnNoteDisplayCompleted;
-                _activeAdapter = null;
-            }
-            if (noteDisplayPanel != null)
-                noteDisplayPanel.Completed -= OnNoteDisplayCompleted;
-
             if (activeNoteDisplay != null)
             {
+                activeNoteDisplay.Completed -= OnNoteDisplayCompleted;
                 judge.Judged -= activeNoteDisplay.OnJudged;
                 activeNoteDisplay.Hide();
                 activeNoteDisplay = null;
@@ -119,4 +106,5 @@ public class RhythmGameHost : MonoBehaviour
             SessionEnded?.Invoke();
         }
     }
+}
 }

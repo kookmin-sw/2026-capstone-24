@@ -42,8 +42,17 @@ mcpServers:
 - `Bash` → `git diff HEAD`. 출력 보관.
 - diff가 비어있으면 `next_action: implementer-blocked`, unresolved에 "implementer가 변경을 적용하지 않음" 적고 종료.
 
+### 3.5. unity-test-runner 호출
+
+`Task` 도구로 `unity-test-runner` 호출. 입력: 변경된 파일 목록에서 도메인 힌트 추출 → `changed_domains` 전달.
+
+- 반환값 첫 줄이 `PASS` → 결과를 `test_report`에 보관하고 4단계로.
+- 반환값 첫 줄이 `FAIL` → `next_action: test-failed`, status `needs-user-input`. 리포트를 `unresolved`에 그대로 포함하고 종료. **변경사항은 working tree에 남는다 (메인이 처리).**
+- 반환값 첫 줄이 `COMPILE ERROR` → `next_action: compile-error`, status `failed`. 종료.
+- 반환값 첫 줄이 `MCP UNAVAILABLE` → `test_report`에 "테스트 미실행 (MCP 미가용)" 기록 후 4단계로 진행. (테스트 부재로 plan-reviewer 차단 금지)
+
 ### 4. plan-reviewer 호출
-- `Task` 도구로 `plan-reviewer` 호출. 입력 4종(plan, linked spec, diff, ac 원문) 전달.
+- `Task` 도구로 `plan-reviewer` 호출. 입력 4종(plan, linked spec, diff, ac 원문) 전달. `test_report`가 있으면 함께 전달.
 - 반환값 `pass` → 5단계로.
 - 반환값 `needs-fix` → `next_action: review-failed`, status `needs-user-input`. 사유 그대로 unresolved에 보관 후 종료. **자동 검증 단계 건너뛴다. 변경사항은 working tree에 남는다 (메인이 처리).**
 
@@ -100,6 +109,10 @@ Unity MCP가 검증 도중 끊기면 `next_action: mcp-down`, status `needs-user
   - ...
 
 (commit SHA는 본 orchestrator가 생성하지 않는다 — 메인이 manual-hard 통과 후 git-workflow skill로 commit한다.)
+
+## test_report
+`<unity-test-runner 반환 첫 줄 (PASS/FAIL/MCP UNAVAILABLE 등)>`
+`<실패 테스트 목록 — 없으면 "없음">`
 
 ## acceptance_results
 - label: `auto-hard` | `auto-soft`

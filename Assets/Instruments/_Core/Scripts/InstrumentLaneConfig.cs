@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace Instruments
+{
 /// <summary>
 /// 악기 한 개의 레인-MIDI 노트 대응 메타데이터를 정의하는 ScriptableObject입니다.
 /// 노트 디스플레이 패널(Plan 007)이 "차트의 midiNote → 레인 인덱스" 역방향 조회에 사용합니다.
@@ -90,4 +92,5 @@ public sealed class InstrumentLaneConfig : ScriptableObject
         };
         return cfg;
     }
+}
 }

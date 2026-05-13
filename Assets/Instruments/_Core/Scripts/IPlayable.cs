@@ -1,4 +1,7 @@
-public interface IPlayable
+namespace Instruments
 {
-    void TriggerMidi(MidiEvent midiEvent);
+    public interface IPlayable
+    {
+        void TriggerMidi(MidiEvent midiEvent);
+    }
 }

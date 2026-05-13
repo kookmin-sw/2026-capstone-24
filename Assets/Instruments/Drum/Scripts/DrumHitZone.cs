@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace Instruments
+{
 [DisallowMultipleComponent]
 [RequireComponent(typeof(BoxCollider))]
 public sealed class DrumHitZone : MonoBehaviour
@@ -130,4 +132,5 @@ public sealed class DrumHitZone : MonoBehaviour
 
         return false;
     }
+}
 }

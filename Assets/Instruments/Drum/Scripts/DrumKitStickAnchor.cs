@@ -4,6 +4,8 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
 
+namespace Instruments
+{
 /// <summary>
 /// DrumKitAnchor scene root에 부착.
 /// selectExited → pending 플래그만 설정. locomotionStarted가 pending 윈도우 안에 fire되면 stick attach,
@@ -44,10 +46,9 @@ public sealed class DrumKitStickAnchor : MonoBehaviour
         m_Anchor = GetComponent<TeleportationAnchor>();
         m_Anchor.selectExited.AddListener(OnAnchorSelectExited);
 
-        // teleportationProvider는 TeleportationAnchor의 public property로 접근.
-        m_LocomotionProvider = m_Anchor.teleportationProvider as LocomotionProvider;
-        if (m_LocomotionProvider != null)
-            m_LocomotionProvider.locomotionStarted += OnLocomotionStarted;
+        // BaseTeleportationInteractable이 teleportationProvider를 OnSelectExited 시점에 lazy-resolve하므로
+        // OnEnable에서는 null인 경우가 많다. 일단 한 번 시도하고, 실패하면 OnAnchorSelectExited에서 재시도.
+        EnsureLocomotionSubscription();
     }
 
     void OnDisable()
@@ -56,10 +57,23 @@ public sealed class DrumKitStickAnchor : MonoBehaviour
             m_Anchor.selectExited.RemoveListener(OnAnchorSelectExited);
 
         if (m_LocomotionProvider != null)
+        {
             m_LocomotionProvider.locomotionStarted -= OnLocomotionStarted;
+            m_LocomotionProvider = null;
+        }
 
         if (m_IsAttached)
             SetPhysicsHandsActive(true);
+    }
+
+    void EnsureLocomotionSubscription()
+    {
+        if (m_LocomotionProvider != null || m_Anchor == null)
+            return;
+
+        m_LocomotionProvider = m_Anchor.teleportationProvider as LocomotionProvider;
+        if (m_LocomotionProvider != null)
+            m_LocomotionProvider.locomotionStarted += OnLocomotionStarted;
     }
 
     void SetPhysicsHandsActive(bool active)
@@ -76,6 +90,10 @@ public sealed class DrumKitStickAnchor : MonoBehaviour
         // line 418), 본 핸들러도 pending을 설정하지 않는다.
         if (args.isCanceled)
             return;
+
+        // BaseTeleportationInteractable.OnSelectExited가 teleportationProvider를 lazy-resolve한 직후이므로
+        // 여기서 다시 한 번 구독을 시도한다(OnEnable 시점에 null이었던 케이스 self-heal).
+        EnsureLocomotionSubscription();
 
         // 실제 attach는 locomotionStarted가 pending 윈도우 안에 fire될 때 수행된다.
         // SendTeleportRequest가 silent fail (ray drift 등)하는 케이스에서는 locomotionStarted가 fire되지 않아
@@ -170,4 +188,5 @@ public sealed class DrumKitStickAnchor : MonoBehaviour
         m_RightStickInstance = null;
         m_IsAttached = false;
     }
+}
 }

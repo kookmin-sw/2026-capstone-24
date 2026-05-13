@@ -5,6 +5,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Instruments;
+using RhythmGame.Data;
+using RhythmGame.Runtime;
 
 namespace SessionPanel
 {
@@ -306,12 +308,8 @@ namespace SessionPanel
             var host = _currentInstrument.InstrumentRoot.GetComponentInChildren<RhythmGameHost>();
             if (host == null) return;
 
-            if (host.NoteDisplayPanel == null)
-            {
-                var notePanel = UnityEngine.Object.FindObjectsByType<NoteDisplayPanel>(UnityEngine.FindObjectsInactive.Include, UnityEngine.FindObjectsSortMode.None);
-                if (notePanel.Length > 0)
-                    host.SetNoteDisplayPanel(notePanel[0]);
-            }
+            // FindObjectsByType<NoteDisplayPanel> fallback 제거 — host의 SerializedField에
+            // noteDisplayPanel을 직접 박제하거나, 악기 본인이 자식 INoteDisplayController를 제공한다.
 
             // 이전 세션 구독 정리
             if (_activeHost != null)

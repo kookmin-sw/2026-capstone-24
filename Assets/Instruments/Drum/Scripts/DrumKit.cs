@@ -1,5 +1,7 @@
 using UnityEngine;
 
+namespace Instruments
+{
 [DisallowMultipleComponent]
 public class DrumKit : InstrumentBase
 {
@@ -59,4 +61,5 @@ public class DrumKit : InstrumentBase
         playback = new NotePlayback(clip, 1f, midiEvent.Velocity * volumeGain);
         return true;
     }
+}
 }

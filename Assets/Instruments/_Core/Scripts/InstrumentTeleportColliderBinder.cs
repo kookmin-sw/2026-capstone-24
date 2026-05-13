@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
 
+namespace Instruments
+{
 /// <summary>
 /// 악기 본체(피아노 키, 드럼 패드 등)의 collider들을 같은 GameObject의
 /// <see cref="TeleportationAnchor"/> colliders 리스트에 추가해, 텔레포트 ray가
@@ -21,8 +23,11 @@ public class InstrumentTeleportColliderBinder : MonoBehaviour
     [Tooltip("이 layer mask에 포함된 GameObject의 collider는 등록하지 않습니다.")]
     [SerializeField] LayerMask excludeLayers;
 
-    [Tooltip("isTrigger=true 인 collider를 제외합니다. 피아노 키와 드럼 히트존이 trigger이므로 기본값은 false입니다.")]
-    [SerializeField] bool excludeTriggers;
+    [Tooltip("isTrigger=true 인 collider를 제외합니다. 피아노 키와 드럼 히트존이 매 frame 변환되어 ray hit normal을 흔들 수 있으므로 기본값은 true입니다.")]
+    [SerializeField] bool excludeTriggers = true;
+
+    [Tooltip("attachedRigidbody가 있는 collider를 제외합니다. 피아노 키 본체처럼 회전하는 collider가 anchor.colliders에 들어가 ray normal을 흔드는 것을 막습니다.")]
+    [SerializeField] bool excludeRigidbodies = true;
 
     static readonly List<Collider> s_Buffer = new List<Collider>();
 
@@ -47,6 +52,8 @@ public class InstrumentTeleportColliderBinder : MonoBehaviour
                 continue;
             if (excludeTriggers && candidate.isTrigger)
                 continue;
+            if (excludeRigidbodies && candidate.attachedRigidbody != null)
+                continue;
             if (excludeMask != 0 && (excludeMask & (1 << candidate.gameObject.layer)) != 0)
                 continue;
             if (!existing.Add(candidate))
@@ -69,4 +76,5 @@ public class InstrumentTeleportColliderBinder : MonoBehaviour
             anchor.interactionManager.RegisterInteractable((IXRInteractable)anchor);
         }
     }
+}
 }

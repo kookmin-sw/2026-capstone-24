@@ -20,6 +20,8 @@ namespace SessionPanel
         [SerializeField] private UnityEngine.Object _activeInstrumentProviderObject;
         [SerializeField] private UnityEngine.Object _songCatalogObject;
         [SerializeField] private InputActionReference panelToggleAction;
+        [Tooltip("NearFarInteractor 수집 루트(XR Origin 또는 Camera Offset). 미지정 시 인터랙터 토글 비활성.")]
+        [SerializeField] private GameObject nearFarInteractorRoot;
         // 양 손 NearFarInteractor + 자식 LineRenderer/CurveVisualController (런타임에 자동 수집).
         // gameObject.SetActive 대신 .enabled 토글 — ControllerInputActionManager.OnCancelTeleport 가
         // NearFar.gameObject.SetActive(true) 로 부활시키는 동작과 직교(orthogonal)하기 위함.
@@ -53,8 +55,10 @@ namespace SessionPanel
         {
             _nearFarBehaviours.Clear();
             _nearFarRenderers.Clear();
-            // NearFarInteractor (양 손 UI 레이)만 수집 — 텔레포트(XRRayInteractor)는 제외
-            foreach (var nf in FindObjectsByType<NearFarInteractor>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            if (nearFarInteractorRoot == null) return;
+            // NearFarInteractor (양 손 UI 레이)만 수집 — 텔레포트(XRRayInteractor)는 제외.
+            // 명시적 root(XR Origin) 산하만 스캔해 explicit wiring 보장.
+            foreach (var nf in nearFarInteractorRoot.GetComponentsInChildren<NearFarInteractor>(true))
             {
                 _nearFarBehaviours.Add(nf);
                 var curve = nf.GetComponentInChildren<CurveVisualController>(true);

@@ -1,6 +1,11 @@
 using System.Collections.Generic;
+using Instruments;
+using RhythmGame.Data;
+using RhythmGame.Runtime.Clock;
 using UnityEngine;
 
+namespace RhythmGame.Runtime
+{
 /// <summary>
 /// 리듬게임 반주 재생기.
 /// Begin() 호출 시 씬에 있는 모든 InstrumentBase를 자동으로 탐색해
@@ -113,4 +118,5 @@ public class RhythmAccompaniment : MonoBehaviour
         if (!_map.TryGetValue(ev.channel, out var inst)) return;
         inst.TriggerMidi(new MidiEvent(ev.midiNote, ev.velocity, ev.type, (byte)(ev.channel - 1)));
     }
+}
 }

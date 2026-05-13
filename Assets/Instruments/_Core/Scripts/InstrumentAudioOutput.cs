@@ -2,6 +2,8 @@
 using UnityEngine;
 using UnityEngine.Audio;
 
+namespace Instruments
+{
 [DisallowMultipleComponent]
 public class InstrumentAudioOutput : MonoBehaviour
 {
@@ -210,4 +212,5 @@ public class InstrumentAudioOutput : MonoBehaviour
         }
         return best;
     }
+}
 }

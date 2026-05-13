@@ -2,6 +2,8 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
+namespace RhythmGame.Runtime
+{
 /// <summary>
 /// NoteDisplayPanel 자식 오브젝트. 판정 결과(Perfect / Good / Miss)를 텍스트로 표시하고
 /// displayDuration 초 동안 유지한 뒤 알파를 0으로 페이드아웃한다.
@@ -69,4 +71,5 @@ public class JudgmentPopup : MonoBehaviour
         canvasGroup.alpha = 0f;
         fadeCoroutine = null;
     }
+}
 }

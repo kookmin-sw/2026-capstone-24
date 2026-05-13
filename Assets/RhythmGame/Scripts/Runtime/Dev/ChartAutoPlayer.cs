@@ -1,8 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Instruments;
+using RhythmGame.Data;
 using UnityEngine;
 
+namespace RhythmGame.Runtime
+{
 public class ChartAutoPlayer : MonoBehaviour
 {
     [SerializeField] string songRelativePath = "Songs/test.vmsong";
@@ -103,4 +107,5 @@ public class ChartAutoPlayer : MonoBehaviour
         if (!_map.TryGetValue(ev.channel, out var inst)) return;
         inst.TriggerMidi(new MidiEvent(ev.midiNote, ev.velocity, ev.type, (byte)(ev.channel - 1)));
     }
+}
 }

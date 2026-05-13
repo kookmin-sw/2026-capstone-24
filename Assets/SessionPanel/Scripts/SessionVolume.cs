@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Audio;
+using Instruments;
 
 namespace SessionPanel
 {
@@ -11,6 +12,18 @@ namespace SessionPanel
 
         static AudioMixer s_Mixer;
         static float s_Master = 0.5f;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        static void RegisterInstanceVolumeStore()
+        {
+            InstanceVolumeStore.SetActive(new SessionVolumeStore());
+        }
+
+        sealed class SessionVolumeStore : IInstanceVolumeStore
+        {
+            public float Load(string id, float fallback) => LoadInstance(id, fallback);
+            public void Persist(string id, float value) => PersistInstance(id, value);
+        }
 
         public static void Bind(AudioMixer mixer)
         {

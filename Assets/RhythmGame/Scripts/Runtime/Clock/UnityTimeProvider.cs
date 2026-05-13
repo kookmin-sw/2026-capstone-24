@@ -1,4 +1,7 @@
-public sealed class UnityTimeProvider : ITimeProvider
+namespace RhythmGame.Runtime.Clock
 {
-    public double Now => UnityEngine.Time.timeAsDouble;
+    public sealed class UnityTimeProvider : ITimeProvider
+    {
+        public double Now => UnityEngine.Time.timeAsDouble;
+    }
 }

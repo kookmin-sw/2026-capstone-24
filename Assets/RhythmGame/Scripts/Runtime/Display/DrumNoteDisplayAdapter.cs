@@ -1,6 +1,11 @@
 using System.Collections.Generic;
+using Instruments;
+using RhythmGame.Data;
+using RhythmGame.Runtime.Clock;
 using UnityEngine;
 
+namespace RhythmGame.Runtime
+{
 /// <summary>
 /// 드럼 전용 패널 자동 배치 컴포넌트.
 /// DrumKit의 DrumHitZone 자식 목록을 순회해 각 파츠 위에 NoteDisplayPanel을 Instantiate·배치한다.
@@ -22,6 +27,19 @@ public class DrumNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
 
     /// <summary>모든 드럼 파츠 패널의 노트가 소진되면 발생. RhythmGameHost가 자동 StopSession에 활용한다.</summary>
     public event System.Action Completed;
+
+    /// <summary>
+    /// INoteDisplayController.Begin 구현.
+    /// 부착된 InstrumentBase의 LaneConfig를 읽어 Init으로 위임한다.
+    /// LaneConfig가 없으면 패널을 띄우지 않고 즉시 Completed를 발생시켜 세션을 자동 종료한다.
+    /// </summary>
+    public void Begin(VmSongChart chart, int judgedChannel, IRhythmClock clock)
+    {
+        InstrumentBase host = GetComponent<InstrumentBase>();
+        if (host == null) host = GetComponentInParent<InstrumentBase>();
+        InstrumentLaneConfig config = host != null ? host.LaneConfig : null;
+        Init(config, chart, judgedChannel, clock);
+    }
 
     /// <summary>
     /// 드럼 세션 시작 시 호출.
@@ -135,4 +153,5 @@ public class DrumNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
 
         return new Vector3(t.position.x, worldY, t.position.z);
     }
+}
 }
