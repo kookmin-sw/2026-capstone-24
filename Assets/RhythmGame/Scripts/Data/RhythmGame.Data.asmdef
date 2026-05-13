@@ -1,7 +1,9 @@
 {
     "name": "RhythmGame.Data",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "Instruments"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
