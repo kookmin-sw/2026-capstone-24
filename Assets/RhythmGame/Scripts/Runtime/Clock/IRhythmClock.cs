@@ -1,3 +1,5 @@
+using RhythmGame.Data;
+
 public enum RhythmClockState { Idle, Running, Paused, Stopped }
 
 public interface IRhythmClock

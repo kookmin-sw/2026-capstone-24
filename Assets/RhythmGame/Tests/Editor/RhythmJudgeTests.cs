@@ -1,5 +1,6 @@
 using Instruments;
 using NUnit.Framework;
+using RhythmGame.Data;
 using System.Collections.Generic;
 
 [TestFixture]

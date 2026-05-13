@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Instruments;
+using RhythmGame.Data;
 
 public class RhythmJudge
 {

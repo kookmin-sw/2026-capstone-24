@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using RhythmGame.Data;
 using UnityEngine;
 
 namespace SessionPanel

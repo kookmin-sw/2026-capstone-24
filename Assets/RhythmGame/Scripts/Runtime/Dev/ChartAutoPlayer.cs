@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Instruments;
+using RhythmGame.Data;
 using UnityEngine;
 
 public class ChartAutoPlayer : MonoBehaviour

@@ -1,5 +1,6 @@
 using System;
 using Instruments;
+using RhythmGame.Data;
 
 public class RhythmSession
 {

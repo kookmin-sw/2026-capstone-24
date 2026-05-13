@@ -1,3 +1,5 @@
+using RhythmGame.Data;
+
 /// <summary>
 /// 노트 디스플레이 컨트롤러 공통 인터페이스.
 /// NoteDisplayPanel(단일 패널)과 DrumNoteDisplayAdapter(멀티 패널)가 구현한다.

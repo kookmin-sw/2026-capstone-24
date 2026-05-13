@@ -1,3 +1,5 @@
+using RhythmGame.Data;
+
 public sealed class RhythmClock : IRhythmClock
 {
     readonly ITimeProvider _provider;
