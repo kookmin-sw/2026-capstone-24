@@ -153,12 +153,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91536b08564f18e4fbff7c734eb2d2b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChartAutoPlayer
-  songRelativePath: Songs/test.vmsong
-  channelBindings:
-  - channel: 1
-    instrument: {fileID: 1530775798}
-  - channel: 10
-    instrument: {fileID: 233044943}
 --- !u!4 &46134115
 Transform:
   m_ObjectHideFlags: 0
@@ -203,9 +197,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af1fc24f081a43648e3232025673d4ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: RhythmGame.Runtime::RhythmGameAutoLauncher
-  host: {fileID: 2078871757}
-  songRelativePath: Songs/test.vmsong
-  judgedChannel: 1
 --- !u!4 &113620545
 Transform:
   m_ObjectHideFlags: 0
@@ -646,9 +637,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af1fc24f081a43648e3232025673d4ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: RhythmGame.Runtime::RhythmGameAutoLauncher
-  host: {fileID: 800309070}
-  songRelativePath: Songs/test.vmsong
-  judgedChannel: 10
 --- !u!4 &591792876
 Transform:
   m_ObjectHideFlags: 0
