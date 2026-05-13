@@ -24,6 +24,19 @@ public class DrumNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
     public event System.Action Completed;
 
     /// <summary>
+    /// INoteDisplayController.Begin 구현.
+    /// 부착된 InstrumentBase의 LaneConfig를 읽어 Init으로 위임한다.
+    /// LaneConfig가 없으면 패널을 띄우지 않고 즉시 Completed를 발생시켜 세션을 자동 종료한다.
+    /// </summary>
+    public void Begin(VmSongChart chart, int judgedChannel, IRhythmClock clock)
+    {
+        InstrumentBase host = GetComponent<InstrumentBase>();
+        if (host == null) host = GetComponentInParent<InstrumentBase>();
+        InstrumentLaneConfig config = host != null ? host.LaneConfig : null;
+        Init(config, chart, judgedChannel, clock);
+    }
+
+    /// <summary>
     /// 드럼 세션 시작 시 호출.
     /// config에 등록된 DrumHitZone의 midiNote를 매칭해 파츠마다 패널을 생성한다.
     /// config에 없는 파츠는 패널 없이 건너뛴다 (예외 발생 안 함).

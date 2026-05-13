@@ -133,6 +133,10 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
         layoutBuilt = false;
     }
 
+    /// <summary>INoteDisplayController.Begin 구현 — 기존 Show 위임 호출.</summary>
+    public void Begin(VmSongChart chart, int judgedChannel, IRhythmClock clock)
+        => Show(chart, judgedChannel, clock);
+
     /// <summary>세션 시작 시 호출. 노트를 큐에 적재하고 패널을 활성화한다.</summary>
     public void Show(VmSongChart chart, int judgedChannel, IRhythmClock clock)
     {
