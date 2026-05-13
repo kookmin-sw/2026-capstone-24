@@ -1,3 +1,4 @@
+using Instruments;
 using NUnit.Framework;
 using System.Collections.Generic;
 

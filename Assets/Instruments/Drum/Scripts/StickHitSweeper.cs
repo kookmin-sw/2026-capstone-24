@@ -1,5 +1,7 @@
 using UnityEngine;
 
+namespace Instruments
+{
 [DisallowMultipleComponent]
 public sealed class StickHitSweeper : MonoBehaviour
 {
@@ -67,4 +69,5 @@ public sealed class StickHitSweeper : MonoBehaviour
 
         m_PrevCenter = currentCenter;
     }
+}
 }

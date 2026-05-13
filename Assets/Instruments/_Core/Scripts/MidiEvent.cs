@@ -1,5 +1,7 @@
 using UnityEngine;
 
+namespace Instruments
+{
 public readonly struct MidiEvent
 {
     public MidiEvent(int note, float velocity, MidiEventType type, byte channel = 0, ushort instrumentId = 0)
@@ -23,4 +25,5 @@ public readonly struct MidiEvent
     public ushort InstrumentId { get; }
 
     public bool IsNoteOn => Type == MidiEventType.NoteOn;
+}
 }

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Instruments;
 
+namespace Instruments
+{
 public abstract class InstrumentBase : MonoBehaviour, IPlayable, IActiveInstrument
 {
     const float DefaultInstanceVolume = 0.5f;
@@ -181,4 +182,5 @@ public abstract class InstrumentBase : MonoBehaviour, IPlayable, IActiveInstrume
         if (audioOutput != null)
             audioOutput.StopAllVoices();
     }
+}
 }

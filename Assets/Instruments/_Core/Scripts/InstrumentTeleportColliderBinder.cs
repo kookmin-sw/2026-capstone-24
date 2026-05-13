@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
 
+namespace Instruments
+{
 /// <summary>
 /// 악기 본체(피아노 키, 드럼 패드 등)의 collider들을 같은 GameObject의
 /// <see cref="TeleportationAnchor"/> colliders 리스트에 추가해, 텔레포트 ray가
@@ -69,4 +71,5 @@ public class InstrumentTeleportColliderBinder : MonoBehaviour
             anchor.interactionManager.RegisterInteractable((IXRInteractable)anchor);
         }
     }
+}
 }

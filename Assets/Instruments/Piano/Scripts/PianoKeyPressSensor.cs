@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
+namespace Instruments
+{
 [DefaultExecutionOrder(10020)]
 [DisallowMultipleComponent]
 [RequireComponent(typeof(BoxCollider))]
@@ -541,4 +543,5 @@ public sealed class PianoKeyPressSensor : MonoBehaviour
     {
         return float.IsFinite(value.x) && float.IsFinite(value.y) && float.IsFinite(value.z);
     }
+}
 }

@@ -1,7 +1,10 @@
-public enum MidiEventType : byte
+namespace Instruments
 {
-    NoteOn,
-    NoteOff,
-    Choke,
-    ControlChange,
+    public enum MidiEventType : byte
+    {
+        NoteOn,
+        NoteOff,
+        Choke,
+        ControlChange,
+    }
 }

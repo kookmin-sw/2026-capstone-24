@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Instruments;
 using UnityEngine;
 
 public class RhythmGameHost : MonoBehaviour

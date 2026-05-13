@@ -4,6 +4,8 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
 
+namespace Instruments
+{
 /// <summary>
 /// DrumKitAnchor scene root에 부착.
 /// selectExited → pending 플래그만 설정. locomotionStarted가 pending 윈도우 안에 fire되면 stick attach,
@@ -170,4 +172,5 @@ public sealed class DrumKitStickAnchor : MonoBehaviour
         m_RightStickInstance = null;
         m_IsAttached = false;
     }
+}
 }
