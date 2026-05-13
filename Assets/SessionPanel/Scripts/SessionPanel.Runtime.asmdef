@@ -1,0 +1,21 @@
+{
+    "name": "SessionPanel.Runtime",
+    "rootNamespace": "SessionPanel",
+    "references": [
+        "Instruments",
+        "RhythmGame.Data",
+        "RhythmGame.Runtime",
+        "Unity.InputSystem",
+        "Unity.XR.Interaction.Toolkit",
+        "Unity.TextMeshPro"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
