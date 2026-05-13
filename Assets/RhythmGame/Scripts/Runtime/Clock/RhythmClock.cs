@@ -1,5 +1,7 @@
 using RhythmGame.Data;
 
+namespace RhythmGame.Runtime.Clock
+{
 public sealed class RhythmClock : IRhythmClock
 {
     readonly ITimeProvider _provider;
@@ -74,4 +76,5 @@ public sealed class RhythmClock : IRhythmClock
         _state = next;
         StateChanged?.Invoke(_state);
     }
+}
 }

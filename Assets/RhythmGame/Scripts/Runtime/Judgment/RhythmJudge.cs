@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Instruments;
 using RhythmGame.Data;
+using RhythmGame.Runtime.Clock;
 
 public class RhythmJudge
 {

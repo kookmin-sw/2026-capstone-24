@@ -1,4 +1,5 @@
 using RhythmGame.Data;
+using RhythmGame.Runtime.Clock;
 
 /// <summary>
 /// 노트 디스플레이 컨트롤러 공통 인터페이스.

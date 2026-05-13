@@ -1,4 +1,7 @@
-public interface ITimeProvider
+namespace RhythmGame.Runtime.Clock
 {
-    double Now { get; }
+    public interface ITimeProvider
+    {
+        double Now { get; }
+    }
 }
