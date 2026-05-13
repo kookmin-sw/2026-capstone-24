@@ -10,7 +10,17 @@
 
 Photon Fusion을 통해 룸을 생성하거나 기존 룸에 입장·퇴장할 수 있는 세션 관리 기능을 제공한다. 여러 유저가 같은 룸에 동시 접속해 공유 공간을 형성한다. 룸 권위는 전용 서버 인스턴스가 가지며, 클라이언트는 백엔드를 경유해 룸을 생성하고 룸 세션에 직접 연결해 입장한다. 룸 생성 시 비밀번호 설정 여부를 선택할 수 있으며, 모든 룸은 룸 목록에 노출되고 비밀번호가 설정된 룸은 잠금 상태로 표시된다.
 
-룸 서버는 별도 관리 컴포넌트가 lifecycle을 관리하는 풀로 운영된다. 각 룸 서버는 `IDLE → CLAIMED → RUNNING` 상태를 가지며, 룸이 비면 프로세스를 종료하는 대신 IDLE로 복귀해 재사용된다. 클라이언트가 새 룸 생성을 요청하면 백엔드가 요청 유저의 개인 룸 snapshot(DB)·룸 이름·(선택)비밀번호를 모아 별도 관리 컴포넌트에 전달하고, 별도 관리 컴포넌트가 풀에서 IDLE 인스턴스 하나를 claim해 전달받은 정보를 바탕으로 RUNNING 상태로 구성한 뒤 클라이언트는 해당 인스턴스의 세션에 입장한다. 백엔드는 서비스 API와 룸 메타데이터(목록·상태) DB 관리만 담당하고, 풀/컨테이너 오케스트레이션 권한은 별도 관리 컴포넌트에 둔다. 클라이언트와 룸 서버는 같은 prefab을 공유하지만 별도 빌드로 산출되며, 클라이언트 빌드는 클라이언트 모드로, 룸 서버 빌드는 서버 모드로 NetworkRunner를 구동한다.
+룸 서버 생명주기는 Spring 서버 내부 모듈인 `RoomServerManager`가 관리한다. Spring 백엔드는 room instance를 직접 실행하지 않고, 요청 유저의 `playerId`를 식별한 뒤 DB에 커밋된 최신 개인 룸 snapshot과 `snapshotVersion`, 룸 이름, 비밀번호, 필요 런타임 버전을 묶어 같은 프로세스 안의 `RoomServerManager`를 호출해 프로비저닝을 시작한다. AWS dev/prototype 환경에서는 Spring Server와 MariaDB가 EC2에 상주하고, `RoomServerManager`는 AWS API를 통해 ECS Fargate의 Unity Headless Dedicated Server task를 실행·조회·종료한다. 향후 대규모 트래픽이나 복잡한 스케줄링 요구가 생기면 `RoomServerManager` 내부의 runtime provider 구현을 Kubernetes 기반으로 교체할 수 있다. 로컬 Docker 개발 환경도 같은 계약과 상태 흐름을 따르는 대체 구현을 둘 수 있다.
+
+룸 생성 상태 흐름은 인프라 구현체와 무관하게 `PROVISIONING → SERVER_STARTING → READY → ACTIVE → UNHEALTHY → TERMINATING → TERMINATED`를 공통으로 사용한다. 실패 경로는 `PROVISIONING → FAILED`, `SERVER_STARTING → FAILED`다. `READY`는 컨테이너가 단순 실행 중이라는 의미가 아니라, Unity Dedicated Server가 snapshot 복원을 마치고 Fusion 세션을 열 준비를 끝낸 뒤 app-level ready callback을 `RoomServerManager`에 보낸 상태를 뜻한다. 이 callback이 오기 전까지 룸은 목록에 노출되거나 입장 가능 상태가 되지 않는다. `ACTIVE`는 admission이 열리고 첫 join ticket이 소모되어 실제 룸 세션이 진행 중인 상태다. `UNHEALTHY`는 ready 이후 heartbeat이 정해진 임계 안에 도달하지 않거나 런타임이 정상 입장 처리를 보장하지 못한다고 판단된 상태이며, 즉시 admission을 중지하고 `TERMINATING → TERMINATED`로 수습한다.
+
+멀티 룸은 호스트의 개인 룸 상태를 그대로 라이브 공유하는 모델이 아니라, 마지막 committed 개인 룸 snapshot을 복사해 초기 상태로 사용하는 `copy-on-create` 모델이다. 즉 룸 생성 시점에는 저장된 개인 룸 상태가 멀티 룸의 시작점이 되지만, 멀티 룸 안에서 진행 중인 변경은 개인 룸 DB에 자동으로 되먹임되지 않는다. 향후 멀티 룸에서의 변경을 개인 룸에 반영하더라도 이는 별도의 명시적 save-back commit 흐름으로 다루며, 실시간 양방향 동기화로 취급하지 않는다.
+
+비밀번호가 설정된 방을 포함한 모든 입장 요청은 백엔드 승인 단계를 거친다. 백엔드는 `JWT 검증 → 비밀번호 검증 → 정원/상태 검증`을 완료한 뒤, 짧은 TTL의 1회용 `join ticket` 또는 `reservation`을 발급한다. 룸 서버는 이 입장 증표를 서버 측에서 검증하고 한 번만 소모한 뒤에만 입장을 허용한다. 유효한 ticket 없이 룸 세션에 직접 연결하려는 시도는 거부한다.
+
+룸 서버는 single-use room instance로 취급한다. 마지막 유저가 퇴장하거나 room 종료가 선언되면 해당 인스턴스는 재사용을 위해 리셋되지 않고 종료되며, 점유하던 자원만 `RoomServerManager`가 관리하는 capacity pool(ECS task 슬롯, Docker host, 향후 K8s cluster capacity 등)로 환원된다.
+
+유저가 보는 룸 목록의 클라이언트 진입점은 Spring 백엔드이지만, active room의 런타임 진실원은 Spring 내부 `RoomServerManager`가 가진다. Spring은 룸 목록 API를 제공하는 client-facing facade 역할을 맡고, `READY` 또는 `ACTIVE`이며 admission이 열려 있다고 `RoomServerManager`가 확인한 룸만 목록에 노출한다. Spring이 별도 캐시나 projection을 유지하더라도 이는 파생된 읽기 모델일 뿐 authoritative source가 아니다.
 
 세션 내부 네트워크 식별자인 `PlayerRef`는 룸 실행 중에만 유효한 전송 식별자로 취급한다. 애플리케이션 레벨의 영구 유저 식별은 백엔드 `playerId`를 기준으로 유지하고, Photon Custom Auth의 `UserId`에도 이 값을 전달한다. `metaAccountId`는 Meta 같은 로그인 제공자 식별자, `nickname`은 표시용 값으로만 다룬다.
 
@@ -18,11 +28,27 @@ Photon Fusion을 통해 룸을 생성하거나 기존 룸에 입장·퇴장할 �
 
 - **Given** 로그인된 유저가
   **When** 새 룸 생성을 요청하면
-  **Then** 룸이 생성되고 해당 유저가 첫 입장자로 합류한다.
+  **Then** Spring은 요청 유저의 최신 committed snapshot과 `snapshotVersion`을 조회해 내부 `RoomServerManager`를 호출하고, ready callback이 올 때까지 룸은 입장 불가 상태로 유지된다.
+
+- **Given** 호스트 유저가 개인 룸에서 변경했지만 아직 저장하지 않은 상태일 때
+  **When** 멀티 룸 생성을 요청하면
+  **Then** 멀티 룸은 마지막 committed snapshot을 복사해 생성되고, 미저장 변경은 반영되지 않는다.
+
+- **Given** `RoomServerManager`가 room instance를 `READY`로 보고했을 때
+  **When** 백엔드가 룸 메타데이터를 공개하면
+  **Then** 해당 룸은 목록에 노출되고 입장 승인 대상이 된다.
+
+- **Given** Spring이 룸 목록 API를 제공할 때
+  **When** 룸 목록을 조회하면
+  **Then** Spring은 `RoomServerManager`가 현재 admission 가능하다고 확인한 active room 집합만 반환한다.
 
 - **Given** 로그인된 유저가
   **When** 기존 룸에 입장을 요청하면
-  **Then** 같은 룸에 이미 있는 유저들과 동일한 세션에 합류한다.
+  **Then** 백엔드는 JWT·비밀번호·정원·상태를 검증한 뒤 짧은 TTL의 1회용 join ticket을 발급하고, 룸 서버가 그 ticket을 검증·소모한 경우에만 같은 룸 세션에 합류시킨다.
+
+- **Given** 유저가 유효한 join ticket 없이 룸 세션에 직접 연결하려고 할 때
+  **When** 룸 서버가 admission을 검사하면
+  **Then** 입장이 거부된다.
 
 - **Given** 룸에 접속 중인 유저가
   **When** 퇴장하면
@@ -30,7 +56,7 @@ Photon Fusion을 통해 룸을 생성하거나 기존 룸에 입장·퇴장할 �
 
 - **Given** 룸의 마지막 유저가
   **When** 퇴장하면
-  **Then** 룸이 자동으로 소멸한다.
+  **Then** 룸은 종료 절차에 들어가고 room instance는 `TERMINATING → TERMINATED`를 거쳐 정리되며 점유 자원은 capacity pool로 환원된다.
 
 - **Given** 룸에 이미 8명이 접속해 있을 때
   **When** 추가 유저가 입장을 요청하면
@@ -48,6 +74,10 @@ Photon Fusion을 통해 룸을 생성하거나 기존 룸에 입장·퇴장할 �
   **When** 잘못된 비밀번호를 제시하면
   **Then** 입장이 거부되고 비밀번호 불일치 사유가 클라이언트에 전달된다.
 
+- **Given** `READY` 또는 `ACTIVE` 상태의 룸 서버가
+  **When** heartbeat을 제때 보내지 못하거나 런타임이 비정상 상태로 판단되면
+  **Then** 룸은 `UNHEALTHY`로 전이되고 즉시 입장이 중지된 뒤 `TERMINATING → TERMINATED`로 수습된다.
+
 ## Out of Scope
 
 - 아바타·손 동작 실시간 동기화
@@ -57,7 +87,8 @@ Photon Fusion을 통해 룸을 생성하거나 기존 룸에 입장·퇴장할 �
 - 초대 전용 룸 (룸 코드 외 별도 초대 메커니즘)
 - 룸 비밀번호 변경·재설정 (룸 생성 시점에만 설정 가능)
 - 호스트(클라이언트) 권위 마이그레이션
-- 룸 서버 풀의 동적 스케일링·K8s 오케스트레이션 (시연 이후 후속 단계)
+- `RoomServerManager` 내부의 구현체 세부(ECS / local Docker / Kubernetes)와 와이어 프로토콜 정의 ([`05-room-server-manager.md`](05-room-server-manager.md) 책임)
+- 개인 룸 snapshot 직렬화 형식과 복원 규약 ([`07-room-state-snapshot.md`](07-room-state-snapshot.md) 책임)
 
 ## Implementation Plans
 
@@ -66,9 +97,8 @@ Photon Fusion을 통해 룸을 생성하거나 기존 룸에 입장·퇴장할 �
 | 2026-04-28 | Photon Fusion SDK 패키지 준비 | `Done` | [2026-04-28-namae1128-photon-fusion-import.md](../../_archive/multiplayer-network/plans/2026-04-28-namae1128-photon-fusion-import.md) |
 | 2026-05-01 | 룸 세션 라이프사이클 (비밀번호 옵션 포함) | `Done` | [2026-05-01-namae1128-room-session-lifecycle.md](../../_archive/multiplayer-network/plans/2026-05-01-namae1128-room-session-lifecycle.md) |
 | 2026-05-01 | Linux Dedicated Server 산출 + 단독 Dockerfile | `Done` | [2026-05-01-namae1128-dedicated-server-build-pipeline.md](../../_archive/multiplayer-network/plans/2026-05-01-namae1128-dedicated-server-build-pipeline.md) |
-| 2026-05-01 | 공개 룸 목록 조회 (잠금 표시 포함) | `Done` | [2026-05-01-namae1128-room-list-query.md](../../_archive/multiplayer-network/plans/2026-05-01-namae1128-room-list-query.md) |
+| 2026-05-01 | 공개 룸 목록 조회 (잠금 표시 포함) | `In Progress` | [2026-05-01-namae1128-room-list-query.md](../plans/2026-05-01-namae1128-room-list-query.md) |
 | 2026-05-07 | docker-compose 로컬 통합 스택 (spring + mariadb + dedicated-server) | `Done` | [2026-05-07-namae1128-docker-compose-local-stack.md](../../_archive/multiplayer-network/plans/2026-05-07-namae1128-docker-compose-local-stack.md) |
-| 2026-05-07 | AWS EC2 docker-compose 배포 | `Ready` | [2026-05-07-namae1128-aws-ec2-compose-deployment.md](../plans/2026-05-07-namae1128-aws-ec2-compose-deployment.md) |
 | 2026-05-08 | tools/run-stack-smoke 5시나리오 자동화 (docker-compose 기반) | `Ready` | [2026-05-08-namae1128-stack-smoke-automation.md](../plans/2026-05-08-namae1128-stack-smoke-automation.md) |
 | 2026-05-09 | dedicated-server 빌드 시 Standalone OpenXR loader 임시 토글 | `Done` | [2026-05-09-namae1128-dedicated-server-build-openxr-toggle.md](../../_archive/multiplayer-network/plans/2026-05-09-namae1128-dedicated-server-build-openxr-toggle.md) |
 

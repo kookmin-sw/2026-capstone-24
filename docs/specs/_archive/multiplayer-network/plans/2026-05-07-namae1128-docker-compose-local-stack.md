@@ -77,7 +77,7 @@
 
 ## Handoff
 
-다음 plan(`AWS EC2 docker-compose 배포`, `tools/run-stack-smoke 자동화`)이 의존하는 산출과 제약:
+다음 plan(`AWS dev 토폴로지 (EC2 Spring + MariaDB, ECS Fargate room-server)`, `tools/run-stack-smoke 자동화`)이 의존하는 산출과 제약:
 
 - **`docker-compose.yml` 3서비스 정의**: `spring`(build: backend/Dockerfile, ports 8080:8080), `mariadb`(image: mariadb:11.4, named volume `mariadb-data`, healthcheck: `healthcheck.sh --connect --innodb_initialized` + `start_period: 15s`), `dedicated-server`(build: docker/dedicated-server/Dockerfile). depends_on은 spring → mariadb(condition: service_healthy)로 직렬화.
 - **환경변수 키 (`.env.example`)**: `MARIADB_DATABASE`, `MARIADB_USER`, `MARIADB_PASSWORD`, `MARIADB_ROOT_PASSWORD`, `JWT_SECRET`, `SPRING_PROFILES_ACTIVE`(기본 `dev`), `MURANG_META_MOCK_PREFIX`(기본 `mock-meta:`). 운영에서는 동일 키를 secrets manager 또는 CI 환경변수로 주입.

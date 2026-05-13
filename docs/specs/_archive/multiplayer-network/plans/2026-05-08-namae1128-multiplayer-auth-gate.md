@@ -57,7 +57,7 @@ Quest 빌드(또는 에디터 Play)에서 사용자가 명시적으로 멀티플
 - 룸 입장 UI(별도 sub-spec `04-presence-ui` 소관)
 - 닉네임/계정 ID 변경 UI
 - 메인 메뉴 시스템 도입(World-Space 단순 버튼 1개로 충분)
-- **Quest USB 실기기 빌드(Android) 검증** — 후속 plan [`2026-05-11-namae1128-quest-onsite-integration-verification.md`](./2026-05-11-namae1128-quest-onsite-integration-verification.md)으로 이관 (real-meta-verifier·aws-ec2-compose-deployment의 Quest manual-hard와 함께 한 빌드/사이드로드 사이클로 일괄 검증).
+- **Quest USB 실기기 빌드(Android) 검증** — 후속 plan [`2026-05-11-namae1128-quest-onsite-integration-verification.md`](./2026-05-11-namae1128-quest-onsite-integration-verification.md)으로 이관 (real-meta-verifier·aws-dev-topology-ec2-fargate의 Quest manual-hard와 함께 한 빌드/사이드로드 사이클로 일괄 검증).
 - 한글 예외 메시지 표시 — AuthBootstrap이 던지는 한글 메시지가 LiberationSans SDF에 없는 글자라 StatusLabel에서 일부 깨짐. 2026-05-11 사용자 결정으로 본 plan 시리즈에서 영구 제외(영문 메시지만 유지).
 
 ## Notes
