@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.mariadb.jdbc.Driver
+    hikari:
+      maximum-pool-size: 15
+      minimum-idle: 3
+      connection-timeout: 5000
+
+murang:
+  room:
+    internal-callback:
+      base-url: ${MURANG_ROOM_INTERNAL_CALLBACK_BASE_URL}
+      shared-secret: ${MURANG_ROOM_INTERNAL_CALLBACK_SHARED_SECRET}
+    runtime:
+      ecs:
+        region: ${MURANG_ROOM_RUNTIME_ECS_REGION:ap-northeast-2}
+        cluster: ${MURANG_ROOM_RUNTIME_ECS_CLUSTER}
+        task-definition-family: ${MURANG_ROOM_RUNTIME_ECS_TASK_DEFINITION_FAMILY}
+        subnet-ids: ${MURANG_ROOM_RUNTIME_ECS_SUBNET_IDS}
+        security-group-ids: ${MURANG_ROOM_RUNTIME_ECS_SECURITY_GROUP_IDS}
+        container-name: ${MURANG_ROOM_RUNTIME_ECS_CONTAINER_NAME:room-server}
+        assign-public-ip: ${MURANG_ROOM_RUNTIME_ECS_ASSIGN_PUBLIC_IP:true}
