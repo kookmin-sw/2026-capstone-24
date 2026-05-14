@@ -14,6 +14,12 @@
 > 이관 사유: Quest USB 빌드 + 사이드로드 + 헤드셋 장착은 검증 비용이 큰 절차라 plan별로 반복하면 부담이 크다. auth-gate plan은 Editor mock/down 검증까지만 책임지고 Done 처리됐으며, Quest 실기기 manual-hard는 본 plan으로 흡수.
 > 본 plan은 auth-gate가 다루지 못한 Quest 실기기 시나리오와, real-meta-verifier·aws-dev-topology-ec2-fargate의 Quest manual-hard를 한 빌드/사이드로드 사이클로 일괄 검증한다.
 
+### 검증 기준
+
+- 본 plan과 spec01의 모든 acceptance는 **Quest 실기기 빌드(APK 사이드로드)만으로 판정**한다.
+- Unity Editor Play 환경에서만 재현되는 동작 문제는 acceptance 위반으로 취급하지 않으며, 별도 plan으로 분리하지 않고 무시한다.
+- 백엔드 mock verifier 모드(`MURANG_META_VERIFIER_MODE=mock`)는 dev 환경에서 사용할 수 있지만, mock 모드 검증을 Editor에서 수행한 결과는 acceptance 근거로 인정하지 않는다.
+
 ### 왜 통합 검증인가
 
 Quest USB 빌드 + Android 사이드로드 + 헤드셋 장착·로그 캡처는 검증 비용이 큰 절차(빌드 5~15분 + 장착·시나리오 실행). 미완료 plan들의 manual-hard 중 Quest 실기기에서만 검증 가능한 항목 5건이 흩어져 있어, plan별로 빌드를 반복하면 사용자 부담이 커진다. 본 plan은 그 5건을 한 빌드/사이드로드 사이클로 묶어 한 세션 안에 일괄 검증한다.
@@ -67,13 +73,13 @@ Quest USB 빌드 + Android 사이드로드 + 헤드셋 장착·로그 캡처는 
 - [ ] `[manual-hard]` `real-meta-verifier` plan에서 이관된 검증: Spring `MURANG_META_VERIFIER_MODE=real` + 유효한 `MURANG_META_APP_ID`/`MURANG_META_APP_SECRET`으로 띄운 상태에서 Quest 실기기 빌드의 `MultiplayerAuthGate`를 누르면 Graph API 호출이 발생하고 spring 로그에 `is_valid: true` 응답 + 200 + ULID `playerId` 응답이 반환된다.
 - [ ] `[manual-hard]` `real-meta-verifier` plan에서 이관된 검증: Quest 실기기에서 같은 Meta 계정으로 두 번째 로그인 시 동일 `metaAccountId`(= Oculus userId)에 대해 동일 `playerId`가 반환된다(MariaDB 영속성 + 실 Meta 계정 매칭).
 - [ ] `[manual-hard]` `real-meta-verifier` plan에서 이관된 검증: `MURANG_META_APP_SECRET`을 잘못된 값으로 주입한 상태에서 Quest 빌드가 인증 시도하면 `AUTH_INVALID_TOKEN(401)` 응답이 확인된다.
-- [ ] `[manual-hard]` `aws-dev-topology-ec2-fargate` plan에서 이관된 검증: Quest 빌드(또는 Editor에서 device backend URL을 EC2로 가리킨 빌드)가 EC2 Spring endpoint를 통해 룸 생성 후 Fargate room-server에 합류하고, 서버 로그에 입장이 기록된다.
+- [ ] `[manual-hard]` `aws-dev-topology-ec2-fargate` plan에서 이관된 검증: Quest 실기기 빌드가 EC2 Spring endpoint를 통해 룸 생성 후 Fargate room-server에 합류하고, 서버 로그에 입장이 기록된다.
 
 ## Out of Scope
 
 - 한글 메시지 깨짐 처리 (2026-05-11 사용자 결정으로 본 plan 시리즈에서 제외)
 - 코드/자산 변경 (본 plan은 검증만)
-- mock 모드 Editor 검증 (이미 본 auth-gate plan에서 완료)
+- Unity Editor Play 환경 검증 (본 plan부터 spec01의 acceptance는 Quest 실기기 빌드만으로 판정. Editor Play에서만 재현되는 이슈는 무시)
 - Quest 빌드 환경 셋업(XR Plug-in Management, signing key, OpenXR Meta Quest feature group) — 빌드 환경이 깨져 있으면 본 plan에서 분리해 별도 plan으로 처리
 
 ## Notes

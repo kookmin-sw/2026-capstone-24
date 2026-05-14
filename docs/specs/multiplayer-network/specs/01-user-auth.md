@@ -12,7 +12,7 @@ Meta 계정 기반 인증 흐름을 제공한다. 클라이언트가 Meta ID 토
 
 - Access Token은 짧은 유효기간을 갖고 Refresh Token으로 갱신된다.
 - Refresh Token이 만료되면 Meta 계정이 유효한 경우 자동으로 다시 로그인된다.
-- 개발/에디터 환경에서는 Mock 검증기를 사용할 수 있다.
+- 본 spec의 모든 acceptance 검증은 Quest 실기기 빌드(APK 사이드로드)만으로 판정한다. Unity Editor Play 환경에서만 재현되는 인증 동작 이슈는 본 spec의 검증 범위 밖이며, Editor Play 시 발생하는 문제는 무시한다.
 
 ## Behavior
 
@@ -44,6 +44,7 @@ Meta 계정 기반 인증 흐름을 제공한다. 클라이언트가 Meta ID 토
 
 - DB 기반 유저 프로필 영속화
 - 게스트/익명 로그인
+- Unity Editor Play 환경에서만 재현되는 인증 동작 이슈 (acceptance 검증은 Quest 실기기 빌드만 사용한다)
 
 ## Implementation Plans
 
