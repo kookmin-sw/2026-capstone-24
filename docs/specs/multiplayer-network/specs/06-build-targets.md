@@ -12,11 +12,10 @@ VR 클라이언트와 헤드리스 룸 서버는 같은 코드베이스를 공�
 
 - **Quest Client 빌드** (Android, Quest용): XR/입력/UI/오디오/UX 자산 포함. NetworkRunner는 클라이언트 모드로 구동한다.
 - **Headless Server 빌드** (Linux 서버용): XR/입력/UI/오디오 자산 제외, 그래픽 디바이스 비활성. NetworkRunner는 서버 모드로 구동한다. 권위 시뮬레이션·판정·동기화에 필요한 자산만 포함한다.
-- 두 빌드는 동일한 prefab과 동일한 NetworkObject 식별자를 공유한다. 네트워크로 동기화되는 모든 객체의 식별자가 두 빌드 간 일치해야 한다.
+- 두 빌드는 동일한 default 씬(`SampleScene`), 동일한 prefab, 동일한 NetworkObject 식별자를 공유한다. 네트워크로 동기화되는 모든 객체의 식별자가 두 빌드 간 일치해야 한다.
 - 클라이언트와 room server는 네트워크/콘텐츠 계약을 대표하는 `clientCompatibilityVersion` 또는 동등한 호환 버전 개념을 공유해야 한다. 이 값은 prefab 식별자, NetworkBehaviour/RPC, 룸 입장 계약 등 네트워크 상호운용성을 대표한다.
-- snapshot은 별도의 `snapshotSchemaVersion`을 가진다. 이 값은 개인 룸 상태 직렬화 형식과 필드 구조를 대표하며, 네트워크 호환 버전과는 독립적으로 진화할 수 있다.
-- room server build는 room instance 기동 시 사용할 `roomRuntimeVersion`과 자신이 지원하는 `snapshotSchemaVersion` 범위를 함께 가진다.
-- Spring 내부 `RoomServerManager`는 room provisioning 요청에 필요한 `roomRuntimeVersion`을 포함하고, room server는 ready callback에 자신이 실행 중인 실제 버전과 지원 schema 정보를 보고한다. 요청 버전과 실제 버전이 호환되지 않으면 room instance는 admission을 열지 않고 실패 처리된다.
+- room server build는 room instance 기동 시 사용할 `roomRuntimeVersion`을 가진다.
+- Spring 내부 `RoomServerManager`는 room provisioning 요청에 필요한 `roomRuntimeVersion`을 포함하고, room server는 ready callback에 자신이 실행 중인 실제 버전을 보고한다. 요청 버전과 실제 버전이 호환되지 않으면 room instance는 admission을 열지 않고 실패 처리된다.
 - 로컬 Docker, ECS, 향후 Kubernetes 구현체는 모두 같은 room server startup contract(환경변수, CLI 인자, ready/heartbeat 계약)를 사용해야 한다.
 
 ## Behavior
@@ -31,15 +30,11 @@ VR 클라이언트와 헤드리스 룸 서버는 같은 코드베이스를 공�
 
 - **Given** 두 빌드가 산출되었을 때
   **When** 네트워크로 동기화되는 prefab과 호환 버전 계약을 비교하면
-  **Then** client/server가 같은 `clientCompatibilityVersion` 정책을 만족해야 하며, snapshot은 별도의 `snapshotSchemaVersion` 정책으로 검증된다.
+  **Then** client/server가 같은 `clientCompatibilityVersion` 정책을 만족한다.
 
 - **Given** `RoomServerManager`가 특정 `roomRuntimeVersion`으로 room instance를 기동했을 때
   **When** room server ready callback이 다른 런타임 버전을 보고하면
   **Then** 해당 room instance는 admission을 열지 않고 실패 처리된다.
-
-- **Given** room create 요청에 포함된 snapshot의 `snapshotSchemaVersion`이
-  **When** room server가 지원하지 않는 버전이면
-  **Then** room instance는 ready 상태로 올라가지 않고 룸 생성이 실패하거나 별도 migration 절차를 요구한다.
 
 ## Out of Scope
 
@@ -47,6 +42,7 @@ VR 클라이언트와 헤드리스 룸 서버는 같은 코드베이스를 공�
 - CI/CD 파이프라인과 자동 배포
 - ECS task definition, Kubernetes manifest 같은 실행 플랫폼별 리소스 템플릿
 - 빌드된 산출물의 배치·실행 관리 ([`05-room-server-manager.md`](05-room-server-manager.md) 책임)
+- 유저별 룸 상태 직렬화 형식·`snapshotSchemaVersion`·호환성 검사 (default 씬 모델이므로 본 피처 전체 Out of Scope)
 
 ## Implementation Plans
 

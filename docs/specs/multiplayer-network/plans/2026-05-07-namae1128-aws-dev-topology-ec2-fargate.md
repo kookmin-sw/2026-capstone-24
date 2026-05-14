@@ -82,8 +82,7 @@
    - ready callback URL
    - heartbeat URL
    - `roomRuntimeVersion`
-   - `snapshotSchemaVersion`
-   를 환경변수 또는 인자로 주입한다.
+   를 환경변수 또는 인자로 주입한다. (default 씬 모델이므로 snapshot 관련 환경변수는 주입하지 않는다.)
 6. **CloudWatch 최소 관측성** — control plane과 room-server 모두 CloudWatch로 관측한다.
    - Spring 로그
    - room-server task 로그

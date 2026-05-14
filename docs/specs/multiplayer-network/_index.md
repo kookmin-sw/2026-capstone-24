@@ -12,7 +12,7 @@ VirtualMusicStudio의 핵심 경험은 여러 유저가 같은 VR 공간에서 �
 - 유저 정보가 저장되고 재사용된다.
 - 여러 유저가 같은 룸에 동시에 접속할 수 있다.
 - 현재 접속 상태를 UI에서 확인할 수 있다.
-- 개인 룸 snapshot을 기반으로 멀티 룸 초기 상태를 구성한다.
+- 모든 룸은 동일한 default 씬(`SampleScene`)을 사용하며, 씬에는 악기·오브젝트가 미리 배치되어 있다. 유저는 그 배치된 오브젝트만 사용할 수 있고 룸 내부에서 오브젝트를 추가·이동·삭제하지 않는다.
 - 룸 서버 lifecycle과 실행 환경을 Spring 내부 `RoomServerManager` 모듈로 관리한다.
 
 ## 현재 진행 스냅샷
@@ -57,13 +57,14 @@ VirtualMusicStudio의 핵심 경험은 여러 유저가 같은 VR 공간에서 �
 | 접속 상태 UI | `Draft` | [04-presence-ui.md](specs/04-presence-ui.md) |
 | 룸 서버 매니저 | `Draft` | [05-room-server-manager.md](specs/05-room-server-manager.md) |
 | 빌드 타깃 분리 | `Draft` | [06-build-targets.md](specs/06-build-targets.md) |
-| 룸 상태 snapshot | `Draft` | [07-room-state-snapshot.md](specs/07-room-state-snapshot.md) |
 
 > 상태 값은 `Draft` / `Active` / `Done` / `Abandoned`
 
 ## Out of Scope
 
-- 구체적인 멀티플레이 콘텐츠 동기화 — 아바타·손 동작, 악기 움직임, MIDI event 등 (별도 피처/브랜치에서 다룬다. 본 피처는 인증·개인 룸 snapshot·룸 lifecycle·실행 환경·오케스트레이션·접속 상태까지로 책임 한정)
+- 구체적인 멀티플레이 콘텐츠 동기화 — 아바타·손 동작, 악기 움직임, MIDI event 등 (별도 피처/브랜치에서 다룬다. 본 피처는 인증·룸 lifecycle·실행 환경·오케스트레이션·접속 상태까지로 책임 한정)
+- 유저별 룸 상태 영속화 / 개인 룸 snapshot / copy-on-create / save-back 흐름 (default 씬 + 기배치 오브젝트만 사용하므로 룸별 상태 직렬화·복원이 필요 없음)
+- 룸 내부 오브젝트 추가·이동·삭제 (씬에 미리 배치된 오브젝트만 사용)
 - 텍스트 채팅
 - 리플레이/녹화
 - 관전 모드

@@ -13,7 +13,7 @@
 - room create 요청을 받아 capacity pool 위에 single-use Unity Headless Dedicated Server instance를 프로비저닝한다.
 - room instance의 공통 상태 머신을 `PROVISIONING → SERVER_STARTING → READY → ACTIVE → UNHEALTHY → TERMINATING → TERMINATED`로 운영한다.
 - 실패 경로는 `PROVISIONING → FAILED`, `SERVER_STARTING → FAILED`로 다룬다.
-- `READY`는 인프라 런타임이 올라온 것만이 아니라, Unity Dedicated Server가 snapshot 복원과 Fusion 세션 준비를 마치고 app-level ready callback을 보낸 상태를 뜻한다.
+- `READY`는 인프라 런타임이 올라온 것만이 아니라, Unity Dedicated Server가 default 씬 로드와 Photon Fusion 세션 등록을 마치고 app-level ready callback을 보낸 상태를 뜻한다.
 - `ACTIVE`는 admission이 열린 뒤 실제 join ticket이 소모되어 룸 세션이 진행 중인 상태를 뜻한다.
 - `UNHEALTHY`는 `READY` 또는 `ACTIVE` 이후 heartbeat 상실, 런타임 비정상, 세션 진행 불가 등으로 더 이상 정상 admission/진행을 보장하지 못하는 상태를 뜻한다.
 - `TERMINATING`은 `RoomServerManager`가 room instance 정리 절차를 수행 중인 상태이며, 정리가 끝나면 `TERMINATED`가 된다.
@@ -31,7 +31,7 @@
   **When** `RoomServerManager`가 capacity를 확보하면
   **Then** room instance는 `PROVISIONING → SERVER_STARTING`으로 전이되고 Unity Headless Dedicated Server 기동 절차가 시작된다.
 
-- **Given** room instance가 snapshot 복원과 Fusion 세션 준비를 마쳤을 때
+- **Given** room instance가 default 씬 로드와 Photon Fusion 세션 등록을 마쳤을 때
   **When** app-level ready callback을 보내면
   **Then** `RoomServerManager`는 해당 instance를 `READY`로 표시하고 Spring은 그 이후에만 룸 목록 공개와 join ticket 발급을 시작한다.
 
@@ -63,7 +63,7 @@
 
 - 클라이언트 향 서비스 API 본체 (룸 생성/목록/입장 등 — 백엔드 책임)
 - 룸 서버 자체의 게임 로직·세션 동기화·판정 (룸 서버 책임)
-- snapshot 직렬화 포맷과 저장 규약 ([`07-room-state-snapshot.md`](07-room-state-snapshot.md) 책임)
+- 유저별 룸 상태 영속화·snapshot 직렬화·복원 (default 씬 모델이므로 본 피처 전체 Out of Scope)
 - 빌드 산출물 생성과 아티팩트 배포 ([`06-build-targets.md`](06-build-targets.md) 책임)
 - ECS/Kubernetes의 세부 리소스 정의 파일, Helm chart, Terraform 등 구체 IaC 산출물
 - 다중 리전 스케줄링과 글로벌 매치메이킹
