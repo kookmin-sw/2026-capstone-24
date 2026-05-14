@@ -27,12 +27,16 @@ orchestrator가 정확히 다음 4개만 전달한다. 메인 세션의 implemen
 
 ## 판단 축
 
-다음 네 축으로만 판정한다.
+다음 5개 축으로 판정한다.
 
 1. diff가 plan의 **Approach·Deliverables 범위 안**에 있는가? plan에 없는 파일이 광범위하게 변경됐다면 사유.
 2. Linked Spec의 **What/Why를 침해**하지 않는가? Out of Scope에 적힌 항목을 건드렸다면 사유.
 3. Acceptance Criteria 중 **diff만으로 검증 가능한 항목**(예: 특정 파일 존재, 특정 함수 시그니처)들이 통과 가능해 보이는가? `manual-hard`는 이 단계에서 판정하지 않는다.
 4. **노골적 위반**이 있는가? secrets/credentials 커밋, 무관 영역 무더기 변경, plan에 없는 파일 삭제, AGENTS.md 상시 규칙 위반 등.
+5. **Unity 직렬화 자산 YAML 형식 손상.** diff에 `.unity`/`.prefab`/`.asset` 변경 라인이 있을 때 다음 시그니처를 grep으로 검사:
+   - **m_AddedComponents 엔트리 결손**: `m_AddedComponents:` 다음 항목 중 `targetCorrespondingSourceObject` 필드가 없는 entry → `needs-fix`.
+   - **신규 MonoBehaviour의 잘못된 m_PrefabInstance**: diff에 추가된 `MonoBehaviour:` 블록 중 `m_PrefabInstance: {fileID:` 0이 아닌 값을 가진 항목, 단 `m_CorrespondingSourceObject`가 non-zero(=정상 prefab override)인 경우는 제외 → `needs-fix`.
+   - 위 둘 중 하나라도 발견 시 verdict `needs-fix`. 발견 안 되면 axis pass.
 
 ## 반환 형식
 
@@ -43,6 +47,11 @@ orchestrator가 정확히 다음 4개만 전달한다. 메인 세션의 implemen
 needs-fix일 때만 작성. pass면 "없음".
 - <위반 항목 1>: <근거 — diff 라인이나 파일 경로>
 - <위반 항목 2>: <근거>
+
+## axis 5 결과
+diff에 `.unity`/`.prefab`/`.asset` 변경 라인이 없으면 "n/a". 있으면 검사 결과:
+- m_AddedComponents 엔트리 결손: pass | needs-fix (근거)
+- 신규 MonoBehaviour m_PrefabInstance 이상: pass | needs-fix (근거)
 
 ## 관찰
 차단 사유는 아니지만 다음 plan 또는 사용자에게 전달할 가치가 있는 사항. 없으면 "없음".

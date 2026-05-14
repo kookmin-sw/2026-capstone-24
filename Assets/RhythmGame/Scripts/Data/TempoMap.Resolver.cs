@@ -1,5 +1,7 @@
 using System;
 
+namespace RhythmGame.Data
+{
 public sealed partial class TempoMap
 {
     // segments는 tick 오름차순이 invariant (파서가 보장). targetTick < 0은 0으로 clamp.
@@ -26,4 +28,5 @@ public sealed partial class TempoMap
 
         return accumulated;
     }
+}
 }

@@ -2,9 +2,9 @@
 name: plan-orchestrator
 description: docs/specs/<feature>/plans/ 아래 plan 파일 한 개의 라이프사이클(컨텍스트 적재 → plan-implementer 호출 → plan-reviewer 호출 → 자동 Acceptance Criteria 검증)을 격리된 sub-agent 컨텍스트에서 수행하고, 메인 세션에는 컴팩트 리포트 한 장만 반환합니다. 코드 변경은 working tree에 적용한 채로 종료하며, git commit은 메인 세션이 manual-hard 검증 통과 후에 git-workflow skill로 처리합니다. /spec-implement orchestrator가 호출하며, plan 파일·Linked Spec·parent _index.md·이전 plan handoff 누적·Acceptance Criteria 라벨 분류만을 입력으로 받습니다. plan 파일 편집·사용자 입력·plan-complete 호출·git commit은 절대 하지 않습니다.
 model: sonnet
-tools: Read, Glob, Grep, Bash, Task, Skill, mcp__unityMCP__read_console
+tools: Read, Glob, Grep, Bash, Task, Skill, mcp__UnityMCP__read_console
 mcpServers:
-  unityMCP:
+  UnityMCP:
     type: http
     url: http://127.0.0.1:8080
 ---
@@ -42,8 +42,17 @@ mcpServers:
 - `Bash` → `git diff HEAD`. 출력 보관.
 - diff가 비어있으면 `next_action: implementer-blocked`, unresolved에 "implementer가 변경을 적용하지 않음" 적고 종료.
 
+### 3.5. unity-test-runner 호출
+
+`Task` 도구로 `unity-test-runner` 호출. 입력: 변경된 파일 목록에서 도메인 힌트 추출 → `changed_domains` 전달.
+
+- 반환값 첫 줄이 `PASS` → 결과를 `test_report`에 보관하고 4단계로.
+- 반환값 첫 줄이 `FAIL` → `next_action: test-failed`, status `needs-user-input`. 리포트를 `unresolved`에 그대로 포함하고 종료. **변경사항은 working tree에 남는다 (메인이 처리).**
+- 반환값 첫 줄이 `COMPILE ERROR` → `next_action: compile-error`, status `failed`. 종료.
+- 반환값 첫 줄이 `MCP UNAVAILABLE` → `test_report`에 "테스트 미실행 (MCP 미가용)" 기록 후 4단계로 진행. (테스트 부재로 plan-reviewer 차단 금지)
+
 ### 4. plan-reviewer 호출
-- `Task` 도구로 `plan-reviewer` 호출. 입력 4종(plan, linked spec, diff, ac 원문) 전달.
+- `Task` 도구로 `plan-reviewer` 호출. 입력 4종(plan, linked spec, diff, ac 원문) 전달. `test_report`가 있으면 함께 전달.
 - 반환값 `pass` → 5단계로.
 - 반환값 `needs-fix` → `next_action: review-failed`, status `needs-user-input`. 사유 그대로 unresolved에 보관 후 종료. **자동 검증 단계 건너뛴다. 변경사항은 working tree에 남는다 (메인이 처리).**
 
@@ -100,6 +109,10 @@ Unity MCP가 검증 도중 끊기면 `next_action: mcp-down`, status `needs-user
   - ...
 
 (commit SHA는 본 orchestrator가 생성하지 않는다 — 메인이 manual-hard 통과 후 git-workflow skill로 commit한다.)
+
+## test_report
+`<unity-test-runner 반환 첫 줄 (PASS/FAIL/MCP UNAVAILABLE 등)>`
+`<실패 테스트 목록 — 없으면 "없음">`
 
 ## acceptance_results
 - label: `auto-hard` | `auto-soft`

@@ -1,4 +1,7 @@
-public sealed class DspTimeProvider : ITimeProvider
+namespace RhythmGame.Runtime.Clock
 {
-    public double Now => UnityEngine.AudioSettings.dspTime;
+    public sealed class DspTimeProvider : ITimeProvider
+    {
+        public double Now => UnityEngine.AudioSettings.dspTime;
+    }
 }

@@ -55,14 +55,37 @@ Plan 구현을 완료하면 다음 네 곳을 반드시 갱신한다.
 
 ## 5. 완료된 파일 아카이브
 
-> **destructive 분기 진입 시 사용자 승인.** plan 단일 파일 이동은 자동 진행한다. 단 (a) sub-spec 파일을 `_archive/<feature>/specs/`로 이동하거나 (b) feature 폴더 전체를 `_archive/<feature>/`로 이동하는 분기에 진입하기 직전에는 사용자에게 이동 대상 경로와 영향(외부 링크 깨짐 가능성 포함)을 보여주고 명시 승인을 받는다. 승인 거절 시 plan/sub-spec/feature의 Status 갱신만 마치고 이동은 보류한다. `/spec-implement`가 자동 호출한 경우에도 본 게이트는 동일하게 작동한다.
+> **destructive 분기 진입 시 사용자 승인.** plan 단일 파일 이동은 자동 진행한다. feature 폴더 전체를 `_archive/<feature>/`로 이동하는 분기에 진입하기 직전에는 사용자에게 이동 대상 경로와 영향(외부 링크 깨짐 가능성 포함)을 보여주고 명시 승인을 받는다. 승인 거절 시 Status 갱신만 마치고 이동은 보류한다. `/spec-implement`가 자동 호출한 경우에도 본 게이트는 동일하게 작동한다.
+
+### plan 단위 archive (자동)
 
 Plan 파일은 `Status: Done` 처리 직후 `docs/specs/_archive/<feature>/plans/`로 이동하고, 해당 sub-spec의 `Implementation Plans` 표 링크를 새 경로로 갱신한다.
 
 이동 후, 같은 sub-spec(또는 cross-feature) 안에 헤더 `**Caused By:** <이전 plan 경로>`로 이 plan을 가리키는 후속 plan이 있으면 그 헤더 링크를 새 아카이브 경로로 Edit 갱신한다 (`./<filename>` → `../../_archive/<feature>/plans/<filename>` 형태).
 
-해당 sub-spec의 모든 plan이 Done이고 Open Questions가 없어 Status가 `Done`이면, sub-spec 파일도 `docs/specs/_archive/<feature>/specs/`로 이동하고 `_index.md`의 `Sub-Specs` 표 링크를 새 경로로 갱신한다.
-
-전체 sub-spec이 Done이고 Open Questions가 없으면, feature 폴더 전체를 `docs/specs/_archive/<feature>/` 아래로 이동한다.
-
 > Caused By 백링크 갱신 정책 단일 진실원: [`docs/specs/README.md`](../../../docs/specs/README.md) "검증 실패 시 후속 plan 시드" 섹션.
+
+### sub-spec 단위 archive 폐기
+
+sub-spec 1개가 Done 되어도 `specs/` 폴더에 남겨두고 `_index.md` Sub-Specs 표의 Status만 `Done`으로 갱신한다. sub-spec 파일을 `_archive/<feature>/specs/`로 중간 이동하지 않는다 — feature 전체 Done 시점까지 `specs/` 안에 보류.
+
+### feature 단위 archive (destructive 가드)
+
+다음 조건을 **모두** 만족할 때 feature archive 분기가 트리거된다:
+
+1. `_index.md` Sub-Specs 표의 모든 행 `Status == Done`.
+2. root-spec 및 모든 sub-spec의 `## Open Questions` 0건.
+3. 모든 plan의 auto-hard / manual-hard 검증 pass.
+4. working tree clean.
+5. Unity MCP 노출 시 `read_console` types=error 0건.
+
+조건 충족 시 다음을 수행한다:
+
+1. **외부 참조 grep**: `docs/` 안에서 본 feature 경로를 참조하는 파일 목록을 사용자에게 표시. (`_archive/` 내부 plan들의 history 박제 inline reference는 갱신 불필요.)
+2. **사용자 승인 1회** (`AskUserQuestion`): 이동 대상 경로 + 외부 참조 매치를 보여주고 진행 여부 확인.
+3. **`archive-feature.sh <feature-kebab>` 호출**: `git mv`로 `_index.md / specs/ / decisions/ / plans/`(이미 `_archive`에 있으면 병합) 이동. `.feature-build-state.json`은 삭제.
+4. **README 보드 갱신**: 해당 feature 행 경로를 `_archive/<feature>/_index.md`로, Status를 `Done`으로 업데이트.
+5. **외부 링크 Edit 갱신**: grep 매치된 라인을 메인 세션이 직접 Edit.
+6. **atomic commit**: `chore(<feature>): feature archive 이동 + README 보드 갱신`.
+
+조건이 하나라도 충족되지 않으면 archive 분기를 진입하지 않는다. 사유 한 줄 보고 후 종료.

@@ -834,6 +834,7 @@ GameObject:
   - component: {fileID: 8894972231816759540}
   - component: {fileID: 4415775607901659422}
   - component: {fileID: 8430943152379260188}
+  - component: {fileID: 6446961250795484484}
   m_Layer: 0
   m_Name: LeftHandTrackingGhostHand
   m_TagString: Untagged
@@ -970,6 +971,22 @@ MonoBehaviour:
   m_HandMeshRenderer: {fileID: 4087086641605355885}
   m_ShowMeshWhenTrackingIsAcquired: 1
   m_HideMeshWhenTrackingIsLost: 1
+--- !u!114 &6446961250795484484
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6924302776793296225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4a50d88b55b45648927679791f472de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.XR.Interaction.Toolkit::UnityEngine.XR.Interaction.Toolkit.Interactors.XRInteractionGroup
+  m_GroupName: 
+  m_InteractionManager: {fileID: 0}
+  m_StartingGroupMembers: []
+  m_StartingInteractionOverridesMap: []
 --- !u!1 &7254196706052144428
 GameObject:
   m_ObjectHideFlags: 0

@@ -102,3 +102,6 @@ crashlytics-build.properties
 
 # Local environment secrets (docker-compose)
 .env
+.claude/scheduled_tasks.lock
+.feature-build-state.json
+.orchestrator-state.json

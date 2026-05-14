@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 
+namespace RhythmGame.Data
+{
 public static class VmSongParser
 {
     public sealed class ParseError
@@ -331,4 +333,5 @@ public static class VmSongParser
             notes[j + 1] = key;
         }
     }
+}
 }

@@ -1,18 +1,21 @@
 using UnityEngine;
 
-[DisallowMultipleComponent]
-public class DrumPiece : MonoBehaviour
+namespace Instruments
 {
-    DrumKit m_DrumKit;
-
-    void Awake()
+    [DisallowMultipleComponent]
+    public class DrumPiece : MonoBehaviour
     {
-        m_DrumKit = GetComponentInParent<DrumKit>();
-    }
+        DrumKit m_DrumKit;
 
-    public void ReportHit(int midiNote, float velocity)
-    {
-        if (m_DrumKit != null)
-            m_DrumKit.OnPieceHit(midiNote, velocity);
+        void Awake()
+        {
+            m_DrumKit = GetComponentInParent<DrumKit>();
+        }
+
+        public void ReportHit(int midiNote, float velocity)
+        {
+            if (m_DrumKit != null)
+                m_DrumKit.OnPieceHit(midiNote, velocity);
+        }
     }
 }
