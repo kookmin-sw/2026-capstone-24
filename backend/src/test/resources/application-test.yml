@@ -10,3 +10,9 @@ app:
     jwt:
       secret: "test-secret-for-hs512-signing-must-be-at-least-sixty-four-bytes-long-2026"
       allow-ephemeral-secret: false
+
+murang:
+  room:
+    internal-callback:
+      base-url: "http://localhost:8080"
+      shared-secret: "test-internal-secret"

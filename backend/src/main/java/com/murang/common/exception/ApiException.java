@@ -45,4 +45,16 @@ public class ApiException extends RuntimeException {
     public static ApiException metaVerifierUnavailable() {
         return new ApiException(ErrorCode.META_VERIFIER_UNAVAILABLE);
     }
+
+    public static ApiException roomNotFound() {
+        return new ApiException(ErrorCode.ROOM_NOT_FOUND);
+    }
+
+    public static ApiException roomInternalForbidden() {
+        return new ApiException(ErrorCode.ROOM_INTERNAL_FORBIDDEN);
+    }
+
+    public static ApiException roomProvisioningFailed(String message) {
+        return new ApiException(ErrorCode.ROOM_PROVISIONING_FAILED, message);
+    }
 }

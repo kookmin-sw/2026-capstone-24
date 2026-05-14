@@ -53,6 +53,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/v1/auth/meta-login", "/api/v1/auth/refresh").permitAll()
                         .requestMatchers("/actuator/health", "/actuator/info", "/error").permitAll()
+                        .requestMatchers("/internal/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(requestIdFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(jwtAuthenticationFilter, RequestIdFilter.class);
