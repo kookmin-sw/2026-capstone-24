@@ -1,4 +1,4 @@
-# EC2 control-plane (spring + mariadb) 기동/재배포 래퍼 (Windows host -> EC2 SSH 경유 또는 EC2 안에서 실행).
+﻿# EC2 control-plane (spring + mariadb) 기동/재배포 래퍼 (Windows host -> EC2 SSH 경유 또는 EC2 안에서 실행).
 # Linux 호스트는 deploy-ec2-control-plane.sh 를 사용한다. 본 스크립트는 같은 작업을 PowerShell 에서 호출.
 # 사용법:
 #   tools/deploy-ec2-control-plane.ps1 -Command up

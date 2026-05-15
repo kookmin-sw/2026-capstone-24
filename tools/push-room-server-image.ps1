@@ -1,4 +1,4 @@
-# room-server 이미지를 ECR 에 push + Fargate task definition 의 image tag 갱신 래퍼 (PowerShell).
+﻿# room-server 이미지를 ECR 에 push + Fargate task definition 의 image tag 갱신 래퍼 (PowerShell).
 # 사용법:
 #   tools/push-room-server-image.ps1 -Tag v0.1.3
 #
@@ -64,7 +64,10 @@ $current.PSObject.Properties.Remove('registeredBy') | Out-Null
 
 $json = $current | ConvertTo-Json -Depth 32
 $tmp = New-TemporaryFile
-Set-Content -Path $tmp -Value $json -Encoding utf8
+# AWS CLI 의 file:// 파서는 UTF-8 BOM 을 binary 로 판단해 거부한다 (Windows
+# PowerShell 5.1 의 Set-Content -Encoding utf8 은 BOM 을 붙이므로 .NET API 로
+# BOM-less UTF-8 을 직접 기록).
+[System.IO.File]::WriteAllText($tmp, $json, [System.Text.UTF8Encoding]::new($false))
 
 Write-Host '==> 새 revision 등록'
 $registered = & aws ecs register-task-definition --region $AwsRegion --cli-input-json "file://$tmp" --query 'taskDefinition.taskDefinitionArn' --output text
