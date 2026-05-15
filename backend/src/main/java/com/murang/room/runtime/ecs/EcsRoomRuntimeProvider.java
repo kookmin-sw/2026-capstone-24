@@ -1,11 +1,13 @@
 package com.murang.room.runtime.ecs;
 
+import com.murang.room.config.RoomInternalCallbackProperties;
 import com.murang.room.runtime.ProvisionedRoomTask;
 import com.murang.room.runtime.RoomRuntimeProvider;
 import com.murang.room.runtime.RoomRuntimeProviderException;
 import com.murang.room.runtime.RoomTaskRuntimeState;
 import com.murang.room.runtime.RoomTaskStartRequest;
 import com.murang.room.runtime.RoomTaskStopRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -46,13 +48,20 @@ public class EcsRoomRuntimeProvider implements RoomRuntimeProvider {
     static final String ENV_ROOM_RUNTIME_VERSION = "ROOM_RUNTIME_VERSION";
     static final String ENV_READY_CALLBACK_URL = "ROOM_READY_CALLBACK_URL";
     static final String ENV_HEARTBEAT_CALLBACK_URL = "ROOM_HEARTBEAT_CALLBACK_URL";
+    static final String ENV_INTERNAL_CALLBACK_SHARED_SECRET = "MURANG_ROOM_INTERNAL_CALLBACK_SHARED_SECRET";
 
     private final EcsClient ecsClient;
     private final EcsRoomRuntimeProperties properties;
+    private final RoomInternalCallbackProperties callbackProperties;
 
-    public EcsRoomRuntimeProvider(EcsClient ecsClient, EcsRoomRuntimeProperties properties) {
+    public EcsRoomRuntimeProvider(
+            EcsClient ecsClient,
+            EcsRoomRuntimeProperties properties,
+            RoomInternalCallbackProperties callbackProperties
+    ) {
         this.ecsClient = ecsClient;
         this.properties = properties;
+        this.callbackProperties = callbackProperties;
     }
 
     @Override
@@ -155,14 +164,20 @@ public class EcsRoomRuntimeProvider implements RoomRuntimeProvider {
     }
 
     private List<KeyValuePair> buildEnvironment(RoomTaskStartRequest request) {
-        return List.of(
-                kv(ENV_ROOM_ID, String.valueOf(request.roomId())),
-                kv(ENV_PHOTON_SESSION_NAME, request.photonSessionName()),
-                kv(ENV_MAX_PLAYERS, String.valueOf(request.maxPlayers())),
-                kv(ENV_ROOM_RUNTIME_VERSION, request.roomRuntimeVersion()),
-                kv(ENV_READY_CALLBACK_URL, request.readyCallbackUrl().toString()),
-                kv(ENV_HEARTBEAT_CALLBACK_URL, request.heartbeatCallbackUrl().toString())
-        );
+        List<KeyValuePair> env = new ArrayList<>();
+        env.add(kv(ENV_ROOM_ID, String.valueOf(request.roomId())));
+        env.add(kv(ENV_PHOTON_SESSION_NAME, request.photonSessionName()));
+        env.add(kv(ENV_MAX_PLAYERS, String.valueOf(request.maxPlayers())));
+        env.add(kv(ENV_ROOM_RUNTIME_VERSION, request.roomRuntimeVersion()));
+        env.add(kv(ENV_READY_CALLBACK_URL, request.readyCallbackUrl().toString()));
+        env.add(kv(ENV_HEARTBEAT_CALLBACK_URL, request.heartbeatCallbackUrl().toString()));
+
+        String sharedSecret = callbackProperties == null ? null : callbackProperties.sharedSecret();
+        if (sharedSecret != null && !sharedSecret.isBlank()) {
+            env.add(kv(ENV_INTERNAL_CALLBACK_SHARED_SECRET, sharedSecret));
+        }
+
+        return env;
     }
 
     private static KeyValuePair kv(String name, String value) {

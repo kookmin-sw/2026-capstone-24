@@ -21,6 +21,7 @@ namespace Murang.Multiplayer.Room.Server
         private NetworkRunner _runner;
         private RoomAuthority _authority;
         private RoomServerAutomationMonitor _automationMonitor;
+        private RoomServerCallbackReporter _callbackReporter;
 
         private async void Awake()
         {
@@ -60,7 +61,14 @@ namespace Murang.Multiplayer.Room.Server
             };
 
             EnsureRunner(roomName, maxPlayers, passwordHash);
-            return await _runner.StartGame(startArgs);
+            StartGameResult result = await _runner.StartGame(startArgs);
+
+            if (result.Ok)
+            {
+                _callbackReporter?.ReportReady();
+            }
+
+            return result;
         }
 
         private void EnsureRunner(string roomName, int maxPlayers, string passwordHash)
@@ -95,6 +103,14 @@ namespace Murang.Multiplayer.Room.Server
                 _runner.RemoveCallbacks(_automationMonitor);
                 _runner.AddCallbacks(_automationMonitor);
             }
+
+            _callbackReporter = GetComponent<RoomServerCallbackReporter>();
+            if (_callbackReporter == null)
+            {
+                _callbackReporter = gameObject.AddComponent<RoomServerCallbackReporter>();
+            }
+
+            _callbackReporter.Initialize(RoomServerCallbackConfig.FromProcessEnvironment());
         }
 
         private NetworkSceneManagerDefault GetOrAddSceneManager()

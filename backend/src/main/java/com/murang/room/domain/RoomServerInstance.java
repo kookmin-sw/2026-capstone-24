@@ -67,7 +67,7 @@ public class RoomServerInstance {
         this.status = RoomServerInstanceStatus.SERVER_STARTING;
     }
 
-    public void markReady(String publicIp, int gamePort, Instant now) {
+    public void markReady(String publicIp, Integer gamePort, Instant now) {
         this.taskPublicIp = publicIp;
         this.gamePort = gamePort;
         this.status = RoomServerInstanceStatus.READY;

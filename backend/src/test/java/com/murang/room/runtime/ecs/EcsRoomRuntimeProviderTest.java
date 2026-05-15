@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.murang.room.config.RoomInternalCallbackProperties;
 import com.murang.room.runtime.ProvisionedRoomTask;
 import com.murang.room.runtime.RoomRuntimeProviderException;
 import com.murang.room.runtime.RoomTaskRuntimeState;
@@ -46,6 +47,7 @@ class EcsRoomRuntimeProviderTest {
     private EcsClient ecsClient;
 
     private EcsRoomRuntimeProperties properties;
+    private RoomInternalCallbackProperties callbackProperties;
     private EcsRoomRuntimeProvider provider;
 
     @BeforeEach
@@ -59,7 +61,11 @@ class EcsRoomRuntimeProviderTest {
                 true,
                 "room-server"
         );
-        provider = new EcsRoomRuntimeProvider(ecsClient, properties);
+        callbackProperties = new RoomInternalCallbackProperties(
+                "http://ec2.example:8080",
+                "test-internal-secret"
+        );
+        provider = new EcsRoomRuntimeProvider(ecsClient, properties, callbackProperties);
     }
 
     @Test
@@ -112,7 +118,28 @@ class EcsRoomRuntimeProviderTest {
                 .containsEntry("MAX_PLAYERS", "8")
                 .containsEntry("ROOM_RUNTIME_VERSION", "v0.1.0")
                 .containsEntry("ROOM_READY_CALLBACK_URL", READY_URL.toString())
-                .containsEntry("ROOM_HEARTBEAT_CALLBACK_URL", HEARTBEAT_URL.toString());
+                .containsEntry("ROOM_HEARTBEAT_CALLBACK_URL", HEARTBEAT_URL.toString())
+                .containsEntry("MURANG_ROOM_INTERNAL_CALLBACK_SHARED_SECRET", "test-internal-secret");
+    }
+
+    @Test
+    void startRoomTask_blankSharedSecret_doesNotInjectInternalTokenEnv() {
+        callbackProperties = new RoomInternalCallbackProperties("http://ec2.example:8080", "");
+        provider = new EcsRoomRuntimeProvider(ecsClient, properties, callbackProperties);
+
+        when(ecsClient.runTask(any(RunTaskRequest.class))).thenReturn(
+                RunTaskResponse.builder()
+                        .tasks(Task.builder().clusterArn("a").taskArn("b").build())
+                        .build()
+        );
+
+        provider.startRoomTask(new RoomTaskStartRequest(1L, "s", 4, "v", READY_URL, HEARTBEAT_URL));
+
+        ArgumentCaptor<RunTaskRequest> captor = ArgumentCaptor.forClass(RunTaskRequest.class);
+        verify(ecsClient).runTask(captor.capture());
+        Map<String, String> envMap = captor.getValue().overrides().containerOverrides().get(0).environment().stream()
+                .collect(Collectors.toMap(KeyValuePair::name, KeyValuePair::value));
+        assertThat(envMap).doesNotContainKey("MURANG_ROOM_INTERNAL_CALLBACK_SHARED_SECRET");
     }
 
     @Test
@@ -121,7 +148,7 @@ class EcsRoomRuntimeProviderTest {
                 "ap-northeast-2", "test-cluster", "murang-room-server",
                 List.of("subnet-1"), List.of("sg-1"), false, "room-server"
         );
-        provider = new EcsRoomRuntimeProvider(ecsClient, properties);
+        provider = new EcsRoomRuntimeProvider(ecsClient, properties, callbackProperties);
 
         when(ecsClient.runTask(any(RunTaskRequest.class))).thenReturn(
                 RunTaskResponse.builder()

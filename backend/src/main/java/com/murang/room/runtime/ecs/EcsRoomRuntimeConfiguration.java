@@ -1,5 +1,6 @@
 package com.murang.room.runtime.ecs;
 
+import com.murang.room.config.RoomInternalCallbackProperties;
 import com.murang.room.runtime.RoomRuntimeProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -41,7 +42,10 @@ public class EcsRoomRuntimeConfiguration {
     @Bean
     @Primary
     public RoomRuntimeProvider ecsRoomRuntimeProvider(
-            EcsClient ecsClient, EcsRoomRuntimeProperties properties) {
-        return new EcsRoomRuntimeProvider(ecsClient, properties);
+            EcsClient ecsClient,
+            EcsRoomRuntimeProperties properties,
+            RoomInternalCallbackProperties callbackProperties
+    ) {
+        return new EcsRoomRuntimeProvider(ecsClient, properties, callbackProperties);
     }
 }
