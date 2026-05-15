@@ -72,6 +72,7 @@ Unity MCP 도구를 처음 호출하기 직전에 다음 1~3종을 1회 읽고, 
 - 독립 작업 ≥ 2개를 묶을 수 있을 때 (예: GameObject 5개 한꺼번에 생성).
 - 같은 도구를 반복 호출할 때 (grid spawn, 동일 컴포넌트 부착).
 - 여러 `find_gameobjects`로 발견 단계만 처리할 때.
+- **(의무)** 동일 plan/단계 안에서 같은 도구를 **3회 이상** 반복 호출하게 되면 `batch_execute`로 묶는다. 묶지 않은 채 4회째 호출은 `plan-reviewer`가 `needs-fix` 처리한다. `find_gameobjects`류 read 도구는 timeout 영향 최소화를 위해 2회 묶기까지 허용.
 
 ### 4.2 fail_fast 결정
 
