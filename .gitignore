@@ -28,6 +28,9 @@
 .claude/settings.local.json
 .claude/worktrees/
 
+# Codex CLI sync cache (로컬 도구 산출, 추적 대상 아님)
+.codex-push-sync/
+
 # Claude plan docs (local working notes)
 /docs/plans/
 
