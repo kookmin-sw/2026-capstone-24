@@ -57,4 +57,8 @@ public class ApiException extends RuntimeException {
     public static ApiException roomProvisioningFailed(String message) {
         return new ApiException(ErrorCode.ROOM_PROVISIONING_FAILED, message);
     }
+
+    public static ApiException roomNameDuplicate() {
+        return new ApiException(ErrorCode.ROOM_NAME_DUPLICATE);
+    }
 }

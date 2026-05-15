@@ -32,6 +32,9 @@ public class Room {
     @Column(name = "max_players", nullable = false)
     private int maxPlayers;
 
+    @Column(name = "password_hash", length = 64)
+    private String passwordHash;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -41,11 +44,18 @@ public class Room {
     protected Room() {
     }
 
-    public static Room open(Long ownerUserId, String photonSessionName, int maxPlayers, Instant now) {
+    public static Room open(
+            Long ownerUserId,
+            String photonSessionName,
+            int maxPlayers,
+            String passwordHash,
+            Instant now
+    ) {
         Room room = new Room();
         room.ownerUserId = ownerUserId;
         room.photonSessionName = photonSessionName;
         room.maxPlayers = maxPlayers;
+        room.passwordHash = passwordHash;
         room.createdAt = now;
         return room;
     }
@@ -70,6 +80,14 @@ public class Room {
 
     public int getMaxPlayers() {
         return maxPlayers;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public boolean isLocked() {
+        return passwordHash != null && !passwordHash.isBlank();
     }
 
     public Instant getCreatedAt() {

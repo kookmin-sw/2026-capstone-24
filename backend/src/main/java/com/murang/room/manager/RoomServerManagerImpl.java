@@ -56,10 +56,16 @@ public class RoomServerManagerImpl implements RoomServerManager {
     @Transactional
     public RoomServerSnapshot provision(RoomProvisioningCommand command) {
         Instant now = Instant.now(clock);
+
+        if (roomRepository.findByPhotonSessionName(command.photonSessionName()).isPresent()) {
+            throw ApiException.roomNameDuplicate();
+        }
+
         Room room = roomRepository.save(Room.open(
                 command.ownerUserId(),
                 command.photonSessionName(),
                 command.maxPlayers(),
+                command.passwordHash(),
                 now
         ));
         RoomServerInstance instance = instanceRepository.save(

@@ -61,7 +61,7 @@ class RoomServerManagerImplTest {
         Long ownerUserId = createOwner();
 
         RoomServerSnapshot snapshot = manager.provision(new RoomProvisioningCommand(
-                ownerUserId, uniqueSessionName(), 8, "v0.1.0"));
+                ownerUserId, uniqueSessionName(), 8, null, "v0.1.0"));
 
         assertThat(snapshot.roomId()).isNotNull();
         assertThat(snapshot.ownerUserId()).isEqualTo(ownerUserId);
@@ -81,7 +81,7 @@ class RoomServerManagerImplTest {
     @Transactional
     void notifyReady_transitionsInstanceToReady() {
         RoomServerSnapshot provisioned = manager.provision(new RoomProvisioningCommand(
-                createOwner(), uniqueSessionName(), 4, "v0.1.0"));
+                createOwner(), uniqueSessionName(), 4, null, "v0.1.0"));
 
         manager.notifyReady(provisioned.roomId(), new RoomReadySignal(
                 "203.0.113.10", 7777, "v0.1.0"));
@@ -98,7 +98,7 @@ class RoomServerManagerImplTest {
     @Transactional
     void notifyHeartbeat_updatesLastHeartbeatAt() {
         RoomServerSnapshot provisioned = manager.provision(new RoomProvisioningCommand(
-                createOwner(), uniqueSessionName(), 4, "v0.1.0"));
+                createOwner(), uniqueSessionName(), 4, null, "v0.1.0"));
         manager.notifyReady(provisioned.roomId(), new RoomReadySignal("203.0.113.10", 7777, "v0.1.0"));
 
         Instant beat = Instant.parse("2026-05-14T01:00:00Z");
@@ -112,7 +112,7 @@ class RoomServerManagerImplTest {
     @Transactional
     void terminate_callsRuntimeStopAndClosesRoom() {
         RoomServerSnapshot provisioned = manager.provision(new RoomProvisioningCommand(
-                createOwner(), uniqueSessionName(), 4, "v0.1.0"));
+                createOwner(), uniqueSessionName(), 4, null, "v0.1.0"));
         manager.notifyReady(provisioned.roomId(), new RoomReadySignal("203.0.113.10", 7777, "v0.1.0"));
 
         manager.terminate(provisioned.roomId(), "last user left");
@@ -142,11 +142,11 @@ class RoomServerManagerImplTest {
     void findAdmissionOpen_returnsOnlyReadyOrActiveAndNotClosed() {
         Long owner = createOwner();
         RoomServerSnapshot openRoom = manager.provision(new RoomProvisioningCommand(
-                owner, uniqueSessionName(), 4, "v0.1.0"));
+                owner, uniqueSessionName(), 4, null, "v0.1.0"));
         manager.notifyReady(openRoom.roomId(), new RoomReadySignal("ip", 7777, "v0.1.0"));
 
         RoomServerSnapshot terminated = manager.provision(new RoomProvisioningCommand(
-                owner, uniqueSessionName(), 4, "v0.1.0"));
+                owner, uniqueSessionName(), 4, null, "v0.1.0"));
         manager.notifyReady(terminated.roomId(), new RoomReadySignal("ip", 7777, "v0.1.0"));
         manager.terminate(terminated.roomId(), "cleanup");
 
@@ -162,7 +162,7 @@ class RoomServerManagerImplTest {
         stub.failNext = true;
 
         assertThatThrownBy(() -> manager.provision(new RoomProvisioningCommand(
-                createOwner(), uniqueSessionName(), 4, "v0.1.0")))
+                createOwner(), uniqueSessionName(), 4, null, "v0.1.0")))
                 .isInstanceOf(ApiException.class)
                 .extracting(ex -> ((ApiException) ex).getErrorCode())
                 .isEqualTo(ErrorCode.ROOM_PROVISIONING_FAILED);
