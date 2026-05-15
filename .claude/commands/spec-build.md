@@ -1,5 +1,5 @@
 ---
-description: root-spec(_index.md) 한 개를 받아 그 피처의 sub-spec 큐를 자동으로 진행한다. 각 sub-spec에 대해 plan-drafter → plan-quality-reviewer → /spec-implement 워크플로우를 직렬로 실행하며, plan 본문은 사용자에게 보여주지 않는다. 사용자 게이트는 manual-hard 검증과 destructive 가드만 남긴다. 기본 dry-run, --apply로 실제 실행.
+description: root-spec(_index.md) 한 개를 받아 그 피처의 sub-spec 큐를 자동으로 진행한다. 각 sub-spec에 대해 spec-design-extractor 통합 설계 게이트(phase -1+0) → plan-drafter → plan-quality-reviewer → /spec-implement 워크플로우를 직렬로 실행한다. plan 본문은 보여주지 않되 plan 경로 + AC 라벨 카운트를 노출하고, AC 검증 실패 시 실패한 AC 원문 + plan 경로 + 라벨을 사용자 게이트에 포함한다. 사용자 게이트는 통합 설계 게이트 결정·manual-hard 검증·destructive 가드만 남긴다. 기본 dry-run, --apply로 실제 실행.
 argument-hint: "<root-spec 경로 (_index.md)> [--apply] [--max-cascade N]"
 allowed-tools: Read, Glob, Grep, Bash, Edit, Write, AskUserQuestion, Skill, Task, mcp__UnityMCP__read_console
 ---
@@ -8,17 +8,17 @@ allowed-tools: Read, Glob, Grep, Bash, Edit, Write, AskUserQuestion, Skill, Task
 
 목적: `/spec-interview`로 박제된 root-spec 한 개를 받아 그 피처의 sub-spec 큐를 자동으로 진행한다. 각 sub-spec에 대해 다음을 직렬로 실행한다.
 
-1. (조건부) plan이 없을 때만 `tech-spec-extractor` sub-agent로 Tech Spec 게이트(phase -1) 점검 → 양성 신호 1+ 시 사용자에게 yes/no/skip-permanently 묻고 yes면 `/tech-spec --auto` 워크플로우 inline 답습으로 Tech Spec 작성.
-2. plan 미작성이면 `arch-decision-extractor` sub-agent로 ARD 후보 추출(phase 0) → 사용자 결정 → `decisions/<NN>-*.md` 작성.
-3. plan 미작성이면 `plan-drafter` sub-agent로 lazy 작성 (Tech Spec·ARD 둘 다 입력으로 전달).
-4. 작성된 plan에 대해 `plan-quality-reviewer` sub-agent로 자동 점검.
-5. 통과한 plan들을 `/spec-implement <sub-spec> --apply` 워크플로우로 구현.
+1. (조건부) plan이 없을 때만 `spec-design-extractor` sub-agent 1회 호출로 **phase -1+0 통합 설계 게이트** 진행 — Tech Spec 양성 신호 + 7 섹션 초안 + Comparable Siblings + Architecture Decision 후보를 한 번에 추출. 양성 신호 1+ 시 사용자에게 yes/no/skip-permanently 묻고 yes면 `/tech-spec --auto` 워크플로우 inline 답습으로 Tech Spec 작성. 결정 후보 1+ 시 사용자 답을 받아 `decisions/<NN>-*.md` 작성.
+2. plan 미작성이면 `plan-drafter` sub-agent로 lazy 작성 (Tech Spec·ARD 둘 다 입력으로 전달).
+3. 작성된 plan에 대해 `plan-quality-reviewer` sub-agent로 자동 점검.
+4. 통과한 plan들을 `/spec-implement <sub-spec> --apply` 워크플로우로 구현.
 
 플랜 본문·코드·라벨 부착·박제 출처는 사용자가 검토하지 않는다. 사용자 결정이 필요한 지점은 다음으로 한정된다.
 
 - spec 박제 후 사용자가 `/spec-build` 트리거 (1회).
-- (신규) Tech Spec 게이트 yes/no/skip-permanently 3택 — phase -1에서 양성 신호 1+ 발화 시.
-- (신규) Tech Spec 인터뷰 라운드 — phase -1에서 yes 답 후 `/tech-spec --auto` 워크플로우 inline 답습.
+- Tech Spec 게이트 yes/no/skip-permanently 3택 — 통합 설계 게이트에서 양성 신호 1+ 발화 시.
+- Tech Spec 인터뷰 라운드 — yes 답 후 `/tech-spec --auto` 워크플로우 inline 답습.
+- Architecture Decision Q&A — 통합 설계 게이트에서 결정 후보 1+ 시.
 - manual-hard 검증 4택 (`pass`/`stop`/`stop-and-seed`/`skip-and-continue`) — `/spec-implement`의 manual-hard 분기 그대로.
 - destructive 가드 (sub-spec/feature 폴더 `_archive/` 이동 시 1회) — `plan-complete`의 가드 그대로.
 - plan-quality-reviewer가 `stop`을 반환했을 때.
@@ -27,7 +27,7 @@ allowed-tools: Read, Glob, Grep, Bash, Edit, Write, AskUserQuestion, Skill, Task
 
 ## 절대 규칙
 
-1. **플랜 본문을 사용자에게 보여주지 않는다.** 작성된 plan 경로 한 줄 보고만 한다. AC 목록·Approach 본문 등은 사용자 게이트 대상이 아니다.
+1. **플랜 본문을 사용자에게 보여주지 않는다.** 작성된 plan 경로 한 줄 + AC 라벨 카운트(예: `auto-hard: 5 / auto-soft: 2 / manual-hard: 3`)를 보고한다. Approach 본문·검증 evidence 라인은 사용자 게이트 대상이 아니다. **단 AC 검증이 실패하면 해당 AC 원문 + plan 경로 + 라벨 1줄을 사용자 게이트에 포함한다** (b5f2cba5 사례: AC 검증 실패 시점에 어떤 plan의 어떤 AC가 실패했는지 좌표가 보이지 않아 디버깅 비용이 커졌음).
 2. **사용자 승인 없이 destructive·publishing 명령을 실행하지 않는다.** `/spec-implement`와 동일.
 3. **메인 세션 사고를 sub-agent에 흘려보내지 않는다.** plan-drafter/plan-quality-reviewer에는 정의된 입력 항목만 전달한다.
 4. **plan-drafter·plan-quality-reviewer는 사용자에게 질문하지 않는다.** 모든 사용자 결정은 메인 세션이 `AskUserQuestion`으로 처리.
@@ -78,50 +78,39 @@ root-spec의 `## Sub-Specs` 표에서 `Status != Done` 행을 다음 정렬 키�
 
 sub-spec의 `## Implementation Plans` 표에서 `Status != Done` plan이 있는지 확인.
 
-- **있으면** → 3-4로 (phase -1·phase 0·drafter 건너뜀).
-- **없으면** → 3-1.5.
+- **있으면** → 3-4로 (통합 설계 게이트·drafter 건너뜀).
+- **없으면** → 3-1.5+2.
 
-#### 3-1.5. phase -1 (Tech Spec gate) — 신규
+#### 3-1.5+2. phase -1+0 통합 설계 게이트
 
-`Task` 도구로 `tech-spec-extractor` sub-agent 호출. 입력 3종.
+`Task` 도구로 `spec-design-extractor` sub-agent 호출 1회. 입력 4종.
 
 1. sub-spec 경로 (큐의 현재 항목).
 2. parent `_index.md` 경로.
 3. 기존 tech-specs 누적 — 같은 feature의 `docs/specs/<feature>/tech-specs/` 아래 `<NN>-*.md` 파일들을 모두 Read해 합본한 문자열. 없으면 빈 문자열.
+4. 기존 decisions 누적 — 같은 feature의 `docs/specs/<feature>/decisions/` 아래 `<NN>-*.md` 파일들을 모두 Read해 합본한 문자열. 없으면 빈 문자열.
 
-반환된 `## tech_spec_needed` 분기:
+반환된 `## tech_spec_needed` + `## decisions_to_resolve` + `## skip_phase_0` 를 한 번에 처리.
 
-- **`no` + reason `_양성 신호 0건_`** → phase -1 종료. 3-2로 직진. Tech Spec 경로는 null로 유지(이후 phase 0·drafter에 null 전달).
-- **`no` + reason `_sub-spec 헤더 ... skipped_` 또는 `_기존 tech-specs/... 존재_`** → phase -1 종료. 3-2로 직진. 기존 tech-specs 경로가 있으면 그 경로를 Tech Spec 경로로 들고 가서 phase 0·drafter 입력에 전달.
+**Tech Spec 분기 (`tech_spec_needed`):**
+
+- **`no` + reason `_양성 신호 0건 + Comparable Siblings 후보 없음_`** → Tech Spec 단계 종료. Tech Spec 경로 null.
+- **`no` + reason `_sub-spec 헤더 ... skipped_` 또는 `_기존 tech-specs/... 존재_`** → Tech Spec 단계 종료. 기존 경로가 있으면 그 경로를 보관해 plan-drafter 입력에 전달.
 - **`yes`** → `AskUserQuestion`으로 3택 묻기:
-  - **yes (작성)** → 메인이 `/tech-spec --auto` 워크플로우 inline 답습 (별도 Skill/Task 호출 X — 컨텍스트 중첩 회피).
-    - tech-spec-extractor가 반환한 6 섹션 초안을 prompt로 들고 진입.
-    - 인터뷰 라운드 0~2회 (`/tech-spec --auto` 모드 정책 그대로).
-    - 작성된 `docs/specs/<feature>/tech-specs/<NN>-<title>.md` 경로 보관.
-    - `<NN>`은 대응 sub-spec과 동일 (NN 미부여 sub-spec이면 sub-spec 파일명 베이스 사용).
-    - 작성된 Tech Spec 경로를 이후 3-2(phase 0)·3-3(plan-drafter) 입력으로 전달.
-  - **no (이번만 skip)** → phase -1 종료. 3-2로 직진. Tech Spec 경로 null. 다음 호출에 다시 묻힘.
-  - **skip-permanently** → sub-spec 헤더에 `**Tech Spec:** skipped` 한 줄 박제 Edit. phase -1 종료. 3-2로 직진. Tech Spec 경로 null. 다음 호출에 안 묻힘.
+  - **yes (작성)** → 메인이 `/tech-spec --auto` 워크플로우 inline 답습. spec-design-extractor가 반환한 7 섹션 초안(`draft_components`/`draft_data_control_flow`/`draft_boundaries`/`draft_invariants`/`draft_assumptions`/`draft_comparable_siblings`/`open_tech_decisions`)을 prompt로 들고 진입. 인터뷰 라운드 0~2회. 작성된 `docs/specs/<feature>/tech-specs/<NN>-<title>.md` 경로 보관.
+  - **no (이번만 skip)** → Tech Spec 경로 null. 다음 호출에 다시 묻힘.
+  - **skip-permanently** → sub-spec 헤더에 `**Tech Spec:** skipped` 한 줄 박제 Edit. Tech Spec 경로 null.
 
-상태 파일 `last_step: "tech-spec-gate"` 갱신. 인터뷰 도중 사용자가 중단하면 `pending_user_action` 기록 후 큐 중단.
+**Architecture Decision 분기 (`decisions_to_resolve` + `skip_phase_0`):**
 
-#### 3-2. phase 0 (Architecture Decision)
-
-`Task` 도구로 `arch-decision-extractor` sub-agent 호출. 입력 4종.
-
-1. sub-spec 경로 (큐의 현재 항목).
-2. parent `_index.md` 경로.
-3. 기존 decisions 누적 — 같은 feature의 `docs/specs/<feature>/decisions/` 아래 `<NN>-*.md` 파일들을 모두 Read해 합본한 문자열. 없으면 빈 문자열.
-4. **(신규) Tech Spec 경로** — 3-1.5에서 작성·확인된 `docs/specs/<feature>/tech-specs/<NN>-*.md`. 없으면 null.
-
-반환된 `## decisions_to_resolve` 분기:
-
-- **`_없음._`** → phase 0 종료. 3-3으로 직진.
+- **`skip_phase_0: true`** → ARD 단계 종료. decisions 경로 빈 리스트.
 - **후보 1+개** → `AskUserQuestion`으로 batch 질문. 한 번에 최대 4개씩, 5개면 라운드 분할.
   - 사용자 답을 받은 후 `docs/specs/<feature>/decisions/<NN>-<title>.md` 파일 1+개 작성. NN은 같은 feature의 기존 decisions/ 내 가장 큰 NN + 1 (없으면 01).
   - Tech Spec에서 도출된 후보(`from_tech_spec` 필드 있음)는 작성된 ARD 본문에 `**From Tech Spec:** [<path>](...) §Open Tech Decisions #N` 한 줄을 헤더에 박제.
-  - ARD 작성 후 Tech Spec의 대응 `## Open Tech Decisions` 항목 끝에 `→ decisions/<NN>-*.md` 한 줄 추가 Edit (Tech Spec ↔ ARD 짝 검증용).
-  - 작성된 decisions 파일 경로들을 이후 3-3의 plan-drafter 입력 5번으로 전달.
+  - ARD 작성 후 Tech Spec의 대응 `## Open Tech Decisions` 항목 끝에 `→ decisions/<NN>-*.md` 한 줄 추가 Edit.
+  - 작성된 decisions 파일 경로들을 plan-drafter 입력 5번으로 전달.
+
+상태 파일 `last_step: "design-gate"` 갱신. 인터뷰/Q&A 도중 사용자가 중단하면 `pending_user_action` 기록 후 큐 중단.
 
 #### 3-3. plan-drafter 호출
 
@@ -218,7 +207,7 @@ inline 실행 결과 분기:
 
 ## 모드
 
-- **dry-run (기본값)** — 입력 분기, Pre-flight 1~5 모두 실제로 수행한 뒤, 큐 미리보기 + "각 sub-spec별로 tech-spec-extractor / arch-decision-extractor / plan-drafter / plan-quality-reviewer / spec-implement inline 실행 계획"을 한 줄씩 보고하고 멈춘다. **tech-spec-extractor·arch-decision-extractor·plan-drafter·plan-quality-reviewer를 단 한 번도 spawn하지 않는다.** plan/Tech Spec/ARD 파일·코드·자산·git 상태 모두 변경 없음.
+- **dry-run (기본값)** — 입력 분기, Pre-flight 1~5 모두 실제로 수행한 뒤, 큐 미리보기 + "각 sub-spec별로 spec-design-extractor / plan-drafter / plan-quality-reviewer / spec-implement inline 실행 계획"을 한 줄씩 보고하고 멈춘다. **spec-design-extractor·plan-drafter·plan-quality-reviewer를 단 한 번도 spawn하지 않는다.** plan/Tech Spec/ARD 파일·코드·자산·git 상태 모두 변경 없음.
 - **`--apply`** — 위 1~4단계를 모두 실제 실행.
 
 ## 상태 파일

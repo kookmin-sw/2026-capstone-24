@@ -91,7 +91,13 @@ Unity MCP가 검증 도중 끊기면 `next_action: mcp-down`, status `needs-user
 
 ## 반환 형식
 
-다음 마크다운 섹션 9개를 반드시 모두 포함한다 (해당 없으면 "없음" 또는 빈 목록).
+다음 마크다운 섹션 10개를 반드시 모두 포함한다 (해당 없으면 "없음" 또는 빈 목록). 첫 섹션 `## summary`는 사용자 게이트 노출용 최소 좌표(plan 경로 / AC 통과율 / 첫 실패 AC 원문 / next_action)다. `/spec-build`의 가시성 정책(plan 본문 미노출 + AC 실패 시 좌표 노출)이 이 섹션을 사용한다.
+
+## summary
+- plan: `<plan 파일 경로>`
+- ac_passed: `<통과 수>/<전체 auto-hard+auto-soft 수>`
+- failed_ac: `<첫 실패 AC 원문 한 줄 + 라벨>` (또는 `_없음_`)
+- next_action: `<아래 next_action 값과 동일>`
 
 ## status
 `completed` | `needs-user-input` | `failed`

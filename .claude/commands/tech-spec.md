@@ -26,7 +26,7 @@ allowed-tools: Read, Glob, Grep, Edit, Write, AskUserQuestion, Bash, Task, Skill
 
 - **수동 호출 (default)** — 사용자가 직접 호출. 인터뷰 라운드 진행, 마무리 commit 권유.
 - **`--auto`** — `/spec-build` phase -1이 inline 답습할 때만 사용. 다음 차이를 갖는다:
-  - tech-spec-extractor가 미리 작성해 둔 6 섹션 초안을 입력으로 받는다 (메인 세션이 prompt로 전달).
+  - spec-design-extractor가 미리 작성해 둔 7 섹션 초안을 입력으로 받는다 (메인 세션이 prompt로 전달).
   - 인터뷰 라운드 0~2회로 단축 (초안이 충분하면 0회로 통과).
   - 마무리 commit 권유 생략 (atomic commit은 spec-build가 처리).
 
@@ -46,9 +46,9 @@ allowed-tools: Read, Glob, Grep, Edit, Write, AskUserQuestion, Bash, Task, Skill
 
 ### 3. 양성 신호 점검 (수동 모드만)
 
-`/spec-build` phase -1이 호출한 `--auto` 모드는 이 단계를 건너뛴다 (이미 tech-spec-extractor가 점검 완료).
+`/spec-build` 통합 설계 게이트가 호출한 `--auto` 모드는 이 단계를 건너뛴다 (이미 spec-design-extractor가 점검 완료).
 
-수동 호출 모드는 [`tech-spec-extractor`](../agents/tech-spec-extractor.md)의 양성 신호 3종을 사용자에게 짧게 보여주고 "이 sub-spec에 Tech Spec이 정말 필요한가"를 한 번 확인한다. 사용자가 no면 종료.
+수동 호출 모드는 [`spec-design-extractor`](../agents/spec-design-extractor.md)의 양성 신호 4종(3종 + Comparable Siblings 누락)을 사용자에게 짧게 보여주고 "이 sub-spec에 Tech Spec이 정말 필요한가"를 한 번 확인한다. 사용자가 no면 종료.
 
 ### 4. 자유 Q&A 인터뷰 (라운드 무제한)
 
@@ -82,30 +82,31 @@ allowed-tools: Read, Glob, Grep, Edit, Write, AskUserQuestion, Bash, Task, Skill
 
 #### 4-3. 라운드 종료 판정
 
-다음 5가지가 모두 충족되면 5-0(박제 직전 단일 게이트)으로 진입한다.
+다음 6가지가 모두 충족되면 5-0(박제 직전 단일 게이트)으로 진입한다.
 
 - **Components**: 등장하는 컴포넌트(신규/기존)가 한 줄 역할로 1+개씩 명시.
 - **Data/Control Flow**: 단일 시퀀스 또는 보조 시퀀스 1+개로 frame/event 단위 흐름이 서술 가능.
 - **Boundaries**: "건드린다" 1+개, "건드리지 않는다" 1+개.
 - **Invariants**: 1+개. plan-drafter가 깨면 안 되는 사실.
 - **Assumptions**: 1+개. 출처 표기(`Read <경로> (YYYY-MM-DD)` 등) 가능한 외부 사실.
+- **Comparable Siblings (필수)**: 본 sub-spec의 대상이 기존 자산(예: Piano/DrumKit 같은 동급 악기, 또는 같은 카테고리의 다른 sub-spec)과 동일 카테고리이면, **§Comparable Siblings 표**를 박제한다. 컬럼: `대상 자산` / `해당 sub-spec의 산출물` / `차이점 1줄`. 동급 자산이 없으면 `_해당 없음 — 신규 카테고리_`를 한 줄로 명시. 표도 면제 명시도 모두 비어 있으면 5-0 게이트 fail. (실제 사례: Trombone Anchor가 Piano/DrumKit의 `BoxCollider size` / `teleportAnchorTransform` / `InstrumentTeleportColliderBinder` 셋을 누락한 채 spec 통과한 사고를 차단한다.)
 
 Open Tech Decisions는 0~N개 어떤 값이든 라운드 종료 판정에 영향을 주지 않는다 (없어도 박제 가능, 있으면 각 항목이 후속 ARD 1건과 1:1).
 
-`--auto` 모드는 tech-spec-extractor의 6 섹션 초안이 충분하면 4-1·4-2를 0회로 통과해 5-0으로 직진한다.
+`--auto` 모드는 spec-design-extractor의 7 섹션 초안이 충분하면 4-1·4-2를 0회로 통과해 5-0으로 직진한다.
 
 ### 5-0. 박제 직전 단일 게이트
 
 `/spec-interview` §3 답습. 4단계가 끝나면 곧장 파일을 작성하지 않고, 사용자 검토 1회를 받는다.
 
-- 6 섹션 본문을 모두 채운 마크다운 블록 1개로 사용자에게 보여준다.
-- 옆에 박제 직전 사실 확인 한 줄: *"Open Tech Decisions N건. 박제 직후 `/spec-build <root-spec> --apply`로 phase 0(ARD) 진입 가능."*
+- 7 섹션 본문을 모두 채운 마크다운 블록 1개로 사용자에게 보여준다.
+- 옆에 박제 직전 사실 확인 한 줄: *"Open Tech Decisions N건. 박제 직후 `/spec-build <root-spec> --apply`로 통합 설계 게이트의 ARD 단계 진입 가능."*
 - `AskUserQuestion`으로 3택:
   - **그대로 박제** → 5단계로.
   - **일부 수정** → 사용자 자유 텍스트 답 → 4-2로 회귀해 짧은 보강 라운드 1회.
   - **다른 라운드** → 4-1 또는 4-2 처음으로 회귀.
 
-`--auto` 모드는 본 게이트를 생략하지 않는다. tech-spec-extractor 초안만으로 박제하지 않는다 — 라운드 0회로 통과해도 본 게이트 1회는 받는다.
+`--auto` 모드는 본 게이트를 생략하지 않는다. spec-design-extractor 초안만으로 박제하지 않는다 — 라운드 0회로 통과해도 본 게이트 1회는 받는다.
 
 ### 5. 파일 작성
 
@@ -134,13 +135,13 @@ sub-spec 본문에는 역링크를 박지 않는다 (ARD 패턴 답습 — ARD�
   ```
   Tech Spec이 phase 0(ARD)·phase 1(plan-drafter) 입력으로 자동 전달된다.
 
-## /spec-build phase -1과의 관계
+## /spec-build 통합 설계 게이트와의 관계
 
-`/spec-build`가 per-sub-spec 루프 3-2(ARD/phase 0) 직전에 phase -1으로 본 워크플로우를 inline 답습한다. 그때는 `--auto` 모드로 동작하며, 메인 세션이 직접 step 1·2·4·5-0·5를 inline 실행한다 (Task로 본 command를 재호출하지 않음 — 컨텍스트 중첩 회피). step 3 양성 신호 점검은 tech-spec-extractor sub-agent가 phase -1 진입 직전에 수행.
+`/spec-build`가 per-sub-spec 루프 안에서 ARD 단계 직전에 본 워크플로우를 inline 답습한다. 그때는 `--auto` 모드로 동작하며, 메인 세션이 직접 step 1·2·4·5-0·5를 inline 실행한다 (Task로 본 command를 재호출하지 않음 — 컨텍스트 중첩 회피). step 3 양성 신호 점검은 spec-design-extractor sub-agent가 통합 게이트 진입 시점에 1회 수행하며, ARD 후보 추출과 한 호출로 처리된다.
 
-phase -1 inline 답습 시에도 "5-0. 박제 직전 단일 게이트"는 메인 세션이 그대로 답습한다. tech-spec-extractor 초안만으로 박제하지 않는다.
+inline 답습 시에도 "5-0. 박제 직전 단일 게이트"는 메인 세션이 그대로 답습한다. spec-design-extractor 초안만으로 박제하지 않는다.
 
-수동 호출은 phase -1 게이트를 우회해 사용자가 직접 sub-spec 1개에 Tech Spec을 박을 때 사용한다.
+수동 호출은 통합 게이트를 우회해 사용자가 직접 sub-spec 1개에 Tech Spec을 박을 때 사용한다.
 
 ## 출력 형식
 

@@ -29,7 +29,7 @@ orchestrator(`/spec-build`)가 정확히 다음 3개만 전달한다. 메인 세
 각 항목별로 pass/fail + 한 줄 사유를 산출한다.
 
 1. **AC 라벨 부착.** plan의 `## Acceptance Criteria` 섹션 모든 `- [ ] ...` 항목이 `[auto-hard]` / `[auto-soft]` / `[manual-hard]` 중 하나를 인라인 코드로 갖는지. 라벨 미부여 1건이라도 fail.
-2. **AC 검증 가능성.** 각 AC가 모호 표현 없이 *명확히 검증 가능한* 형태인지. "잘 동작한다", "성능이 충분하다" 같은 측정 불가 표현이 있으면 fail.
+2. **AC 검증 가능성.** 각 AC가 모호 표현 없이 *명확히 검증 가능한* 형태인지. "잘 동작한다", "성능이 충분하다" 같은 측정 불가 표현이 있으면 fail. 추가로 각 AC 본문 뒤에 `**검증:**` 라인이 있는지 확인 — 누락 1건이라도 fail. `[auto-hard]`/`[auto-soft]` AC가 "파일 존재" 또는 "함수 존재" 류 단일 사실 evidence에 머무르면, 같은 plan 안 다른 AC에 **런타임 / 씬 로드 / 직렬화 정합** evidence 1건 이상이 동반되어야 한다 — 미동반 시 fail (`fix-and-retry`로 분기).
 3. **Verified Structural Assumptions 채움.** plan에 `## Verified Structural Assumptions` 섹션이 존재하고, 비어 있지 않거나 `_해당 없음 — 순수 로직 변경_` 같은 명시 표기가 있는지. 각 항목에 출처(예: `unity-scene-reader`, `Read <경로>`)가 명시됐는지.
 4. **Spec What 정합 (Coverage Matrix).** Linked Spec의 `## What` 섹션에서 모든 항목을 enumerate해, 각 What 항목별로 "plan의 Approach·Deliverables가 적용된 결과로 이 What이 만족되는가"를 pass/partial/fail 3분류로 판정한다.
    - **pass**: plan 본문(Approach·Verified Structural Assumptions·AC) 안에 그 What을 만족시키는 메커니즘이 박제되어 있고, AC가 그 만족을 검증하는 항목을 갖고 있다.
