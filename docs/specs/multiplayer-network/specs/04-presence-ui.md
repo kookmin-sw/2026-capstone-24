@@ -36,7 +36,8 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| _아직 없음_ | — | — | — |
+| 2026-05-16 | Presence UI 로비 패널 (룸 생성 + 룸 목록) | `Ready` | [2026-05-16-namae1128-presence-ui-lobby-panel.md](../plans/2026-05-16-namae1128-presence-ui-lobby-panel.md) |
+| 2026-05-16 | Presence UI 인-룸 패널 (참가자 리스트 + 퇴장) | `Ready` | [2026-05-16-namae1128-presence-ui-in-room-panel.md](../plans/2026-05-16-namae1128-presence-ui-in-room-panel.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/plan-new` 사용.
