@@ -33,6 +33,19 @@ allowed-tools: Read, Edit, Glob, Grep, mcp__UnityMCP__manage_asset, mcp__UnityMC
 - 에디터가 로드 실패, 포맷 오류, 자산 인식 실패를 내면 추가 수정 전에 포맷 복구와 자산 인식 복구를 먼저 수행한다.
 - 에디터 스크립트에서 `AssetDatabase.FindAssets`로 씬·프리팹을 검색할 때는 반드시 `new[] { "Assets" }`를 두 번째 인수로 전달한다. 인수를 생략하면 `Packages/` 경로까지 포함되어 패키지 씬을 열려다 예외가 발생한다.
 
+## FBX / PrefabInstance 언팩 절차
+
+`.fbx` 모델 또는 다른 prefab의 PrefabInstance에서 자식 GameObject를 새 prefab으로 추출할 때(실제 사례: 2026-05-14 Trombone.prefab 추출 — fbx PrefabInstance를 언팩 없이 raw YAML로 직렬화하다 fileID `100100000` sentinel 충돌로 씬 PPtr cast 깨짐. `docs/specs/_archive/trombone/plans/2026-05-14-sanyoentertain-trombone-prefab-extraction.md` 진단).
+
+1. **언팩 선행**: `manage_prefabs unpack_completely`로 원본 PrefabInstance를 완전 언팩한 뒤에 새 prefab을 만든다. 언팩 없이 raw YAML로 prefab을 직접 작성하면 fileID가 Unity 내부 sentinel 범위(`100100000`, `200100000` 등)와 충돌해 PPtr cast가 깨진다.
+2. **새 prefab 생성**: 언팩된 GameObject에 대해 `manage_prefabs create` 사용. 자동 발급되는 fileID는 11자리 이상 random 값이며 sentinel 범위와 겹치지 않는다.
+3. **씬 인스턴스화 검증 AC 의무**: 새 prefab을 만든 plan은 "씬에 PrefabUtility로 인스턴스화 시 콘솔 에러 0" AC 1건을 `[auto-hard]`로 둔다. `docs/specs/README.md` "작성 규칙 요약"의 직렬화 정합성 AC 룰과 일치.
+4. **금지 패턴**:
+   - 언팩 없이 `Edit` 도구로 fbx 산하 GameObject의 fileID 직접 재작성
+   - `100100000` / `200100000` 계열 fileID를 새 prefab에 사용
+   - `manage_prefabs open_prefab_stage` → `modify_contents` → `save_prefab_stage` 시퀀스 사이에 다른 자산 수정 끼워넣기
+5. **사고 발생 시 복구**: 이미 sentinel fileID로 prefab이 만들어졌다면 `open_prefab_stage` → `save_prefab_stage` 한 번이면 Unity가 fileID를 재발급한다. 씬 인스턴스의 PrefabInstance override target 매핑은 별도 재바인딩 필요.
+
 ## enum 필드 매핑 함정
 
 `manage_components`/`manage_gameobject`로 컴포넌트의 enum 또는 Flags 필드를 셋업할 때 인덱스 매핑이 인스펙터 표기와 어긋나는 경우가 있다. 직렬화는 통과하지만 동작이 정반대가 되는 사고를 일으킨다 (실제 사례: `TeleportationArea.m_TeleportTrigger`가 `OnSelectExited`(0) 의도였으나 `OnSelectEntered`(1)로 박혀 push 시 즉시 텔레포트 발동. base plan 검증 통과 후 manual-hard에서야 잡힘 — `docs/specs/_archive/teleport-locomotion/plans/2026-04-30-sanyoentertain-fix-push-immediate-teleport-trigger.md` 진단).

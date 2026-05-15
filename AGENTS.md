@@ -9,6 +9,7 @@
 - 기본적으로 한국어로 답한다.
 - 새 코드는 `Assets/Hands/Scripts/`, `Assets/Instruments/_Core/Scripts/`처럼 **도메인 폴더 안의 `Scripts/` 서브폴더**에 런타임/에디터 로직을 C#으로 작성한다.
 - 사용자가 더 풍부한 런타임 진단이나 디버깅 지원을 명시적으로 요청하지 않았다면 경고·오류·진단 상태 추적 로직을 추가하지 않는다.
+- Windows 경로 조작은 PowerShell 문법을 따른다. 파일 검색·디렉토리 나열은 `Glob` 또는 `Grep` 도구를 우선 사용하고, `Bash`의 `find`/`ls`는 Windows 경로 escape 제약 때문에 폴백으로만 쓴다.
 
 ## Unity MCP 사용 정책
 - Unity MCP로 더 효율적인 작업을 수행할 수 있지만, Unity MCP 도구가 세션에 노출되어 있지 않으면, **작업을 중단하고 사용자에게 "MCP 없이 진행할지" 묻는다.** 임의로 우회하거나 추측으로 진행하지 않는다.
