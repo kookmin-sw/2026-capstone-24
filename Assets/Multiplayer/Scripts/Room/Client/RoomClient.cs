@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Fusion;
 using Fusion.Photon.Realtime;
 using Fusion.Sockets;
+using Murang.Multiplayer.Backend.Dto;
 using Murang.Multiplayer.Room.Common;
 using UnityEngine;
 
@@ -46,6 +47,64 @@ namespace Murang.Multiplayer.Room.Client
                 options.Password,
                 options.MaxPlayers,
                 allowClientSessionCreation: true,
+                cancellationToken);
+        }
+
+        /// <summary>
+        /// Backend 의 <c>POST /api/v1/rooms</c> 를 호출해 ECS Fargate 룸 서버를
+        /// 띄운 뒤, 그 룸이 READY 상태에 도달할 때까지 폴링한 다음 Photon 클라이언트로
+        /// 합류한다. 클라이언트가 Photon 세션을 직접 만들지 않으므로
+        /// <c>allowClientSessionCreation = false</c> 로 합류한다.
+        /// </summary>
+        public async Task<RoomJoinResult> CreateRoomThroughBackendAsync(
+            RoomCreateOptions options,
+            string accessToken,
+            RoomProvisioningService provisioningService,
+            string roomRuntimeVersion,
+            CancellationToken cancellationToken = default)
+        {
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+            if (provisioningService == null)
+            {
+                throw new ArgumentNullException(nameof(provisioningService));
+            }
+            if (string.IsNullOrWhiteSpace(accessToken))
+            {
+                throw new ArgumentException("Backend access token 이 비어 있습니다.", nameof(accessToken));
+            }
+            if (string.IsNullOrWhiteSpace(roomRuntimeVersion))
+            {
+                throw new ArgumentException("roomRuntimeVersion 이 비어 있습니다.", nameof(roomRuntimeVersion));
+            }
+            if (string.IsNullOrWhiteSpace(options.RoomName))
+            {
+                throw new ArgumentException("RoomName 이 비어 있습니다.", nameof(options));
+            }
+
+            RoomCreateRequest request = new RoomCreateRequest
+            {
+                photonSessionName = options.RoomName.Trim(),
+                maxPlayers = options.MaxPlayers,
+                passwordHash = RoomPasswordHasher.NormalizeHash(RoomPasswordHasher.Hash(options.Password)),
+                roomRuntimeVersion = roomRuntimeVersion
+            };
+
+            RoomResponse ready = await provisioningService.ProvisionAndWaitReadyAsync(
+                accessToken,
+                request,
+                cancellationToken);
+
+            // Photon 세션은 dedicated server 가 호스트 모드로 이미 등록함.
+            // 클라이언트는 client 모드 + EnableClientSessionCreation=false 로 합류.
+            return await JoinSessionAsync(
+                options.PlayerId,
+                ready.photonSessionName,
+                options.Password,
+                maxPlayers: null,
+                allowClientSessionCreation: false,
                 cancellationToken);
         }
 

@@ -48,6 +48,22 @@ namespace Murang.Multiplayer.Backend.Http
             return GetAsync("/api/v1/users/me", ParseUserMeEnvelope, accessToken, cancellationToken);
         }
 
+        public Task<RoomResponse> CreateRoomAsync(
+            string accessToken,
+            RoomCreateRequest request,
+            CancellationToken cancellationToken)
+        {
+            return PostJsonAsync("/api/v1/rooms", request, ParseRoomEnvelope, accessToken, cancellationToken);
+        }
+
+        public Task<RoomResponse> GetRoomAsync(
+            string accessToken,
+            long roomId,
+            CancellationToken cancellationToken)
+        {
+            return GetAsync("/api/v1/rooms/" + roomId, ParseRoomEnvelope, accessToken, cancellationToken);
+        }
+
         private async Task<TResponse> PostJsonAsync<TRequest, TResponse>(
             string path,
             TRequest request,
@@ -166,6 +182,17 @@ namespace Murang.Multiplayer.Backend.Http
             return envelope.data;
         }
 
+        private static RoomResponse ParseRoomEnvelope(string json)
+        {
+            RoomEnvelope envelope = TryParse<RoomEnvelope>(json);
+            if (envelope == null || !envelope.success || envelope.data == null)
+            {
+                throw new ApiException(0, "CLIENT_PARSE_ERROR", "Room response could not be parsed.", json);
+            }
+
+            return envelope.data;
+        }
+
         private static T TryParse<T>(string json) where T : class
         {
             if (string.IsNullOrEmpty(json))
@@ -195,6 +222,13 @@ namespace Murang.Multiplayer.Backend.Http
         {
             public bool success;
             public UserMeResponse data;
+        }
+
+        [Serializable]
+        private sealed class RoomEnvelope
+        {
+            public bool success;
+            public RoomResponse data;
         }
     }
 }
