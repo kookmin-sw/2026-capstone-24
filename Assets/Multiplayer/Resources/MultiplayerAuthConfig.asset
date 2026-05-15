@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MultiplayerAuthConfig
   m_EditorClassIdentifier: Murang.Multiplayer::Murang.Multiplayer.Auth.MultiplayerAuthConfig
   editorBackendBaseUrl: http://localhost:8080
-  deviceBackendBaseUrl: 
+  deviceBackendBaseUrl: http://ec2-3-38-191-160.ap-northeast-2.compute.amazonaws.com:8080
   useMockMetaToken: 0
   mockMetaTokenPrefix: mock-meta:
   mockAccountId: quest-user-01
