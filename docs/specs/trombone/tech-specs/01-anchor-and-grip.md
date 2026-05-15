@@ -53,4 +53,5 @@
 
 ## Open Tech Decisions
 
-- [ ] PhysicsHand deactivate를 PlayHandPoseDriver 본체 책임으로 끌어올려 모든 grip override 사용자(드럼 스틱 grab 포함)에 일관 적용할지. 본 sub-spec은 TromboneGripController 한정 구현으로 default 진행. 드럼 스틱 grab도 PhysicsHand deactivate가 원 의도였다는 신호가 있어 cross-cutting 후보 — 별도 ARD에서 결정.
+- [x] PhysicsHand deactivate를 PlayHandPoseDriver 본체 책임으로 끌어올려 모든 grip override 사용자(드럼 스틱 grab 포함)에 일관 적용할지. 본 sub-spec은 TromboneGripController 한정 구현으로 default 진행. 드럼 스틱 grab도 PhysicsHand deactivate가 원 의도였다는 신호가 있어 cross-cutting 후보 — 별도 ARD에서 결정.
+  → [`../decisions/01-physicshand-deactivate-scope.md`](../decisions/01-physicshand-deactivate-scope.md)

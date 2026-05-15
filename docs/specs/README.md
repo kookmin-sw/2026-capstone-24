@@ -206,7 +206,7 @@ plan-drafter는 plan 작성 시 위 기준으로 self-check해, Approach가 spec
 | [hands](hands/_index.md) | Active | 3 | 1/2 | |
 | [drum-stick](drum-stick/_index.md) | Active | 2 | 3/3 | |
 | [session-panel](session-panel/_index.md) | Active | 3 | 4/5 | |
-| [trombone](trombone/_index.md) | Draft | 2 | 0/0 | |
+| [trombone](trombone/_index.md) | Active | 2 | 2/2 | |
 | [teleport-locomotion](_archive/teleport-locomotion/_index.md) | Done | 3 | 4/4 | |
 
 > Status 값: `Draft` / `Active` / `Done` / `Abandoned`

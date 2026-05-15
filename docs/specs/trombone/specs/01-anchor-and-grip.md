@@ -43,7 +43,8 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| _아직 없음_ | — | — | — |
+| 2026-05-14 | Trombone Grip Controller — 앵커 진입·이탈 시 Mouth 추적·양손 grip override·PhysicsHand 토글 | Done | [`../../_archive/trombone/plans/2026-05-14-sanyoentertain-trombone-grip-controller.md`](../../_archive/trombone/plans/2026-05-14-sanyoentertain-trombone-grip-controller.md) |
+| 2026-05-14 | Trombone Prefab 추출 및 자식 Transform 재정착 | Done | [`../../_archive/trombone/plans/2026-05-14-sanyoentertain-trombone-prefab-extraction.md`](../../_archive/trombone/plans/2026-05-14-sanyoentertain-trombone-prefab-extraction.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/plan-new` 사용. 파일명은 날짜·작성자·slug 기반.

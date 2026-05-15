@@ -18,7 +18,7 @@ VR 음악 스튜디오에 트럼본 연주 경험을 추가한다. 드럼·피�
 
 | 이름 | 상태 | 링크 |
 |---|---|---|
-| 01 앵커·그립 | Draft | [specs/01-anchor-and-grip.md](specs/01-anchor-and-grip.md) |
+| 01 앵커·그립 | Done | [specs/01-anchor-and-grip.md](specs/01-anchor-and-grip.md) |
 | 02 슬라이드·MIDI | Draft | [specs/02-slide-midi.md](specs/02-slide-midi.md) |
 
 > 상태 값: `Draft` / `Active` / `Done` / `Abandoned`
