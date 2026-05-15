@@ -1,6 +1,7 @@
 package com.murang.room.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -195,6 +196,59 @@ class RoomControllerTest {
                                 }
                                 """))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void getRoom_afterCreate_returnsSameMetadata() throws Exception {
+        String accessToken = loginAndGetAccessToken("mock-meta:room-host-get-1", "RoomHostGet1");
+        String sessionName = uniqueSessionName();
+
+        String createBody = mockMvc.perform(post("/api/v1/rooms")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "photonSessionName": "%s",
+                                  "maxPlayers": 6,
+                                  "roomRuntimeVersion": "v0.1.0"
+                                }
+                                """.formatted(sessionName)))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        Long roomId = objectMapper.readTree(createBody).path("data").path("roomId").asLong();
+
+        mockMvc.perform(get("/api/v1/rooms/" + roomId)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.data.roomId").value(roomId))
+                .andExpect(jsonPath("$.data.photonSessionName").value(sessionName))
+                .andExpect(jsonPath("$.data.maxPlayers").value(6))
+                .andExpect(jsonPath("$.data.locked").value(false))
+                .andExpect(jsonPath("$.data.status").value("SERVER_STARTING"))
+                .andExpect(jsonPath("$.data.taskPublicIp").doesNotExist())
+                .andExpect(jsonPath("$.data.gamePort").doesNotExist())
+                .andExpect(jsonPath("$.data.readyAt").doesNotExist())
+                .andExpect(jsonPath("$.data.createdAt").isNotEmpty());
+    }
+
+    @Test
+    void getRoom_unknownId_returns404() throws Exception {
+        String accessToken = loginAndGetAccessToken("mock-meta:room-host-get-2", "RoomHostGet2");
+
+        mockMvc.perform(get("/api/v1/rooms/9999999")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").value("ROOM_NOT_FOUND"));
+    }
+
+    @Test
+    void getRoom_missingAuth_returns401() throws Exception {
+        mockMvc.perform(get("/api/v1/rooms/1"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.code").value("AUTH_INVALID_JWT"));
     }
 
     @Test

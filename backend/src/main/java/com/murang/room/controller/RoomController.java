@@ -4,7 +4,7 @@ import com.murang.auth.security.AuthPrincipal;
 import com.murang.common.exception.ApiException;
 import com.murang.common.response.ApiResponse;
 import com.murang.room.controller.dto.RoomCreateRequest;
-import com.murang.room.controller.dto.RoomCreateResponse;
+import com.murang.room.controller.dto.RoomResponse;
 import com.murang.room.manager.RoomProvisioningCommand;
 import com.murang.room.manager.RoomServerManager;
 import com.murang.room.manager.RoomServerSnapshot;
@@ -12,6 +12,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +30,7 @@ public class RoomController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<RoomCreateResponse>> create(
+    public ResponseEntity<ApiResponse<RoomResponse>> create(
             @Valid @RequestBody RoomCreateRequest request
     ) {
         AuthPrincipal principal = currentPrincipal();
@@ -41,7 +43,14 @@ public class RoomController {
                 request.roomRuntimeVersion()
         ));
 
-        return ResponseEntity.ok(ApiResponse.ok(RoomCreateResponse.of(snapshot)));
+        return ResponseEntity.ok(ApiResponse.ok(RoomResponse.of(snapshot)));
+    }
+
+    @GetMapping("/{roomId}")
+    public ResponseEntity<ApiResponse<RoomResponse>> get(@PathVariable Long roomId) {
+        RoomServerSnapshot snapshot = roomServerManager.findByRoomId(roomId)
+                .orElseThrow(ApiException::roomNotFound);
+        return ResponseEntity.ok(ApiResponse.ok(RoomResponse.of(snapshot)));
     }
 
     private AuthPrincipal currentPrincipal() {
