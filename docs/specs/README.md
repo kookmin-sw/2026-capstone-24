@@ -124,13 +124,14 @@ docs/specs/
 
 ### Tech Spec 트리거 (단일 진실원)
 
-`/spec-build` phase -1이 `tech-spec-extractor`를 호출해 다음 양성 신호 3종 중 1건이라도 발화하는지 점검한다. 1건 이상이면 사용자에게 Tech Spec 작성 여부를 1회 묻는다(yes / no / skip-permanently).
+`/spec-build` 통합 설계 게이트(phase -1+0)가 `spec-design-extractor`를 호출해 다음 양성 신호 4종 중 1건이라도 발화하는지 점검한다. 1건 이상이면 사용자에게 Tech Spec 작성 여부를 1회 묻는다(yes / no / skip-permanently).
 
 1. **신규 클래스/컴포넌트 2개 이상 + 그들 사이 통신·의존**이 있는 sub-spec.
 2. **기존 클래스의 public API 접속 또는 frame loop·event 구독에 끼어들기**가 필요한 sub-spec.
 3. **데이터/제어 흐름이 한 컴포넌트 안에서 닫히지 않는** sub-spec.
+4. **Comparable Siblings 누락** — `Assets/` 또는 `docs/specs/` 산하에 동급 자산이 1+개 존재하는데 sub-spec/기존 tech-specs 둘 다에 비교 박제가 없는 sub-spec.
 
-양성 신호 0건이면 phase -1을 통째로 skip한다. `skip-permanently` 선택 시 sub-spec 헤더에 `**Tech Spec:** skipped` 한 줄 박제 → 다음 호출에 안 묻힘.
+양성 신호 0건이면 Tech Spec 단계를 통째로 skip한다 (단 ARD 후보 추출은 계속). `skip-permanently` 선택 시 sub-spec 헤더에 `**Tech Spec:** skipped` 한 줄 박제 → 다음 호출에 안 묻힘.
 
 ### Plan 파일명
 
@@ -149,6 +150,7 @@ docs/specs/
 - **링크 양방향 유지.** sub-spec ↔ plan은 서로 링크되어야 한다.
 - **Plan 작성 전 Open Questions 정리.** 핵심 질문(예: 포맷 결정)이 미결이면 plan을 다시 써야 할 가능성이 높으므로 `/spec-resolve`로 먼저 닫는 것을 권장.
 - **Acceptance Criteria 라벨 부여.** plan의 각 Acceptance Criteria 항목은 `[auto-hard]`(자동 검증·실패시 plan 중단) / `[auto-soft]`(자동 검증·실패시 노트 기록 후 진행) / `[manual-hard]`(사용자 직접 검증·실패시 plan 중단) 중 하나를 인라인 코드로 붙인다. 라벨 미부여 항목이 있으면 `/spec-implement`가 실행을 거부한다. 라벨은 이 3종으로 한정 — 사람이 직접 검증하는 항목은 항상 중단 사유로 처리한다.
+- **AC evidence 라인 의무화.** 각 AC 본문 뒤에 `**검증:**` 라인을 1줄 부착한다. `[auto-hard]`/`[auto-soft]`는 Grep 패턴·Bash 명령·MCP 도구 호출·씬 로드 절차 등 자동 실행 가능한 evidence, `[manual-hard]`는 시각/시뮬레이션 시나리오 1줄. evidence가 "파일 존재" 또는 "함수 존재" 같은 단일 사실에만 머무르면 plan-quality-reviewer가 `fix-and-retry`로 분기 — **런타임 / 씬 로드 / 직렬화 정합** evidence 1건 이상을 같은 plan 안 다른 AC에 동반시킨다.
 - **Unity 직렬화 자산 의존 plan은 직렬화 정합성 또는 인스턴스화 sanity AC 최소 1건 필수.** `## Verified Structural Assumptions`에 못 박은 prefab 계층/nested override/씬 인스턴스 가정을 plan 적용 후 실제로 깨뜨리지 않았는지 확인하는 항목을 둔다 — 예: "VR Player prefab 인스턴스화 후 `<자식 경로>` 자식이 빠짐없이 존재한다", "PrefabUtility로 인스턴스화 시 콘솔 에러 0". 권장 라벨은 `[auto-hard]`(MCP `find_gameobjects`/`manage_prefabs`로 자동 검증 가능). 자동화가 어려우면 `[manual-hard]`로 떨어뜨린다 — `[auto-soft]`는 직렬화 사고에서 부적합(soft fail은 catch에 실패하므로 사고 패턴 그대로 재현된다).
 - **컴포넌트 enum/Flags 필드를 신규 셋업하는 plan은 의도 값 검증 AC 1건 필수.** 부착 사실만 검증하는 AC는 MCP의 enum 인덱스 매핑 함정(인스펙터 표기와 직렬화 인덱스가 어긋나는 케이스)을 잡지 못해 동작이 정반대가 되는 사고를 그대로 통과시킨다. AC는 `## Verified Structural Assumptions`에 박제된 enum 정의의 의도 값을 직렬화 grep 단일 매치로 검증하는 형태로 둔다 — 예: "`Plane TeleportationArea` 부착 + `m_TeleportTrigger == 0`(OnSelectExited)을 grep으로 단일 매치." 권장 라벨 `[auto-hard]`. 단일 propertyPath 스칼라 변경이 필요할 때는 [`unity-asset-edit`](.claude/skills/unity-asset-edit/SKILL.md) skill의 직접 텍스트 Edit 예외 경로로 우회한다.
 - **검증 실패에서 파생된 plan은 헤더에 `**Caused By:** [<선행 plan>](./<선행 plan>)` 라인을 둔다.** 옵셔널 메타필드. `/plan-new --from-failure`가 자동 부여한다. 정책 단일 진실원: 위 "검증 실패 시 후속 plan 시드" 섹션.
@@ -158,11 +160,11 @@ docs/specs/
 
 ### ARD Spec What Coverage 룰
 
-phase 0(arch-decision-extractor)이 추출하는 결정 후보의 모든 `options[]` 항목은 sub-spec의 `## What` 섹션에 박제된 모든 What을 1:1 매핑해 `spec_what_coverage`를 박제해야 한다. "만족 못 함" 옵션은 라벨 끝에 ⚠️ 마커. `recommended`는 `spec_what_coverage` 전부 "만족"인 옵션 우선.
+통합 설계 게이트(`spec-design-extractor`)가 추출하는 결정 후보의 모든 `options[]` 항목은 sub-spec의 `## What` 섹션에 박제된 모든 What을 1:1 매핑해 `spec_what_coverage`를 박제해야 한다. "만족 못 함" 옵션은 라벨 끝에 ⚠️ 마커. `recommended`는 `spec_what_coverage` 전부 "만족"인 옵션 우선.
 
 phase 0가 작성하는 `decisions/<NN>-<title>.md` 본문에는 `## Spec What Coverage` 섹션이 옵션이 아니라 *권장*된다. 결정의 근거가 What 만족도라면 그 매트릭스를 본문에 박제해 후속 plan-drafter·plan-implementer가 결정 의도를 정확히 받을 수 있게 한다.
 
-모든 옵션이 ⚠️인 경우(어떤 옵션도 spec What을 fully 만족하지 못함) arch-decision-extractor는 경고 한 줄을 해당 결정 항목에 추가하고, 메인 세션이 사용자에게 sub-spec의 What 재검토 여부를 확인한다.
+모든 옵션이 ⚠️인 경우(어떤 옵션도 spec What을 fully 만족하지 못함) spec-design-extractor는 경고 한 줄을 해당 결정 항목에 추가하고, 메인 세션이 사용자에게 sub-spec의 What 재검토 여부를 확인한다.
 
 ### plan-quality-reviewer 점검 항목 #4 (Spec What 정합)
 

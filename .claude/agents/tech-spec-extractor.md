@@ -1,6 +1,6 @@
 ---
 name: tech-spec-extractor
-description: sub-spec 한 개를 받아 Tech Spec 작성이 필요한지의 양성 신호를 점검하고, 필요하다면 Tech Spec 6 섹션 초안과 Open Tech Decisions 후보를 컴팩트 리포트로 반환합니다. /spec-build phase -1 (Tech Spec gate)이 호출하며, tech-specs 파일 직접 작성·sub-spec/_index.md 수정·사용자 질문은 절대 하지 않습니다.
+description: DEPRECATED — spec-design-extractor로 대체됨. 본 파일은 호환을 위해 보존하며 호출되지 않는다. (이전 역할: sub-spec 한 개를 받아 Tech Spec 작성이 필요한지의 양성 신호를 점검하고, 필요하다면 Tech Spec 7 섹션 초안과 Open Tech Decisions 후보를 컴팩트 리포트로 반환.)
 model: opus
 tools: Read, Glob, Grep, Bash, Task, mcp__UnityMCP__find_gameobjects, mcp__UnityMCP__read_console
 mcpServers:
@@ -47,14 +47,16 @@ sub-spec 한 개를 받아 그 spec이 **Tech Spec 작성이 필요한 구조적
 3. **기존 tech-specs 읽기** — 입력 3이 있으면 같은 피처의 다른 sub-spec Tech Spec을 파악해 cross-cutting 컴포넌트 이름 일관성 확인.
 4. **양성 신호 점검** — 3종 신호를 sub-spec 본문 + 인접 코드 read-only 스캔으로 평가. 신호별로 발화 여부와 근거 한 줄 보관.
 5. **0건이면** 빈 리포트로 종료.
-6. **1건 이상이면** Tech Spec 6 섹션 초안 작성:
+6. **1건 이상이면** Tech Spec 7 섹션 초안 작성:
    - **Components**: sub-spec에서 식별 가능한 컴포넌트 이름 + 신규/기존 구분 + 한 줄 역할.
    - **Data / Control Flow**: 양성 신호 1·3에서 도출한 시퀀스를 화살표 리스트로 1~3개.
    - **Boundaries**: sub-spec의 What·Out of Scope에서 도출한 기술적 경계 1~3개.
    - **Invariants**: sub-spec Behavior에서 추론 가능한 불변식 1~2개. 추론 불가면 "_초안 단계 — 인터뷰 시 수렴_".
    - **Assumptions**: 인접 코드 Read에서 박제한 외부 사실 + 출처. 없으면 "_해당 없음_".
+   - **Comparable Siblings**: `Assets/` 또는 `docs/specs/` 산하에 동급 자산(예: 같은 카테고리 악기/sub-spec)이 존재하는지 Glob/Grep으로 탐색. 존재하면 표 형태로 박제 — 컬럼 `대상` / `대응 산출물` / `차이`. 동급 자산 없음이 명백하면 `_해당 없음 — 신규 카테고리_`.
    - **Open Tech Decisions**: 양성 신호 2·3에서 도출한 분기 지점 1~5개.
-7. **컴팩트 리포트 반환.**
+7. **Comparable Siblings 누락 검출** — 6에서 sibling 후보가 명백히 1+개 있는데 sub-spec/Tech Spec 둘 다에 비교 박제가 없으면 `tech_spec_needed: yes` 강제 + `triggered_signals`에 `signal_4: sibling-missing` 추가.
+8. **컴팩트 리포트 반환.**
 
 ## 반환 형식
 
@@ -78,6 +80,7 @@ yes
 - signal_1: 발화 | 미발화 — <근거 한 줄>
 - signal_2: 발화 | 미발화 — <근거 한 줄>
 - signal_3: 발화 | 미발화 — <근거 한 줄>
+- signal_4: sibling-missing | n/a — <근거 한 줄: 동급 자산 후보 경로 또는 _없음_>
 
 ## draft_components
 - <컴포넌트 1 이름> (신규 | 기존) — <역할 한 줄>
@@ -98,6 +101,12 @@ yes
 ## draft_assumptions
 - <가정 1> — 출처: <Read 경로 또는 unity-scene-reader 보고>
 - (또는 _해당 없음_)
+
+## draft_comparable_siblings
+| 대상 | 대응 산출물 | 차이 |
+|---|---|---|
+| <자산 1 경로> | <본 sub-spec의 대응 산출물> | <차이 한 줄> |
+(또는 _해당 없음 — 신규 카테고리_)
 
 ## open_tech_decisions
 - [ ] <분기 1 — 한 줄>

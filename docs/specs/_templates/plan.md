@@ -80,11 +80,20 @@ scene instance 구분·ScriptableObject/material/animation 자산 값 등)를 �
 - `[manual-hard]` — 사용자가 직접 검증(헤드셋·Editor·VR 등). 실패 시 plan 중단.
 
 라벨은 위 3종으로 한정한다. 사람이 직접 검증하는 항목은 항상 중단 사유로 처리한다.
+
+**AC evidence 라인 의무화:** 각 AC 본문 뒤에 `**검증:**` 라인을 1줄 부착한다.
+- `[auto-hard]`/`[auto-soft]`: Grep 패턴 / Bash 명령 / MCP 도구 호출 / 씬 로드 확인 절차 등 자동 실행 가능한 evidence.
+- `[manual-hard]`: 시각/시뮬레이션 시나리오 1줄.
+
+evidence가 "파일 존재" 또는 "함수 존재" 같은 단일 사실에만 머무르면 plan-quality-reviewer가 fix-and-retry로 분기한다. 같은 plan 안 다른 AC에 **런타임 / 씬 로드 / 직렬화 정합** evidence 1건 이상을 동반시킬 것.
 -->
 
 - [ ] `[auto-hard]` <자동 검증 가능, 실패시 중단되어야 하는 항목>
+  **검증:** <Grep 패턴 / Bash 명령 / MCP 도구 호출 / 씬 로드 확인 절차>
 - [ ] `[auto-soft]` <자동 검증 가능, 실패해도 진행 가능한 항목>
+  **검증:** <도구/명령>
 - [ ] `[manual-hard]` <사용자 직접 검증 항목>
+  **검증:** <시각/시뮬레이션 시나리오 1줄>
 
 ## Out of Scope
 

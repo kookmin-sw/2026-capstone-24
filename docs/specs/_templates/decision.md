@@ -1,6 +1,6 @@
 <!--
-Architecture Decision Record. /spec-build phase 0 (Architecture Decision)이
-arch-decision-extractor의 후보 + 사용자 답을 박제한다. 본 파일은 plan-drafter가
+Architecture Decision Record. /spec-build 통합 설계 게이트(phase -1+0)의 ARD 단계가
+spec-design-extractor의 후보 + 사용자 답을 박제한다. 본 파일은 plan-drafter가
 plan 작성 시 참고한다.
 -->
 

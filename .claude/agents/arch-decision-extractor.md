@@ -1,6 +1,6 @@
 ---
 name: arch-decision-extractor
-description: sub-spec 한 개를 받아 사용자 input이 필요한 설계 결정 후보를 0~5개 추출하고 컴팩트 리포트로 반환합니다. /spec-build phase 0 (Architecture Decision)이 호출하며, decisions 파일 직접 작성·sub-spec/_index.md 수정·사용자 질문은 절대 하지 않습니다.
+description: DEPRECATED — spec-design-extractor로 대체됨. 본 파일은 호환을 위해 보존하며 호출되지 않는다. (이전 역할: sub-spec 한 개를 받아 사용자 input이 필요한 설계 결정 후보를 0~5개 추출하고 컴팩트 리포트로 반환.)
 model: opus
 tools: Read, Glob, Grep, Bash, Task, mcp__UnityMCP__find_gameobjects, mcp__UnityMCP__manage_components, mcp__UnityMCP__read_console
 mcpServers:
