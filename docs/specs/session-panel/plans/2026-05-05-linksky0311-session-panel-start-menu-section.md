@@ -18,7 +18,7 @@ session-panel `02-start-menu-section` sub-spec의 첫 plan이다. spec [`02-star
 - 시작 액션 → 결정된 곡 / 난이도 / 반주 구성을 rhythm-game session-flow로 전달.
 - 곡/난이도 선택 후 다른 악기로 바꾸거나 놓으면 초기화.
 
-본 plan은 다음 4가지에 의존하며 plan-implementer가 새 세션에서 받았을 때 그 산출물이 이미 적용된 상태를 가정한다:
+본 plan은 다음 4가지에 의존하며 implementer가 새 세션에서 받았을 때 그 산출물이 이미 적용된 상태를 가정한다:
 
 - **anchoring plan(`2026-05-05-linksky0311-session-panel-anchoring`) 선행 적용.** SessionPanel.prefab의 `StartMenuSectionContainer` placeholder + `IActiveInstrumentProvider` / `IActiveInstrument` 인터페이스. 패널·섹션 가시성·토글은 anchoring plan이 책임.
 - **volume-section plan(`2026-05-05-linksky0311-session-panel-volume-section`) 선행 적용 권장(필수 아님).** InstrumentBase에 `instrumentId` 필드를 추가해 IActiveInstrument 구현체가 그 값을 그대로 흘려보낸다. 본 plan은 IActiveInstrument 인터페이스만 의존하므로 volume-section이 미선행이어도 dummy stub provider로 동작.
@@ -173,4 +173,4 @@ session-panel `02-start-menu-section` sub-spec의 첫 plan이다. spec [`02-star
 
 ## Handoff
 
-<!-- /spec-implement가 plan 완료 시 자동 갱신 -->
+<!-- /spec-build가 plan 완료 시 doc-updater Task로 자동 갱신 -->

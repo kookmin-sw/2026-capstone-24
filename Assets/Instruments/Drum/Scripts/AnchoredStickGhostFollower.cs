@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 namespace Instruments
 {
@@ -65,11 +64,6 @@ public sealed class AnchoredStickGhostFollower : MonoBehaviour
 
         m_HasPrevGhostPos = false;
         m_Velocity = Vector3.zero;
-
-        // XRGrabInteractable을 비활성화해 grip/trigger로 떼어지지 않게 한다.
-        var grab = GetComponent<XRGrabInteractable>();
-        if (grab != null)
-            grab.enabled = false;
     }
 
     void OnEnable()

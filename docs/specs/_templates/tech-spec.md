@@ -8,7 +8,7 @@ Tech Spec = 한 sub-spec의 시스템 설계 윤곽 박제. 결정 자체는 하
 작성 규칙:
 - sub-spec 1개 ↔ Tech Spec 1개 1:1. 같은 sub-spec에 Tech Spec 2개 이상 만들지 않는다
   (그 신호가 보이면 sub-spec을 쪼갠다).
-- 본문은 아래 6 섹션으로 한정한다. 다른 헤더 추가 금지. 각 섹션이 비더라도 헤더는 둔다
+- 본문은 아래 7 섹션으로 한정한다. 다른 헤더 추가 금지. 각 섹션이 비더라도 헤더는 둔다
   (`_해당 없음_` 한 줄로 채움).
 - **anti-pattern**: 본문에 옵션 비교/선택 문장 금지. "A vs B 중 A를 채택" 같은 분기는
   ARD에서 다룬다. Tech Spec은 *서술*만, ARD는 *분기 결정*.
@@ -50,7 +50,7 @@ Tech Spec = 한 sub-spec의 시스템 설계 윤곽 박제. 결정 자체는 하
 
 ## Invariants
 
-<항상 참이어야 하는 사실. plan-drafter가 이걸 깨면 안 됨.>
+<항상 참이어야 하는 사실. planner가 이걸 깨면 안 됨.>
 
 - <불변식 1 — 예: "PlayHand source는 동시에 1개만 점유">
 - <불변식 2>
@@ -61,6 +61,18 @@ Tech Spec = 한 sub-spec의 시스템 설계 윤곽 박제. 결정 자체는 하
 
 - <가정 1> — 출처: `Read <경로> (YYYY-MM-DD)` 또는 `unity-scene-reader 보고 (YYYY-MM-DD)`
 - <가정 2> — 출처: ...
+
+## Comparable Siblings
+
+<본 sub-spec의 대상이 기존 자산(예: 같은 카테고리 악기/sub-spec)과 동일 카테고리이면 차이를 표로 박제한다. 동급 자산이 없으면 `_해당 없음 — 신규 카테고리_` 한 줄. /spec-interview 컨텍스트 파악 단계에서 후보를 자동 탐색하고 인터뷰 라운드에서 검증·보강한다.>
+
+| 대상 | 대응 산출물 | 차이 |
+|---|---|---|
+| `<sibling 자산/sub-spec 경로 1>` | `<본 sub-spec의 대응 산출물>` | <차이 한 줄> |
+
+또는
+
+_해당 없음 — 신규 카테고리_
 
 ## Open Tech Decisions
 

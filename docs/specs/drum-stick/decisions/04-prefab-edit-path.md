@@ -20,9 +20,9 @@ drum_stick prefab(L/R variant 포함)과 drum anchor prefab의 신규 컴포넌�
 
 ## How to apply
 
-- plan-implementer는 stick/anchor prefab 변경의 모든 단계에서 다음 순서로 시도한다.
+- implementer는 stick/anchor prefab 변경의 모든 단계에서 다음 순서로 시도한다.
   1. `manage_prefabs` (prefab 자체 생성/load/save·child 구조).
   2. `manage_components` (컴포넌트 추가·SerializedField 셋업).
   3. 위 둘로 처리 못 하는 표면이 발견되면 plan 본문에 fallback 경로를 명시한 뒤 사용자 승인 후 진행. 단독 판단 금지.
-- 본 결정은 sub-spec `01-anchor-auto-attach-detach.md`(stick·anchor 신규 컴포넌트)와 `02-stick-no-penetration.md`(stick 콜라이더·rigidbody 셋업) 양쪽 plan-implementer에 모두 적용된다.
+- 본 결정은 sub-spec `01-anchor-auto-attach-detach.md`(stick·anchor 신규 컴포넌트)와 `02-stick-no-penetration.md`(stick 콜라이더·rigidbody 셋업) 양쪽 implementer에 모두 적용된다.
 - plan은 자산 변경 범위(prefab asset / scene instance / 둘 다)를 unity-asset-edit skill 결정 트리에 따라 명시한다.

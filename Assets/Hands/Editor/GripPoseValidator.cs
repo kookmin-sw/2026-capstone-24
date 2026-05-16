@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 static class GripPoseValidator
 {
@@ -38,22 +37,6 @@ static class GripPoseValidator
 
         var pass = true;
 
-        // Check GripPoseProvider fields
-        var provider = prefab.GetComponent<GripPoseProvider>();
-        if (provider == null)
-        {
-            Debug.LogError($"[{stickPath}] Missing GripPoseProvider component.");
-            pass = false;
-        }
-
-        // Check XRGrabInteractable.attachTransform is inside GripPoseHand
-        var grab = prefab.GetComponent<XRGrabInteractable>();
-        if (grab == null)
-        {
-            Debug.LogError($"[{stickPath}] Missing XRGrabInteractable component.");
-            pass = false;
-        }
-
         var gripPoseHand = prefab.transform.Find("GripPoseHand");
         if (gripPoseHand == null)
         {
@@ -66,17 +49,6 @@ static class GripPoseValidator
             if (wristInGripPose == null)
             {
                 Debug.LogError($"[{stickPath}] GripPoseHand is missing '{wristName}'.");
-                pass = false;
-            }
-
-            if (grab != null && grab.attachTransform == null)
-            {
-                Debug.LogError($"[{stickPath}] XRGrabInteractable.attachTransform is not assigned.");
-                pass = false;
-            }
-            else if (grab != null && !IsChildOf(grab.attachTransform, gripPoseHand))
-            {
-                Debug.LogError($"[{stickPath}] XRGrabInteractable.attachTransform is not inside GripPoseHand.");
                 pass = false;
             }
         }
@@ -295,17 +267,6 @@ static class GripPoseValidator
             Debug.LogWarning($"[GripPoseValidator] {ghostPath}: Palm is {distance * 1000f:F2} mm from controller origin (>1 mm). Consider adjusting Ghost root localPosition.");
             return true; // warning only — not a hard fail since user tunes this in-headset
         }
-    }
-
-    static bool IsChildOf(Transform child, Transform parent)
-    {
-        var t = child;
-        while (t != null)
-        {
-            if (t == parent) return true;
-            t = t.parent;
-        }
-        return false;
     }
 
     static HashSet<string> CollectBoneNames(Transform root)

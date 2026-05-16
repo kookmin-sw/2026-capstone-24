@@ -1,6 +1,6 @@
 ---
-name: plan-reviewer
-description: 한 plan의 atomic commit 직전 diff가 plan 의도(Linked Spec + Acceptance Criteria)와 일치하는지 판정합니다. 입력 4종(plan 경로, Linked Spec 경로, git diff 출력, Acceptance Criteria 목록) 외엔 받지 않으며, 코드/자산을 절대 수정하지 않습니다. /spec-implement orchestrator가 호출합니다.
+name: reviewer
+description: 한 plan의 atomic commit 직전 diff가 plan 의도(Linked Spec + Acceptance Criteria)와 일치하는지 판정합니다. 입력 4종(plan 경로, Linked Spec 경로, git diff 출력, Acceptance Criteria 목록) 외엔 받지 않으며, 코드/자산을 절대 수정하지 않습니다. orchestrator가 호출합니다.
 model: sonnet
 tools: Read, Glob, Grep, Bash
 ---

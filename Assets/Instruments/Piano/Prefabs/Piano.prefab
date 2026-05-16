@@ -11599,37 +11599,6 @@ MonoBehaviour:
   pressLayers:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!1 &5852296459508382450
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 302339979849568233}
-  m_Layer: 0
-  m_Name: PanelAnchor
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &302339979849568233
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5852296459508382450}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0.3}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 8472210992546831164}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5863259209983246419
 GameObject:
   m_ObjectHideFlags: 0
@@ -12494,6 +12463,37 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 14
   m_CollisionDetection: 3
+--- !u!1 &6388859318533687260
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2310559442285907028}
+  m_Layer: 0
+  m_Name: PanelAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2310559442285907028
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6388859318533687260}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
+  m_LocalPosition: {x: 0.7, y: 1.2, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8472210992546831164}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6464039797659131841
 GameObject:
   m_ObjectHideFlags: 0
@@ -15975,7 +15975,7 @@ GameObject:
   - component: {fileID: 6658207107864551913}
   - component: {fileID: 1730288064487381645}
   - component: {fileID: 6713634880827034657}
-  - component: {fileID: 3885722918107284323}
+  - component: {fileID: 418825263558909652}
   m_Layer: 0
   m_Name: InstrumentAnchor
   m_TagString: Untagged
@@ -16121,7 +16121,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   excludeTriggers: 0
---- !u!114 &3885722918107284323
+--- !u!114 &418825263558909652
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -16693,7 +16693,7 @@ Transform:
   - {fileID: 1913656781778988816}
   - {fileID: 7410730392459195338}
   - {fileID: 7100990362155429990}
-  - {fileID: 302339979849568233}
+  - {fileID: 2310559442285907028}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -180, z: 0}
 --- !u!114 &5428658257290346933
@@ -16728,7 +16728,7 @@ MonoBehaviour:
   laneConfig: {fileID: 0}
   instrumentId: Piano
   instanceVolume: 0.5
-  _panelAnchor: {fileID: 302339979849568233}
+  _panelAnchor: {fileID: 2310559442285907028}
   fingertipSwitchMargin: 0.05
 --- !u!1 &8684636780916141204
 GameObject:

@@ -10,7 +10,7 @@ allowed-tools: Read, Edit, Glob, Grep, mcp__UnityMCP__manage_asset, mcp__UnityMC
 
 1. **자산 *생성*** (`.mat`, `.asset`, `.prefab` 신규) → `manage_material` / `manage_asset` / `manage_prefabs`. YAML hand-write 금지. `.meta` GUID는 Unity가 만들도록 한다.
 2. **단일 필드 *변경*** (머터리얼 교체, `m_Enabled`, 컴포넌트 값 등) → `manage_components` / `manage_prefabs` 우선. MCP가 그 필드를 못 다룰 때만 텍스트 Edit으로 폴백.
-3. **스칼라 텍스트 Edit이 불가피한 경우** → 아래 YAML 보존 규칙을 따른다. 텍스트 편집 도구가 `precondition_sha256`을 지원하면(예: `apply_text_edits`) 다음 절차로 stale-file 사고를 막는다 — `Read <대상 파일>`(또는 `mcp__UnityMCP__get_sha`)로 SHA 취득 → 편집 호출에 `precondition_sha256=<SHA>` 전달 → SHA 불일치 실패 시 SHA 재취득 → 편집 내용 재계산 → 재시도. 동시 편집(IDE에서 사용자가 같은 파일을 저장한 케이스)을 silent overwrite하지 않기 위함.
+3. **스칼라 텍스트 Edit이 불가피한 경우** → 아래 YAML 보존 규칙을 따른다. `precondition_sha256` 절차는 [`unity-mcp-workflow §5`](../unity-mcp-workflow/SKILL.md) 단일 진실원.
 4. **MCP 도구가 세션에 노출돼 있지 않으면** 사용자에게 묻고 진행한다 (AGENTS.md "Unity MCP 사용 정책"과 동일).
 5. **`.cs` 스크립트 변경**은 본 skill 범위 외다 — 컴파일 대기·`read_console` 검증·attach 순서는 [`unity-mcp-workflow`](../unity-mcp-workflow/SKILL.md) §2.
 
@@ -33,13 +33,26 @@ allowed-tools: Read, Edit, Glob, Grep, mcp__UnityMCP__manage_asset, mcp__UnityMC
 - 에디터가 로드 실패, 포맷 오류, 자산 인식 실패를 내면 추가 수정 전에 포맷 복구와 자산 인식 복구를 먼저 수행한다.
 - 에디터 스크립트에서 `AssetDatabase.FindAssets`로 씬·프리팹을 검색할 때는 반드시 `new[] { "Assets" }`를 두 번째 인수로 전달한다. 인수를 생략하면 `Packages/` 경로까지 포함되어 패키지 씬을 열려다 예외가 발생한다.
 
+## FBX / PrefabInstance 언팩 절차
+
+`.fbx` 모델 또는 다른 prefab의 PrefabInstance에서 자식 GameObject를 새 prefab으로 추출할 때(실제 사례: 2026-05-14 Trombone.prefab 추출 — fbx PrefabInstance를 언팩 없이 raw YAML로 직렬화하다 fileID `100100000` sentinel 충돌로 씬 PPtr cast 깨짐. `docs/specs/_archive/trombone/plans/2026-05-14-sanyoentertain-trombone-prefab-extraction.md` 진단).
+
+1. **언팩 선행**: `manage_prefabs unpack_completely`로 원본 PrefabInstance를 완전 언팩한 뒤에 새 prefab을 만든다. 언팩 없이 raw YAML로 prefab을 직접 작성하면 fileID가 Unity 내부 sentinel 범위(`100100000`, `200100000` 등)와 충돌해 PPtr cast가 깨진다.
+2. **새 prefab 생성**: 언팩된 GameObject에 대해 `manage_prefabs create` 사용. 자동 발급되는 fileID는 11자리 이상 random 값이며 sentinel 범위와 겹치지 않는다.
+3. **씬 인스턴스화 검증 AC 의무**: 새 prefab을 만든 plan은 "씬에 PrefabUtility로 인스턴스화 시 콘솔 에러 0" AC 1건을 `[auto-hard]`로 둔다. `docs/specs/README.md` "작성 규칙 요약"의 직렬화 정합성 AC 룰과 일치.
+4. **금지 패턴**:
+   - 언팩 없이 `Edit` 도구로 fbx 산하 GameObject의 fileID 직접 재작성
+   - `100100000` / `200100000` 계열 fileID를 새 prefab에 사용
+   - `manage_prefabs open_prefab_stage` → `modify_contents` → `save_prefab_stage` 시퀀스 사이에 다른 자산 수정 끼워넣기
+5. **사고 발생 시 복구**: 이미 sentinel fileID로 prefab이 만들어졌다면 `open_prefab_stage` → `save_prefab_stage` 한 번이면 Unity가 fileID를 재발급한다. 씬 인스턴스의 PrefabInstance override target 매핑은 별도 재바인딩 필요.
+
 ## enum 필드 매핑 함정
 
 `manage_components`/`manage_gameobject`로 컴포넌트의 enum 또는 Flags 필드를 셋업할 때 인덱스 매핑이 인스펙터 표기와 어긋나는 경우가 있다. 직렬화는 통과하지만 동작이 정반대가 되는 사고를 일으킨다 (실제 사례: `TeleportationArea.m_TeleportTrigger`가 `OnSelectExited`(0) 의도였으나 `OnSelectEntered`(1)로 박혀 push 시 즉시 텔레포트 발동. base plan 검증 통과 후 manual-hard에서야 잡힘 — `docs/specs/_archive/teleport-locomotion/plans/2026-04-30-sanyoentertain-fix-push-immediate-teleport-trigger.md` 진단).
 
 다음 두 단계로 함정을 차단한다.
 
-1. **plan 작성 단계.** plan `## Verified Structural Assumptions`에 enum 정의(클래스명·각 값 인덱스)와 본 plan 의도 값을 박제한다. 출처는 패키지 소스 `Read <패키지 경로>/<파일>.cs`. 강제 룰 단일 진실원: `docs/specs/README.md` "작성 규칙 요약" + `/plan-new` step 1.5 Trigger (e).
+1. **plan 작성 단계.** plan `## Verified Structural Assumptions`에 enum 정의(클래스명·각 값 인덱스)와 본 plan 의도 값을 박제한다. 출처는 패키지 소스 `Read <패키지 경로>/<파일>.cs`. 강제 룰 단일 진실원: `docs/specs/README.md` "작성 규칙 요약".
 2. **자산 적용 직후.** MCP 호출 결과를 직렬화 `Grep`으로 다시 읽어 의도 값과 일치하는지 대조한다. 어긋났으면 단일 propertyPath 스칼라 변경이라 직접 텍스트 Edit 예외로 우회 가능 — sub-agent 단독 판단 금지, plan 명시 또는 메인 승인 후에만.
 
 AC는 의도 값 단일 매치 grep을 `[auto-hard]`로 둔다 (예: "`Plane TeleportationArea` 부착 + `m_TeleportTrigger == 0`을 grep 단일 매치"). AC 라벨/문구 가이드는 `docs/specs/README.md` "작성 규칙 요약"이 단일 진실원.

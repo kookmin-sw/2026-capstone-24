@@ -31,7 +31,7 @@ hands 피처 `03-left-pinch-gesture` sub-spec의 첫 plan이다. spec resolve(20
 - 왼손 grab 판정: `LeftControllerHandRoot`와 `LeftHandTrackingHandRoot` 양쪽에 `XRInteractionGroup` 부착. 본 plan은 `IXRSelectInteractor.hasSelection` polling으로 "왼손에 어떤 악기도 잡혀 있지 않음"을 판정한다. — `unity-scene-reader 보고 (2026-05-05)`
 - 컨트롤러 root와 hand-tracking root는 SampleScene 인스턴스에서 동시 active 상태다. 본 plan은 `XRHandTrackingEvents.handIsTracked`(또는 `XRHand.isTracked`) polling으로 hand-tracking 모드일 때만 검출하도록 게이트한다. 컨트롤러 모드에서 hand 추적 데이터가 stale/invalid이면 `handIsTracked == false`이므로 false positive가 자연 차단된다. — `unity-scene-reader 보고 (2026-05-05)`
 - `Assets/Settings/Input/InputSystem_Actions.inputactions`의 `Player` map에는 본 plan 작성 시점 기준 PanelToggle Action 미존재(anchoring plan이 신규 추가 예정). 본 plan은 InputAction 자산을 수정하지 않으므로 anchoring plan과의 충돌 없음. — `unity-scene-reader 보고 (2026-05-05)`
-- XR Hands sample(`Assets/Samples/XR Hands/1.7.3/HandVisualizer/Scripts/HandProcessor.cs` / `HandVisualizer.cs`)에 thumb·index tip joint 접근 패턴이 있어 본 plan의 검출 로직 구현 시 참고 가능. palm joint normal axis(palm joint transform의 어느 축이 손바닥 법선인지)는 sample 코드와 비교해 plan-implementer가 박제. — `Read Assets/Samples/XR Hands/1.7.3/HandVisualizer/Scripts/HandProcessor.cs (2026-05-05)`
+- XR Hands sample(`Assets/Samples/XR Hands/1.7.3/HandVisualizer/Scripts/HandProcessor.cs` / `HandVisualizer.cs`)에 thumb·index tip joint 접근 패턴이 있어 본 plan의 검출 로직 구현 시 참고 가능. palm joint normal axis(palm joint transform의 어느 축이 손바닥 법선인지)는 sample 코드와 비교해 implementer가 박제. — `Read Assets/Samples/XR Hands/1.7.3/HandVisualizer/Scripts/HandProcessor.cs (2026-05-05)`
 
 ## Approach
 
@@ -76,7 +76,7 @@ hands 피처 `03-left-pinch-gesture` sub-spec의 첫 plan이다. spec resolve(20
    - `!isPinched && (d > pinchStartDistance || !allGatesPass)`: `candidateStartedAt = -1f` (후보 리셋).
    - `isPinched && (d >= pinchReleaseDistance || !allGatesPass)`: `isPinched = false; candidateStartedAt = -1f; PinchEnded?.Invoke()`.
 
-3. **palm normal axis 박제** — XR Hands sample의 `HandProcessor.cs` 또는 `HandVisualizer.cs`에서 palm joint transform의 어느 axis가 손바닥 normal인지 확인. 일반적으로 `palm.up`이지만 SDK·헤드셋에 따라 다를 수 있어 `PalmNormalAxis` enum SerializeField로 두어 inspector에서 조정 가능하게 한다. plan-implementer는 sample 패턴과 일치하는 default를 코드에 둔다.
+3. **palm normal axis 박제** — XR Hands sample의 `HandProcessor.cs` 또는 `HandVisualizer.cs`에서 palm joint transform의 어느 axis가 손바닥 normal인지 확인. 일반적으로 `palm.up`이지만 SDK·헤드셋에 따라 다를 수 있어 `PalmNormalAxis` enum SerializeField로 두어 inspector에서 조정 가능하게 한다. implementer는 sample 패턴과 일치하는 default를 코드에 둔다.
 
 4. **`SessionPanelController` 구독 추가** — `Assets/SessionPanel/Scripts/SessionPanelController.cs` (anchoring plan 산출물) 수정:
 
@@ -146,4 +146,4 @@ hands 피처 `03-left-pinch-gesture` sub-spec의 첫 plan이다. spec resolve(20
 
 ## Handoff
 
-<!-- /spec-implement가 plan 완료 시 자동 갱신 -->
+<!-- /spec-build가 plan 완료 시 doc-updater Task로 자동 갱신 -->

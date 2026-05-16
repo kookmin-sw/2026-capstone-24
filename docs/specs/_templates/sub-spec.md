@@ -4,7 +4,7 @@
 작성 지침:
 - 이 sub-spec은 "독립적으로 What이 성립하는 단위"여야 한다. 다른 sub-spec에 강하게 의존하면 합치거나 재분해.
 - Behavior에는 사용자/시스템 관점에서 관찰 가능한 동작만 적는다. 구현 방법(클래스, 알고리즘) 금지.
-- Implementation Plans 테이블은 /plan-new 가 plan을 추가할 때 자동으로 갱신한다.
+- Implementation Plans 테이블은 /spec-build의 planner sub-agent가 plan을 추가할 때 자동으로 갱신한다.
 - 구현 디테일이 떠올라도 본문에 적지 말고, 해당 plan 파일로 옮겨 적는다.
 -->
 
@@ -39,7 +39,7 @@
 | _아직 없음_ | — | — | — |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
-> Plan 추가는 `/plan-new` 사용. 파일명은 날짜·작성자·slug 기반.
+> Plan 추가는 `/spec-build`가 planner sub-agent로 처리. 파일명은 날짜·작성자·slug 기반.
 
 ## Open Questions
 

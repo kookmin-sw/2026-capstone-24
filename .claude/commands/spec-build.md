@@ -1,229 +1,144 @@
 ---
-description: root-spec(_index.md) 한 개를 받아 그 피처의 sub-spec 큐를 자동으로 진행한다. 각 sub-spec에 대해 plan-drafter → plan-quality-reviewer → /spec-implement 워크플로우를 직렬로 실행하며, plan 본문은 사용자에게 보여주지 않는다. 사용자 게이트는 manual-hard 검증과 destructive 가드만 남긴다. 기본 dry-run, --apply로 실제 실행.
+description: root-spec(_index.md) 한 개를 받아 그 피처의 sub-spec 큐를 자동으로 진행한다. 각 sub-spec에 대해 planner → 사용자 plan 검토 → orchestrator(implementer+reviewer+test+자동 AC) → 사용자 manual-hard 테스트 → plan 단위 atomic commit을 plan 1개씩 반복하고, sub-spec 종료 시 doc-updater + 정리 commit으로 묶는다. plan 본문은 사용자에게 직접 노출하고 검토 게이트를 1회 거친다. 기본 dry-run, --apply로 실제 실행.
 argument-hint: "<root-spec 경로 (_index.md)> [--apply] [--max-cascade N]"
 allowed-tools: Read, Glob, Grep, Bash, Edit, Write, AskUserQuestion, Skill, Task, mcp__UnityMCP__read_console
 ---
 
-# /spec-build — 자동 파이프라인 orchestrator
+# /spec-build — 슬림 orchestrator
 
-목적: `/spec-interview`로 박제된 root-spec 한 개를 받아 그 피처의 sub-spec 큐를 자동으로 진행한다. 각 sub-spec에 대해 다음을 직렬로 실행한다.
-
-1. (조건부) plan이 없을 때만 `tech-spec-extractor` sub-agent로 Tech Spec 게이트(phase -1) 점검 → 양성 신호 1+ 시 사용자에게 yes/no/skip-permanently 묻고 yes면 `/tech-spec --auto` 워크플로우 inline 답습으로 Tech Spec 작성.
-2. plan 미작성이면 `arch-decision-extractor` sub-agent로 ARD 후보 추출(phase 0) → 사용자 결정 → `decisions/<NN>-*.md` 작성.
-3. plan 미작성이면 `plan-drafter` sub-agent로 lazy 작성 (Tech Spec·ARD 둘 다 입력으로 전달).
-4. 작성된 plan에 대해 `plan-quality-reviewer` sub-agent로 자동 점검.
-5. 통과한 plan들을 `/spec-implement <sub-spec> --apply` 워크플로우로 구현.
-
-플랜 본문·코드·라벨 부착·박제 출처는 사용자가 검토하지 않는다. 사용자 결정이 필요한 지점은 다음으로 한정된다.
-
-- spec 박제 후 사용자가 `/spec-build` 트리거 (1회).
-- (신규) Tech Spec 게이트 yes/no/skip-permanently 3택 — phase -1에서 양성 신호 1+ 발화 시.
-- (신규) Tech Spec 인터뷰 라운드 — phase -1에서 yes 답 후 `/tech-spec --auto` 워크플로우 inline 답습.
-- manual-hard 검증 4택 (`pass`/`stop`/`stop-and-seed`/`skip-and-continue`) — `/spec-implement`의 manual-hard 분기 그대로.
-- destructive 가드 (sub-spec/feature 폴더 `_archive/` 이동 시 1회) — `plan-complete`의 가드 그대로.
-- plan-quality-reviewer가 `stop`을 반환했을 때.
-- plan-drafter가 `unresolved`에 막힌 사유를 적어 반환했을 때.
-- (선택) 큐 종료 시 deferred 목록 일괄 시드 여부.
+`/spec-interview`로 박제된 root-spec 1개를 받아, sub-spec 큐를 plan 1개씩 직렬로 진행한다.
 
 ## 절대 규칙
 
-1. **플랜 본문을 사용자에게 보여주지 않는다.** 작성된 plan 경로 한 줄 보고만 한다. AC 목록·Approach 본문 등은 사용자 게이트 대상이 아니다.
-2. **사용자 승인 없이 destructive·publishing 명령을 실행하지 않는다.** `/spec-implement`와 동일.
-3. **메인 세션 사고를 sub-agent에 흘려보내지 않는다.** plan-drafter/plan-quality-reviewer에는 정의된 입력 항목만 전달한다.
-4. **plan-drafter·plan-quality-reviewer는 사용자에게 질문하지 않는다.** 모든 사용자 결정은 메인 세션이 `AskUserQuestion`으로 처리.
-5. **`/spec-implement` 워크플로우의 단일 진실원성 유지.** spec-build가 sub-spec 1개를 처리할 때 per-plan 루프·`.orchestrator-state.json`·atomic commit 메커니즘은 spec-implement 본문을 그대로 답습한다 — 메인 세션이 spec-implement의 step을 inline으로 실행. 코드 중복 회피 + 안전 가드(working tree clean, AC 라벨 강제, MCP 컴파일 체크) 자동 답습.
-6. **`/spec-build` 자체는 git commit을 만들지 않는다.** atomic commit은 spec-implement step 3-9.5가 처리.
+1. **plan은 항상 1개씩 작성·검토·구현한다.** 한 sub-spec에 plan이 N개 필요하면 planner를 N회 호출한다. planner는 매 호출당 plan 1개만 만든다.
+2. **사용자 게이트 3종만 노출한다.**
+   - plan 검토 (planner 직후, plan 본문 + self-check 진단 + 3택)
+   - manual-hard 테스트 (orchestrator 직후, 3택: pass / retry-via-new-plan / stop)
+   - destructive 가드 (feature archive 직전 1회)
+3. **commit은 메인 세션이 만든다.** orchestrator/planner/doc-updater 어느 sub-agent도 commit하지 않는다. atomic commit은 plan 단위 + sub-spec 종료 시 정리 commit 1개.
+4. **재호출 시 `.feature-build-state.json`으로 재개.** 위치: `docs/specs/<feature>/.feature-build-state.json` (`.gitignore`).
 
 ## 입력 해석
 
-`$ARGUMENTS`의 첫 토큰은 root-spec 경로(`_index.md`). 그 외 패턴은 거부하고 `/spec-implement`로 안내.
+`$ARGUMENTS`의 첫 토큰은 root-spec 경로(`_index.md`). 그 외는 거부하고 형식 오류 보고.
 
-| 패턴 | 동작 |
-|---|---|
-| `docs/specs/<feature>/_index.md` | 정상 진입. sub-spec 큐 생성 후 진행. |
-| `docs/specs/<feature>/specs/<NN>-<sub>.md` | "**`/spec-implement`를 사용하라**"고 안내 후 종료. |
-| `docs/specs/<feature>/plans/<filename>.md` | 동일하게 `/spec-implement`로 안내 후 종료. |
-| 그 외 | 형식 오류 보고 후 종료. |
+`--apply`는 두 번째 토큰. `--max-cascade N`은 세 번째 토큰(생략 시 default 2).
 
-`--apply`는 두 번째 토큰. `--max-cascade N`은 세 번째 토큰(생략 시 default 2). 분기 직후 한 줄 출력: `mode=feature, feature=<name>, sub-specs=<N미완료>/<M전체>, max-cascade=<N>`.
+## 1. Pre-flight
 
-## 워크플로우
+1. Working tree clean (`git status --porcelain` 비어야 함). 비어 있지 않으면 변경 파일 목록 보고 후 중단.
+2. root-spec 존재 + `## Sub-Specs` 표 파싱. 표 없거나 모든 행 Done이면 "구현할 sub-spec 없음" 보고 후 종료.
+3. root-spec + 모든 sub-spec의 `## Open Questions` 0건 확인. 미해결 1건 이상이면 중단 후 `/spec-interview` 재호출 권유.
+4. Unity MCP 컴파일 상태 확인 (`read_console` types=error 0건). MCP 미가용이면 `AGENTS.md` "Unity MCP 사용 정책"에 따라 "MCP 없이 진행할까요?" 묻기.
+5. `.feature-build-state.json` 로드 (있으면 재개 모드).
 
-### 1. Pre-flight (큐 시작 직전 1회)
+## 2. Sub-spec 큐 생성
 
-다음 항목을 순서대로. 하나라도 실패하면 무엇이 막혔는지 보고하고 멈춘다.
+root-spec `## Sub-Specs` 표에서 `Status != Done` 행을 NN prefix zero-pad 2자리 오름차순으로 추출. NN 미부여가 섞이면 등장 순서 fallback + 경고 1줄.
 
-1. **Working tree clean** — `git status --porcelain` 출력이 비어 있는지. 비어 있지 않으면 멈춘다 (Caused By 빌드업 분기는 본 명령에서 직접 받지 않으며, 사용자가 `/spec-implement`로 빌드업 plan을 진행 중이라면 그쪽으로 안내).
-2. **root-spec 파일 존재 + `## Sub-Specs` 표 파싱** — 표가 없거나 모든 행이 `Done`이면 "구현할 sub-spec이 없음" 보고 후 종료.
-3. **`## Open Questions` 0건 확인** — root-spec과 모든 sub-spec의 Open Questions 섹션을 검사. 미해결 항목 1건이라도 있으면 멈추고 `/spec-interview` 또는 `/spec-resolve` 권유.
-4. **Unity MCP 컴파일 상태** — Unity MCP 도구가 세션에 노출돼 있으면 `read_console`로 컴파일 에러 0건 확인. 도구가 없거나 인스턴스가 죽어 있으면 `AGENTS.md` "Unity MCP 사용 정책"에 따라 사용자에게 "MCP 없이 진행할까요?"를 묻는다.
-5. **`.feature-build-state.json` 위치 결정 + state-산출물 일관성 게이트** — `docs/specs/<feature>/.feature-build-state.json` (`.gitignore` 처리됨). 이미 존재하고 `pending_user_action`이 비어 있지 않으면 재개 모드로 진입.
+큐 미리보기 출력 (dry-run/--apply 공통).
 
-   **state-산출물 일관성 게이트:** 상태 파일이 존재하고 `last_step`이 `drafter` 이후(`reviewer` / `implement` / `completed`)를 가리키면, `docs/specs/<feature>/plans/` 아래에 plan 파일이 1건 이상 있는지 Glob으로 확인한다. 없으면 stale 진단 — `AskUserQuestion`으로 사용자에게 "state 파일의 `last_step=<값>`이지만 `plans/` 폴더가 비어 있다(drafter 직전 중단된 stale 상태로 보임). 처음부터 재시작할까요, 아니면 state를 믿고 이어서 진행할까요?"를 묻는다. **재시작** 선택 시 상태 파일 삭제 후 step 1부터 재실행. **이어서** 선택 시 사용자 책임 하에 진행하되 경고 한 줄 출력.
+## 3. Per sub-spec 루프 (`--apply`만 실행)
 
-### 2. Sub-spec 큐 생성
+각 sub-spec에 대해 다음을 plan 1개씩 반복한다.
 
-root-spec의 `## Sub-Specs` 표에서 `Status != Done` 행을 다음 정렬 키로 추출.
+### 3-1. plan 책임 추론
 
-1. **NN prefix가 있으면** zero-pad 2자리 오름차순. 정책 단일 진실원: [`docs/specs/README.md`](../../docs/specs/README.md) "Sub-Spec 파일명".
-2. **NN prefix가 없는 sub-spec이 섞여 있으면** root-spec의 Sub-Specs 표 등장 순서를 fallback 정렬 키로 사용. 동시에 사용자에게 한 줄 경고 — "sub-spec NN prefix 미부여. 큐 순서가 정확하지 않을 수 있음. 수동 cleanup 권장."
+메인 세션이 sub-spec + parent `_index.md` + (있으면) tech-specs/decisions를 Read해 **다음 plan 1개가 책임질 영역**을 1줄로 추론한다. 이미 완료된 plan들의 `## Handoff` 누적을 함께 본다.
 
-큐 미리보기 출력 (`[1] 01-foo Status=Active`, `[2] 02-bar Status=Draft` … / 또는 NN 없는 케이스 `[1] accompaniment Status=Draft (NN 미부여)` …). dry-run이든 `--apply`든 동일.
+미완료 plan이 sub-spec `## Implementation Plans` 표에 이미 있으면 그 plan을 다음 대상으로 삼고 3-3으로 진입.
 
-### 3. Per-sub-spec 루프 (`--apply`일 때만 실제 실행)
+### 3-2. planner 호출
 
-각 sub-spec에 대해 순서대로 다음을 수행.
+`Task` 도구로 `planner` sub-agent 호출. 입력 7종:
+1. sub-spec 경로
+2. parent `_index.md` 경로
+3. 이전 sub-spec handoff 누적
+4. (선택) Caused By 컨텍스트 — 3-4에서 retry-via-new-plan 진입 시만
+5. (선택) decisions 파일 경로 리스트
+6. (선택) Tech Spec 경로
+7. (선택) 메인 추론 한 줄 — 3-1 결과
 
-#### 3-1. plan 존재 검사
-
-sub-spec의 `## Implementation Plans` 표에서 `Status != Done` plan이 있는지 확인.
-
-- **있으면** → 3-4로 (phase -1·phase 0·drafter 건너뜀).
-- **없으면** → 3-1.5.
-
-#### 3-1.5. phase -1 (Tech Spec gate) — 신규
-
-`Task` 도구로 `tech-spec-extractor` sub-agent 호출. 입력 3종.
-
-1. sub-spec 경로 (큐의 현재 항목).
-2. parent `_index.md` 경로.
-3. 기존 tech-specs 누적 — 같은 feature의 `docs/specs/<feature>/tech-specs/` 아래 `<NN>-*.md` 파일들을 모두 Read해 합본한 문자열. 없으면 빈 문자열.
-
-반환된 `## tech_spec_needed` 분기:
-
-- **`no` + reason `_양성 신호 0건_`** → phase -1 종료. 3-2로 직진. Tech Spec 경로는 null로 유지(이후 phase 0·drafter에 null 전달).
-- **`no` + reason `_sub-spec 헤더 ... skipped_` 또는 `_기존 tech-specs/... 존재_`** → phase -1 종료. 3-2로 직진. 기존 tech-specs 경로가 있으면 그 경로를 Tech Spec 경로로 들고 가서 phase 0·drafter 입력에 전달.
-- **`yes`** → `AskUserQuestion`으로 3택 묻기:
-  - **yes (작성)** → 메인이 `/tech-spec --auto` 워크플로우 inline 답습 (별도 Skill/Task 호출 X — 컨텍스트 중첩 회피).
-    - tech-spec-extractor가 반환한 6 섹션 초안을 prompt로 들고 진입.
-    - 인터뷰 라운드 0~2회 (`/tech-spec --auto` 모드 정책 그대로).
-    - 작성된 `docs/specs/<feature>/tech-specs/<NN>-<title>.md` 경로 보관.
-    - `<NN>`은 대응 sub-spec과 동일 (NN 미부여 sub-spec이면 sub-spec 파일명 베이스 사용).
-    - 작성된 Tech Spec 경로를 이후 3-2(phase 0)·3-3(plan-drafter) 입력으로 전달.
-  - **no (이번만 skip)** → phase -1 종료. 3-2로 직진. Tech Spec 경로 null. 다음 호출에 다시 묻힘.
-  - **skip-permanently** → sub-spec 헤더에 `**Tech Spec:** skipped` 한 줄 박제 Edit. phase -1 종료. 3-2로 직진. Tech Spec 경로 null. 다음 호출에 안 묻힘.
-
-상태 파일 `last_step: "tech-spec-gate"` 갱신. 인터뷰 도중 사용자가 중단하면 `pending_user_action` 기록 후 큐 중단.
-
-#### 3-2. phase 0 (Architecture Decision)
-
-`Task` 도구로 `arch-decision-extractor` sub-agent 호출. 입력 4종.
-
-1. sub-spec 경로 (큐의 현재 항목).
-2. parent `_index.md` 경로.
-3. 기존 decisions 누적 — 같은 feature의 `docs/specs/<feature>/decisions/` 아래 `<NN>-*.md` 파일들을 모두 Read해 합본한 문자열. 없으면 빈 문자열.
-4. **(신규) Tech Spec 경로** — 3-1.5에서 작성·확인된 `docs/specs/<feature>/tech-specs/<NN>-*.md`. 없으면 null.
-
-반환된 `## decisions_to_resolve` 분기:
-
-- **`_없음._`** → phase 0 종료. 3-3으로 직진.
-- **후보 1+개** → `AskUserQuestion`으로 batch 질문. 한 번에 최대 4개씩, 5개면 라운드 분할.
-  - 사용자 답을 받은 후 `docs/specs/<feature>/decisions/<NN>-<title>.md` 파일 1+개 작성. NN은 같은 feature의 기존 decisions/ 내 가장 큰 NN + 1 (없으면 01).
-  - Tech Spec에서 도출된 후보(`from_tech_spec` 필드 있음)는 작성된 ARD 본문에 `**From Tech Spec:** [<path>](...) §Open Tech Decisions #N` 한 줄을 헤더에 박제.
-  - ARD 작성 후 Tech Spec의 대응 `## Open Tech Decisions` 항목 끝에 `→ decisions/<NN>-*.md` 한 줄 추가 Edit (Tech Spec ↔ ARD 짝 검증용).
-  - 작성된 decisions 파일 경로들을 이후 3-3의 plan-drafter 입력 5번으로 전달.
-
-#### 3-3. plan-drafter 호출
-
-`Task` 도구로 `plan-drafter` sub-agent 호출. `model: opus` 강제는 agent frontmatter로 처리. 입력 6종.
-
-1. sub-spec 경로 (큐의 현재 항목).
-2. parent `_index.md` 경로 (입력 root-spec).
-3. 이전 sub-spec handoff 누적 — 같은 피처 안 NN prefix가 더 작은(또는 fallback에서 더 앞에 있는) sub-spec들의 완료 plan `## Handoff` 섹션을 모은 단일 문자열. 없으면 빈 문자열.
-4. (선택) Caused By 컨텍스트 — 본 단계에서는 항상 null. Caused By 모드는 `/spec-implement`의 manual-hard fail 후 자동 시드 시 처리.
-5. decisions 파일 경로 리스트 — phase 0에서 작성된 `decisions/<NN>-*.md` 경로들. phase 0에서 결정이 없었으면 빈 리스트.
-6. **(신규) Tech Spec 경로** — 3-1.5 phase -1에서 작성·확인된 `tech-specs/<NN>-*.md`. phase -1이 skip되거나 양성 신호 0건이었으면 null.
-
-반환된 4-필드 컴팩트 리포트(`plans_created` / `split_decision` / `assumed_facts` / `unresolved`) 보관.
+반환 4-필드 컴팩트 리포트(`plan_created` / `self_check` / `assumed_facts` / `unresolved`) 보관.
 
 - `unresolved` 비어 있지 않으면 `AskUserQuestion`으로 사용자 결정 위임 후 큐 중단. 상태 파일 `pending_user_action` 기록.
-- `plans_created`가 비어 있으면 plan-drafter 호출 자체가 실패한 것 — 사용자 보고 후 멈춤.
+- `plan_created`가 비어 있으면 작성 실패 — 사용자 보고 후 멈춤.
 
-#### 3-4. plan-quality-reviewer 호출
+상태 파일 `last_step: "planner"` 갱신.
 
-작성된(또는 기존) 미완료 plan 각각에 대해 `Task` 도구로 `plan-quality-reviewer` sub-agent 호출. 입력 3종.
+### 3-3. 사용자 plan 검토 게이트
 
-1. plan 경로.
-2. Linked Spec 경로 (= 현재 sub-spec).
-3. parent `_index.md` 경로.
+plan 본문(planner가 작성한 파일) 전체와 `self_check` 진단을 사용자에게 노출한다. `AskUserQuestion`으로 3택:
 
-반환된 4-필드 컴팩트 리포트(`verdict` / `checks` / `auto_fix_hints` / `human_attention`) 분기:
+- **approve** → 3-4로.
+- **modify** → 사용자 자유 텍스트로 수정 사항 → planner 재호출 (입력 7에 수정 요구 append) → 3-3 회귀.
+- **abort** → 큐 중단. 상태 파일 `pending_user_action: "user-aborted-plan"` 기록.
 
-- **`pass`** → 3-5로.
-- **`fix-and-retry`** → plan-drafter Task 재호출 1회. 입력 5종에 추가로 reviewer의 `auto_fix_hints`를 prompt에 첨부. 재호출 후 다시 plan-quality-reviewer 호출. 또 `fix-and-retry`이거나 `stop`이면 `stop`으로 격상.
-- **`stop`** → `human_attention[]` 항목을 사용자에게 표시 후 큐 중단. 상태 파일 `pending_user_action: "plan-quality-reviewer stop — 사용자 plan 수정 후 재호출"` 기록.
+### 3-4. orchestrator 호출
 
-#### 3-5. `/spec-implement <sub-spec> --apply` 워크플로우 답습
+`Task` 도구로 `orchestrator` sub-agent 호출. 입력 5종:
+1. plan 경로
+2. Linked Spec 경로
+3. parent `_index.md` 경로
+4. 이전 plan handoff 누적
+5. AC 라벨 분류 (메인이 plan에서 파싱한 `{label, criteria}` 배열)
 
-이 시점부터 메인 세션은 [`/spec-implement`](spec-implement.md)의 워크플로우 step 1~4 (Pre-flight / 큐 미리보기 / Per-plan 루프 / 큐 종료)를 그대로 inline 실행한다. spec-implement를 별도 Task/Skill로 호출하지 않는다 — 컨텍스트 중첩 회피.
+반환 10-섹션 리포트 보관. `next_action` 분기:
 
-inline 실행 시 다음을 그대로 답습한다.
+- `manual-hard-verification` → 3-5로.
+- `handoff-approval` → manual-hard가 없는 plan. 3-5의 사용자 테스트 단계를 건너뛰고 3-6으로.
+- `test-failed` / `review-failed` / `implementer-blocked` / `compile-error` / `tree-dirty` / `mcp-down` → 사용자에게 `summary` + `unresolved` 표시 후 `AskUserQuestion`으로 3택 (`retry-via-new-plan` / `stop` / 자유 텍스트 수정). retry-via-new-plan 선택 시 3-7로.
 
-- step 1 통합 Pre-flight (working tree, plan 파일 존재, Linked Spec 존재, AC 라벨, Open Q 경고, MCP 컴파일).
-- step 3 per-plan 루프 (3-1 진입 검증 → 3-2 AC 라벨 분류 → 3-3 이전 plan handoff 누적 → 3-4 plan Status `In Progress` Edit → 3-5 plan-orchestrator 호출 → **3-6 결과 분기** (manual-hard 4택 포함, **auto-hard 직접 재검증 포함**) → 3-7 (예약) → 3-8 Handoff 승인+적용 → 3-8.5 Caused By reflect → 3-9 plan-complete → 3-9.5 atomic commit → 3-10 다음 plan).
-- step 4 큐 종료.
+상태 파일 `last_step: "orchestrator"` 갱신.
 
-**plan-orchestrator 호출 시 표준 템플릿 강제.** spec-implement의 step 3-5 "표준 호출 템플릿" 절(책임 한정 문구 포함)을 그대로 따른다.
+### 3-5. 사용자 manual-hard 테스트 게이트
 
-**auto-hard AC 직접 재검증.** spec-implement의 step 3-6 "plan-orchestrator 자가 보고 교차 검증" 절을 그대로 따른다.
+`manual_hard_pending` 항목을 사용자에게 한 줄씩 보여주고 각 항목의 검증 시나리오(plan AC evidence 라인)를 함께 표시한다. `AskUserQuestion`으로 3택:
 
-`--max-cascade` 값은 spec-build 인수에서 받은 값을 spec-implement step 3-6에 그대로 전달 (상태 파일 `max_cascade` 필드 갱신).
+| 옵션 | 동작 |
+|---|---|
+| **pass** | 모든 manual-hard 통과. evidence를 plan `## Notes`에 박제. 3-6으로. |
+| **retry-via-new-plan** | 실패 사유를 받아 후속 plan을 planner에 발주. 3-7로. |
+| **stop** | 큐 중단. 상태 파일 `pending_user_action: "manual-hard-failed"` 기록. |
 
-#### 3-6. sub-spec 완료 처리
+### 3-6. plan 단위 atomic commit
 
-inline 실행 결과 분기:
+- `doc-updater` Task 호출 (mode=apply, trigger=plan-done, plan 경로 + Handoff/Notes append 본문 전달).
+- 반환 `changed_files` + `moves` 확인.
+- `git-workflow` skill로 atomic commit 생성. commit 메시지는 implementer가 반환한 `message_candidate` 우선, 없으면 plan 제목 + Linked Spec slug.
+- commit 완료 후 같은 sub-spec에 plan이 더 필요한지 메인이 판단 → 필요하면 3-1 회귀, 아니면 3-8로.
 
-- **모든 plan `Done` + `deferred_failures`도 빈 상태** → 다음 sub-spec으로. plan-complete가 sub-spec을 `_archive/`로 옮기는 단계는 destructive 가드를 통과했을 때만.
-- **모든 plan `Done` + `deferred_failures` 1건 이상** → sub-spec은 `_archive/`로 옮기지 않는다. 다음 sub-spec으로 진행하되, 메인이 상태 파일 `deferred_failures`를 누적해 들고 간다. (큐 종료 시 일괄 시드 옵션 제공.)
-- **manual-hard `stop`/`stop-and-seed` 또는 plan-quality-reviewer `stop`이 발생해 inline 실행이 중단** → 큐 진행 중단. 상태 파일 `pending_user_action` + 다음 진입점 안내 후 멈춤.
+### 3-7. retry-via-new-plan 분기
 
-### 4. 큐 종료
+cascade_depth 검사. 상태 파일 `cascade_depth >= max-cascade`이면 거부 + 사용자 호출 후 큐 중단.
 
-모든 sub-spec이 `Done`이고 `deferred_failures`가 비어 있으면 다음 두 경로 중 하나로 분기한다.
+조건 통과 시:
+- planner 입력 4(Caused By)에 선행 plan 경로 + 실패 AC 발췌를 채워 재호출.
+- planner가 새 plan 작성 (Caused By 헤더 + Context 인용 + 재검증 AC 자동 부착).
+- `cascade_depth += 1` 갱신.
+- 3-3로 회귀.
 
-#### 4-A. feature archive 자동 트리거
+### 3-8. sub-spec 종료 처리
 
-다음 조건을 **모두** 만족할 때 `plan-complete` skill의 "feature 단위 archive" 분기를 호출한다:
+- `doc-updater` Task 호출 (mode=apply, trigger=sub-spec-done, sub-spec 경로 전달).
+- 반환 `changed_files` + `recommendations` 확인. `recommendations`에 "feature archive 자동 트리거 권고"가 있으면 4단계 진입 후보로 표시.
+- sub-spec 정리 commit 1개 (`git-workflow` skill). 메시지: `chore(<feature>): <sub-spec slug> 완료 + docs 동기화`.
+- 다음 sub-spec으로.
 
-1. 모든 sub-spec `Status == Done`.
-2. `deferred_failures` 0건.
-3. 모든 plan의 auto-hard / manual-hard 검증 pass (`.orchestrator-state.json` 참조).
-4. working tree clean (마지막 atomic commit 직후).
-5. Unity MCP 노출 시 `read_console` types=error 0건.
+## 4. Feature 종료
 
-조건 충족 시 순서:
+모든 sub-spec Done + Open Q 0건 + manual-hard 모두 pass + working tree clean + MCP error 0건이면 archive 분기 진입.
 
-1. `archive-feature.sh <feature>` 호출 — 외부 참조 grep 결과 출력.
-2. `AskUserQuestion`으로 이동 대상 경로 + 외부 참조 매치를 보여주고 사용자 승인 1회.
-3. 승인 후 스크립트가 이미 수행한 `git mv` 결과 확인 + README 보드 갱신 + 외부 링크 Edit 갱신.
-4. atomic commit: `chore(<feature>): feature archive 이동 + README 보드 갱신`.
+1. `doc-updater` Task 호출 (mode=dry-run, trigger=feature-archive). 외부 참조 grep 결과 + 이동 예정 경로 미리보기 반환.
+2. `AskUserQuestion`으로 destructive 가드 1회 (외부 참조 매치 + 이동 대상 보여주기).
+3. 사용자 승인 → `doc-updater` 재호출 (mode=apply).
+4. atomic commit (`git-workflow` skill). 메시지: `chore(<feature>): feature archive 이동 + README 보드 갱신`.
 
-#### 4-B. archive 보류 또는 deferred 처리
-
-조건이 하나라도 충족되지 않으면 archive 분기를 진입하지 않고 사유 한 줄 보고 후 종료.
-
-`deferred_failures`가 비어 있지 않으면:
-
-- 메인이 deferred 목록을 사용자에게 한 번 표시.
-- `AskUserQuestion`으로 "각 deferred 항목에 대해 `/plan-new --from-failure`로 후속 plan을 일괄 시드할까요? (yes/no/per-item)"를 묻는다.
-- **yes** → 각 항목에 대해 순차적으로 `Skill` 도구로 `plan-new`를 `--from-failure <plan-path> --auto` 인수로 위임 호출. 시드 완료 후 사용자에게 `/spec-build <root-spec> --apply` 재호출을 안내.
-- **per-item** → 항목별 yes/no 결정.
-- **no** → deferred 목록을 한 번 더 출력하고 종료.
-
----
-
-모든 sub-spec Done + deferred 0건 + archive 완료 시 한 줄 요약 출력 (총 N sub-spec, M plan, K commit).
-
-중간에 멈춘 경우 → `pending_user_action` + 다음에 무엇을 해야 하는지 한 줄 출력. 재호출 시 상태 파일에서 현재 sub-spec / `current_plan_index`부터 재개.
-
-## 모드
-
-- **dry-run (기본값)** — 입력 분기, Pre-flight 1~5 모두 실제로 수행한 뒤, 큐 미리보기 + "각 sub-spec별로 tech-spec-extractor / arch-decision-extractor / plan-drafter / plan-quality-reviewer / spec-implement inline 실행 계획"을 한 줄씩 보고하고 멈춘다. **tech-spec-extractor·arch-decision-extractor·plan-drafter·plan-quality-reviewer를 단 한 번도 spawn하지 않는다.** plan/Tech Spec/ARD 파일·코드·자산·git 상태 모두 변경 없음.
-- **`--apply`** — 위 1~4단계를 모두 실제 실행.
+조건 미충족이거나 사용자 거절 시 사유 1줄 보고 후 종료.
 
 ## 상태 파일
 
-위치: `docs/specs/<feature>/.feature-build-state.json` (`.gitignore` 처리됨).
+위치: `docs/specs/<feature>/.feature-build-state.json` (`.gitignore`).
 
 ```json
 {
@@ -231,25 +146,24 @@ inline 실행 결과 분기:
   "feature": "<feature-kebab>",
   "started_at": "YYYY-MM-DDTHH:MM:SS+09:00",
   "max_cascade": 2,
+  "cascade_depth": 0,
   "sub_spec_queue": [
-    {
-      "sub_spec_path": "docs/specs/<feature>/specs/<NN>-<sub>.md",
-      "status": "queued | in_progress | done | blocked"
-    }
+    {"sub_spec_path": "docs/specs/<feature>/specs/<NN>-<sub>.md", "status": "queued | in_progress | done | blocked"}
   ],
   "current_sub_spec_index": 0,
-  "deferred_failures": [
-    {"plan_path": "...", "criteria": "...", "evidence": "..."}
-  ],
-  "last_step": "preflight | tech-spec-gate | drafter | reviewer | implement | completed",
+  "current_plan_path": null,
+  "last_step": "preflight | planner | review | orchestrator | manual-hard | commit | sub-spec-done | completed",
   "pending_user_action": null
 }
 ```
 
-`/spec-implement`의 `.orchestrator-state.json`과는 별도 파일이다 — spec-build는 sub-spec 큐를, spec-implement는 plan 큐를 각각 관리. 두 상태 파일이 한 피처 폴더에 공존할 수 있다.
+재호출 시 `current_sub_spec_index` + `last_step` 다음 단계부터 재개.
 
-재개 호출 시 `current_sub_spec_index`와 `last_step` 다음 단계부터 실행. 사용자가 중간에 sub-spec을 추가/삭제했어도 매 sub-spec 시작 직전 root-spec의 Sub-Specs 표를 다시 읽어 큐를 재생성.
+## 모드
+
+- **dry-run (기본)** — Pre-flight + 큐 미리보기 + per-sub-spec 진행 계획 1줄씩 보고 후 멈춤. **planner/orchestrator/doc-updater를 spawn하지 않는다.** 파일·코드·git 변경 없음.
+- **`--apply`** — 1~4단계 실제 실행.
 
 ## 출력 형식
 
-진행 메시지는 한국어, 짧게. 사용자 결정이 필요한 지점에서는 `AskUserQuestion` 권장. 단계 진입 직전마다 한 줄 상태 보고("3-2. sub-spec [2/4] plan-drafter 호출 시작" 같은) 한 번씩.
+진행 메시지는 한국어, 짧게. 사용자 결정 게이트는 `AskUserQuestion`. 단계 진입 직전마다 한 줄 상태 보고("3-2. sub-spec [2/4] planner 호출" 같은).

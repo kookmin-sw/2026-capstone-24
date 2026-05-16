@@ -50,7 +50,7 @@ VR 환경에서 사용자는 자기 악기 사운드와 전체 마스터 사운�
 | 2026-05-07 | Instance Volume Slider Verification | Done | [2026-05-07-linksky0311-session-panel-instance-volume-verification.md](../../_archive/session-panel/plans/2026-05-07-linksky0311-session-panel-instance-volume-verification.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
-> Plan 추가는 `/plan-new` 사용. 파일명은 날짜·작성자·slug 기반.
+> Plan 추가는 `/spec-build`가 planner sub-agent로 처리. 파일명은 날짜·작성자·slug 기반.
 
 ## Open Questions
 

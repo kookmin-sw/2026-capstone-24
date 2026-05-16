@@ -21,5 +21,5 @@ drum anchor에 도착하는 순간 `drum_stick_L` / `drum_stick_R` (또는 그�
 - plan은 anchor 부착 트리거 컴포넌트(decision 01)가 들고 있는 좌·우 stick prefab 참조 1쌍에서 Instantiate한다.
 - spawn된 stick은 stick의 신규 컴포넌트(decision 02)가 즉시 Ghost Hand 추종을 시작하도록 셋업된다. Instantiate 시 부모/초기 transform은 anchor 부착 트리거 컴포넌트가 결정한다.
 - detach 시 두 인스턴스를 Destroy하고, PlayHand의 source override도 동시에 pop한다.
-- 씬 기존 drum_stick_L/R 인스턴스는 sub-spec 01 plan 작업의 일부로 SampleScene에서 제거하거나, anchor 부착 트리거 컴포넌트의 prefab 참조로 흡수한다. 기존 인스턴스가 남아 있어도 sub-spec의 What을 깨지 않는지는 plan-implementer가 자산 검증 단계에서 확인한다.
+- 씬 기존 drum_stick_L/R 인스턴스는 sub-spec 01 plan 작업의 일부로 SampleScene에서 제거하거나, anchor 부착 트리거 컴포넌트의 prefab 참조로 흡수한다. 기존 인스턴스가 남아 있어도 sub-spec의 What을 깨지 않는지는 implementer가 자산 검증 단계에서 확인한다.
 - 본 결정은 sub-spec `01-anchor-auto-attach-detach.md`의 "도착 시 attach / 이탈 시 어디에도 보이지 않음 / 다시 도착하면 새로 attach" Behavior 셋과 직결된다.

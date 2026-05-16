@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 // One-time setup tool that fully configures drum_stick prefabs and Ghost Hand palm offsets.
 // Run "Tools/DrumStick/Run All Steps" or run each step individually.
@@ -25,7 +23,6 @@ static class DrumStickSetup
         CreateRightVariant();
         CreateLeftVariant();
         AdjustGhostHandPalmOffsets();
-        PlaceInstancesInScene();
         AssetDatabase.SaveAssets();
         Debug.Log("[DrumStickSetup] All setup steps complete.");
     }
@@ -75,29 +72,7 @@ static class DrumStickSetup
         }
         capSO.ApplyModifiedPropertiesWithoutUndo();
 
-        // XRGrabInteractable — common settings shared by L and R variants.
-        if (!root.TryGetComponent<XRGrabInteractable>(out var grab))
-            grab = root.AddComponent<XRGrabInteractable>();
-        var grabSO = new SerializedObject(grab);
-        SetIfExists(grabSO, "m_MovementType",            2);     // Instantaneous
-        SetIfExists(grabSO, "m_MatchAttachPosition",     true);
-        SetIfExists(grabSO, "m_MatchAttachRotation",     true);
-        SetIfExists(grabSO, "m_UseDynamicAttach",        false);
-        SetIfExists(grabSO, "m_SnapToColliderVolume",    true);
-        SetIfExists(grabSO, "m_AttachEaseInTime",        0.15f);
-        SetIfExists(grabSO, "m_ThrowOnDetach",           true);
-        SetIfExists(grabSO, "m_ThrowVelocityScale",      1.5f);
-        SetIfExists(grabSO, "m_ThrowAngularVelocityScale", 1f);
-        SetIfExists(grabSO, "m_TrackPosition",           true);
-        SetIfExists(grabSO, "m_TrackRotation",           true);
-        // attachTransform is null on base; set per-variant below.
-        grabSO.ApplyModifiedPropertiesWithoutUndo();
-
-        // GripPoseProvider
-        if (!root.TryGetComponent<GripPoseProvider>(out _))
-            root.AddComponent<GripPoseProvider>();
-
-        Debug.Log("[DrumStickSetup] Step 1 done: base prefab has Rigidbody/Collider/XRGrabInteractable/GripPoseProvider.");
+        Debug.Log("[DrumStickSetup] Step 1 done: base prefab has Rigidbody/Collider. Anchor-driven model; XRGrabInteractable/GripPoseProvider intentionally absent.");
     }
 
     // -----------------------------------------------------------------------
@@ -143,33 +118,8 @@ static class DrumStickSetup
 
         // Recursively copy bone transforms from PlayHand.
         var gripWrist = CopyBoneHierarchy(playWrist, gripPoseHand.transform);
-
-        // Wire XRGrabInteractable.attachTransform → GripPoseHand/X_Wrist.
-        var grab = root.GetComponent<XRGrabInteractable>();
-        if (grab != null)
-        {
-            var grabSO = new SerializedObject(grab);
-            grabSO.FindProperty("m_AttachTransform").objectReferenceValue = gripWrist;
-            grabSO.ApplyModifiedPropertiesWithoutUndo();
-        }
-
-        // Wire GripPoseProvider fields for this side.
-        var provider = root.GetComponent<GripPoseProvider>();
-        if (provider != null)
-        {
-            var provSO = new SerializedObject(provider);
-            if (side == "R")
-            {
-                provSO.FindProperty("rightGripRoot").objectReferenceValue = gripPoseHand.transform;
-                provSO.FindProperty("rightGripWristRoot").objectReferenceValue = gripWrist;
-            }
-            else
-            {
-                provSO.FindProperty("leftGripRoot").objectReferenceValue = gripPoseHand.transform;
-                provSO.FindProperty("leftGripWristRoot").objectReferenceValue = gripWrist;
-            }
-            provSO.ApplyModifiedPropertiesWithoutUndo();
-        }
+        // gripWrist is consumed by AddPreviewMesh below. DrumKitStickAnchor finds
+        // GripPoseHand/X_Wrist by name at runtime, so no wiring is needed here.
 
         // Preview mesh: copy SkinnedMeshRenderer from PlayHand so the grip pose is
         // visible in the prefab stage. GripPoseHandPreview hides it at runtime.
@@ -287,35 +237,6 @@ static class DrumStickSetup
         root.transform.localPosition = newOffset;
 
         Debug.Log($"[DrumStickSetup] Step 4: {ghostPath} root offset → {newOffset} (palm now at controller origin).");
-    }
-
-    // -----------------------------------------------------------------------
-
-    [MenuItem("Tools/DrumStick/5. Place Instances in Scene")]
-    static void PlaceInstancesInScene()
-    {
-        var scene = EditorSceneManager.GetActiveScene();
-        if (!scene.path.Contains("SampleScene"))
-        {
-            Debug.LogWarning("[DrumStickSetup] Open SampleScene first, then run this step.");
-            return;
-        }
-
-        // Place near the drum kit in front of the player (approx position).
-        PlaceStick(RightVariantPath, new Vector3(1.65f, 0.9f, 1.50f), Quaternion.Euler(0f, -11.5f, 0f));
-        PlaceStick(LeftVariantPath,  new Vector3(1.45f, 0.9f, 1.50f), Quaternion.Euler(0f, -11.5f, 0f));
-
-        EditorSceneManager.MarkSceneDirty(scene);
-        EditorSceneManager.SaveOpenScenes();
-        Debug.Log("[DrumStickSetup] Step 5 done: drum_stick_L and drum_stick_R placed in SampleScene.");
-    }
-
-    static void PlaceStick(string prefabPath, Vector3 position, Quaternion rotation)
-    {
-        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
-        if (prefab == null) { Debug.LogError($"[DrumStickSetup] Prefab not found: {prefabPath}"); return; }
-        var go = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
-        go.transform.SetPositionAndRotation(position, rotation);
     }
 
     // -----------------------------------------------------------------------
