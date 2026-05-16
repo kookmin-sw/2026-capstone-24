@@ -5,7 +5,7 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Multiplayer/Scenes/RoomServerBoot.unity
     guid: 2586777f3c464204abf338cf9edff939
   - enabled: 1
