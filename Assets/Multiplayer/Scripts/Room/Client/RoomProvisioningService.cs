@@ -32,6 +32,7 @@ namespace Murang.Multiplayer.Room.Client
 
         private readonly IRoomBackendApi _api;
         private readonly Func<TimeSpan, CancellationToken, Task> _delayAsync;
+        private readonly Func<DateTime> _nowProvider;
 
         public TimeSpan PollInterval { get; }
         public TimeSpan ReadyTimeout { get; }
@@ -40,12 +41,14 @@ namespace Murang.Multiplayer.Room.Client
             IRoomBackendApi api,
             TimeSpan? pollInterval = null,
             TimeSpan? readyTimeout = null,
-            Func<TimeSpan, CancellationToken, Task> delayAsync = null)
+            Func<TimeSpan, CancellationToken, Task> delayAsync = null,
+            Func<DateTime> nowProvider = null)
         {
             _api = api ?? throw new ArgumentNullException(nameof(api));
             PollInterval = pollInterval ?? TimeSpan.FromSeconds(DefaultPollIntervalSeconds);
             ReadyTimeout = readyTimeout ?? TimeSpan.FromSeconds(DefaultReadyTimeoutSeconds);
             _delayAsync = delayAsync ?? Task.Delay;
+            _nowProvider = nowProvider ?? (() => DateTime.UtcNow);
         }
 
         public async Task<RoomResponse> ProvisionAndWaitReadyAsync(
@@ -79,26 +82,28 @@ namespace Murang.Multiplayer.Room.Client
             long roomId,
             CancellationToken cancellationToken)
         {
-            DateTime deadline = DateTime.UtcNow + ReadyTimeout;
+            DateTime deadline = _nowProvider() + ReadyTimeout;
+            string lastStatus = "(no poll)";
 
             while (true)
             {
                 await _delayAsync(PollInterval, cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
 
+                if (_nowProvider() >= deadline)
+                {
+                    throw new TimeoutException(
+                        $"룸 {roomId} 가 {ReadyTimeout.TotalSeconds:F0} 초 안에 READY 상태로 진입하지 못했습니다. 마지막 status={lastStatus}.");
+                }
+
                 RoomResponse snapshot = await _api.GetRoomAsync(accessToken, roomId, cancellationToken);
+                lastStatus = snapshot.status;
                 if (snapshot.IsReady)
                 {
                     return snapshot;
                 }
 
                 ThrowIfTerminal(snapshot);
-
-                if (DateTime.UtcNow >= deadline)
-                {
-                    throw new TimeoutException(
-                        $"룸 {roomId} 가 {ReadyTimeout.TotalSeconds:F0} 초 안에 READY 상태로 진입하지 못했습니다. 마지막 status={snapshot.status}.");
-                }
             }
         }
 

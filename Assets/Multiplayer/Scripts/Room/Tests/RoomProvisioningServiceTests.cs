@@ -92,7 +92,11 @@ public class RoomProvisioningServiceTests
     {
         StubRoomBackendApi api = new StubRoomBackendApi();
         api.CreateResponse = MakeResponse(42, "SERVER_STARTING");
-        for (int i = 0; i < 10; i++)
+        // pollInterval=10ms × readyTimeout=50ms 면 최대 ~5회 polling 후 timeout.
+        // 머신 속도에 따른 race 를 없애기 위해 fake clock 을 주입한다 — delayAsync 가
+        // fakeNow 를 정확히 pollInterval 만큼 전진시키고, nowProvider 가 그 값을 노출.
+        DateTime fakeNow = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        for (int i = 0; i < 100; i++)
         {
             api.GetResponses.Enqueue(MakeResponse(42, "SERVER_STARTING"));
         }
@@ -100,7 +104,8 @@ public class RoomProvisioningServiceTests
             api,
             pollInterval: TimeSpan.FromMilliseconds(10),
             readyTimeout: TimeSpan.FromMilliseconds(50),
-            delayAsync: (span, ct) => Task.CompletedTask);
+            delayAsync: (span, ct) => { fakeNow = fakeNow.Add(span); return Task.CompletedTask; },
+            nowProvider: () => fakeNow);
 
         Assert.ThrowsAsync<TimeoutException>(
             async () => await service.ProvisionAndWaitReadyAsync(
