@@ -86,14 +86,38 @@ Task definition 의 container 정의에 `logConfiguration`:
 
 ## 3. Alarms
 
-| Alarm | 조건 | 액션 |
-|---|---|---|
-| `RunTaskFailure` | `run_task_failure_count >= 1` (5분) | SNS topic `murang-ops` |
-| `ReadyTimeout` | `room_provision_latency p95 > 120s` (10분) | SNS topic `murang-ops` |
-| `UnhealthySurge` | `unhealthy_termination_count >= 3` (10분) | SNS topic `murang-ops` |
-| `EcsCapacity` | ECS service event 의 `service capacity` 또는 RunTask failure with `RESOURCE:*` 비율 급증 | SNS topic `murang-ops` |
+| Alarm name | CloudWatch metric (실제 발행 이름) | 조건 | Statistic | 윈도우 | 액션 |
+|---|---|---|---|---|---|
+| `murang-room-RunTaskFailure` | `run_task_failure_count.count` | `>= 1` | Sum | 5분 | SNS `murang-ops` |
+| `murang-room-ReadyTimeout` | `room_provision_latency.max` | `> 120000` (ms) | Maximum | 10분 | SNS `murang-ops` |
+| `murang-room-UnhealthySurge` | `unhealthy_termination_count.count` | `>= 3` | Sum | 10분 | SNS `murang-ops` |
+| `murang-room-EcsCapacity` | `run_task_failure_count.count` | `>= 5` | Sum | 10분 | SNS `murang-ops` |
 
-SNS topic 의 구독자(이메일 / Slack webhook)는 운영자가 별도로 등록.
+> 메트릭 이름은 §2 의 `.count` / `.max` 접미사 규약과 동일. `room_provision_latency` 는 Micrometer Timer 라 `.count`/`.sum`/`.avg`/`.max` 가 발행되며 p95 percentile 은 별도 publisher 설정이 필요해 본 단계에선 `.max` fallback 을 사용한다.
+>
+> `EcsCapacity` 는 plan 원안의 "ECS service event 의 service capacity" 가 CloudWatch metric 으로 직접 노출되지 않아, capacity 부족 시에도 결국 `RunTask` 가 실패하는 점을 이용해 `run_task_failure_count.count >= 5/10min` 임계로 fallback 한다. 전용 capacity metric 도입 시 별도 alarm 으로 분리.
+
+### 적용 절차
+
+```bash
+# 1) SNS topic 생성 (한 번만)
+aws sns create-topic --name murang-ops --region ap-northeast-2
+aws sns subscribe --topic-arn arn:aws:sns:ap-northeast-2:<account>:murang-ops \
+  --protocol email --notification-endpoint ops@example.com
+
+# 2) 4종 alarm 일괄 생성/갱신 (멱등)
+tools/create-cloudwatch-alarms.sh                                # Linux/macOS
+.\tools\create-cloudwatch-alarms.ps1                             # Windows
+# 옵션:
+#   tools/create-cloudwatch-alarms.sh --help 는 없음. 대신 환경변수:
+#     REGION=ap-northeast-2 SNS_TOPIC_ARN=arn:... tools/create-cloudwatch-alarms.sh
+
+# 3) 확인
+aws cloudwatch describe-alarms --alarm-name-prefix murang-room- --region ap-northeast-2 \
+  --query "MetricAlarms[].{name:AlarmName, state:StateValue, metric:MetricName, threshold:Threshold}"
+```
+
+> 현재 publish 되는 custom metric 은 `active_room_count.value` 한 종류뿐이므로, 위 alarm 들은 metric 이 추가 publish 되기 전까지 `INSUFFICIENT_DATA` 상태로 머문다. 정상 동작.
 
 ---
 
