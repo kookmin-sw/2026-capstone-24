@@ -63,10 +63,7 @@ namespace Murang.Multiplayer.Room.Client
             string roomRuntimeVersion,
             CancellationToken cancellationToken = default)
         {
-            if (options == null)
-            {
-                throw new ArgumentNullException(nameof(options));
-            }
+            // RoomCreateOptions 는 readonly struct 라 null 체크 대신 필드 검증.
             if (provisioningService == null)
             {
                 throw new ArgumentNullException(nameof(provisioningService));
@@ -82,6 +79,10 @@ namespace Murang.Multiplayer.Room.Client
             if (string.IsNullOrWhiteSpace(options.RoomName))
             {
                 throw new ArgumentException("RoomName 이 비어 있습니다.", nameof(options));
+            }
+            if (string.IsNullOrWhiteSpace(options.PlayerId))
+            {
+                throw new ArgumentException("PlayerId 가 비어 있습니다.", nameof(options));
             }
 
             RoomCreateRequest request = new RoomCreateRequest
