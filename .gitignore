@@ -28,6 +28,9 @@
 .claude/settings.local.json
 .claude/worktrees/
 
+# Codex CLI sync cache (로컬 도구 산출, 추적 대상 아님)
+.codex-push-sync/
+
 # Claude plan docs (local working notes)
 /docs/plans/
 
@@ -86,6 +89,7 @@ sysinfo.txt
 *.unitypackage
 *.unitypackage.meta
 *.app
+/Builds/
 
 # Crashlytics generated file
 crashlytics-build.properties
@@ -99,6 +103,9 @@ crashlytics-build.properties
 
 # Claude Code local launcher config
 .claude/launch.json
+
+# Local environment secrets (docker-compose)
+.env
 .claude/scheduled_tasks.lock
 .feature-build-state.json
 .orchestrator-state.json

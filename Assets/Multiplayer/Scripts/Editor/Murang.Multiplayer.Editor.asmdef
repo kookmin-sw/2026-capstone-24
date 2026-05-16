@@ -1,0 +1,22 @@
+{
+    "name": "Murang.Multiplayer.Editor",
+    "rootNamespace": "Murang.Multiplayer.Editor",
+    "references": [
+        "Murang.Multiplayer",
+        "Unity.XR.Management",
+        "Unity.XR.Management.Editor",
+        "UnityEditor.TestRunner",
+        "UnityEngine.TestRunner"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
