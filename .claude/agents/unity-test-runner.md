@@ -1,6 +1,6 @@
 ---
 name: unity-test-runner
-description: Unity 코드·씬 변경 후 EditMode·PlayMode 회귀 테스트를 격리된 컨텍스트에서 실행하고, pass/fail compact report 1장을 반환한다. plan-orchestrator가 plan-implementer 직후 호출하거나 메인 세션이 수동 호출한다. 코드·자산을 절대 수정하지 않는다.
+description: Unity 코드·씬 변경 후 EditMode·PlayMode 회귀 테스트를 격리된 컨텍스트에서 실행하고, pass/fail compact report 1장을 반환한다. orchestrator가 implementer 직후 호출하거나 메인 세션이 수동 호출한다. 코드·자산을 절대 수정하지 않는다.
 model: sonnet
 tools: Read, Glob, Grep, Bash, mcp__UnityMCP__read_console, mcp__UnityMCP__refresh_unity, mcp__UnityMCP__run_tests, mcp__UnityMCP__get_test_job
 mcpServers:

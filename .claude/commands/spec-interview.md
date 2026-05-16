@@ -1,20 +1,21 @@
 ---
-description: 자유 Q&A 인터뷰로 root spec + sub-spec들을 한 번에 박제한다. Open Questions는 박제 시점에 0건이어야 하며, 별도 /spec-resolve 단계 없이 인터뷰 안에서 모두 닫는다. docs/specs/ 외부는 절대 수정하지 않는다.
+description: 자유 Q&A 인터뷰로 root spec + sub-spec들 + (양성 신호 발화 시) Tech Spec + ARD를 한 번에 박제한다. Tech Spec 양성 신호 점검·Prefab 구조 박제·ARD 후보 추출을 메인 세션이 직접 수행해 한 번의 사용자 확인 게이트로 묶는다. Open Questions는 박제 시점에 0건이어야 하며, 인터뷰 안에서 모두 닫는다. docs/specs/ 외부는 절대 수정하지 않는다.
 argument-hint: "[러프한 아이디어 — 한 줄이든 여러 줄이든]"
-allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash, Skill
+allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash, Skill, Task, mcp__UnityMCP__manage_prefabs, mcp__UnityMCP__find_gameobjects, mcp__UnityMCP__manage_components, mcp__UnityMCP__read_console, mcp__UnityMCP__find_in_file
 ---
 
-# /spec-interview — 인터뷰 기반 Spec 박제 워크플로우
+# /spec-interview — 인터뷰 기반 Spec+Tech Spec+ARD 박제 워크플로우
 
-목적: 사용자의 아이디어를 자유 Q&A로 충분히 확장한 뒤, root-spec + 필요한 sub-spec들을 **한 번의 사용자 확인**으로 박제한다. 인터뷰가 끝나는 시점에 모든 spec의 `## Open Questions` 섹션이 비어 있어야 한다 — 모호한 항목은 인터뷰 안에서 default 후보로 즉답 받아 닫는다. 코드는 읽기만 하고 절대 수정하지 않는다.
+목적: 사용자의 아이디어를 자유 Q&A로 충분히 확장한 뒤, root-spec + sub-spec들 + (양성 신호 발화 시) Tech Spec + ARD까지 **한 번의 사용자 확인**으로 모두 박제한다. 인터뷰 종료 시점에 모든 spec의 `## Open Questions` 섹션이 비어 있어야 한다 — 모호한 항목은 인터뷰 안에서 default 후보로 즉답 받아 닫는다. **코드는 읽기만 하고 절대 수정하지 않는다.** Unity MCP read 도구는 Prefab 구조 박제에 한해 사용 가능.
 
 ## 절대 규칙
 
-1. **수정 허용 경로는 `docs/specs/**`뿐.** `Assets/`, `Packages/`, `ProjectSettings/`, 그 외 모든 코드/직렬화 자산은 수정 금지. (읽기는 허용. 인접 코드 이해를 위해 필요할 때만.)
-2. **Spec 본문에 구현 디테일 금지.** 구체적 함수명, 클래스명, 파일 경로, 자료구조, 알고리즘은 plan에 들어간다 — spec 본문에 새어 들어가지 않게 한다.
-3. **사용자 승인 없이 파일을 만들지 않는다.** 인터뷰 → 초안 제시 → 사용자 확인 → 작성 순서.
-4. **Open Questions 0건 강제.** 박제 시점에 root-spec + 모든 sub-spec의 `## Open Questions` 섹션은 비어 있어야 한다. 모호한 항목은 인터뷰 라운드 안에서 default 후보 2~3개로 분기시켜 즉답 받아 닫는다.
-5. **사용자가 답을 모르는 항목**도 추측·임의 결정 금지. 메인 세션이 default 후보 2~3개를 제시해 사용자가 default 채택 시 그 결정을 spec 본문에 그대로 박는다.
+1. **수정 허용 경로는 `docs/specs/**`뿐.** `Assets/`, `Packages/`, `ProjectSettings/`, 그 외 모든 코드/직렬화 자산은 수정 금지. (읽기는 허용.)
+2. **Spec 본문에 구현 디테일 금지.** 구체적 함수명, 클래스명, 파일 경로, 자료구조, 알고리즘은 plan에 들어간다 — spec 본문에 새어 들어가지 않게 한다. **Tech Spec/ARD에는 박제 허용** (이 두 문서가 spec → plan 사이의 설계 격리 계층).
+3. **사용자 승인 없이 파일을 만들지 않는다.** 인터뷰 → 통합 초안 제시 → 사용자 확인 → 작성 순서.
+4. **Open Questions 0건 강제.** 박제 시점에 root-spec + 모든 sub-spec의 `## Open Questions`는 비어 있어야 한다. 모호 항목은 인터뷰 라운드 안에서 default 후보 2~3개로 분기시켜 즉답 받아 닫는다.
+5. **사용자가 답을 모르는 항목**도 추측·임의 결정 금지. 메인 세션이 default 후보 2~3개를 제시해 사용자가 default 채택 시 그 결정을 spec/ARD 본문에 그대로 박는다.
+6. **Tech Spec/ARD는 양성 신호 발화 시에만 작성.** 신호 0건이면 둘 다 skip.
 
 ## 입력
 
@@ -33,8 +34,17 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash, Skill
 
 - 기존 피처의 sub-spec일 가능성이 보이면 → `docs/specs/`를 글롭하고 후보 root-spec(`_index.md`) 1개 정도만 읽는다.
 - 새 피처가 명백하면 이 단계를 건너뛴다.
-- `_templates/root-spec.md`, `_templates/sub-spec.md`는 **3단계 파일 작성 직전**에 읽는다. 처음부터 읽지 않는다.
-- 인접 코드/문서 읽기는 사용자가 명시적으로 요청하거나 spec의 What/Why 판단에 꼭 필요할 때만. 수정 금지.
+
+#### 도메인 지식 디스커버리
+
+사용자 아이디어에서 도메인 키워드(instrument / hand / anchor / rhythm / VR controller / pose 등)를 추출한다. 루트 `CLAUDE.md`의 **"도메인 지식 인덱스"** 섹션이 존재하면 거기서 매핑된 도메인 CLAUDE.md(`Assets/<도메인>/CLAUDE.md` 등) 1~3개를 Read.
+
+- 도메인 CLAUDE.md만으로 구조·확장 패턴·invariants를 파악할 수 있으면 거기서 멈춘다.
+- 부족하다고 판단되면(예: 사용자가 묻는 메커니즘이 CLAUDE.md에 없으면) 도메인 CLAUDE.md가 "확실히 보고 싶으면 이 파일 읽어라"로 지목한 **진입 스크립트 2~3개만** Read. 무차별 grep 금지.
+
+루트 인덱스가 없거나 도메인 CLAUDE.md가 없으면 글롭으로 `Assets/<도메인>/Scripts/` 안의 베이스 클래스·인터페이스 1~3개만 Read해 사실 박제.
+
+- `_templates/root-spec.md`, `_templates/sub-spec.md`, `_templates/tech-spec.md`, `_templates/decision.md`는 **3단계 파일 작성 직전**에 읽는다. 처음부터 읽지 않는다.
 
 ### 2. Q&A 라운드 (제한 없음, 사용자가 답을 줄 때까지)
 
@@ -53,27 +63,78 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash, Skill
 
 #### 라운드 종료 판정
 
-다음 5가지가 모두 충족되면 종료 직전 단계로 넘어간다.
+다음 5가지가 모두 충족되면 2.5단계로 넘어간다.
 - root-spec의 Why / What / 외부 관찰 동작이 명확.
 - 각 sub-spec의 책임 한 줄과 NN prefix 순서가 결정됨.
 - Out of Scope 항목이 적어도 1~2개 박제됨 (없을 때는 "현 시점 제외 항목 없음" 명시).
 - 인터뷰 도중 도출된 모든 모호 항목이 default 후보로 수렴 완료.
 - 모든 미결 항목 0건.
 
-### 3. 초안 제시 (단일 사용자 확인 게이트)
+### 2.5. 설계 결정 추출 (Tech Spec + ARD 통합 게이트)
 
-`_templates/root-spec.md`, `_templates/sub-spec.md`를 이 시점에 읽는다.
+각 sub-spec에 대해 다음을 메인 세션이 직접 수행한다. sub-agent 호출 없이 도메인 CLAUDE.md + (필요 시) 진입 스크립트 + (필요 시) Unity MCP read 도구로 점검.
+
+#### 2.5-1. Tech Spec 양성 신호 4종 점검
+
+각 sub-spec에 대해:
+1. **신규 클래스/컴포넌트 2개 이상 + 그들 사이 통신·의존**이 있는가?
+2. **기존 클래스의 public API 접속 또는 frame loop·event 구독에 끼어들기**가 필요한가?
+3. **데이터/제어 흐름이 한 컴포넌트 안에서 닫히지 않는가**?
+4. **Comparable Siblings** — `Assets/` 또는 `docs/specs/` 산하에 동급 자산이 1+개 존재하는데 sub-spec 본문에 비교 박제가 없는가?
+
+1건이라도 발화하면 `AskUserQuestion`으로 사용자에게 Tech Spec 작성 여부 3택:
+- **yes** → 2.5-2로.
+- **no (이번만 skip)** → Tech Spec 본문 만들지 않음. 다음 호출에 다시 묻힘.
+- **skip-permanently** → sub-spec 헤더에 `**Tech Spec:** skipped` 한 줄 박제 예정. Tech Spec 본문 안 만듦.
+
+양성 신호 0건이면 Tech Spec 단계 통째로 skip하고 2.5-3로.
+
+#### 2.5-2. Tech Spec 인터뷰 (yes 선택 시)
+
+`_templates/tech-spec.md`를 Read. Q&A 라운드 0~2회로 다음 7섹션 본문을 채운다.
+
+1. **Components** — 신규/수정될 클래스/컴포넌트 + 책임 한 줄씩.
+2. **Data / Control Flow** — 데이터·이벤트가 어디서 어디로 흐르는가.
+3. **Boundaries** — "이 sub-spec이 건드리지 않는다"고 단언할 영역. implementer가 침범하지 않을 가드레일.
+4. **Invariants** — 깨지지 않아야 할 불변식.
+5. **Assumptions** — 외부 컴포넌트·자산·MCP에 대한 사실 가정.
+6. **Comparable Siblings** — 같은 도메인의 기존 자산(예: Drum/Piano) 대비 어느 부분을 답습하고 어느 부분이 달라지는가.
+7. **Open Tech Decisions** — Tech Spec 안에서 닫히지 않는 결정. 이 항목들은 2.5-3 ARD 후보 시드로 자동 승격.
+
+**Prefab 구조 박제 (필수, 양성 신호에 prefab 포함될 때).** sub-spec이 prefab 계층에 의존하면 다음 절차로 박제한다.
+
+- Unity MCP 사용 가능: `find_gameobjects` 또는 `manage_prefabs.get_hierarchy`로 prefab 계층·컴포넌트·중첩 override를 조회 → Tech Spec `## Components` 또는 `## Assumptions`에 "**Prefab Hierarchy**" 서브섹션으로 박제. 출처는 `MCP find_gameobjects (YYYY-MM-DD)` 표기.
+- MCP 미가용: `AGENTS.md` "Unity MCP 사용 정책"에 따라 사용자에게 "MCP 없이 진행할까요?"를 묻고 yes면 `.prefab` YAML을 Read해 계층만 발췌 박제 + 정확도 낮음 1줄 경고. no면 인터뷰 멈춤.
+
+#### 2.5-3. ARD 후보 추출
+
+각 sub-spec에 대해 도메인 CLAUDE.md + spec 본문(+ Tech Spec이 있으면 Open Tech Decisions 우선)으로 **사용자 입력이 필요한 설계 결정 후보 0~5개**를 메인이 추출한다. 각 후보:
+
+- **결정 이름** (kebab-case, ARD 파일명 후보)
+- **배경 한 줄**
+- **options 2~3개**, 각 option은 spec의 `## What` 항목 1:1 매핑한 `spec_what_coverage`를 함께 박제 ("만족 못 함" 옵션은 라벨 끝 ⚠️).
+- **recommended** — `spec_what_coverage`가 모두 "만족"인 옵션 우선.
+
+추출된 후보를 `AskUserQuestion`으로 batch 질문(한 번에 최대 4개씩). 사용자 답을 받아 ARD 본문에 박을 `## Decision` + `## Rationale` + `## Spec What Coverage` + `## Consequences` 골격을 구성한다.
+
+모든 옵션이 ⚠️인 경우 경고 한 줄을 사용자에게 표시하고 spec `## What` 재검토 여부 1회 확인.
+
+후보 0개면 ARD 작성 없이 다음 단계로.
+
+### 3. 통합 초안 제시 (단일 사용자 확인 게이트)
+
+이 시점에 `_templates/root-spec.md`, `_templates/sub-spec.md`, (필요 시) `_templates/tech-spec.md` + `_templates/decision.md`를 Read.
 
 다음을 사용자에게 한 번에 보여준다:
 
 - **Feature 이름** (kebab-case 폴더명).
 - **새 root-spec(`_index.md`)을 만들지, 기존 피처에 sub-spec만 추가할지** 분기 명시.
-- **작성될 파일 경로 목록** + 각 sub-spec의 NN prefix.
-- **모든 spec 본문을 마크다운 블록 1개로 묶어 출력** — root-spec의 Why/What/Sub-Specs 표/Open Questions(빈 표기)/Status, 각 sub-spec의 What/Behavior/Out of Scope/Open Questions(빈 표기)/Implementation Plans(빈 표기) 섹션을 모두 채운 형태.
-- 박제 직전 한 줄 사실 확인: *"모든 spec의 Open Questions 섹션은 빈 상태(`_현재 열린 질문 없음._`). 박제 직후 `/spec-build <root-spec> --apply`로 자동 구현 진입 가능."*
+- **작성될 파일 경로 목록** — root-spec, 각 sub-spec(NN prefix 포함), 각 Tech Spec(있으면), 각 ARD(있으면).
+- **모든 본문을 마크다운 블록 1개로 묶어 출력** — root-spec(Why/What/Sub-Specs 표/Open Questions 빈 표기/Status), 각 sub-spec(What/Behavior/Out of Scope/Open Questions 빈 표기/Implementation Plans 빈 표기), 각 Tech Spec(7섹션 + Prefab Hierarchy), 각 ARD(Decision/Rationale/Spec What Coverage/Consequences).
+- 박제 직전 한 줄 사실 확인: *"모든 spec의 Open Questions는 빈 상태. 박제 직후 `/spec-build <root-spec> --apply`로 자동 구현 진입 가능."*
 
-`AskUserQuestion`으로 3택을 묻는다:
-- **그대로 박제** — 5단계로.
+`AskUserQuestion`으로 3택:
+- **그대로 박제** → 5단계로.
 - **일부 수정** — 어디를 어떻게 수정할지 사용자가 자유 텍스트로 답 → 2단계로 회귀해 짧은 보강 라운드.
 - **다른 라운드** — 더 큰 변경이 필요. 2단계 처음으로 회귀.
 
@@ -85,31 +146,24 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash, Skill
 
 승인 후에만 진행:
 
-- 새 root-spec: `docs/specs/<feature-kebab>/_index.md` — `_templates/root-spec.md`를 베이스로.
-  - `## Open Questions` 섹션은 `_현재 열린 질문 없음._` 한 줄로 채운다.
-- Sub-spec: `docs/specs/<feature-kebab>/specs/<NN>-<sub-name>.md` — `_templates/sub-spec.md`를 베이스로. 헤더의 `Parent` 링크 정확히 채움.
-  - **`NN`(구현 순서 prefix) 발급 절차** ([`docs/specs/README.md`](../../docs/specs/README.md) "Sub-Spec 파일명" 단일 진실원):
-    1. 같은 피처에 이미 등록된 sub-spec들의 가장 큰 번호 + 1을 새 prefix로 부여한다 (zero-pad 2자리).
-    2. 사용자가 사이 삽입을 요청하면 영향받는 sub-spec과 모든 링크(상호 참조 + `_index.md` Sub-Specs 표)를 함께 재번호한다.
-    3. 새 root-spec과 함께 sub-spec 여러 개를 동시에 만들 때는 사용자가 결정한 순서대로 `01`, `02`, … 부여.
-  - 각 sub-spec의 `## Open Questions` 섹션도 `_현재 열린 질문 없음._` 한 줄.
-- Root-spec의 `## Sub-Specs` 표에 sub-spec 행을 추가 (둘 다 만든 경우).
-- **`docs/specs/README.md` 상태 보드 갱신은 필수.** 새 root-spec을 만든 경우 행을 추가하고, 기존 피처에 sub-spec만 추가한 경우 해당 행의 `Sub-Specs` 카운트를 갱신한다.
-- Plan은 만들지 않는다. (`plans/` 디렉토리는 비어 있어도 된다 — 후속 `/spec-build`가 자동 작성한다.)
+- 새 root-spec: `docs/specs/<feature-kebab>/_index.md` — `_templates/root-spec.md` 베이스. `## Open Questions`는 `_현재 열린 질문 없음._` 한 줄.
+- Sub-spec: `docs/specs/<feature-kebab>/specs/<NN>-<sub-name>.md` — `_templates/sub-spec.md` 베이스. `Parent` 링크 정확히 채움. `## Open Questions`는 `_현재 열린 질문 없음._` 한 줄.
+  - `NN` 발급: 같은 피처에 이미 등록된 sub-spec들의 가장 큰 번호 + 1. 새 root-spec과 함께 sub-spec 여러 개 만들 때는 사용자가 결정한 순서대로 `01`, `02`, …
+  - Tech Spec을 skip-permanently로 선택한 sub-spec은 헤더에 `**Tech Spec:** skipped` 한 줄 박제.
+- Tech Spec: `docs/specs/<feature-kebab>/tech-specs/<NN>-<title>.md` — `_templates/tech-spec.md` 베이스. NN은 대응 sub-spec과 동일. 7섹션 + (해당 시) Prefab Hierarchy 박제.
+- ARD: `docs/specs/<feature-kebab>/decisions/<NN>-<title>.md` — `_templates/decision.md` 베이스. NN은 같은 feature의 decisions/ 내 가장 큰 NN + 1 (없으면 01). Tech Spec에서 도출된 ARD면 헤더에 `**From Tech Spec:** <path> §Open Tech Decisions #N` 박제. 동시에 Tech Spec의 대응 항목 끝에 `→ decisions/<NN>-*.md` 한 줄 append Edit.
+- Root-spec의 `## Sub-Specs` 표에 sub-spec 행 추가 (둘 다 만든 경우).
+- **`docs/specs/README.md` 상태 보드 갱신 필수.** 새 root-spec이면 행 추가, 기존 피처에 sub-spec만 추가면 카운트 갱신.
+- Plan은 만들지 않는다. (`plans/` 디렉토리는 비어 있어도 된다 — `/spec-build`가 자동 작성.)
 
 ### 6. 마무리
 
 - 작성·갱신된 파일 경로 목록을 짧게 출력한다.
-- **commit 권고.** 본 명령의 Write/Edit는 모두 `docs/specs/**` 안에 머무르므로 atomic 단위로 바로 commit하는 것이 자연스럽다. 사용자에게 "지금 `git-workflow` skill로 commit할까요?"를 한 번 묻는다 (`AskUserQuestion` 또는 자유 텍스트). 동의하면 그대로 진행, 거절하면 변경 파일 목록만 다시 표시하고 종료. 본 명령은 직접 commit하지 않는다 — 사용자 동의 후 git-workflow skill에 위임만 한다.
+- **commit 권고.** 본 명령의 Write/Edit는 모두 `docs/specs/**` 안에 머무르므로 atomic 단위로 바로 commit하는 것이 자연스럽다. 사용자에게 "지금 `git-workflow` skill로 commit할까요?"를 한 번 묻는다. 동의하면 그대로 진행, 거절하면 변경 파일 목록만 다시 표시하고 종료. 본 명령은 직접 commit하지 않는다.
 - 다음 권장 액션 안내:
   ```
   다음: /spec-build docs/specs/<feature>/_index.md --apply
   ```
-  자동 plan drafting → quality review → 구현이 한 호출로 직렬 진행된다. plan 본문은 사용자에게 보여주지 않으며, 구현 도중 manual-hard 검증 시점에만 사용자 결정이 필요하다.
-
-## /spec-resolve 흡수 명시
-
-본 명령은 인터뷰 안에서 모호 항목을 default 후보로 닫으므로 **별도 `/spec-resolve` 라운드를 호출할 필요가 없다.** 다만 기존 `/spec-resolve`는 그대로 살아 있어, 박제된 spec에 후일 새로운 모호 항목이 추가될 경우 그쪽으로 처리한다.
 
 ## 출력 형식
 

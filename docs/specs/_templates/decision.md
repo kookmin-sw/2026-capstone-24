@@ -1,6 +1,6 @@
 <!--
-Architecture Decision Record. /spec-build 통합 설계 게이트(phase -1+0)의 ARD 단계가
-spec-design-extractor의 후보 + 사용자 답을 박제한다. 본 파일은 plan-drafter가
+Architecture Decision Record. /spec-interview의 ARD 후보 추출 단계가 메인 세션
+추출 결과 + 사용자 답을 박제한다. 본 파일은 /spec-build의 planner sub-agent가
 plan 작성 시 참고한다.
 -->
 
@@ -25,6 +25,6 @@ plan 작성 시 참고한다.
 
 ## Consequences
 
-- <결정으로 인해 plan-drafter가 따라야 할 제약 1>
+- <결정으로 인해 planner가 따라야 할 제약 1>
 - <제약 2>
 - <향후 변경 시 이 결정을 다시 평가해야 하는 trigger 조건>

@@ -1,6 +1,6 @@
 ---
-name: plan-orchestrator
-description: docs/specs/<feature>/plans/ 아래 plan 파일 한 개의 라이프사이클(컨텍스트 적재 → plan-implementer 호출 → plan-reviewer 호출 → 자동 Acceptance Criteria 검증)을 격리된 sub-agent 컨텍스트에서 수행하고, 메인 세션에는 컴팩트 리포트 한 장만 반환합니다. 코드 변경은 working tree에 적용한 채로 종료하며, git commit은 메인 세션이 manual-hard 검증 통과 후에 git-workflow skill로 처리합니다. /spec-implement orchestrator가 호출하며, plan 파일·Linked Spec·parent _index.md·이전 plan handoff 누적·Acceptance Criteria 라벨 분류만을 입력으로 받습니다. plan 파일 편집·사용자 입력·plan-complete 호출·git commit은 절대 하지 않습니다.
+name: orchestrator
+description: docs/specs/<feature>/plans/ 아래 plan 파일 한 개의 라이프사이클(컨텍스트 적재 → implementer 호출 → reviewer 호출 → 자동 Acceptance Criteria 검증)을 격리된 sub-agent 컨텍스트에서 수행하고, 메인 세션에는 컴팩트 리포트 한 장만 반환합니다. 코드 변경은 working tree에 적용한 채로 종료하며, git commit은 메인 세션이 manual-hard 검증 통과 후에 git-workflow skill로 처리합니다. /spec-build가 호출하며, plan 파일·Linked Spec·parent _index.md·이전 plan handoff 누적·Acceptance Criteria 라벨 분류만을 입력으로 받습니다. plan 파일 편집·사용자 입력·doc-updater 호출·git commit은 절대 하지 않습니다.
 model: sonnet
 tools: Read, Glob, Grep, Bash, Task, Skill, mcp__UnityMCP__read_console
 mcpServers:
@@ -33,8 +33,8 @@ mcpServers:
 - plan 파일·Linked Spec·parent `_index.md`를 Read.
 - 셋 중 하나라도 존재하지 않으면 `next_action: implementer-blocked`, status `failed`, unresolved에 사유 적고 종료.
 
-### 2. plan-implementer 호출
-- `Task` 도구로 `plan-implementer` 호출. 입력 4종(plan, linked spec, parent index, prev_handoff) 전달.
+### 2. implementer 호출
+- `Task` 도구로 `implementer` 호출. 입력 4종(plan, linked spec, parent index, prev_handoff) 전달.
 - 반환된 4섹션(`## 변경 파일`/`## Commit 후보`/`## Handoff 요약 후보`/`## 미해결`) 보관.
 - implementer가 "모호함"으로 멈추면 `next_action: implementer-blocked`, status `needs-user-input`으로 종료.
 
@@ -49,10 +49,10 @@ mcpServers:
 - 반환값 첫 줄이 `PASS` → 결과를 `test_report`에 보관하고 4단계로.
 - 반환값 첫 줄이 `FAIL` → `next_action: test-failed`, status `needs-user-input`. 리포트를 `unresolved`에 그대로 포함하고 종료. **변경사항은 working tree에 남는다 (메인이 처리).**
 - 반환값 첫 줄이 `COMPILE ERROR` → `next_action: compile-error`, status `failed`. 종료.
-- 반환값 첫 줄이 `MCP UNAVAILABLE` → `test_report`에 "테스트 미실행 (MCP 미가용)" 기록 후 4단계로 진행. (테스트 부재로 plan-reviewer 차단 금지)
+- 반환값 첫 줄이 `MCP UNAVAILABLE` → `test_report`에 "테스트 미실행 (MCP 미가용)" 기록 후 4단계로 진행. (테스트 부재로 reviewer 차단 금지)
 
-### 4. plan-reviewer 호출
-- `Task` 도구로 `plan-reviewer` 호출. 입력 4종(plan, linked spec, diff, ac 원문) 전달. `test_report`가 있으면 함께 전달.
+### 4. reviewer 호출
+- `Task` 도구로 `reviewer` 호출. 입력 4종(plan, linked spec, diff, ac 원문) 전달. `test_report`가 있으면 함께 전달.
 - 반환값 `pass` → 5단계로.
 - 반환값 `needs-fix` → `next_action: review-failed`, status `needs-user-input`. 사유 그대로 unresolved에 보관 후 종료. **자동 검증 단계 건너뛴다. 변경사항은 working tree에 남는다 (메인이 처리).**
 
@@ -84,7 +84,7 @@ Unity MCP가 검증 도중 끊기면 `next_action: mcp-down`, status `needs-user
 
 - plan 파일을 수정하지 않는다.
 - **`git commit` 또는 `git-workflow` skill을 호출하지 않는다.** commit은 메인 세션이 manual-hard 통과 후 처리한다.
-- `plan-complete` skill을 호출하지 않는다.
+- `doc-updater` Task를 호출하지 않는다.
 - 사용자에게 질문하지 않는다 — 모든 멈춤 사유는 `next_action`으로 신호한다.
 - 메인 세션의 사고나 다른 plan의 컨텍스트를 가정하지 않는다. 입력 5종만 사용한다.
 - AGENTS.md "상시 규칙"과 "Unity MCP 사용 정책"을 따른다 — 단, 사용자에게 묻는 대신 `next_action: mcp-down`으로 신호.
@@ -103,7 +103,7 @@ Unity MCP가 검증 도중 끊기면 `next_action: mcp-down`, status `needs-user
 `completed` | `needs-user-input` | `failed`
 
 ## next_action
-`none` | `manual-hard-verification` | `handoff-approval` | `review-failed` | `implementer-blocked` | `tree-dirty` | `mcp-down` | `compile-error`
+`none` | `manual-hard-verification` | `handoff-approval` | `review-failed` | `implementer-blocked` | `tree-dirty` | `mcp-down` | `compile-error` | `test-failed`
 
 ## plan_path
 `<plan 파일 경로 그대로>`

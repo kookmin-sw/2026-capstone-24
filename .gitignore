@@ -31,7 +31,8 @@
 # Claude plan docs (local working notes)
 /docs/plans/
 
-# /spec-implement orchestrator 진행 상태 캐시 (로컬 전용)
+# /spec-build 진행 상태 캐시 (로컬 전용)
+/docs/specs/**/.feature-build-state.json
 /docs/specs/**/.orchestrator-state.json
 
 # Unity scene auto-recovery

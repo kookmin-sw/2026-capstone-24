@@ -41,7 +41,7 @@
 | 2026-05-03 | Session Lead-in 구현 — 클락 음수 시작 오프셋 | Ready | [2026-05-03-linksky0311-session-lead-in-clock-offset.md](../plans/2026-05-03-linksky0311-session-lead-in-clock-offset.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
-> Plan 추가는 `/plan-new` 사용. 파일명은 날짜·작성자·slug 기반.
+> Plan 추가는 `/spec-build`가 planner sub-agent로 처리. 파일명은 날짜·작성자·slug 기반.
 
 ## Open Questions
 

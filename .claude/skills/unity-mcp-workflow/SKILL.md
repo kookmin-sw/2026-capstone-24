@@ -1,6 +1,6 @@
 ---
 name: unity-mcp-workflow
-description: Unity MCP 도구로 스크립트·씬·컴포넌트·프리팹·애니메이션·카메라·물리·UI를 생성·수정하기 직전에 사용한다. Resource-First 사전 점검, 스크립트 컴파일 대기, 변경 후 read_console·screenshot 검증, batch_execute 의존성 처리, UI Toolkit/uGUI 분기, VR 손/카메라/물리 도메인 가이드, precondition_sha256 stale-file 방지, 도메인 리로드·"Already Exists"·컴파일 블록 같은 error recovery 절차를 안내한다. plan-implementer·unity-scene-writer·unity-scene-reader가 자동 invoke한다.
+description: Unity MCP 도구로 스크립트·씬·컴포넌트·프리팹·애니메이션·카메라·물리·UI를 생성·수정하기 직전에 사용한다. Resource-First 사전 점검, 스크립트 컴파일 대기, 변경 후 read_console·screenshot 검증, batch_execute 의존성 처리, UI Toolkit/uGUI 분기, VR 손/카메라/물리 도메인 가이드, precondition_sha256 stale-file 방지, 도메인 리로드·"Already Exists"·컴파일 블록 같은 error recovery 절차를 안내한다. implementer·unity-scene-writer·unity-scene-reader가 자동 invoke한다.
 allowed-tools: Read, Edit, Glob, Grep, Bash, mcp__UnityMCP__read_console, mcp__UnityMCP__refresh_unity, mcp__UnityMCP__find_gameobjects, mcp__UnityMCP__manage_asset, mcp__UnityMCP__manage_components, mcp__UnityMCP__manage_gameobject, mcp__UnityMCP__manage_scene, mcp__UnityMCP__manage_prefabs, mcp__UnityMCP__manage_script
 ---
 
@@ -53,7 +53,7 @@ Unity MCP 도구를 처음 호출하기 직전에 다음 1~3종을 1회 읽고, 
 
 매 변경 단위(논리적 한 묶음) 직후 다음을 수행한다.
 
-1. **콘솔 검증.** `read_console(types=["error","warning"], count=10)` — 새로 생긴 error/warning 없음 확인. warning은 plan에 따라 무시 가능하나 plan-quality-reviewer 점검 대상.
+1. **콘솔 검증.** `read_console(types=["error","warning"], count=10)` — 새로 생긴 error/warning 없음 확인. warning은 plan에 따라 무시 가능하나 reviewer 점검 대상.
 2. **시각 검증 (선택).** GameObject 배치/카메라 lens/머티리얼/UI 같은 **시각적 변화가 핵심**인 변경에는 screenshot 1장.
    - `manage_camera(action="screenshot", capture_source="game_view"|"scene_view", view_target="<이름>", batch="single", width=512, include_image=True)` 권장.
    - 해상도 256–512px로 token 절약. 다각도가 필요할 때만 `batch="surround"` 또는 `batch="orbit"`.
@@ -72,7 +72,7 @@ Unity MCP 도구를 처음 호출하기 직전에 다음 1~3종을 1회 읽고, 
 - 독립 작업 ≥ 2개를 묶을 수 있을 때 (예: GameObject 5개 한꺼번에 생성).
 - 같은 도구를 반복 호출할 때 (grid spawn, 동일 컴포넌트 부착).
 - 여러 `find_gameobjects`로 발견 단계만 처리할 때.
-- **(의무)** 동일 plan/단계 안에서 같은 도구를 **3회 이상** 반복 호출하게 되면 `batch_execute`로 묶는다. 묶지 않은 채 4회째 호출은 `plan-reviewer`가 `needs-fix` 처리한다. `find_gameobjects`류 read 도구는 timeout 영향 최소화를 위해 2회 묶기까지 허용.
+- **(의무)** 동일 plan/단계 안에서 같은 도구를 **3회 이상** 반복 호출하게 되면 `batch_execute`로 묶는다. 묶지 않은 채 4회째 호출은 `reviewer`가 `needs-fix` 처리한다. `find_gameobjects`류 read 도구는 timeout 영향 최소화를 위해 2회 묶기까지 허용.
 
 ### 4.2 fail_fast 결정
 
@@ -169,14 +169,14 @@ UI를 만들거나 수정할 때는 **반드시** Step 0를 먼저 한다. 본 �
 2. 편집 호출에 `precondition_sha256=<위 SHA>` 전달.
 3. 호출이 SHA 불일치로 실패하면 → SHA 재취득 → 편집 내용 재계산(파일이 그 사이 바뀌었을 수 있음) → 재시도.
 
-**안티패턴.** SHA 없이 편집 → 동시 편집 발생 시 silent overwrite. 특히 plan-implementer가 파일을 수정하는 도중 사용자가 IDE에서 같은 파일을 저장한 경우.
+**안티패턴.** SHA 없이 편집 → 동시 편집 발생 시 silent overwrite. 특히 implementer가 파일을 수정하는 도중 사용자가 IDE에서 같은 파일을 저장한 경우.
 
 ### 7.2 API 사전 검증
 
 새 컴포넌트의 public API를 호출하는 코드를 작성하기 전에:
 
 - `mcp__UnityMCP__unity_reflect`로 시그니처/필드 확인 (현재 화이트리스트 외 → prompt 승인 필요), 또는
-- `Read <패키지 소스 .cs>` 직접 — 본 프로젝트 plan-drafter 표준 절차. 라인 범위가 아닌 *동작 요약 리스트*로 박제.
+- `Read <패키지 소스 .cs>` 직접 — 본 프로젝트 planner 표준 절차. 라인 범위가 아닌 *동작 요약 리스트*로 박제.
 
 **안티패턴.** 트레이닝 데이터 기억으로 API 시그니처 추측. Unity 6000.3 패키지가 메이저 변경된 경우 즉시 컴파일 에러.
 
@@ -189,7 +189,7 @@ UI를 만들거나 수정할 때는 **반드시** Step 0를 먼저 한다. 본 �
 | 도메인 리로드 연결 손실 | 스크립트 컴파일 중 MCP 연결 끊김 | 2~5초 대기 → `editor/state` polling → `ready_for_tools=true`까지 exponential backoff (최대 5회). 그래도 실패하면 STOP. |
 | "Already Exists" | 같은 이름의 GameObject/asset 존재 | `find_gameobjects(name=...)`로 충돌 확인 → 고유 이름 또는 기존 객체 삭제 후 재생성 |
 | ProBuilder face index 변경 | 메시 편집 후 topology 재할당 | (본 skill 범위 외 — 사용 시 별도 가이드) |
-| MCP 미가용 | 도구가 세션에 노출 안 됨 또는 Unity Editor 죽음 | 즉시 STOP. plan-orchestrator/메인에 보고. Edit 우회 시도 금지 (AGENTS.md "Unity MCP 사용 정책"). |
+| MCP 미가용 | 도구가 세션에 노출 안 됨 또는 Unity Editor 죽음 | 즉시 STOP. orchestrator/메인에 보고. Edit 우회 시도 금지 (AGENTS.md "Unity MCP 사용 정책"). |
 | YAML 헤더 손상 | 잘못된 텍스트 Edit | 추가 변경 중단. 메인에 보고. `unity-asset-edit` SKILL의 "에디터 로드 실패 시 포맷 복구" 절차 적용. |
 
 ## 9. MCP 미가용 시 fallback (재명시)
@@ -198,7 +198,7 @@ UI를 만들거나 수정할 때는 **반드시** Step 0를 먼저 한다. 본 �
 
 상위 에이전트별 보고 의무:
 
-- **plan-implementer.** MCP 끊김/실패 → `mcp_unavailable` 보고 후 STOP. Edit fallback 시도 금지. 단독 판단으로 `UNITY_YAML_OVERRIDE` 설정 금지.
+- **implementer.** MCP 끊김/실패 → `mcp_unavailable` 보고 후 STOP. Edit fallback 시도 금지. 단독 판단으로 `UNITY_YAML_OVERRIDE` 설정 금지.
 - **unity-scene-writer.** MCP 미가용 → "변경 적용 불가" 보고 후 멈춘다. 추측·우회 금지.
 - **unity-scene-reader.** MCP 미가용 → `Read+Grep`으로 수집 가능한 직렬화 사실만 보고 + "MCP 미가용으로 X/Y 정보 미확인" 한계 명시. 가정으로 채우지 않는다.
 

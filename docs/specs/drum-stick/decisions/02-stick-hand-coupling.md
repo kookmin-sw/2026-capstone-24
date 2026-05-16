@@ -23,7 +23,7 @@ Stick에 신규 컴포넌트를 부착해 다음 동작을 구현한다.
 
 - 이미 프로젝트에는 Ghost/Physics/Play의 3-hand 구조와 [`PlayHandPoseDriver`](../../../../Assets/Hands/Scripts/PlayHandPoseDriver.cs)의 priority 체인 `grip override > physics > ghost fallback`이 박제돼 있다. Stick이 *하나의 source*로 PlayHand를 점유하는 모델은 이 체인의 grip override 슬롯과 정확히 같은 추상화다.
 - Ghost Hand는 컨트롤러/핸드 트래킹 입력을 그대로 받는 "사용자 의도" 좌표다. Stick이 Ghost를 따라가면 컨트롤러 입력 → ghost → stick → playhand 체인이 끝까지 동일 좌표로 이어져, 사용자가 손을 움직였을 때 stick과 PlayHand가 한 덩어리로 움직인다.
-- Stick에 hand prefab을 미리 붙여 두면 "어떤 pose로 잡혔는가"가 stick prefab 자체의 직렬화된 사실이 된다. plan-implementer가 anchor 도착 시점에 별도 pose 결정 로직을 갖지 않아도 된다.
+- Stick에 hand prefab을 미리 붙여 두면 "어떤 pose로 잡혔는가"가 stick prefab 자체의 직렬화된 사실이 된다. implementer가 anchor 도착 시점에 별도 pose 결정 로직을 갖지 않아도 된다.
 - Stick-hand의 렌더링을 끄는 것은 Physics Hand 패턴을 그대로 답습하므로 신규 코드 경로가 거의 없다.
 
 ## How to apply

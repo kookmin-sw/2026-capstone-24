@@ -26,10 +26,26 @@
 
 - Unity 런타임 코드(`.cs`) 수정 후에는 `unity-test-runner` 서브에이전트를 1회 호출해 회귀를 확인한다.
 - `unity-test-runner`는 **코드·자산을 절대 수정하지 않는다** — 검증 전용.
-- plan-orchestrator는 `plan-implementer` 완료 직후, `plan-reviewer` 호출 전에 `unity-test-runner`를 호출한다.
+- `orchestrator`는 `implementer` 완료 직후, `reviewer` 호출 전에 `unity-test-runner`를 호출한다.
 - `unity-test-runner` FAIL → `next_action: test-failed`로 메인에 보고 후 대기. 자동 수정 시도 금지.
-- MCP 미가용으로 테스트 실행 불가 시 → `MCP UNAVAILABLE` 리포트 후 plan-reviewer는 그대로 진행한다.
+- MCP 미가용으로 테스트 실행 불가 시 → `MCP UNAVAILABLE` 리포트 후 `reviewer`는 그대로 진행한다.
 
 ## Spec 시스템
 
-Spec/plan 분리 구조, 파일명 규칙, `/spec-implement` 진입점(dry-run 기본, `--apply`로 실행), plan 실행 읽기 순서, 상태 보드는 [`docs/specs/README.md`](docs/specs/README.md)가 단일 진실원이다.
+Spec/plan 분리 구조, 파일명 규칙, plan 실행 읽기 순서, 상태 보드는 [`docs/specs/README.md`](docs/specs/README.md)가 단일 진실원이다.
+
+진입점은 2개:
+- `/spec-interview [아이디어]` — 자유 Q&A로 root spec + sub-spec + (필요 시) Tech Spec + ARD 한 번에 박제.
+- `/spec-build <root-spec> [--apply]` — 박제된 root-spec을 받아 sub-spec 큐를 planner → 사용자 검토 → orchestrator(implementer+reviewer+test) → 사용자 테스트 → plan 단위 atomic commit으로 진행. sub-spec 종료 시 doc-updater + 정리 commit.
+
+## 도메인 지식 인덱스
+
+`/spec-interview` 컨텍스트 파악 단계에서 사용자 아이디어 키워드 → 해당 도메인 CLAUDE.md를 우선 Read한다. 도메인 CLAUDE.md가 부족하면 "확실히 보고 싶으면 이 파일 읽어라"로 지목된 진입 스크립트 2~3개만 추가 Read.
+
+| 도메인 키워드 | CLAUDE.md 경로 | 주요 책임 |
+|---|---|---|
+| (작성 예정) | `Assets/Instruments/CLAUDE.md` | 악기 추가/연주·사운드 출력 |
+| (작성 예정) | `Assets/Hands/CLAUDE.md` | VR 손/포즈/그립 |
+| (작성 예정) | `Assets/Instruments/Drum/CLAUDE.md` 또는 `Piano/` | 기존 instrument 사례 |
+
+> 본 표는 비어 있을 때 `/spec-interview` 컨텍스트 파악 단계가 fallback으로 글롭한다. 도메인 CLAUDE.md를 추가하면 이 표에 1줄을 등록해 진입점을 노출한다.
