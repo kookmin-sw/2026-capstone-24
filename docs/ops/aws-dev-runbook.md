@@ -126,6 +126,13 @@ EC2 외부에서:
 curl -s http://<ec2-public-dns>:8080/actuator/health | jq .
 ```
 
+> spring 서비스는 `awslogs` Docker 로그 드라이버를 사용하므로 `docker compose logs spring` / `docker logs <id>` 는 동작하지 않는다. 부팅 로그·런타임 로그는 CloudWatch Logs 의 `/ec2/murang-spring` (또는 `MURANG_SPRING_LOG_GROUP` 으로 override) 에서 확인한다.
+>
+> ```bash
+> aws logs tail /ec2/murang-spring --follow --since 5m --region ap-northeast-2
+> aws logs tail /ec2/murang-spring --filter-pattern "ERROR" --since 1h --region ap-northeast-2
+> ```
+
 ---
 
 ## 5. Smoke — 룸 생성/입장/종료
