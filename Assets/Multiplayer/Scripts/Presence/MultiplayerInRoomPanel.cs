@@ -294,7 +294,7 @@ namespace Murang.Multiplayer.Presence
         void INetworkRunnerCallbacks.OnReliableDataProgress(NetworkRunner runner, PlayerRef player, ReliableKey key, float progress) { }
         void INetworkRunnerCallbacks.OnInput(NetworkRunner runner, NetworkInput input) { }
         void INetworkRunnerCallbacks.OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
-        void INetworkRunnerCallbacks.OnSessionListUpdated(NetworkRunner runner, List<Fusion.Photon.Realtime.SessionInfo> sessionList) { }
+        void INetworkRunnerCallbacks.OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) { }
         void INetworkRunnerCallbacks.OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) { }
         void INetworkRunnerCallbacks.OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) { }
         void INetworkRunnerCallbacks.OnSceneLoadDone(NetworkRunner runner) { }
