@@ -9,6 +9,15 @@ spring:
       minimum-idle: 3
       connection-timeout: 5000
 
+management:
+  cloudwatch:
+    metrics:
+      export:
+        enabled: true
+        namespace: Murang/Room
+        step: 60s
+        batch-size: 20
+
 murang:
   room:
     internal-callback:
