@@ -55,14 +55,15 @@
 - `Assets/Multiplayer/Scripts/Presence/MultiplayerLobbyPanel.cs` — `ShowLobby()` public 메서드 한 줄 보강
 - `Assets/Multiplayer/Scripts/Room/Tests/ParticipantDisplayFormatterTests.cs` — EditMode 단위 테스트
 
+## 검증 기준
+
+본 plan 의 acceptance 는 [`01-user-auth`](../specs/01-user-auth.md) 와 동일하게 **Quest 실기기 빌드(APK 사이드로드)** 만으로 판정한다. Unity Editor Play 환경에서만 재현되는 동작 이슈는 acceptance 위반으로 취급하지 않으며, 별도 plan 으로 분리하지 않고 무시한다. (참고: [`cd80f2b docs(specs/multiplayer-network/01-user-auth)`](https://github.com/kookmin-sw/2026-capstone-24/commit/cd80f2b).)
+
 ## Acceptance Criteria
 
 - [ ] `[auto-hard]` `ParticipantDisplayFormatterTests` 단위 테스트 통과 — LocalPlayer "You" 분기, prefix 길이, 빈 playerId 처리 등 ≥ 4 케이스.
 - [ ] `[auto-hard]` Unity Editor 컴파일 통과 + 기존 EditMode 테스트(`RoomPasswordHasherTests`, `RoomAuthorityValidateJoinTests`, `RoomListMapperTests`, `RoomServerCallbackConfigTests`, `RoomProvisioningServiceTests`) 회귀 없음.
-- [ ] `[manual-hard]` Editor PlayMode: 로비에서 룸 생성 (또는 합류) → in-room 패널 활성화, LocalPlayer 1명 행 표시.
-- [ ] `[manual-hard]` Editor PlayMode 듀얼 클라이언트: 두 번째 client 가 같은 룸에 합류 → 양쪽 in-room 패널에 2명 행 표시, 한 쪽이 leave 시 다른 쪽 즉시 1명으로 갱신.
-- [ ] `[manual-hard]` Editor PlayMode: in-room 에서 Leave 버튼 클릭 → 로비 패널 복귀 + lobby statusLabel 초기화 + Photon NetworkRunner shutdown 로그 확인.
-- [ ] `[manual-hard]` Quest 실기기 빌드 (aws-dev backend): 선행 plan 의 룸 생성 흐름 통과 후 in-room 패널이 활성화되고 본인이 1명으로 표시. 2번째 Quest 또는 Editor 클라이언트로 합류해 듀얼 입퇴장 검증 (참가자 리스트 실시간 반영).
+- [ ] `[manual-hard]` Quest 실기기 빌드 (aws-dev backend): 선행 plan 의 룸 생성 흐름 통과 후 in-room 패널이 활성화되고 본인이 1명으로 표시. 2번째 Quest (또는 Quest 한 대 + Quest 빌드의 PC standalone build) 로 합류해 듀얼 입퇴장 검증 (참가자 리스트 실시간 반영). Leave 버튼 클릭 시 로비 복귀 + Photon shutdown 까지 한 사이클 확인.
 
 ## Out of Scope
 
@@ -74,9 +75,9 @@
 
 ## Notes
 
-- 본 plan 의 PlayMode 듀얼 클라이언트 검증은 `tools/run-stack-smoke` 자동화 (선행 active plan) 의 `same-session` 시나리오에 패널 자동 캡처를 추가하는 후속 plan 으로 회귀 가드를 강화 가능.
 - 본인 표시("You") 의 정확한 판단 기준은 `runner.LocalPlayer == playerRef`. Photon Fusion 의 LocalPlayer 가 즉시 채워지지 않을 가능성이 있어 `OnConnectedToServer` 이후 한 번 `RefreshParticipantRows()` 를 재호출하는 안전 장치 필요.
-- nickname 채널을 추가하는 후속 plan 에서는 Photon `AuthenticationValues.SetAuthPostData(...)` 또는 RoomJoinTicket payload (07 spec 대응 plan) 로 nickname 을 함께 보내는 방식이 가장 단순.
+- nickname 채널을 추가하는 후속 plan 에서는 Photon `AuthenticationValues.SetAuthPostData(...)` 또는 RoomJoinTicket payload 로 nickname 을 함께 보내는 방식이 가장 단순.
+- `tools/run-stack-smoke` 자동화 (별도 active plan) 의 `same-session` 시나리오에 본 plan 의 행 갱신 검증을 결합하는 회귀 가드 강화는 후속 plan 책임.
 
 ## Handoff
 

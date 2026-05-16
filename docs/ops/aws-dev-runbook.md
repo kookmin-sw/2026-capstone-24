@@ -12,6 +12,7 @@ EC2 control-plane + ECS Fargate room-server 토폴로지([`aws-dev-topology.md`]
 - `aws` CLI v2 인증 완료 (`aws sts get-caller-identity` 통과)
 - 로컬 Docker 이미지 빌드 환경
 - `~/.env.aws-dev.example` → 값 채워 둔 `.env.aws-dev` (아직 EC2 안 올라간 상태)
+- (선택) compose 정합성 사전 검증 — [`tools/validate-compose.{sh,ps1}`](../../tools/validate-compose.sh) 는 `.env.aws-dev.example` placeholder 로 `docker compose config --quiet` 를 실행해 syntax / structure 만 확인한다. CI 또는 PR 단계에서 호출하면 plan AC #1 [auto-hard] 가 회귀하는지 가장 빠르게 잡힌다.
 
 ---
 
@@ -156,23 +157,37 @@ curl -s http://<ec2-public-dns>:8080/actuator/health | jq .
 
 ## 6. MariaDB 일일 백업 (cron)
 
-```bash
-sudo mkdir -p /var/backups/mariadb
-sudo chmod 700 /var/backups/mariadb
-# 호스트 cron 으로 설치 (compose 컨테이너 안에서는 X)
-sudo bash -c 'cat > /etc/cron.d/murang-mariadb-dump <<EOF
-30 4 * * * root docker compose -f /home/ubuntu/2026-capstone-24/docker-compose.ec2-dev.yml --env-file /home/ubuntu/.env.aws-dev exec -T mariadb sh -c "mysqldump -u root -p\${MARIADB_ROOT_PASSWORD} \${MARIADB_DATABASE}" > /var/backups/mariadb/murang-\$(date +\%Y\%m\%d).sql
-EOF'
-```
+백업 명령 자체는 [`tools/mysqldump-cron.sh`](../../tools/mysqldump-cron.sh) wrapper 가 캡슐화한다 (`--single-transaction --quick --routines --triggers` + gzip + retention rotation). cron 은 wrapper 만 호출.
 
-검증:
+### 1. 수동 1회 실행 → wrapper 정상 동작 확인
 
 ```bash
-sudo run-parts --test /etc/cron.d
-ls -lh /var/backups/mariadb/   # 다음날 04:30 이후 .sql 파일 존재 확인
+sudo /home/ubuntu/2026-capstone-24/tools/mysqldump-cron.sh
+ls -lh /var/backups/mariadb/                                 # murang-YYYYMMDD-HHMMSS.sql.gz 존재
+sudo zcat /var/backups/mariadb/murang-*.sql.gz | head -20    # CREATE TABLE / INSERT 보임
 ```
 
-> S3 동기화는 후속 plan. 현재는 EC2 EBS 로컬 보관만.
+### 2. cron 등록
+
+```bash
+sudo tee /etc/cron.d/murang-mariadb-dump > /dev/null <<'EOF'
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+30 4 * * * root /home/ubuntu/2026-capstone-24/tools/mysqldump-cron.sh >> /var/log/mariadb-dump.log 2>&1
+EOF
+sudo chmod 644 /etc/cron.d/murang-mariadb-dump
+sudo systemctl status cron --no-pager                        # active (running)
+sudo run-parts --test /etc/cron.d 2>/dev/null || true
+```
+
+### 3. 다음날 결과 검증
+
+```bash
+ls -lh /var/backups/mariadb/                                 # 새 .sql.gz 추가됨
+sudo tail -20 /var/log/mariadb-dump.log                      # "mariadb backup -> ... bytes" 로그
+```
+
+> retention: 기본 14일 (RETENTION_DAYS 환경변수로 조정). S3 동기화는 후속 plan. 현재는 EC2 EBS 로컬 보관만.
 
 ---
 

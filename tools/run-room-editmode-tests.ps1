@@ -1,4 +1,4 @@
-param(
+﻿param(
     [string]$UnityPath = "C:\Program Files\Unity\Hub\Editor\6000.3.10f1\Editor\Unity.exe",
     [string]$ProjectPath = "",
     [string]$ResultsPath = "",

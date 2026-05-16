@@ -74,13 +74,14 @@ In-room 측 참가자 리스트 + 퇴장 버튼은 [`2026-05-16-namae1128-presen
 - `Assets/Multiplayer/Scripts/Auth/MultiplayerAuthGate.cs` — `CurrentPlayerId` getter 추가 (필요시)
 - `Assets/Multiplayer/Scripts/Room/Tests/LobbyInputValidatorTests.cs` — EditMode 검증 함수 단위 테스트
 
+## 검증 기준
+
+본 plan 의 acceptance 는 [`01-user-auth`](../specs/01-user-auth.md) 와 동일하게 **Quest 실기기 빌드(APK 사이드로드)** 만으로 판정한다. Unity Editor Play 환경에서만 재현되는 동작 이슈는 acceptance 위반으로 취급하지 않으며, 별도 plan 으로 분리하지 않고 무시한다. (참고: [`cd80f2b docs(specs/multiplayer-network/01-user-auth)`](https://github.com/kookmin-sw/2026-capstone-24/commit/cd80f2b).)
+
 ## Acceptance Criteria
 
 - [ ] `[auto-hard]` `LobbyInputValidator` 단위 테스트 통과 — 룸 이름 패턴(영문/숫자/_/-/길이), maxPlayers 1~32, password 토글 시 password 비어있지 않음 분기 등 ≥ 8 케이스.
 - [ ] `[auto-hard]` Unity Editor 컴파일 통과 (`Murang.Multiplayer.Presence` namespace 신설 또는 기존 asmdef 유지, 어느 쪽이든 reference 해소 깨지지 않음).
-- [ ] `[manual-hard]` Editor PlayMode: `SampleScene` 진입 → Auth 통과 → 로비 패널이 활성화되고 룸 이름 입력 후 Create 누르면 `[BackendApiClient] POST /api/v1/rooms` 로그 발생.
-- [ ] `[manual-hard]` Editor PlayMode (mock backend): 로비 패널에서 룸 목록이 즉시 비어 있고, `RoomListQuery` 가 `OnRoomListUpdated` 를 발화하면 row 가 채워지며 잠긴 룸은 잠금 아이콘 표시.
-- [ ] `[manual-hard]` Editor PlayMode (mock backend): 잘못된 룸 이름(공백 포함 등) 입력 → Create 클릭 → backend 호출 없이 statusLabel 에 검증 실패 메시지 표시.
 - [ ] `[manual-hard]` Quest 실기기 빌드 (aws-dev backend + Fargate room-server 작동 상태): 인증 후 로비 패널에서 룸 이름 입력 → Create → spring 로그에 `POST /api/v1/rooms`, ECS task RunTask 호출, ready callback 수신, 클라이언트가 Photon 세션에 client 모드로 합류, room server 로그에 입장 기록. ([`quest-onsite-integration-verification`](./2026-05-11-namae1128-quest-onsite-integration-verification.md) AC #5 와 같은 시나리오를 본 plan 검증으로 확정한다.)
 
 ## Out of Scope
@@ -94,9 +95,9 @@ In-room 측 참가자 리스트 + 퇴장 버튼은 [`2026-05-16-namae1128-presen
 
 ## Notes
 
-- backend `MURANG_META_VERIFIER_MODE=mock` 으로도 본 plan 의 PlayMode 검증은 가능하므로, 빠른 회귀를 위해 mock 환경에서 먼저 검증 후 Quest 실기기 검증으로 넘어가는 것을 권장.
 - `RoomProvisioningService` 의 `ReadyTimeout` 기본 120s 는 Fargate cold start + Unity 헤드리스 부팅 (~30~60s) + 여유를 기준. 로비 statusLabel 은 5s 단위로 카운터를 표시해 사용자가 멈춘 줄 알지 않도록 한다.
 - spec 04 의 Open Questions 는 이미 닫혔지만 (현재 "_없음_"), 추후 실기기 테스트에서 `현재 인원/정원` 표시만으로 부족하다 판단되면 후속 plan 으로 분리한다.
+- Editor 에서 빠른 회귀를 보고 싶을 때는 backend `MURANG_META_VERIFIER_MODE=mock` 으로 일시 토글해도 무방하지만, 그 결과는 acceptance 근거가 아니다 (검증 기준 섹션 참고).
 
 ## Handoff
 
