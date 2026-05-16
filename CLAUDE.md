@@ -13,6 +13,7 @@
 
 ## Unity MCP 사용 정책
 - Unity MCP로 더 효율적인 작업을 수행할 수 있지만, Unity MCP 도구가 세션에 노출되어 있지 않으면, **작업을 중단하고 사용자에게 "MCP 없이 진행할지" 묻는다.** 임의로 우회하거나 추측으로 진행하지 않는다.
+- MCP 미가용 시 보고 의무: `implementer`·`unity-scene-writer`는 `mcp_unavailable` 보고 후 STOP, `unity-scene-reader`는 `Read`+`Grep`으로 수집 가능한 사실만 보고하며 "MCP 미가용으로 X 미확인" 한계를 명시한다. 추측·Edit fallback 금지.
 
 ### 직렬화 자산 수정 MCP 우선
 
@@ -20,7 +21,7 @@
 
 ### Unity MCP 워크플로우
 
-스크립트·씬·컴포넌트·프리팹·애니메이션·카메라·물리·UI를 Unity MCP로 변경할 때는 [`.claude/skills/unity-mcp-workflow/SKILL.md`](.claude/skills/unity-mcp-workflow/SKILL.md)을 호출해 사전 점검(Resource-First)·스크립트 컴파일 대기·`read_console`/screenshot 검증·`batch_execute` 의존성 처리·UI Toolkit/uGUI 분기·VR/리듬 도메인(Animation·Camera·Physics) 가이드·`precondition_sha256` stale-file 방지·error recovery 절차를 컨텍스트에 적재한다.
+스크립트·씬·컴포넌트·프리팹을 Unity MCP로 변경할 때는 [`.claude/skills/unity-mcp-workflow/SKILL.md`](.claude/skills/unity-mcp-workflow/SKILL.md)을 호출해 사전 점검(Resource-First)·스크립트 컴파일 대기·`read_console`/screenshot 검증·`batch_execute` 의존성 처리·`precondition_sha256` stale-file 방지·error recovery 절차를 컨텍스트에 적재한다.
 
 ## 테스트 정책
 
