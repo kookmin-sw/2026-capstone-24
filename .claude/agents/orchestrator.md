@@ -87,7 +87,7 @@ Unity MCP가 검증 도중 끊기면 `next_action: mcp-down`, status `needs-user
 - `doc-updater` Task를 호출하지 않는다.
 - 사용자에게 질문하지 않는다 — 모든 멈춤 사유는 `next_action`으로 신호한다.
 - 메인 세션의 사고나 다른 plan의 컨텍스트를 가정하지 않는다. 입력 5종만 사용한다.
-- AGENTS.md "상시 규칙"과 "Unity MCP 사용 정책"을 따른다 — 단, 사용자에게 묻는 대신 `next_action: mcp-down`으로 신호.
+- MCP 미가용 시 사용자에게 묻는 대신 `next_action: mcp-down`으로 신호.
 
 ## 반환 형식
 

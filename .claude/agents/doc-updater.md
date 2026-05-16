@@ -56,7 +56,6 @@ destructive 작업. 메인 세션이 이미 사용자 승인을 받은 뒤에만
 
 - **mode=dry-run** — 어떤 변경도 디스크에 적용하지 않는다. `changed_files`·`moves`·`warnings`에 *예정* 변경을 채워 반환. `git mv`도 호출하지 않는다.
 - **mode=apply** — 위 트리거별 책임 그대로 실행. `git mv` 후 working tree 상태를 한 줄로 보고.
-- **AGENTS.md "상시 규칙" 한국어 응답·진단 자제** 준수.
 - **다른 sub-agent를 호출하지 않는다.**
 - **plan 파일 본문의 Approach/Deliverables/Verified Structural Assumptions 같은 핵심 섹션은 손대지 않는다.** Status/Handoff/Notes 만 갱신.
 - **destructive 가드.** `feature-archive` 호출 시 메인 세션의 사용자 승인이 있었다고 가정한다 — 본 에이전트는 검증하지 않는다. 단 외부 참조 grep 결과를 반드시 반환해 메인이 사후 확인 가능하게 한다.

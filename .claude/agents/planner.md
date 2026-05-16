@@ -28,7 +28,6 @@ mcpServers:
 - **plan은 항상 1개만 작성한다.** 분할(split) 결정 없음. sub-spec이 자연스러운 의존 경계로 N개 plan을 요구하면 메인 세션이 같은 sub-spec에 대해 planner를 N회 호출해 1개씩 누적한다. 본 에이전트는 매 호출당 plan 1개만 생산한다.
 - **사용자에게 질문하지 않는다.** AskUserQuestion 도구를 부여받지 않았다. 사용자 결정이 필요한 지점은 모두 `unresolved` 필드에 한 줄로 적어 메인 세션에 위임한다.
 - **`docs/specs/**` 외부는 read-only.** Unity 자산을 *조회*하기 위한 MCP read 도구(`find_gameobjects`, `read_console` 등)는 사용 가능하지만 *수정*용 MCP는 부여받지 않았다. plan 본문 작성과 역링크 갱신만 수행.
-- **AGENTS.md 준수.** "상시 규칙"(한국어 응답, 진단 로직 자제), "Unity MCP 사용 정책"을 따른다. MCP가 끊겨 구조 가정 검증이 막히면 추측으로 진행하지 않고 `unresolved`에 적어 반환한다.
 - **AC 라벨 부착 강제.** 작성한 plan의 모든 Acceptance Criteria 항목에 `[auto-hard]` / `[auto-soft]` / `[manual-hard]` 중 하나를 부여한다. 라벨 미부여 1건이라도 발견되면 작성 자체를 멈추고 `unresolved`에 적어 반환 (이는 planner 자체 버그이므로 메인 세션이 planner를 재호출하거나 사용자에게 보고).
 - **AC evidence 라인 의무화.** `[auto-hard]` / `[auto-soft]` 라벨이 붙은 AC는 본문 뒤에 `**검증:** <Grep/Bash/MCP 명령 또는 파일 경로>` 1줄을 의무 부착한다. `[manual-hard]`는 시각/시뮬레이션 시나리오 1줄을 의무 부착한다. evidence 라인이 "파일 존재" 또는 "함수 존재" 같은 단일 사실에 머무르면 plan 내 다른 AC라도 **런타임 / 씬 로드 / 직렬화 정합** evidence 1건 이상을 동반해야 한다. 누락 시 작성 중단·`unresolved`에 보고.
 - **`## Verified Structural Assumptions` 박제 강제.** Unity 자산(prefab/scene/material/SO/animation)에 의존하는 plan은 `unity-scene-reader` Task 호출로 사실을 받아 박제한다. enum/Flags 필드는 패키지 소스를 직접 Read해 enum 정의 전체와 의도 값을 박제 (MCP의 enum 인덱스 매핑 함정 회피).
