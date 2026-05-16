@@ -67,18 +67,20 @@ Task definition 의 container 정의에 `logConfiguration`:
 
 `RoomServerManager` 가 다음 metric 을 발행. 네임스페이스 `Murang/Room`.
 
-| Metric | Unit | 의미 |
-|---|---|---|
-| `active_room_count` | Count | 현재 READY+ACTIVE 인스턴스 수 (1분 주기 gauge) |
-| `room_provision_latency` | Milliseconds | provision 요청 → READY 까지 시간 |
-| `room_ready_latency` | Milliseconds | RunTask 호출 → ready callback 까지 시간 |
-| `unhealthy_termination_count` | Count | UNHEALTHY → TERMINATED 전이 횟수 |
-| `admission_rejection_count` | Count | RoomFull/WrongPassword/RoomNotFound 거절 횟수 |
-| `run_task_failure_count` | Count | ECS RunTask 실패 횟수 (capacity/AccessDenied 등) |
+| 코드 측 메터 이름 | CloudWatch 측 발행 이름 | Unit | 의미 |
+|---|---|---|---|
+| `active_room_count` | `active_room_count.value` | Count | 현재 READY+ACTIVE 인스턴스 수 (1분 주기 gauge) |
+| `room_provision_latency` | (후속) | Milliseconds | provision 요청 → READY 까지 시간 |
+| `room_ready_latency` | (후속) | Milliseconds | RunTask 호출 → ready callback 까지 시간 |
+| `unhealthy_termination_count` | (후속) | Count | UNHEALTHY → TERMINATED 전이 횟수 |
+| `admission_rejection_count` | (후속) | Count | RoomFull/WrongPassword/RoomNotFound 거절 횟수 |
+| `run_task_failure_count` | (후속) | Count | ECS RunTask 실패 횟수 (capacity/AccessDenied 등) |
 
+> Micrometer 의 `CloudWatchMeterRegistry` 는 gauge 에 `.value` 접미사를, counter/timer 에는 `.count` / `.sum` / `.avg` / `.max` 접미사를 자동 추가한다. `aws cloudwatch list-metrics --namespace Murang/Room` 으로 확인할 때는 접미사 포함 이름을 사용한다.
+>
 > 본 plan 의 acceptance criteria 는 "최소 1개 custom metric(`active_room_count` 또는 `room_ready_latency`) 발행" 만 요구한다. 나머지는 후속.
 
-발행 방식: Spring 의 `MeterRegistry` (Micrometer) 에 CloudWatch 어댑터 의존성을 추가하면 자동으로 PutMetricData 호출. 또는 직접 `CloudWatchClient.putMetricData` 호출.
+발행 방식: Spring Boot 3.4 의 actuator-autoconfigure 에서 `CloudWatchMetricsExportAutoConfiguration` 이 빠져 있어 (`AutoConfiguration.imports` 확인 결과), [`backend/.../observability/CloudWatchMetricsConfiguration.java`](../../backend/src/main/java/com/murang/room/observability/CloudWatchMetricsConfiguration.java) 가 `CloudWatchAsyncClient` + `CloudWatchConfig` + `CloudWatchMeterRegistry` 빈을 직접 등록한다. Spring 의 `CompositeMeterRegistryAutoConfiguration` 이 합쳐주므로 `MeterRegistry` 에 등록한 메터는 모두 CloudWatch 로 publish 된다.
 
 ---
 

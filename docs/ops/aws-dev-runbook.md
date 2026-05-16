@@ -44,7 +44,23 @@ tools/push-room-server-image.sh <tag>     # Linux/WSL2
 tools/push-room-server-image.ps1 -Tag <tag>  # Windows
 ```
 
-Task definition (`tools/task-definition-room-server.json` 또는 콘솔에서 등록):
+Task definition 은 [`tools/task-definition-room-server.json`](../../tools/task-definition-room-server.json) 템플릿을 substitute 후 등록한다.
+
+```bash
+# <ACCOUNT_ID>, <REGION>, <IMAGE_TAG> 치환 후 register
+sed \
+  -e "s/<ACCOUNT_ID>/777459856497/g" \
+  -e "s/<REGION>/ap-northeast-2/g" \
+  -e "s/<IMAGE_TAG>/dev-002/g" \
+  tools/task-definition-room-server.json \
+  > /tmp/task-definition-room-server.rendered.json
+
+aws ecs register-task-definition \
+  --cli-input-json file:///tmp/task-definition-room-server.rendered.json \
+  --region ap-northeast-2
+```
+
+핵심 명세:
 
 - family: `murang-room-server`
 - requiresCompatibilities: `["FARGATE"]`
@@ -52,9 +68,11 @@ Task definition (`tools/task-definition-room-server.json` 또는 콘솔에서 �
 - cpu/memory: 1024 / 2048 (조정 가능)
 - container:
   - name: `room-server` (반드시 `MURANG_ROOM_RUNTIME_ECS_CONTAINER_NAME` 과 일치)
-  - image: `<account>.dkr.ecr.ap-northeast-2.amazonaws.com/murang-room-server:<tag>`
-  - portMappings: `game_port/UDP`
+  - image: `<account>.dkr.ecr.<region>.amazonaws.com/murang-room-server:<tag>`
+  - portMappings: `7777/UDP`
   - logConfiguration: `awslogs` driver → `/ecs/murang-room-server` log group
+
+> 환경별 task definition 차이(예: 다른 이미지 tag, cpu/memory)는 본 템플릿을 복사해 별도 파일로 관리한다.
 
 ---
 
