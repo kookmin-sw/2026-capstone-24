@@ -45,7 +45,7 @@ Spec/plan 분리 구조, 파일명 규칙, plan 실행 읽기 순서, 상태 보
 | 도메인 키워드 | CLAUDE.md 경로 | 주요 책임 |
 |---|---|---|
 | (작성 예정) | `Assets/Instruments/CLAUDE.md` | 악기 추가/연주·사운드 출력 |
-| (작성 예정) | `Assets/Hands/CLAUDE.md` | VR 손/포즈/그립 |
+| 손, 그립, 포즈, GripPose | `Assets/Hands/CLAUDE.md` | VR 손/포즈/그립 |
 | (작성 예정) | `Assets/Instruments/Drum/CLAUDE.md` 또는 `Piano/` | 기존 instrument 사례 |
 
 > 본 표는 비어 있을 때 `/spec-interview` 컨텍스트 파악 단계가 fallback으로 글롭한다. 도메인 CLAUDE.md를 추가하면 이 표에 1줄을 등록해 진입점을 노출한다.
