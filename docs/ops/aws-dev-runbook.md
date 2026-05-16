@@ -12,6 +12,7 @@ EC2 control-plane + ECS Fargate room-server 토폴로지([`aws-dev-topology.md`]
 - `aws` CLI v2 인증 완료 (`aws sts get-caller-identity` 통과)
 - 로컬 Docker 이미지 빌드 환경
 - `~/.env.aws-dev.example` → 값 채워 둔 `.env.aws-dev` (아직 EC2 안 올라간 상태)
+- (선택) compose 정합성 사전 검증 — [`tools/validate-compose.{sh,ps1}`](../../tools/validate-compose.sh) 는 `.env.aws-dev.example` placeholder 로 `docker compose config --quiet` 를 실행해 syntax / structure 만 확인한다. CI 또는 PR 단계에서 호출하면 plan AC #1 [auto-hard] 가 회귀하는지 가장 빠르게 잡힌다.
 
 ---
 
