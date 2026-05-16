@@ -1,21 +1,20 @@
 ---
-description: 자유 Q&A 인터뷰로 root spec + sub-spec들 + (양성 신호 발화 시) Tech Spec + ARD를 한 번에 박제한다. Tech Spec 양성 신호 점검·Prefab 구조 박제·ARD 후보 추출을 메인 세션이 직접 수행해 한 번의 사용자 확인 게이트로 묶는다. Open Questions는 박제 시점에 0건이어야 하며, 인터뷰 안에서 모두 닫는다. docs/specs/ 외부는 절대 수정하지 않는다.
+description: 자유 Q&A 인터뷰로 root spec + sub-spec들 + (양성 신호 발화 시) Tech Spec + ARD를 한 번에 박제한다. Tech Spec 양성 신호 점검·Prefab 구조 박제·ARD 후보 추출을 한 번의 사용자 확인 게이트로 묶는다. Open Questions는 박제 시점에 0건이어야 하며, 인터뷰 안에서 모두 닫는다. docs/specs/ 외부는 절대 수정하지 않는다.
 argument-hint: "[러프한 아이디어 — 한 줄이든 여러 줄이든]"
-allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash, Skill, Task, mcp__UnityMCP__manage_prefabs, mcp__UnityMCP__find_gameobjects, mcp__UnityMCP__manage_components, mcp__UnityMCP__read_console, mcp__UnityMCP__find_in_file
+allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash, Skill, Task
 ---
 
 # /spec-interview — 인터뷰 기반 Spec+Tech Spec+ARD 박제 워크플로우
 
-목적: 사용자의 아이디어를 자유 Q&A로 충분히 확장한 뒤, root-spec + sub-spec들 + (양성 신호 발화 시) Tech Spec + ARD까지 **한 번의 사용자 확인**으로 모두 박제한다. 인터뷰 종료 시점에 모든 spec의 `## Open Questions` 섹션이 비어 있어야 한다 — 모호한 항목은 인터뷰 안에서 default 후보로 즉답 받아 닫는다. **코드는 읽기만 하고 절대 수정하지 않는다.** Unity MCP read 도구는 Prefab 구조 박제에 한해 사용 가능.
+목적: 사용자의 아이디어를 자유 Q&A로 충분히 확장한 뒤, root-spec + sub-spec들 + (양성 신호 발화 시) Tech Spec + ARD까지 **한 번의 사용자 확인**으로 모두 박제한다.
 
 ## 절대 규칙
 
 1. **수정 허용 경로는 `docs/specs/**`뿐.** `Assets/`, `Packages/`, `ProjectSettings/`, 그 외 모든 코드/직렬화 자산은 수정 금지. (읽기는 허용.)
-2. **Spec 본문에 구현 디테일 금지.** 구체적 함수명, 클래스명, 파일 경로, 자료구조, 알고리즘은 plan에 들어간다 — spec 본문에 새어 들어가지 않게 한다. **Tech Spec/ARD에는 박제 허용** (이 두 문서가 spec → plan 사이의 설계 격리 계층).
+2. **Spec 본문에 구현 디테일 금지.** 구체적 함수명, 클래스명, 파일 경로, 자료구조, 알고리즘은 Tech Spec/ARD에 들어간다 — spec 본문에 새어 들어가지 않게 한다.
 3. **사용자 승인 없이 파일을 만들지 않는다.** 인터뷰 → 통합 초안 제시 → 사용자 확인 → 작성 순서.
-4. **Open Questions 0건 강제.** 박제 시점에 root-spec + 모든 sub-spec의 `## Open Questions`는 비어 있어야 한다. 모호 항목은 인터뷰 라운드 안에서 default 후보 2~3개로 분기시켜 즉답 받아 닫는다.
-5. **사용자가 답을 모르는 항목**도 추측·임의 결정 금지. 메인 세션이 default 후보 2~3개를 제시해 사용자가 default 채택 시 그 결정을 spec/ARD 본문에 그대로 박는다.
-6. **Tech Spec/ARD는 양성 신호 발화 시에만 작성.** 신호 0건이면 둘 다 skip.
+4. **Open Questions 0건 강제.** 박제 시점에 root-spec + 모든 sub-spec의 `## Open Questions`는 비어 있어야 한다. 모호 항목은 인터뷰 라운드 안에서 후보 2~3개로 분기시켜 즉답 받아 닫는다.
+5. **Tech Spec/ARD는 양성 신호 발화 시에만 작성.** 신호 0건이면 둘 다 skip.
 
 ## 입력
 
@@ -32,19 +31,8 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash, Skill, Task
 
 처음부터 모든 것을 읽지 않는다. 사용자 아이디어가 잡힌 뒤, **필요할 때 필요한 만큼만** 읽는다.
 
-- 기존 피처의 sub-spec일 가능성이 보이면 → `docs/specs/`를 글롭하고 후보 root-spec(`_index.md`) 1개 정도만 읽는다.
+- 기존 피처의 sub-spec일 가능성이 보이면 → `docs/specs/`를 Glob하고 후보 root-spec(`_index.md`) 1개 정도만 읽는다.
 - 새 피처가 명백하면 이 단계를 건너뛴다.
-
-#### 도메인 지식 디스커버리
-
-사용자 아이디어에서 도메인 키워드(instrument / hand / anchor / rhythm / VR controller / pose 등)를 추출한다. 루트 `CLAUDE.md`의 **"도메인 지식 인덱스"** 섹션이 존재하면 거기서 매핑된 도메인 CLAUDE.md(`Assets/<도메인>/CLAUDE.md` 등) 1~3개를 Read.
-
-- 도메인 CLAUDE.md만으로 구조·확장 패턴·invariants를 파악할 수 있으면 거기서 멈춘다.
-- 부족하다고 판단되면(예: 사용자가 묻는 메커니즘이 CLAUDE.md에 없으면) 도메인 CLAUDE.md가 "확실히 보고 싶으면 이 파일 읽어라"로 지목한 **진입 스크립트 2~3개만** Read. 무차별 grep 금지.
-
-루트 인덱스가 없거나 도메인 CLAUDE.md가 없으면 글롭으로 `Assets/<도메인>/Scripts/` 안의 베이스 클래스·인터페이스 1~3개만 Read해 사실 박제.
-
-- `_templates/root-spec.md`, `_templates/sub-spec.md`, `_templates/tech-spec.md`, `_templates/decision.md`는 **3단계 파일 작성 직전**에 읽는다. 처음부터 읽지 않는다.
 
 ### 2. Q&A 라운드 (제한 없음, 사용자가 답을 줄 때까지)
 
@@ -72,7 +60,6 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash, Skill, Task
 
 ### 2.5. 설계 결정 추출 (Tech Spec + ARD 통합 게이트)
 
-각 sub-spec에 대해 다음을 메인 세션이 직접 수행한다. sub-agent 호출 없이 도메인 CLAUDE.md + (필요 시) 진입 스크립트 + (필요 시) Unity MCP read 도구로 점검.
 
 #### 2.5-1. Tech Spec 양성 신호 4종 점검
 
@@ -82,29 +69,20 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash, Skill, Task
 3. **데이터/제어 흐름이 한 컴포넌트 안에서 닫히지 않는가**?
 4. **Comparable Siblings** — `Assets/` 또는 `docs/specs/` 산하에 동급 자산이 1+개 존재하는데 sub-spec 본문에 비교 박제가 없는가?
 
-1건이라도 발화하면 `AskUserQuestion`으로 사용자에게 Tech Spec 작성 여부 3택:
+1건이라도 발화하면 `AskUserQuestion`으로 Tech Spec 작성 여부 2택:
 - **yes** → 2.5-2로.
-- **no (이번만 skip)** → Tech Spec 본문 만들지 않음. 다음 호출에 다시 묻힘.
-- **skip-permanently** → sub-spec 헤더에 `**Tech Spec:** skipped` 한 줄 박제 예정. Tech Spec 본문 안 만듦.
+- **no** → Tech Spec·ARD 둘 다 만들지 않음. 바로 3단계로.
 
 양성 신호 0건이면 Tech Spec 단계 통째로 skip하고 2.5-3로.
 
 #### 2.5-2. Tech Spec 인터뷰 (yes 선택 시)
 
-`_templates/tech-spec.md`를 Read. Q&A 라운드 0~2회로 다음 7섹션 본문을 채운다.
+`_templates/tech-spec.md`를 Read. Q&A 라운드 0~2회로 7섹션(Components, Data/Control Flow, Boundaries, Invariants, Assumptions, Comparable Siblings, Open Tech Decisions)을 채운다. `Open Tech Decisions` 항목은 2.5-3 ARD 후보 시드로 자동 승격.
 
-1. **Components** — 신규/수정될 클래스/컴포넌트 + 책임 한 줄씩.
-2. **Data / Control Flow** — 데이터·이벤트가 어디서 어디로 흐르는가.
-3. **Boundaries** — "이 sub-spec이 건드리지 않는다"고 단언할 영역. implementer가 침범하지 않을 가드레일.
-4. **Invariants** — 깨지지 않아야 할 불변식.
-5. **Assumptions** — 외부 컴포넌트·자산·MCP에 대한 사실 가정.
-6. **Comparable Siblings** — 같은 도메인의 기존 자산(예: Drum/Piano) 대비 어느 부분을 답습하고 어느 부분이 달라지는가.
-7. **Open Tech Decisions** — Tech Spec 안에서 닫히지 않는 결정. 이 항목들은 2.5-3 ARD 후보 시드로 자동 승격.
+**Prefab 구조 박제 (필수, sub-spec이 prefab 계층에 의존할 때).**
 
-**Prefab 구조 박제 (필수, 양성 신호에 prefab 포함될 때).** sub-spec이 prefab 계층에 의존하면 다음 절차로 박제한다.
-
-- Unity MCP 사용 가능: `find_gameobjects` 또는 `manage_prefabs.get_hierarchy`로 prefab 계층·컴포넌트·중첩 override를 조회 → Tech Spec `## Components` 또는 `## Assumptions`에 "**Prefab Hierarchy**" 서브섹션으로 박제. 출처는 `MCP find_gameobjects (YYYY-MM-DD)` 표기.
-- MCP 미가용: `AGENTS.md` "Unity MCP 사용 정책"에 따라 사용자에게 "MCP 없이 진행할까요?"를 묻고 yes면 `.prefab` YAML을 Read해 계층만 발췌 박제 + 정확도 낮음 1줄 경고. no면 인터뷰 멈춤.
+- MCP 사용 가능: `unity-scene-reader` Pattern A를 1회 호출 → 반환 `data.hierarchy[]`를 Tech Spec `## Components` 또는 `## Assumptions`의 "**Prefab Hierarchy**" 서브섹션에 박제. 출처는 `unity-scene-reader Pattern A (YYYY-MM-DD)` 표기.
+- MCP 미가용: 사용자에게 "MCP 없이 진행할까요?"를 묻고 yes면 `.prefab` YAML을 Read해 계층만 발췌 박제 + 정확도 낮음 1줄 경고. no면 인터뷰 멈춤.
 
 #### 2.5-3. ARD 후보 추출
 
