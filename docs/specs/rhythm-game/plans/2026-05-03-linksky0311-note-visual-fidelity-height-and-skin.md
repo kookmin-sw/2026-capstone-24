@@ -1,7 +1,7 @@
 # Note Visual Fidelity 구현 — 높이 비례 표시 + 3D 프리팹 스킨
 
 **Linked Spec:** [`../specs/02-note-visual-fidelity.md`](../specs/02-note-visual-fidelity.md)
-**Status:** `In Progress`
+**Status:** `Done`
 
 ## Goal
 
@@ -137,5 +137,12 @@
 ## Notes
 
 - 2026-05-03: 검증 실패에서 파생된 후속 plan `2026-05-03-linksky0311-note-visual-fidelity-clipping-fix.md` 추가. 완료 후 본 plan의 `[manual-hard]` "세션 실행 시 C4 4분음표와 E4 2분음표 노트를 비교하면 E4 노트가 C4 노트의 약" 항목 재검증 필요.
+- 2026-05-17: 사용자 manual-hard 검증 결과 (TestSceneSanyo, parksky0311@gmail.com 직접 Play 모드):
+  - AC1 "C4 4분음표 vs E4 2분음표 → 2배 높이" PASS — 의도대로 동작 확인.
+  - AC2 "온음표 등 긴 노트 → 패널 상단 클리핑" PASS — 의도대로 동작 확인.
+  - AC3 "whiteKeySkinPrefab 할당 → 흰 건반 노트에 적용" deferred-by-user — 사용자가 스킨 시나리오를 현 시점에 검증하지 않기로 명시(향후 스킨 도입 시 별도 검증). 코드 경로 자체는 AC1/AC2 와 동일한 SpawnNote 스킨 분기 위에 얹혀 있어 회귀 가능성 낮음.
+  - AC4 "세션 중 스킨 교체 → 기존 노트 유지, 이후 노트 신 스킨" deferred-by-user — 동일 사유로 검증 deferred.
 
 ## Handoff
+
+NoteDisplayPanel.SpawnNote() 의 노트 높이 비례·클리핑은 사용자 직접 검증으로 PASS. 흰 건반/반음 2슬롯 스킨 시스템은 코드 인입 완료 + Inspector 필드 노출 완료. 실제 스킨 prefab 할당과 런타임 교체 시나리오(AC3·AC4)는 사용자 의도에 따라 현 시점 deferred — 별도 후속 plan/spec 없이 향후 스킨 도입 시점에 자연스럽게 검증한다. 후속 plan 시드 없음.
