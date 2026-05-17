@@ -29,6 +29,7 @@ VR 악기 연습 환경에서 박자감을 게임적으로 익히게 하는 학�
 | Note Visual Fidelity | Active | [`specs/02-note-visual-fidelity.md`](specs/02-note-visual-fidelity.md) |
 | Note Bottom Clipping | Done | [`03-note-bottom-clipping.md`](../_archive/rhythm-game/specs/03-note-bottom-clipping.md) |
 | Drum Note Display | Draft | [`specs/04-drum-note-display.md`](specs/04-drum-note-display.md) |
+| Song Catalog | Draft | [`specs/05-song-catalog.md`](specs/05-song-catalog.md) |
 
 > 상태 값: `Draft` / `Active` / `Done` / `Abandoned`
 
