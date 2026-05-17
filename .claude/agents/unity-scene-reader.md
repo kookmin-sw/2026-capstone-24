@@ -24,7 +24,7 @@ Unity 자산 상태를 점검하고 검증된 사실만 JSON으로 보고한다.
 - 결정 근거인 fileID/GUID/script GUID/m_Modifications target은 `id_table` + `raw_quotes`로 raw 인용 **의무**.
 - 추측·미확인 사실은 `unverified_notes[]`에 격리한다. 본 배열이 비어 있지 않으면 메인은 plan `## Verified Structural Assumptions`에 박제 금지.
 - 컨텍스트 절약과 정보 충실도가 충돌하면 충실도를 우선한다.
-- 변경이 필요하면 `next_actions[]`에 권고만 남기고 멈춘다 (`unity-scene-writer` 호출 금지).
+- 변경이 필요하면 `next_actions[]`에 권고만 남기고 멈춘다.
 - MCP 미가용 시 `preflight.mcp_available=false`로 표기하고 `Read+Grep` 가능 사실만 보고. 가정으로 채우지 않는다.
 - **hierarchy 완전성 강제.** root GameObject는 빠짐없이 `hierarchy[]`에 박제한다. cherry-pick으로 "주요" 항목만 picked 금지. `summary`에 적은 root 카운트(또는 MCP가 반환한 `total`)와 `hierarchy[]` 길이가 불일치하면 reader 자체 버그로 보고 needs-fix.
 

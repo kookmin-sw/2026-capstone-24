@@ -1,5 +1,5 @@
 ---
-description: root-spec(_index.md) 한 개를 받아 그 피처의 sub-spec 큐를 자동으로 진행한다. 각 sub-spec에 대해 planner → 사용자 plan 검토 → 메인이 직접 implementer+test+reviewer+자동 AC → 사용자 manual-hard 테스트 → plan 단위 atomic commit을 plan 1개씩 반복하고, sub-spec 종료 시 doc-updater + 정리 commit으로 묶는다. plan 본문은 사용자에게 직접 노출하고 검토 게이트를 1회 거친다. 기본 dry-run, --apply로 실제 실행.
+description: root-spec(_index.md) 한 개를 받아 그 피처의 sub-spec 큐를 자동으로 진행한다. 각 sub-spec에 대해 planner → 사용자 plan 검토 → 메인이 직접 implementer+test+reviewer+자동 AC → 사용자 manual-hard 테스트 → plan 단위 atomic commit을 plan 1개씩 반복하고, sub-spec 종료 시 메인이 문서 갱신 + 정리 commit으로 묶는다. plan 본문은 사용자에게 직접 노출하고 검토 게이트를 1회 거친다. 기본 dry-run, --apply로 실제 실행.
 argument-hint: "<root-spec 경로 (_index.md)> [--apply] [--max-cascade N]"
 allowed-tools: Read, Glob, Grep, Bash, Edit, Write, AskUserQuestion, Skill, Task, mcp__UnityMCP__read_console
 ---
@@ -15,7 +15,7 @@ allowed-tools: Read, Glob, Grep, Bash, Edit, Write, AskUserQuestion, Skill, Task
    - plan 검토 (planner 직후, plan 본문 + self-check 진단 + 3택)
    - manual-hard 테스트 (3-4 직후, 3택: pass / retry-via-new-plan / stop)
    - destructive 가드 (feature archive 직전 1회)
-3. **commit·doc-updater 호출·plan 파일 편집은 메인 전용.** 어느 sub-agent도 하지 않는다. atomic commit은 plan 단위 + sub-spec 종료 시 정리 commit 1개.
+3. **commit·plan 파일 편집·문서 갱신(README/_index 표·Status·archive 이동)은 메인 전용.** 어느 sub-agent도 하지 않는다. atomic commit은 plan 단위 + sub-spec 종료 시 정리 commit 1개.
 4. **재호출 시 `.feature-build-state.json`으로 재개.** 위치: `docs/specs/<feature>/.feature-build-state.json` (`.gitignore`).
 
 ## 입력 해석
@@ -102,10 +102,16 @@ plan 본문(planner가 작성한 파일) 전체와 `self_check` 진단을 사용
 
 ### 3-6. plan 단위 atomic commit
 
-- `doc-updater` Task 호출 (mode=apply, trigger=plan-done, plan 경로 + Handoff/Notes append 본문 전달).
-- 반환 `changed_files` + `moves` 확인.
-- `git-workflow` skill로 atomic commit 생성. commit 메시지는 implementer가 반환한 `message_candidate` 우선, 없으면 plan 제목 + Linked Spec slug.
-- commit 완료 후 같은 sub-spec에 plan이 더 필요한지 메인이 판단 → 필요하면 3-1 회귀, 아니면 3-8로.
+메인이 직접 다음을 순서대로 수행한다.
+
+1. plan 파일 `Status:` 를 `Done`으로 Edit.
+2. implementer가 반환한 Handoff/Notes 후보를 plan `## Handoff` / `## Notes` 섹션에 append (Edit). 빈 후보면 생략.
+3. sub-spec의 `## Implementation Plans` 표에서 해당 plan 행 Status 컬럼을 `Done`으로 Edit.
+4. 같은 plan을 참조하는 외부 링크가 깨지지 않는지 `Grep` 1회로 확인.
+5. `git-workflow` skill로 atomic commit 생성. 메시지는 implementer가 반환한 `message_candidate` 우선, 없으면 plan 제목 + Linked Spec slug.
+6. commit 완료 후 같은 sub-spec에 plan이 더 필요한지 판단 → 필요하면 3-1 회귀, 아니면 3-8로.
+
+> plan 파일은 본 단계까지 원위치(`docs/specs/<feature>/plans/`)에 남는다. feature-archive 시점(§4)에 `_archive/<feature>/plans/`로 일괄 이동한다.
 
 ### 3-7. retry-via-new-plan 분기
 
@@ -119,19 +125,28 @@ cascade_depth 검사. 상태 파일 `cascade_depth >= max-cascade`이면 거부 
 
 ### 3-8. sub-spec 종료 처리
 
-- `doc-updater` Task 호출 (mode=apply, trigger=sub-spec-done, sub-spec 경로 전달).
-- 반환 `changed_files` + `recommendations` 확인. `recommendations`에 "feature archive 자동 트리거 권고"가 있으면 4단계 진입 후보로 표시.
-- sub-spec 정리 commit 1개 (`git-workflow` skill). 메시지: `chore(<feature>): <sub-spec slug> 완료 + docs 동기화`.
-- 다음 sub-spec으로.
+메인이 직접 다음을 순서대로 수행한다.
+
+1. sub-spec frontmatter `Status:` 를 `Done`으로 Edit.
+2. parent `_index.md` 의 `## Sub-Specs` 표에서 해당 sub-spec 행의 Status 컬럼을 `Done`으로 Edit.
+3. `docs/specs/README.md` 상태 보드 표의 해당 feature 행에서 `Plans (Done/Total)` / `Sub-Specs` 카운트를 재계산해 Edit.
+4. 같은 feature의 모든 sub-spec이 `Done`이고 `_index.md` `## Open Questions` 가 비어 있으면 §4 진입 후보로 표시.
+5. sub-spec 정리 commit 1개 (`git-workflow` skill). 메시지: `chore(<feature>): <sub-spec slug> 완료 + docs 동기화`.
+6. 다음 sub-spec으로.
 
 ## 4. Feature 종료
 
-모든 sub-spec Done + Open Q 0건 + manual-hard 모두 pass + working tree clean + MCP error 0건이면 archive 분기 진입.
+모든 sub-spec Done + Open Q 0건 + manual-hard 모두 pass + working tree clean + MCP error 0건이면 archive 분기 진입. 메인이 직접 다음을 순서대로 수행한다.
 
-1. `doc-updater` Task 호출 (mode=dry-run, trigger=feature-archive). 외부 참조 grep 결과 + 이동 예정 경로 미리보기 반환.
-2. `AskUserQuestion`으로 destructive 가드 1회 (외부 참조 매치 + 이동 대상 보여주기).
-3. 사용자 승인 → `doc-updater` 재호출 (mode=apply).
-4. atomic commit (`git-workflow` skill). 메시지: `chore(<feature>): feature archive 이동 + README 보드 갱신`.
+1. **외부 참조 grep** — `Grep "docs/specs/<feature>/"` 로 본 feature 경로를 가리키는 외부 링크를 수집한다 (파일·라인·인용 텍스트).
+2. **이동 예정 경로 미리보기** — `docs/specs/<feature>/` → `docs/specs/_archive/<feature>/`. 대상 폴더에 동명 자식이 이미 있으면 안 겹치는 항목만 병합 이동.
+3. `AskUserQuestion`으로 destructive 가드 1회 (1번 외부 참조 + 2번 이동 대상을 함께 보여줌).
+4. 사용자 승인 → 실제 이동·갱신:
+   - `Bash git mv docs/specs/<feature>/ docs/specs/_archive/<feature>/` (대상 부재 시 `mkdir -p` 선행).
+   - 1번에서 발견한 외부 참조 경로를 `docs/specs/<feature>/...` → `docs/specs/_archive/<feature>/...` 로 일괄 Edit. 이동 대상 폴더 내부의 상호 참조는 상대경로라 그대로 둔다.
+   - `docs/specs/README.md` 상태 보드 표에서 해당 feature 행 링크를 `[<feature>](_archive/<feature>/_index.md)` 로 교체하고 Status `Done` 으로 Edit.
+   - working tree에 `.feature-build-state.json` 잔존 시 `Bash rm -f`.
+5. atomic commit (`git-workflow` skill). 메시지: `chore(<feature>): feature archive 이동 + README 보드 갱신`.
 
 조건 미충족이거나 사용자 거절 시 사유 1줄 보고 후 종료.
 

@@ -35,7 +35,7 @@ docs/specs/
 
 ### Archive 정책
 
-- **plan 단위**: `Status: Done` 직후 `_archive/<feature>/plans/`로 자동 이동 (doc-updater가 처리).
+- **plan 단위**: `Status: Done` 후에도 본래 위치(`docs/specs/<feature>/plans/`)에 유지. feature-archive 시점에 일괄 이동.
 - **sub-spec 단위**: Done 되어도 feature 전체 Done 시점까지 `specs/` 안에 보류.
 - **feature 단위**: 모든 sub-spec Done + Open Q 0건 + 검증 pass + working tree clean 조건 충족 시 `_archive/<feature>/`로 이동. 사용자 승인 1회 (destructive 가드).
 - **archive 행 표기**: `| [<feature>](_archive/<feature>/_index.md) | Done | ... |`
@@ -58,13 +58,10 @@ docs/specs/
 | Sub-agent | 호출 주체 | 책임 |
 |---|---|---|
 | `planner` | `/spec-build` | sub-spec 한 개에 대해 plan 1개 작성 + self-check 진단 |
-| `orchestrator` | `/spec-build` | plan 1개 라이프사이클(implementer → reviewer → unity-test-runner → 자동 AC 검증) 격리 sandbox |
-| `implementer` | `orchestrator` | plan의 코드/자산 변경 적용 (Unity MCP write 권한) |
-| `reviewer` | `orchestrator` | 구현 후 git diff vs plan 의도 검증 |
-| `unity-test-runner` | `orchestrator` | EditMode·PlayMode 회귀 테스트 |
-| `doc-updater` | `/spec-build`, 메인 세션 | plan/sub-spec/feature 라이프사이클 종료 시 Status·표·링크·archive 이동 |
+| `implementer` | `/spec-build` (메인) | plan의 코드/자산 변경 적용 (Unity MCP write 권한) |
+| `reviewer` | `/spec-build` (메인) | 구현 후 git diff vs plan 의도 검증 |
+| `unity-test-runner` | `/spec-build` (메인) | EditMode·PlayMode 회귀 테스트 |
 | `unity-scene-reader` | `planner`, `/spec-interview` | Unity 자산 read-only 사실 추출 (Prefab Hierarchy 박제 등) |
-| `unity-scene-writer` | 메인 세션 보조 | 확정된 Unity 자산 변경 적용 |
 
 ## 검증 실패 시 후속 plan 시드 (3택)
 
@@ -184,4 +181,4 @@ docs/specs/
 | [trombone](trombone/_index.md) | Done | 3 | 3/3 | |
 | [teleport-locomotion](_archive/teleport-locomotion/_index.md) | Done | 3 | 4/4 | |
 
-> Status 값: `Draft` / `Active` / `Done` / `Abandoned`. doc-updater가 sub-spec/feature 종료 시점에 자동 갱신.
+> Status 값: `Draft` / `Active` / `Done` / `Abandoned`. `/spec-build` 메인 세션이 sub-spec/feature 종료 시점에 갱신.

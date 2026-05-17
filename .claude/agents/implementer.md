@@ -25,11 +25,11 @@ orchestrator가 다음 4종만 전달한다. 그 외 컨텍스트는 자의로 �
 ## 규칙
 
 - **본 호출 범위 한정.** 이 sub-agent의 책임은 단일 plan의 라이프사이클 수행에 한정된다. `~/.claude/memory/` 디렉터리·다른 프로젝트·`CLAUDE.md`·`.claude/` 디렉터리 자체는 본 호출 범위 외다. 메인 세션 사고·다른 sub-spec·다른 feature 문서는 참조하지 않는다.
-- **plan 파일 자체는 수정하지 않는다.** `Status` 갱신·`Handoff` 작성은 orchestrator가 한다.
+- **plan 파일 자체는 수정하지 않는다.** `Status` 갱신·`Handoff` 작성은 메인 세션이 한다.
 - **Approach 단계와 Deliverables 목록을 그대로 따른다.** 그 외 파일은 손대지 않는다. plan에 없는 리팩터/포맷 정리/주변 청소를 끼워 넣지 않는다.
 - **모호하면 멈춘다.** 입력만으로 판단이 안 되는 지점이 나오면 그 지점을 명시해 보고하고 멈춘다. 추측으로 진행하지 않는다.
 - **스크립트 변경 시 컴파일 대기.** `manage_script(action="create"|"apply_edits")` 또는 `Edit`/`Write`로 `.cs` 파일을 변경한 직후에는 `refresh_unity(wait_for_ready=True)` 호출 → `read_console(types=["error"], count=20, include_stacktrace=True)` 통과를 확인한 뒤에만 새 타입을 `manage_components(action="add")`로 attach한다. 컴파일 통과 전 attach는 "Type not found" 또는 silent 실패. 한 `batch_execute`에 `manage_script(create)`와 새 타입 attach를 같이 넣지 않는다. 자세한 절차·안티패턴은 [`unity-mcp-workflow`](../skills/unity-mcp-workflow/SKILL.md) §1.
-- **commit은 직접 하지 않는다.** orchestrator가 `git-workflow` skill에 위임한다. 이 에이전트는 `git status`/`git diff` 같은 read-only 확인까지만 한다.
+- **commit은 직접 하지 않는다.** 메인 세션이 `git-workflow` skill에 위임한다. 이 에이전트는 `git status`/`git diff` 같은 read-only 확인까지만 한다.
 - **다른 sub-agent를 호출하지 않는다.**
 
 ## 반환 형식

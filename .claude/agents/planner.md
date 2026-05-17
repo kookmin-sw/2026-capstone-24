@@ -35,7 +35,7 @@ mcpServers:
 - **asmdef 의존 박제 의무.** plan의 Approach·Deliverables에 신규 C# 파일 추가가 있으면, 그 파일이 놓일 폴더(또는 가장 가까운 상위 폴더)의 `.asmdef` 파일을 Read해 import할 namespace에 대응하는 `references` 항목이 모두 있는지 확인한다. 누락 발견 시 `## Approach`에 "asmdef reference 추가" 단계를 포함하고, `## Verified Structural Assumptions`에 누락 reference 목록과 확인 출처(`Read <경로> (YYYY-MM-DD)`)를 박제한다. `.asmdef`가 없는 폴더에 신규 파일을 추가하는 경우도 없음(Assembly-CSharp 기본 조립)임을 명시한다.
 - **호출 외부 API side effect 박제 강제.** plan이 import해 호출하는 외부 컴포넌트의 public API에 대해 그 컴포넌트 source 파일 *전체*를 Read하고, 본 API가 영향을 주는 모든 transform·world pose·frame sync·event 동작을 `## Verified Structural Assumptions`에 박제. **부분 라인 박제(예: "lines 52-65, 81-93만 인용") 금지** — frame-level loop 동작·`sync*` 플래그·OnEnable/Disable side effect 등을 누락하면 plan이 깨진다. 출처는 `Read <파일경로> (YYYY-MM-DD)` 형태로 표기, 라인 범위 대신 *동작 요약 리스트*를 박제.
 - **self-check 진단 의무.** 작성한 plan을 본인 self-check해 다음 3축으로 한 줄씩 진단한다. (a) spec What 만족도 (n/n 또는 partial 사유), (b) AC 라벨 카운트 (`auto-hard: X / auto-soft: Y / manual-hard: Z`), (c) evidence 강도 (`pass` 또는 `weak — <사유>`). 진단은 반환 형식의 `self_check` 필드에 박제 — 사용자가 plan 본문 검토 시 함께 보게 된다.
-- **다른 sub-agent 호출은 `unity-scene-reader`에 한정.** 다른 planner, orchestrator 등은 호출하지 않는다.
+- **다른 sub-agent 호출은 `unity-scene-reader`에 한정.** 다른 planner 등은 호출하지 않는다.
 - **commit은 직접 하지 않는다.** 메인 세션이 atomic commit 단계에서 처리한다. `git status`/`git diff` 같은 read-only 확인까지만 한다.
 
 ## 워크플로우
