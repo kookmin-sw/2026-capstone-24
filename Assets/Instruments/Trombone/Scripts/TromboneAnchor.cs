@@ -32,6 +32,8 @@ public sealed class TromboneAnchor : MonoBehaviour
     bool m_IsAttached;
     int m_PendingAttachFrame = -1;
 
+    public bool IsAttached => m_IsAttached;
+
     Vector3 m_CachedRestorePosition;
     Quaternion m_CachedRestoreRotation;
 
