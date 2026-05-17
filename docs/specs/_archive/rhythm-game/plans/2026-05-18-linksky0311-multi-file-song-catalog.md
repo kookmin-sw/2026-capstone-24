@@ -1,6 +1,6 @@
 # Multi-File Song Catalog — 파일명 파싱·그루핑·인터페이스 확장
 
-**Linked Spec:** [`06-multi-file-song-catalog.md`](../specs/06-multi-file-song-catalog.md)
+**Linked Spec:** [`06-multi-file-song-catalog.md`](../../../rhythm-game/specs/06-multi-file-song-catalog.md)
 **Status:** `Done`
 
 ## Goal
