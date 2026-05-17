@@ -307,7 +307,7 @@ MonoBehaviour:
   m_StartingInteractionStrengthFilters: []
   m_AutoFindParentInteractableInHierarchy: 0
   m_ParentInteractableObject: {fileID: 0}
-  m_TeleportationProvider: {fileID: 0}
+  m_TeleportationProvider: {fileID: 868124237}
   m_MatchOrientation: 0
   m_MatchDirectionalInput: 0
   m_TeleportTrigger: 0
@@ -1620,6 +1620,11 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 4466217632400179204, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
   m_PrefabInstance: {fileID: 7187747401014242035}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &868124237 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4132918333813473092, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
+  m_PrefabInstance: {fileID: 7187747401014242035}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &949974130
 GameObject:
   m_ObjectHideFlags: 0
@@ -2314,6 +2319,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1368118599}
   - component: {fileID: 1368118598}
+  - component: {fileID: 1368118600}
   m_Layer: 0
   m_Name: InstrumentSystem
   m_TagString: Untagged
@@ -2333,6 +2339,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bb93744547bbbe46b6c0a02f816ed78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Instruments::Instruments.TeleportInstrumentProvider
+--- !u!114 &1368118600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1368118597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2445c7207410714cb0a60ec72091c57, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
 --- !u!4 &1368118599
 Transform:
   m_ObjectHideFlags: 0
