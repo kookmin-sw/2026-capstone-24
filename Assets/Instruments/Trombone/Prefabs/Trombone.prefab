@@ -777,6 +777,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6792978486195072924}
+  - component: {fileID: 6855862333753624109}
+  - component: {fileID: 6350044881741792298}
   m_Layer: 0
   m_Name: Trombone
   m_TagString: Untagged
@@ -802,6 +804,46 @@ Transform:
   - {fileID: 5806067144585874694}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6855862333753624109
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3300842808265667475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6c799792358da843a6dc90a15159a01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Instruments::Instruments.InstrumentAudioOutput
+  voiceMixerGroup: {fileID: 0}
+--- !u!114 &6350044881741792298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3300842808265667475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 311b40298ea8cb642a135dfa0b513046, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Instruments::Instruments.Trombone
+  audioOutput: {fileID: 6855862333753624109}
+  soundClips:
+  - {fileID: 8300000, guid: f26d0d954cda956439e8fca5f0a2daa9, type: 3}
+  laneConfig: {fileID: 0}
+  instrumentId: Trombone
+  instanceVolume: 0.5
+  _panelAnchor: {fileID: 0}
+  tromboneAnchor: {fileID: 0}
+  slide: {fileID: 7663274629528727135}
+  baseToneClip: {fileID: 8300000, guid: f26d0d954cda956439e8fca5f0a2daa9, type: 3}
+  baseToneMidiNote: 60
+  leftGripAction: {fileID: 6558622148059887818, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  slideMinX: -0.7
+  slideMaxX: -0.3
+  gripThreshold: 0.5
 --- !u!1 &3352728544413650932
 GameObject:
   m_ObjectHideFlags: 0

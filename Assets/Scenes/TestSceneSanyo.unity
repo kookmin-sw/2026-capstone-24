@@ -2874,6 +2874,10 @@ PrefabInstance:
       propertyPath: rightGhostWristSource
       value: 
       objectReference: {fileID: 256669989}
+    - target: {fileID: 6350044881741792298, guid: fc52e515dd232414db9528626212a1da, type: 3}
+      propertyPath: tromboneAnchor
+      value: 
+      objectReference: {fileID: 1082550265}
     - target: {fileID: 6792978486195072924, guid: fc52e515dd232414db9528626212a1da, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.5745591

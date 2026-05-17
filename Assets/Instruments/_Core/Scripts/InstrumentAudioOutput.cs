@@ -117,6 +117,15 @@ public class InstrumentAudioOutput : MonoBehaviour
         }
     }
 
+    public bool TrySetActiveVoicePitch(int note, float pitch)
+    {
+        Voice voice = GetOldestVoiceForNote(note);
+        if (voice == null || voice.Source == null) return false;
+        if (voice.State != VoiceState.Active) return false;
+        voice.Source.pitch = pitch;
+        return true;
+    }
+
     public void StopAllVoices()
     {
         for (int i = 0; i < m_Voices.Count; i++) StopVoice(m_Voices[i]);
