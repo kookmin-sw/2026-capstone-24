@@ -41,7 +41,7 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| 2026-05-17 | Folder-Scan Song Catalog | Done | [`../plans/2026-05-17-linksky0311-folder-scan-song-catalog.md`](../plans/2026-05-17-linksky0311-folder-scan-song-catalog.md) |
+| 2026-05-17 | Folder-Scan Song Catalog | Done | [`../../_archive/rhythm-game/plans/2026-05-17-linksky0311-folder-scan-song-catalog.md`](../../_archive/rhythm-game/plans/2026-05-17-linksky0311-folder-scan-song-catalog.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/spec-build`가 planner sub-agent로 처리. 파일명은 날짜·작성자·slug 기반.
