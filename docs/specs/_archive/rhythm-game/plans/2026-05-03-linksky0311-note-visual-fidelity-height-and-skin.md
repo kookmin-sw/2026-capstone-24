@@ -1,6 +1,6 @@
 # Note Visual Fidelity 구현 — 높이 비례 표시 + 3D 프리팹 스킨
 
-**Linked Spec:** [`../specs/02-note-visual-fidelity.md`](../specs/02-note-visual-fidelity.md)
+**Linked Spec:** [`../../../rhythm-game/specs/02-note-visual-fidelity.md`](../../../rhythm-game/specs/02-note-visual-fidelity.md)
 **Status:** `Done`
 
 ## Goal
