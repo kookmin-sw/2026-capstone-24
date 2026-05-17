@@ -58,8 +58,11 @@ VirtualMusicStudio의 핵심 경험은 여러 유저가 같은 VR 공간에서 �
 
 ## Open Questions
 
-- 접속 현황 UI는 default 씬 월드스페이스 패널로 시작할지, 별도 로비/테스트 씬으로 분리할지?
-- 실기기 테스트 1차 목표는 `현재 인원/정원`만으로 충분한지, 아니면 `닉네임 목록`까지 바로 필요한지?
+- _없음_
+
+> 닫힌 OQ trace:
+> - "접속 현황 UI는 default 씬 월드스페이스 패널 vs 별도 로비/테스트 씬" → default 씬 월드스페이스 패널 + 같은 씬 lobby/in-room 토글로 결정 ([`specs/04-presence-ui.md`](specs/04-presence-ui.md) What 섹션).
+> - "1차 목표는 현재 인원/정원만으로 충분한지 vs 닉네임 목록까지 바로 필요한지" → 1차 출시는 `playerId` prefix 6자만 표시, nickname 채널은 실기기 검증 결과에 따른 후속 plan으로 분리 ([`plans/2026-05-16-namae1128-presence-ui-in-room-panel.md`](plans/2026-05-16-namae1128-presence-ui-in-room-panel.md) Context).
 
 ## Status
 
