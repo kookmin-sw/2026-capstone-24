@@ -80,6 +80,9 @@
 
 ## Open Questions
 
-- [ ] ready callback / heartbeat 전송 채널 (HTTP / gRPC / queue 등)
-- [ ] heartbeat 주기와 `UNHEALTHY` 판정 임계
-- [ ] capacity 선택 정책 (binpack / spread / 고정 우선순위)
+- _없음_
+
+> 닫힌 OQ trace:
+> - "ready callback / heartbeat 전송 채널 (HTTP / gRPC / queue 등)" → **HTTP REST POST + `X-Internal-Token` 헤더 인증**. backend `/internal/rooms/{id}/ready` · `/heartbeat` · `/terminate` 엔드포인트, DS `RoomServerCallbackReporter` (`UnityWebRequest`) 가 발사. env 키 컨벤션 `ROOM_*_CALLBACK_URL`. 박제 위치: [`2026-05-07-namae1128-aws-dev-topology-ec2-fargate.md`](../plans/2026-05-07-namae1128-aws-dev-topology-ec2-fargate.md), [`2026-05-17-namae1128-ghost-room-reconciliation.md`](../plans/2026-05-17-namae1128-ghost-room-reconciliation.md).
+> - "heartbeat 주기와 `UNHEALTHY` 판정 임계" → **DS heartbeat 30s 주기, backend heartbeat timeout 90s (3 × 주기 실패 후 청소), provisioning timeout 5m, reconciliation scan interval 30s**. env override 가능 (`MURANG_ROOM_RECONCILIATION_HEARTBEAT_TIMEOUT` 등). 박제 위치: [`RoomReconciliationProperties.java`](../../../../backend/src/main/java/com/murang/room/config/RoomReconciliationProperties.java), [`2026-05-17-namae1128-ghost-room-reconciliation.md`](../plans/2026-05-17-namae1128-ghost-room-reconciliation.md).
+> - "capacity 선택 정책 (binpack / spread / 고정 우선순위)" → **현 ECS Fargate `RunTask` 단계에서는 task placement 가 AWS 인프라 단에 위임됨** (binpack/spread/고정 우선순위 분류가 사용자 단위 정책으로 매핑되지 않음). 향후 Kubernetes 전환 또는 인스턴스 풀링 도입 시점에 분류 결정. 박제 위치: [`2026-05-07-namae1128-aws-dev-topology-ec2-fargate.md`](../plans/2026-05-07-namae1128-aws-dev-topology-ec2-fargate.md), [`_index.md`](../_index.md) (K8s 전환 가능성 박제).
