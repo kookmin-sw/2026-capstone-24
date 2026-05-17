@@ -1,5 +1,5 @@
 ---
-description: root-spec(_index.md) 한 개를 받아 그 피처의 sub-spec 큐를 자동으로 진행한다. 각 sub-spec에 대해 planner → 사용자 plan 검토 → orchestrator(implementer+reviewer+test+자동 AC) → 사용자 manual-hard 테스트 → plan 단위 atomic commit을 plan 1개씩 반복하고, sub-spec 종료 시 doc-updater + 정리 commit으로 묶는다. plan 본문은 사용자에게 직접 노출하고 검토 게이트를 1회 거친다. 기본 dry-run, --apply로 실제 실행.
+description: root-spec(_index.md) 한 개를 받아 그 피처의 sub-spec 큐를 자동으로 진행한다. 각 sub-spec에 대해 planner → 사용자 plan 검토 → 메인이 직접 implementer+test+reviewer+자동 AC → 사용자 manual-hard 테스트 → plan 단위 atomic commit을 plan 1개씩 반복하고, sub-spec 종료 시 doc-updater + 정리 commit으로 묶는다. plan 본문은 사용자에게 직접 노출하고 검토 게이트를 1회 거친다. 기본 dry-run, --apply로 실제 실행.
 argument-hint: "<root-spec 경로 (_index.md)> [--apply] [--max-cascade N]"
 allowed-tools: Read, Glob, Grep, Bash, Edit, Write, AskUserQuestion, Skill, Task, mcp__UnityMCP__read_console
 ---
@@ -13,9 +13,9 @@ allowed-tools: Read, Glob, Grep, Bash, Edit, Write, AskUserQuestion, Skill, Task
 1. **plan은 항상 1개씩 작성·검토·구현한다.** 한 sub-spec에 plan이 N개 필요하면 planner를 N회 호출한다. planner는 매 호출당 plan 1개만 만든다.
 2. **사용자 게이트 3종만 노출한다.**
    - plan 검토 (planner 직후, plan 본문 + self-check 진단 + 3택)
-   - manual-hard 테스트 (orchestrator 직후, 3택: pass / retry-via-new-plan / stop)
+   - manual-hard 테스트 (3-4 직후, 3택: pass / retry-via-new-plan / stop)
    - destructive 가드 (feature archive 직전 1회)
-3. **commit은 메인 세션이 만든다.** orchestrator/planner/doc-updater 어느 sub-agent도 commit하지 않는다. atomic commit은 plan 단위 + sub-spec 종료 시 정리 commit 1개.
+3. **commit·doc-updater 호출·plan 파일 편집은 메인 전용.** 어느 sub-agent도 하지 않는다. atomic commit은 plan 단위 + sub-spec 종료 시 정리 commit 1개.
 4. **재호출 시 `.feature-build-state.json`으로 재개.** 위치: `docs/specs/<feature>/.feature-build-state.json` (`.gitignore`).
 
 ## 입력 해석
@@ -53,7 +53,7 @@ root-spec `## Sub-Specs` 표에서 `Status != Done` 행을 NN prefix zero-pad 2�
 `Task` 도구로 `planner` sub-agent 호출. 입력 7종:
 1. sub-spec 경로
 2. parent `_index.md` 경로
-3. 이전 sub-spec handoff 누적
+3. 이전 sub-spec의 plan 경로 리스트 — planner가 직접 `## Handoff` 발췌
 4. (선택) Caused By 컨텍스트 — 3-4에서 retry-via-new-plan 진입 시만
 5. (선택) decisions 파일 경로 리스트
 6. (선택) Tech Spec 경로
@@ -74,22 +74,21 @@ plan 본문(planner가 작성한 파일) 전체와 `self_check` 진단을 사용
 - **modify** → 사용자 자유 텍스트로 수정 사항 → planner 재호출 (입력 7에 수정 요구 append) → 3-3 회귀.
 - **abort** → 큐 중단. 상태 파일 `pending_user_action: "user-aborted-plan"` 기록.
 
-### 3-4. orchestrator 호출
+### 3-4. plan 구현·검증
 
-`Task` 도구로 `orchestrator` sub-agent 호출. 입력 5종:
-1. plan 경로
-2. Linked Spec 경로
-3. parent `_index.md` 경로
-4. 이전 plan handoff 누적
-5. AC 라벨 분류 (메인이 plan에서 파싱한 `{label, criteria}` 배열)
+메인이 다음을 순차 실행한다. 코드 변경은 working tree에 남긴다 — commit은 3-6.
 
-반환 10-섹션 리포트 보관. `next_action` 분기:
+1. `Task` → `implementer`. 입력 4종(plan / Linked Spec / parent `_index.md` / 같은 sub-spec의 Done plan 경로 리스트). 반환 4섹션(`## 변경 파일` / `## Commit 후보` / `## Handoff 요약 후보` / `## 미해결`) 보관.
+2. `Bash` → `git diff HEAD` 캡처. 빈 diff면 사용자 보고 후 3택으로.
+3. `Task` → `unity-test-runner`. 변경 파일에서 도메인 힌트 추출해 `changed_domains` 전달. 반환 첫 줄: `PASS` → 4로. `FAIL`/`COMPILE ERROR` → 사용자 보고 후 3택. `MCP UNAVAILABLE` → "테스트 미실행" 기록 후 4로.
+4. `Task` → `reviewer`. 입력 4종(plan / Linked Spec / 2의 diff / plan AC 원문 + test_report). `pass` → 5로. `needs-fix` → 사용자 보고 후 3택.
+5. 메인이 plan의 `auto-hard`/`auto-soft` 항목을 직접 파싱해 순회 검증(Grep / `read_console` / Bash). `manual-hard`는 건드리지 않는다. `auto-hard` 실패 → 사용자 보고 후 3택. `auto-soft` 실패 → plan `## Notes` append 후보로 누적.
 
-- `manual-hard-verification` → 3-5로.
-- `handoff-approval` → manual-hard가 없는 plan. 3-5의 사용자 테스트 단계를 건너뛰고 3-6으로.
-- `test-failed` / `review-failed` / `implementer-blocked` / `compile-error` / `tree-dirty` / `mcp-down` → 사용자에게 `summary` + `unresolved` 표시 후 `AskUserQuestion`으로 3택 (`retry-via-new-plan` / `stop` / 자유 텍스트 수정). retry-via-new-plan 선택 시 3-7로.
+상태 파일 `last_step: "build"` 갱신.
 
-상태 파일 `last_step: "orchestrator"` 갱신.
+`manual_hard_pending`(plan의 `manual-hard` 라벨 항목)이 있으면 3-5로, 없으면 3-6으로.
+
+3택은 모두 동일: `retry-via-new-plan` → 3-7. `stop` → 큐 중단 + 상태 파일 `pending_user_action` 기록. 자유 텍스트 수정 → 메인이 즉시 보정 후 해당 단계 회귀.
 
 ### 3-5. 사용자 manual-hard 테스트 게이트
 
@@ -152,7 +151,7 @@ cascade_depth 검사. 상태 파일 `cascade_depth >= max-cascade`이면 거부 
   ],
   "current_sub_spec_index": 0,
   "current_plan_path": null,
-  "last_step": "preflight | planner | review | orchestrator | manual-hard | commit | sub-spec-done | completed",
+  "last_step": "preflight | planner | review | build | manual-hard | commit | sub-spec-done | completed",
   "pending_user_action": null
 }
 ```
@@ -161,7 +160,7 @@ cascade_depth 검사. 상태 파일 `cascade_depth >= max-cascade`이면 거부 
 
 ## 모드
 
-- **dry-run (기본)** — Pre-flight + 큐 미리보기 + per-sub-spec 진행 계획 1줄씩 보고 후 멈춤. **planner/orchestrator/doc-updater를 spawn하지 않는다.** 파일·코드·git 변경 없음.
+- **dry-run (기본)** — Pre-flight + 큐 미리보기 + per-sub-spec 진행 계획 1줄씩 보고 후 멈춤. **sub-agent spawn 없음.** 파일·코드·git 변경 없음.
 - **`--apply`** — 1~4단계 실제 실행.
 
 ## 출력 형식
