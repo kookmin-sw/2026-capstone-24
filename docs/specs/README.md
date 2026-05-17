@@ -181,6 +181,7 @@ docs/specs/
 | [drum-stick](drum-stick/_index.md) | Active | 2 | 3/3 | |
 | [session-panel](session-panel/_index.md) | Active | 3 | 4/5 | |
 | [multiplayer-network](multiplayer-network/_index.md) | Active | 6 | 13/19 | |
+| [trombone](trombone/_index.md) | Draft | 3 | 0/0 | |
 | [teleport-locomotion](_archive/teleport-locomotion/_index.md) | Done | 3 | 4/4 | |
 
 > Status 값: `Draft` / `Active` / `Done` / `Abandoned`. doc-updater가 sub-spec/feature 종료 시점에 자동 갱신.
