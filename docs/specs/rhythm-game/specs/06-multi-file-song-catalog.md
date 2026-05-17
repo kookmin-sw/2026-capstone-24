@@ -46,7 +46,7 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| _아직 없음_ | — | — | — |
+| 2026-05-18 | Multi-File Song Catalog — 파일명 파싱·그루핑·인터페이스 확장 | Done | [`2026-05-18-linksky0311-multi-file-song-catalog.md`](../plans/2026-05-18-linksky0311-multi-file-song-catalog.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/spec-build`가 planner sub-agent로 처리. 파일명은 날짜·작성자·slug 기반.

@@ -17,6 +17,9 @@ namespace SessionPanel
             readonly HashSet<string> _ids;
             public IReadOnlyCollection<string> SupportedInstrumentIds => _ids;
             public string GetChartPath(string difficulty) => "";
+            public System.Collections.Generic.IReadOnlyCollection<string> GetDifficultiesFor(string instrumentId)
+                => new string[0];
+            public string GetChartPath(string instrumentId, string difficulty) => null;
             public StubSongEntry(string id, params string[] instrumentIds)
             {
                 SongId = id; Title = id; _ids = new HashSet<string>(instrumentIds);

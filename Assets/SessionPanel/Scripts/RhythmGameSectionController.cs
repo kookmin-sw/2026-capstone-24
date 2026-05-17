@@ -152,7 +152,7 @@ namespace SessionPanel
 
             DifficultyButtonUI firstBtn = null;
             string firstDiff = null;
-            foreach (var diff in song.Difficulties)
+            foreach (var diff in song.GetDifficultiesFor(_currentInstrument.InstrumentId))
             {
                 var go = Instantiate(difficultyButtonPrefab, difficultyContainer);
                 if (go.GetComponent<CanvasRenderer>() == null)
@@ -183,8 +183,10 @@ namespace SessionPanel
 
         void AutoShowBpmFromSong(ISongEntry song)
         {
-            if (song.Difficulties.Count == 0) return;
-            string path = Path.Combine(Application.streamingAssetsPath, song.GetChartPath(song.Difficulties[0]));
+            var __diffs = song.GetDifficultiesFor(_currentInstrument?.InstrumentId ?? string.Empty);
+            if (__diffs.Count == 0) return;
+            var __firstDiff = System.Linq.Enumerable.First(__diffs);
+            string path = Path.Combine(Application.streamingAssetsPath, song.GetChartPath(_currentInstrument.InstrumentId, __firstDiff));
             if (!File.Exists(path)) return;
             var result = VmSongParser.Parse(File.ReadAllText(path));
             if (result.Success) BuildBpmBar(result.chart);
@@ -204,7 +206,7 @@ namespace SessionPanel
         {
             if (_selectedSong == null || _selectedDifficulty == null) return;
 
-            string path = Path.Combine(Application.streamingAssetsPath, _selectedSong.GetChartPath(_selectedDifficulty));
+            string path = Path.Combine(Application.streamingAssetsPath, _selectedSong.GetChartPath(_currentInstrument.InstrumentId, _selectedDifficulty));
             if (!File.Exists(path))
             {
                 Debug.LogWarning($"[RhythmGame] Chart not found: {path}");

@@ -1,0 +1,165 @@
+[Meta]
+title   = Test (Mary Had a Little Lamb)
+songid  = test_001
+
+[Resolution]
+ticksPerQuarter = 480
+
+[Tempo]
+tick=0  bpm=100  beats=4  beatUnit=4
+
+[Channels]
+channel=10  instrument=DrumKit
+
+[Track:10]
+# 8-bar drum test
+# 36=Kick  38=Snare  42=HiHat  43=FloorTom  45=MidTom  48=HighTom  49=Crash  51=Ride
+# 1beat=480t  8th=240t  16th=120t  1bar=1920t  100BPM
+
+# BAR 1 (0-1919): Kick + Snare + HiHat basic pattern
+tick=0      note=36  len=60  vel=100
+tick=0      note=42  len=60  vel=80
+tick=240    note=42  len=60  vel=65
+tick=480    note=38  len=60  vel=90
+tick=480    note=42  len=60  vel=80
+tick=720    note=42  len=60  vel=65
+tick=960    note=36  len=60  vel=100
+tick=960    note=42  len=60  vel=80
+tick=1200   note=42  len=60  vel=65
+tick=1440   note=38  len=60  vel=90
+tick=1440   note=42  len=60  vel=80
+tick=1680   note=42  len=60  vel=65
+
+# BAR 2 (1920-3839): Kick + Snare + HiHat + Ride
+tick=1920   note=36  len=60  vel=100
+tick=1920   note=42  len=60  vel=80
+tick=1920   note=51  len=60  vel=75
+tick=2160   note=42  len=60  vel=65
+tick=2400   note=38  len=60  vel=90
+tick=2400   note=42  len=60  vel=80
+tick=2400   note=51  len=60  vel=75
+tick=2640   note=42  len=60  vel=65
+tick=2880   note=36  len=60  vel=100
+tick=2880   note=42  len=60  vel=80
+tick=2880   note=51  len=60  vel=75
+tick=3120   note=42  len=60  vel=65
+tick=3360   note=38  len=60  vel=90
+tick=3360   note=42  len=60  vel=80
+tick=3360   note=51  len=60  vel=75
+tick=3600   note=42  len=60  vel=65
+
+# BAR 3 (3840-5759): Crash + Tom cascade
+tick=3840   note=36  len=60  vel=100
+tick=3840   note=49  len=60  vel=95
+tick=4080   note=48  len=60  vel=85
+tick=4320   note=45  len=60  vel=80
+tick=4560   note=43  len=60  vel=85
+tick=4680   note=43  len=60  vel=90
+tick=4800   note=43  len=60  vel=95
+tick=5040   note=36  len=60  vel=100
+tick=5040   note=38  len=60  vel=90
+tick=5520   note=36  len=60  vel=100
+
+# BAR 4 (5760-7679): Full pattern all 8 parts
+tick=5760   note=36  len=60  vel=100
+tick=5760   note=49  len=60  vel=90
+tick=5760   note=42  len=60  vel=80
+tick=5880   note=51  len=60  vel=75
+tick=6000   note=48  len=60  vel=85
+tick=6120   note=38  len=60  vel=90
+tick=6120   note=42  len=60  vel=80
+tick=6240   note=45  len=60  vel=85
+tick=6360   note=51  len=60  vel=75
+tick=6480   note=36  len=60  vel=100
+tick=6480   note=42  len=60  vel=80
+tick=6600   note=43  len=60  vel=85
+tick=6720   note=38  len=60  vel=90
+tick=6720   note=51  len=60  vel=75
+tick=6840   note=42  len=60  vel=65
+
+# BAR 5 (7680-9599): Simultaneous hit stress test
+tick=7680   note=36  len=60  vel=100
+tick=7680   note=38  len=60  vel=90
+tick=7680   note=49  len=60  vel=95
+tick=7920   note=42  len=60  vel=80
+tick=8160   note=36  len=60  vel=100
+tick=8160   note=48  len=60  vel=85
+tick=8400   note=38  len=60  vel=90
+tick=8400   note=45  len=60  vel=85
+tick=8400   note=43  len=60  vel=85
+tick=8640   note=36  len=60  vel=100
+tick=8640   note=42  len=60  vel=80
+tick=8640   note=51  len=60  vel=75
+tick=8880   note=42  len=60  vel=65
+tick=9120   note=38  len=60  vel=90
+tick=9120   note=42  len=60  vel=80
+tick=9360   note=43  len=60  vel=85
+
+# BAR 6 (9600-11519): 16th note tom roll
+tick=9600   note=36  len=60  vel=100
+tick=9600   note=49  len=60  vel=95
+tick=9720   note=48  len=60  vel=90
+tick=9840   note=48  len=60  vel=85
+tick=9960   note=48  len=60  vel=80
+tick=10080  note=45  len=60  vel=90
+tick=10200  note=45  len=60  vel=85
+tick=10320  note=45  len=60  vel=80
+tick=10440  note=43  len=60  vel=90
+tick=10560  note=43  len=60  vel=85
+tick=10680  note=43  len=60  vel=80
+tick=10800  note=36  len=60  vel=100
+tick=10800  note=38  len=60  vel=90
+tick=10920  note=42  len=60  vel=80
+tick=11040  note=36  len=60  vel=100
+tick=11040  note=42  len=60  vel=80
+tick=11160  note=38  len=60  vel=90
+tick=11280  note=42  len=60  vel=75
+tick=11400  note=51  len=60  vel=75
+
+# BAR 7 (11520-13439): Mixed pattern
+tick=11520  note=36  len=60  vel=100
+tick=11520  note=42  len=60  vel=80
+tick=11640  note=51  len=60  vel=75
+tick=11760  note=48  len=60  vel=85
+tick=11880  note=38  len=60  vel=90
+tick=11880  note=42  len=60  vel=80
+tick=12000  note=36  len=60  vel=100
+tick=12000  note=45  len=60  vel=85
+tick=12120  note=42  len=60  vel=65
+tick=12240  note=38  len=60  vel=90
+tick=12240  note=51  len=60  vel=75
+tick=12360  note=43  len=60  vel=85
+tick=12480  note=36  len=60  vel=100
+tick=12480  note=42  len=60  vel=80
+tick=12600  note=48  len=60  vel=85
+tick=12720  note=38  len=60  vel=90
+tick=12720  note=49  len=60  vel=90
+tick=12840  note=43  len=60  vel=85
+
+# BAR 8 (13440-15359): Finale max simultaneous
+tick=13440  note=36  len=60  vel=100
+tick=13440  note=38  len=60  vel=90
+tick=13440  note=49  len=60  vel=100
+tick=13560  note=42  len=60  vel=80
+tick=13560  note=51  len=60  vel=75
+tick=13680  note=48  len=60  vel=90
+tick=13680  note=45  len=60  vel=85
+tick=13680  note=43  len=60  vel=85
+tick=13800  note=36  len=60  vel=100
+tick=13920  note=36  len=60  vel=100
+tick=13920  note=38  len=60  vel=90
+tick=13920  note=42  len=60  vel=80
+tick=13920  note=51  len=60  vel=75
+tick=14040  note=48  len=60  vel=90
+tick=14040  note=45  len=60  vel=85
+tick=14040  note=43  len=60  vel=85
+tick=14160  note=36  len=60  vel=100
+tick=14160  note=49  len=60  vel=100
+tick=14280  note=36  len=60  vel=100
+tick=14280  note=38  len=60  vel=90
+tick=14280  note=48  len=60  vel=90
+tick=14280  note=45  len=60  vel=85
+tick=14280  note=43  len=60  vel=85
+tick=14400  note=36  len=60  vel=100
+tick=14400  note=38  len=60  vel=90
+tick=14400  note=49  len=60  vel=100
