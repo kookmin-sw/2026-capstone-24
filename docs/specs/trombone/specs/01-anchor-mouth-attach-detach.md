@@ -43,7 +43,7 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| _아직 없음_ | — | — | — |
+| 2026-05-17 | Anchor & Mouth Attach/Detach 라이프사이클 박제 | Done | [../plans/01-2026-05-17-sanyoentertain-anchor-mouth-attach-detach.md](../plans/01-2026-05-17-sanyoentertain-anchor-mouth-attach-detach.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/spec-build`가 planner sub-agent로 처리.
