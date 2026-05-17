@@ -20,7 +20,7 @@
 
 | 이름 | 상태 | 링크 |
 |---|---|---|
-| Anchor & Mouth Attach/Detach | Draft | [specs/01-anchor-mouth-attach-detach.md](specs/01-anchor-mouth-attach-detach.md) |
+| Anchor & Mouth Attach/Detach | Done | [specs/01-anchor-mouth-attach-detach.md](specs/01-anchor-mouth-attach-detach.md) |
 | Slide Tracking by Right Grip | Draft | [specs/02-slide-tracking.md](specs/02-slide-tracking.md) |
 | Blow & Continuous Pitch Sound | Draft | [specs/03-blow-and-pitch-sound.md](specs/03-blow-and-pitch-sound.md) |
 
