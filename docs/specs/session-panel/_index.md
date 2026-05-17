@@ -23,7 +23,7 @@ VR 환경에서 사용자는 (a) 리듬게임 세션을 시작하고, (b) 자기
 | Anchoring | Done | [`specs/01-anchoring.md`](../_archive/session-panel/specs/01-anchoring.md) |
 | Start Menu Section | Draft | [`specs/02-start-menu-section.md`](specs/02-start-menu-section.md) |
 | Volume Section | Done | [`specs/03-volume-section.md`](specs/03-volume-section.md) |
-| Song Selection Activation | Draft | [`specs/04-song-selection-activation.md`](specs/04-song-selection-activation.md) |
+| Song Selection Activation | Done | [`specs/04-song-selection-activation.md`](specs/04-song-selection-activation.md) |
 
 > 상태 값: `Draft` / `Active` / `Done` / `Abandoned`
 

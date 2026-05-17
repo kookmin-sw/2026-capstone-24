@@ -1,6 +1,6 @@
 # Song Selection Activation — 진단·수정
 
-**Linked Spec:** [`04-song-selection-activation.md`](../specs/04-song-selection-activation.md)
+**Linked Spec:** [`04-song-selection-activation.md`](../../../session-panel/specs/04-song-selection-activation.md)
 **Status:** `Done`
 
 ## Goal
@@ -9,7 +9,7 @@
 
 ## Context
 
-session-panel `04-song-selection-activation` sub-spec의 첫(그리고 유일하게 계획된) plan이다. spec [`04-song-selection-activation.md`](../specs/04-song-selection-activation.md)가 정의하는 핵심:
+session-panel `04-song-selection-activation` sub-spec의 첫(그리고 유일하게 계획된) plan이다. spec [`04-song-selection-activation.md`](../../../session-panel/specs/04-song-selection-activation.md)가 정의하는 핵심:
 
 - 악기를 잡은 상태에서 패널이 열리면 그 악기 트랙이 있는 곡 row가 클릭 가능 상태로 표시되어야 한다.
 - 악기 미잡음 + 핀치 호출 케이스는 시작 메뉴 섹션 자체가 노출되지 않으므로 본 plan 범위 밖(`02-start-menu-section.md`의 노출 토글이 담당).
