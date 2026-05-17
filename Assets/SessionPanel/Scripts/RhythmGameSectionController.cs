@@ -70,8 +70,18 @@ namespace SessionPanel
 
         void OnEnable()
         {
+            // null-safe fallback: Inject 이전에 OnEnable이 발화해도 SerializedField 값으로 시도한다.
+            if (_provider == null)
+                _provider = activeInstrumentProviderObject as IActiveInstrumentProvider;
+            if (_catalog == null)
+                _catalog = songCatalogObject as ISongCatalog;
+
+            // idempotent 구독: 중복 등록 방지를 위해 항상 -= 후 +=
             if (_provider != null)
+            {
+                _provider.ActiveInstrumentChanged -= OnActiveInstrumentChanged;
                 _provider.ActiveInstrumentChanged += OnActiveInstrumentChanged;
+            }
             _currentInstrument = _provider?.Current;
             RefreshSongList();
         }
@@ -362,6 +372,7 @@ namespace SessionPanel
 
         public void Inject(UnityEngine.Object providerObj, UnityEngine.Object catalogObj)
         {
+            // 기존 구독 해제 (idempotent)
             if (_provider != null)
                 _provider.ActiveInstrumentChanged -= OnActiveInstrumentChanged;
 
@@ -371,7 +382,9 @@ namespace SessionPanel
             _catalog           = songCatalogObject as ISongCatalog;
             _currentInstrument = _provider?.Current;
 
-            if (isActiveAndEnabled && _provider != null)
+            // isActiveAndEnabled 여부와 무관하게 구독 등록 (가설 2 수정):
+            // Inject -> SetActive(true) -> OnEnable 순서에서 OnEnable의 중복 -= +=가 안전하게 처리된다.
+            if (_provider != null)
                 _provider.ActiveInstrumentChanged += OnActiveInstrumentChanged;
 
             ResetSelection();
