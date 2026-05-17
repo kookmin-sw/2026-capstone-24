@@ -22,3 +22,10 @@
 
 - Unity 런타임 코드(`.cs`) 수정 후에는 `unity-test-runner` 서브에이전트를 1회 호출해 회귀를 확인한다.
 - MCP 미가용으로 테스트 실행 불가 시 → `MCP UNAVAILABLE` 리포트 후 `reviewer`는 그대로 진행한다.
+
+## 도메인별 가이드
+
+| 도메인 | 가이드 | 다룰 때 |
+|---|---|---|
+| Hands | [`Assets/Hands/CLAUDE.md`](Assets/Hands/CLAUDE.md) | VR 손 3-Layer(Ghost/Physics/Play), Grip Pose Override, 새 악기에 손 붙이기 |
+| Instruments | [`Assets/Instruments/CLAUDE.md`](Assets/Instruments/CLAUDE.md) | 악기 prefab 골격, `InstrumentBase` 계약, MIDI 데이터 흐름, RhythmGame 연동 |
