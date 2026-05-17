@@ -147,8 +147,23 @@ namespace Murang.Multiplayer.Room.Server
 
             if (!runner.ActivePlayers.Any())
             {
-                _ = runner.Shutdown();
+                RoomServerCallbackReporter reporter = GetComponent<RoomServerCallbackReporter>();
+                if (reporter != null && reporter.IsActive)
+                {
+                    StartCoroutine(TerminateAndShutdownRoutine(runner, reporter));
+                }
+                else
+                {
+                    _ = runner.Shutdown();
+                }
             }
+        }
+
+        private System.Collections.IEnumerator TerminateAndShutdownRoutine(
+            NetworkRunner runner, RoomServerCallbackReporter reporter)
+        {
+            yield return reporter.ReportTerminated("last-player-left");
+            _ = runner.Shutdown();
         }
 
         void INetworkRunnerCallbacks.OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)

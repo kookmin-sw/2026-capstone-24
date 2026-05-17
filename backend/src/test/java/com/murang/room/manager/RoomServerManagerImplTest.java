@@ -217,4 +217,47 @@ class RoomServerManagerImplTest {
             return Optional.empty();
         }
     }
+
+    @Test
+    @Transactional
+    void markUnhealthyAndTerminate_persistsUnhealthyTransitionAndCallsStopTask() {
+        RoomServerSnapshot provisioned = manager.provision(new RoomProvisioningCommand(
+                createOwner(), uniqueSessionName(), 4, null, "v0.1.0"));
+        manager.notifyReady(provisioned.roomId(), new RoomReadySignal("10.0.0.1", 7777, "v0.1.0"));
+        manager.markUnhealthyAndTerminate(provisioned.roomId(), "reconciliation:heartbeat-timeout");
+        StubRoomRuntimeProvider stub = (StubRoomRuntimeProvider) runtimeProvider;
+        assertThat(stub.lastStop).isNotNull();
+        assertThat(stub.lastStop.reason()).isEqualTo("reconciliation:heartbeat-timeout");
+        RoomServerSnapshot after = manager.findByRoomId(provisioned.roomId()).orElseThrow();
+        assertThat(after.status()).isEqualTo(RoomServerInstanceStatus.TERMINATED);
+        assertThat(after.terminatedAt()).isNotNull();
+        assertThat(after.closedAt()).isNotNull();
+    }
+
+    @Test
+    @Transactional
+    void markUnhealthyAndTerminate_isIdempotentForAlreadyTerminated() {
+        RoomServerSnapshot provisioned = manager.provision(new RoomProvisioningCommand(
+                createOwner(), uniqueSessionName(), 4, null, "v0.1.0"));
+        manager.notifyReady(provisioned.roomId(), new RoomReadySignal("10.0.0.1", 7777, "v0.1.0"));
+        manager.terminate(provisioned.roomId(), "first-terminate");
+        StubRoomRuntimeProvider stub = (StubRoomRuntimeProvider) runtimeProvider;
+        stub.lastStop = null;
+        manager.markUnhealthyAndTerminate(provisioned.roomId(), "reconciliation:heartbeat-timeout");
+        assertThat(stub.lastStop).isNull();
+    }
+
+    @Test
+    @Transactional
+    void markProvisioningTimedOut_marksFailedAndAttemptsStopTask() {
+        RoomServerSnapshot provisioned = manager.provision(new RoomProvisioningCommand(
+                createOwner(), uniqueSessionName(), 4, null, "v0.1.0"));
+        manager.markProvisioningTimedOut(provisioned.roomId(), "reconciliation:provisioning-timeout");
+        StubRoomRuntimeProvider stub = (StubRoomRuntimeProvider) runtimeProvider;
+        assertThat(stub.lastStop).isNotNull();
+        RoomServerSnapshot after = manager.findByRoomId(provisioned.roomId()).orElseThrow();
+        assertThat(after.status()).isEqualTo(RoomServerInstanceStatus.FAILED);
+        assertThat(after.terminatedAt()).isNotNull();
+        assertThat(after.closedAt()).isNotNull();
+    }
 }

@@ -35,6 +35,7 @@ namespace Murang.Multiplayer.Room.Server
         private string _resolvedPublicIp;
         private bool _readyReported;
         private Coroutine _heartbeatLoop;
+        private bool _terminateReported;
 
         public bool IsActive => _config != null;
 
@@ -63,6 +64,45 @@ namespace Murang.Multiplayer.Room.Server
 
             _readyReported = true;
             StartCoroutine(ReportReadyRoutine());
+        }
+
+        /// <summary>
+        /// DS 가 종료하기 전 Spring backend 에 POST /terminate 를 발사한다.
+        /// caller 는 <c>yield return reporter.ReportTerminated(...)</c> 로 완료 대기 가능.
+        /// heartbeat loop 는 이 메서드 안에서 즉시 중단된다.
+        /// </summary>
+        public IEnumerator ReportTerminated(string reason)
+        {
+            if (!IsActive || _terminateReported)
+            {
+                yield break;
+            }
+            if (string.IsNullOrEmpty(_config.TerminateCallbackUrl))
+            {
+                yield break;
+            }
+            _terminateReported = true;
+            if (_heartbeatLoop != null)
+            {
+                StopCoroutine(_heartbeatLoop);
+                _heartbeatLoop = null;
+            }
+            string escapedReason = EscapeForJson(reason);
+            string body = string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                "{\"reason\":\"{0}\"}", escapedReason);
+            using UnityWebRequest request = BuildJsonPost(_config.TerminateCallbackUrl, body);
+            yield return request.SendWebRequest();
+            if (request.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogWarning(
+                    string.Format("[RoomServerCallbackReporter] terminate POST failed status={0} error={1}",
+                        request.responseCode, request.error));
+            }
+            else
+            {
+                Debug.Log(string.Format("[RoomServerCallbackReporter] terminate POST succeeded room_id={0} reason={1}",
+                    _config.RoomId, reason));
+            }
         }
 
         private IEnumerator ReportReadyRoutine()

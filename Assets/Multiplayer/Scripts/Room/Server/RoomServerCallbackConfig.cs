@@ -16,25 +16,29 @@ namespace Murang.Multiplayer.Room.Server
         public const string EnvHeartbeatCallbackUrl = "ROOM_HEARTBEAT_CALLBACK_URL";
         public const string EnvRoomRuntimeVersion = "ROOM_RUNTIME_VERSION";
         public const string EnvSharedSecret = "MURANG_ROOM_INTERNAL_CALLBACK_SHARED_SECRET";
+        public const string EnvTerminateCallbackUrl = "ROOM_TERMINATE_CALLBACK_URL";
 
         public long RoomId { get; }
         public string ReadyCallbackUrl { get; }
         public string HeartbeatCallbackUrl { get; }
         public string RoomRuntimeVersion { get; }
         public string SharedSecret { get; }
+        public string TerminateCallbackUrl { get; }
 
         private RoomServerCallbackConfig(
             long roomId,
             string readyCallbackUrl,
             string heartbeatCallbackUrl,
             string roomRuntimeVersion,
-            string sharedSecret)
+            string sharedSecret,
+            string terminateCallbackUrl)
         {
             RoomId = roomId;
             ReadyCallbackUrl = readyCallbackUrl;
             HeartbeatCallbackUrl = heartbeatCallbackUrl;
             RoomRuntimeVersion = roomRuntimeVersion;
             SharedSecret = sharedSecret;
+            TerminateCallbackUrl = terminateCallbackUrl;
         }
 
         /// <summary>
@@ -79,12 +83,21 @@ namespace Murang.Multiplayer.Room.Server
             string runtimeVersion = GetTrimmedOrNull(env, EnvRoomRuntimeVersion) ?? "unknown";
             string sharedSecret = GetTrimmedOrNull(env, EnvSharedSecret);
 
+            string terminateUrl = GetTrimmedOrNull(env, EnvTerminateCallbackUrl);
+            if (terminateUrl != null && !IsAbsoluteHttpUrl(terminateUrl))
+            {
+                throw new InvalidOperationException(
+                    string.Format("Environment variable {0} must be an absolute http/https URL: {1}",
+                        EnvTerminateCallbackUrl, terminateUrl));
+            }
+
             return new RoomServerCallbackConfig(
                 roomId,
                 readyUrl,
                 heartbeatUrl,
                 runtimeVersion,
-                sharedSecret);
+                sharedSecret,
+                terminateUrl);
         }
 
         /// <summary>
