@@ -1291,6 +1291,7 @@ GameObject:
   m_Component:
   - component: {fileID: 181637960}
   - component: {fileID: 181637959}
+  - component: {fileID: 181637961}
   m_Layer: 0
   m_Name: StubSongCatalog
   m_TagString: Untagged
@@ -1313,6 +1314,19 @@ MonoBehaviour:
   sourceDatabases:
   - {fileID: 11400000, guid: de6fec7c8d5abe04887bc7dc22e08a29, type: 2}
   - {fileID: 11400000, guid: 9b7785221d8a3c5409d752aff6368e29, type: 2}
+--- !u!114 &181637961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 181637958}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 556fa330155d7f74aba22ecfcaa1b21d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SessionPanel.Runtime::SessionPanel.FolderScanSongCatalog
+  songsRelativePath: Songs
 --- !u!4 &181637960
 Transform:
   m_ObjectHideFlags: 0
@@ -2647,7 +2661,7 @@ MonoBehaviour:
   fallbackSpawnLocalOffset: {x: 0, y: 0, z: 0.6}
   trackingEpsilon: 0.001
   _activeInstrumentProviderObject: {fileID: 8369896}
-  _songCatalogObject: {fileID: 181637959}
+  _songCatalogObject: {fileID: 181637961}
   panelToggleAction: {fileID: 6276339513826019528, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   nearFarInteractorRoot: {fileID: 126364922}
 --- !u!4 &674608944
