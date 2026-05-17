@@ -12,7 +12,7 @@ VR 클라이언트와 헤드리스 룸 서버는 같은 코드베이스를 공�
 
 - **Quest Client 빌드** (Android, Quest용): XR/입력/UI/오디오/UX 자산 포함. NetworkRunner는 클라이언트 모드로 구동한다.
 - **Headless Server 빌드** (Linux 서버용): XR/입력/UI/오디오 자산 제외, 그래픽 디바이스 비활성. NetworkRunner는 서버 모드로 구동한다. 권위 시뮬레이션·판정·동기화에 필요한 자산만 포함한다.
-- 두 빌드는 동일한 default 씬(`SampleScene`), 동일한 prefab, 동일한 NetworkObject 식별자를 공유한다. 네트워크로 동기화되는 모든 객체의 식별자가 두 빌드 간 일치해야 한다.
+- 두 빌드는 동일한 default 씬([`../decisions/01-default-scene.md`](../decisions/01-default-scene.md)), 동일한 prefab, 동일한 NetworkObject 식별자를 공유한다. 네트워크로 동기화되는 모든 객체의 식별자가 두 빌드 간 일치해야 한다.
 - 클라이언트와 room server는 네트워크/콘텐츠 계약을 대표하는 `clientCompatibilityVersion` 또는 동등한 호환 버전 개념을 공유해야 한다. 이 값은 prefab 식별자, NetworkBehaviour/RPC, 룸 입장 계약 등 네트워크 상호운용성을 대표한다.
 - room server build는 room instance 기동 시 사용할 `roomRuntimeVersion`을 가진다.
 - Spring 내부 `RoomServerManager`는 room provisioning 요청에 필요한 `roomRuntimeVersion`을 포함하고, room server는 ready callback에 자신이 실행 중인 실제 버전을 보고한다. 요청 버전과 실제 버전이 호환되지 않으면 room instance는 admission을 열지 않고 실패 처리된다.

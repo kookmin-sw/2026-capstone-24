@@ -10,7 +10,7 @@
 
 Photon Fusion을 통해 룸을 생성하거나 기존 룸에 입장·퇴장할 수 있는 세션 관리 기능을 제공한다. 여러 유저가 같은 룸에 동시 접속해 공유 공간을 형성한다. 룸 권위는 전용 서버 인스턴스가 가지며, 클라이언트는 백엔드를 경유해 룸을 생성하고 Photon Cloud가 매칭한 룸 세션으로 직접 연결해 입장한다. 룸 생성 시 비밀번호 설정 여부를 선택할 수 있으며, 모든 룸은 룸 목록에 노출되고 비밀번호가 설정된 룸은 잠금 상태로 표시된다.
 
-모든 룸은 동일한 default 씬(`SampleScene`)을 사용한다. 씬에는 악기·오브젝트가 미리 배치되어 있고, 클라이언트는 그 단일 씬 안에서만 상호작용한다. 룸 내부에서 오브젝트를 추가·이동·삭제하는 흐름은 없으며, 유저별 룸 상태(악기 배치·오브젝트 설정 등)는 영속화 대상이 아니다.
+모든 룸은 동일한 default 씬을 사용한다. 씬에는 악기·오브젝트가 미리 배치되어 있고, 클라이언트는 그 단일 씬 안에서만 상호작용한다. 룸 내부에서 오브젝트를 추가·이동·삭제하는 흐름은 없으며, 유저별 룸 상태(악기 배치·오브젝트 설정 등)는 영속화 대상이 아니다. default 씬의 실제 Unity 씬 매핑은 [`../decisions/01-default-scene.md`](../decisions/01-default-scene.md) 가 단일 source of truth.
 
 룸 서버 생명주기는 Spring 서버 내부 모듈인 `RoomServerManager`가 관리한다. Spring 백엔드는 room instance를 직접 실행하지 않고, 요청 유저의 `playerId`를 식별한 뒤 룸 이름, 비밀번호, 정원, 필요 런타임 버전을 묶어 같은 프로세스 안의 `RoomServerManager`를 호출해 프로비저닝을 시작한다. AWS dev/prototype 환경에서는 Spring Server와 MariaDB가 EC2에 상주하고, `RoomServerManager`는 AWS API를 통해 ECS Fargate의 Unity Headless Dedicated Server task를 실행·조회·종료한다. 향후 대규모 트래픽이나 복잡한 스케줄링 요구가 생기면 `RoomServerManager` 내부의 runtime provider 구현을 Kubernetes 기반으로 교체할 수 있다. 로컬 Docker 개발 환경도 같은 계약과 상태 흐름을 따르는 대체 구현을 둘 수 있다.
 
