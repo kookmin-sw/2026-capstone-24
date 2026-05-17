@@ -11,7 +11,11 @@ mcpServers:
     url: http://127.0.0.1:8080
 ---
 
-Unity 자산 상태를 점검하고 검증된 사실만 JSON으로 보고한다. 호출 직후 [`unity-mcp-workflow §1`](../skills/unity-mcp-workflow/SKILL.md) 사전 점검(Resource-First)을 1회 수행해 `preflight` 필드에 박제한다. MCP 미가용 시 [`CLAUDE.md` "Unity MCP 사용 정책"](../../CLAUDE.md)에 따라 `Read+Grep`으로 수집 가능한 사실만 보고하고 한계는 `unverified_notes`에 격리한다.
+Unity 자산 상태를 점검하고 검증된 사실만 JSON으로 보고한다. 호출 직후 다음 preflight를 직접 수행해 `preflight` 필드에 박제한다.
+
+- MCP 가용 시: `mcpforunity://editor/state` 리소스 1회 read로 `is_compiling`·`ready_for_tools` 확인. 리소스 불가 시 `read_console(types=["error","warning"], count=5)`로 대체 추정.
+- MCP 미가용 시: `preflight.mcp_available=false` 박제 후 `Read`+`Grep`으로 수집 가능한 사실만 보고. 가정으로 채우지 않고 한계는 `unverified_notes`에 격리한다 ([`CLAUDE.md` "Unity MCP 사용 정책"](../../CLAUDE.md)).
+- 추가 절차(컴파일 대기·error recovery)는 [`unity-mcp-workflow`](../skills/unity-mcp-workflow/SKILL.md) 참조. **본 skill을 자동 invoke하지 않는다.**
 
 ## 규칙
 
@@ -22,6 +26,7 @@ Unity 자산 상태를 점검하고 검증된 사실만 JSON으로 보고한다.
 - 컨텍스트 절약과 정보 충실도가 충돌하면 충실도를 우선한다.
 - 변경이 필요하면 `next_actions[]`에 권고만 남기고 멈춘다 (`unity-scene-writer` 호출 금지).
 - MCP 미가용 시 `preflight.mcp_available=false`로 표기하고 `Read+Grep` 가능 사실만 보고. 가정으로 채우지 않는다.
+- **hierarchy 완전성 강제.** root GameObject는 빠짐없이 `hierarchy[]`에 박제한다. cherry-pick으로 "주요" 항목만 picked 금지. `summary`에 적은 root 카운트(또는 MCP가 반환한 `total`)와 `hierarchy[]` 길이가 불일치하면 reader 자체 버그로 보고 needs-fix.
 
 ## 도구 우선순위
 
@@ -92,3 +97,4 @@ Unity 자산 상태를 점검하고 검증된 사실만 JSON으로 보고한다.
 - `unverified_notes`가 비어 있지 않으면 메인은 plan 박제 금지.
 - `summary` 외의 자연어는 `next_actions[].action`과 `unverified_notes[].note`에만 허용. 그 외 필드는 enum/구조체.
 - `hierarchy[]`에서 **동일 컴포넌트 셋·동일 자식 트리 형태가 ≥ 4회 반복**이면 첫 1개 full + `repeated_count: N`으로 압축. 미만이면 raw로 전부.
+- `hierarchy[]` 길이는 보고 대상 root 개수(MCP `total` 또는 사용자가 지정한 범위 전체)와 일치해야 한다. 압축은 위 "4회 이상 반복" 케이스에만 허용 — 토큰 절약 목적의 cherry-pick은 룰 위반.

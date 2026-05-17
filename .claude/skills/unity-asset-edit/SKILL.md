@@ -10,9 +10,9 @@ allowed-tools: Read, Edit, Glob, Grep, mcp__UnityMCP__manage_asset, mcp__UnityMC
 
 1. **자산 *생성*** (`.mat`, `.asset`, `.prefab` 신규) → `manage_material` / `manage_asset` / `manage_prefabs`. YAML hand-write 금지. `.meta` GUID는 Unity가 만들도록 한다.
 2. **단일 필드 *변경*** (머터리얼 교체, `m_Enabled`, 컴포넌트 값 등) → `manage_components` / `manage_prefabs` 우선. MCP가 그 필드를 못 다룰 때만 텍스트 Edit으로 폴백.
-3. **스칼라 텍스트 Edit이 불가피한 경우** → 아래 YAML 보존 규칙을 따른다. `precondition_sha256` 절차는 [`unity-mcp-workflow §5`](../unity-mcp-workflow/SKILL.md) 단일 진실원.
+3. **스칼라 텍스트 Edit이 불가피한 경우** → 아래 YAML 보존 규칙을 따른다. `precondition_sha256` 절차는 [`unity-mcp-workflow §3`](../unity-mcp-workflow/SKILL.md) 단일 진실원.
 4. **MCP 도구가 세션에 노출돼 있지 않으면** 사용자에게 묻고 진행한다 (AGENTS.md "Unity MCP 사용 정책"과 동일).
-5. **`.cs` 스크립트 변경**은 본 skill 범위 외다 — 컴파일 대기·`read_console` 검증·attach 순서는 [`unity-mcp-workflow`](../unity-mcp-workflow/SKILL.md) §2.
+5. **`.cs` 스크립트 변경**은 본 skill 범위 외다 — 컴파일 대기·`read_console` 검증·attach 순서는 [`unity-mcp-workflow`](../unity-mcp-workflow/SKILL.md) §1.
 
 ## 일반 규칙
 

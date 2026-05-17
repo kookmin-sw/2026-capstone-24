@@ -143,7 +143,7 @@ docs/specs/
 - **컴포넌트 enum/Flags 필드 신규 셋업 plan은 의도 값 검증 AC 1건 필수.** `## Verified Structural Assumptions`에 박제된 enum 정의의 의도 값을 직렬화 grep 단일 매치로 검증. 권장 라벨 `[auto-hard]`.
 - **검증 실패에서 파생된 plan은 헤더에 `**Caused By:**` 라인.** planner가 자동 부여. 정책 단일 진실원: 위 "검증 실패 시 후속 plan 시드" 섹션.
 - **호출 API side effect 박제 강제.** Unity 자산 의존 plan이 외부 컴포넌트 public API를 호출하면, 그 API가 호출 컴포넌트의 transform·frame loop·event 구독에 미치는 모든 side effect를 `## Verified Structural Assumptions`에 박제. 부분 라인 박제 금지.
-- **(권고) 스크립트 변경 plan은 컴파일 0건 검증 AC 1건.** `.cs` 신규/수정이 포함된 plan은 `read_console(types=["error"])`가 0건임을 plan 적용 후 확인하는 AC 1건 권장. 라벨 `[auto-hard]`. 절차는 [`unity-mcp-workflow`](../../.claude/skills/unity-mcp-workflow/SKILL.md) §2.
+- **(권고) 스크립트 변경 plan은 컴파일 0건 검증 AC 1건.** `.cs` 신규/수정이 포함된 plan은 `read_console(types=["error"])`가 0건임을 plan 적용 후 확인하는 AC 1건 권장. 라벨 `[auto-hard]`. 절차는 [`unity-mcp-workflow`](../../.claude/skills/unity-mcp-workflow/SKILL.md) §1.
 - **(권고) 시각적 변화가 핵심인 plan은 screenshot 검증 AC 1건.** GameObject 배치/카메라 lens/머티리얼/UI 같이 시각으로 의도 일치를 확인해야 하는 plan은 screenshot 1장 첨부를 `[manual-hard]` AC로 1건 권장.
 
 ### ARD Spec What Coverage 룰

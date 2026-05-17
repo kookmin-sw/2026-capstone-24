@@ -16,7 +16,7 @@
 
 ### Unity MCP 워크플로우
 
-스크립트·씬·컴포넌트·프리팹을 Unity MCP로 변경할 때는 [`.claude/skills/unity-mcp-workflow/SKILL.md`](.claude/skills/unity-mcp-workflow/SKILL.md)을 호출해 사전 점검(Resource-First)·스크립트 컴파일 대기·`read_console`/screenshot 검증·`batch_execute` 의존성 처리·`precondition_sha256` stale-file 방지·error recovery 절차를 컨텍스트에 적재한다.
+스크립트·씬·컴포넌트·프리팹을 Unity MCP로 변경할 때는 [`.claude/skills/unity-mcp-workflow/SKILL.md`](.claude/skills/unity-mcp-workflow/SKILL.md)을 참조한다 — 컴파일 대기·`batch_execute` 의무 룰·`precondition_sha256` stale-file 방지·error recovery가 단일 진실원. **자동 invoke 의무는 없으며, 호출 측이 필요한 섹션만 참조한다.**
 
 ## 테스트 정책
 

@@ -11,7 +11,7 @@ mcpServers:
 
 한 plan을 받아 그 plan에 정의된 변경만 수행하고, 끝나면 변경 파일 목록과 commit 후보 요약을 반환한다.
 
-호출 직후 [`unity-mcp-workflow`](../skills/unity-mcp-workflow/SKILL.md) skill을 invoke해 Unity MCP 워크플로우(사전 점검·컴파일 대기·검증·복구) 절차를 컨텍스트에 적재한다. plan이 Unity 자산을 건드리지 않는 순수 로직 변경이면 invoke 생략 가능.
+Unity MCP로 스크립트·씬·컴포넌트·프리팹을 *수정*할 때는 [`unity-mcp-workflow`](../skills/unity-mcp-workflow/SKILL.md)을 참조한다 — 컴파일 대기(§1)·`batch_execute` 의무 룰(§2)·`precondition_sha256`(§3)·Error Recovery(§4)가 단일 진실원. 순수 로직 변경이거나 조회만이면 참조 생략. **본 skill을 자동 invoke하지 않는다.**
 
 ## 입력
 
@@ -28,7 +28,7 @@ orchestrator가 다음 4종만 전달한다. 그 외 컨텍스트는 자의로 �
 - **plan 파일 자체는 수정하지 않는다.** `Status` 갱신·`Handoff` 작성은 orchestrator가 한다.
 - **Approach 단계와 Deliverables 목록을 그대로 따른다.** 그 외 파일은 손대지 않는다. plan에 없는 리팩터/포맷 정리/주변 청소를 끼워 넣지 않는다.
 - **모호하면 멈춘다.** 입력만으로 판단이 안 되는 지점이 나오면 그 지점을 명시해 보고하고 멈춘다. 추측으로 진행하지 않는다.
-- **스크립트 변경 시 컴파일 대기.** `manage_script(action="create"|"apply_edits")` 또는 `Edit`/`Write`로 `.cs` 파일을 변경한 직후에는 `refresh_unity(wait_for_ready=True)` 호출 → `read_console(types=["error"], count=20, include_stacktrace=True)` 통과를 확인한 뒤에만 새 타입을 `manage_components(action="add")`로 attach한다. 컴파일 통과 전 attach는 "Type not found" 또는 silent 실패. 한 `batch_execute`에 `manage_script(create)`와 새 타입 attach를 같이 넣지 않는다. 자세한 절차·안티패턴은 [`unity-mcp-workflow`](../skills/unity-mcp-workflow/SKILL.md) §2.
+- **스크립트 변경 시 컴파일 대기.** `manage_script(action="create"|"apply_edits")` 또는 `Edit`/`Write`로 `.cs` 파일을 변경한 직후에는 `refresh_unity(wait_for_ready=True)` 호출 → `read_console(types=["error"], count=20, include_stacktrace=True)` 통과를 확인한 뒤에만 새 타입을 `manage_components(action="add")`로 attach한다. 컴파일 통과 전 attach는 "Type not found" 또는 silent 실패. 한 `batch_execute`에 `manage_script(create)`와 새 타입 attach를 같이 넣지 않는다. 자세한 절차·안티패턴은 [`unity-mcp-workflow`](../skills/unity-mcp-workflow/SKILL.md) §1.
 - **commit은 직접 하지 않는다.** orchestrator가 `git-workflow` skill에 위임한다. 이 에이전트는 `git status`/`git diff` 같은 read-only 확인까지만 한다.
 - **다른 sub-agent를 호출하지 않는다.**
 
