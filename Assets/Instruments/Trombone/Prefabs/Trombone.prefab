@@ -837,9 +837,18 @@ MonoBehaviour:
   _panelAnchor: {fileID: 0}
   tromboneAnchor: {fileID: 6798659558522323895}
   slideController: {fileID: 4069711244863020258}
-  sustainClip: {fileID: 8300000, guid: 6a7e14b55c8c2f240ab4795c94dda174, type: 3}
-  releaseClip: {fileID: 8300000, guid: ebeb587f96604d04ca4ad8051a61bf43, type: 3}
-  baseToneMidiNote: 60
+  samples:
+  - clip: {fileID: 8300000, guid: bebd4721ee158da4eb5ac09b67fd9582, type: 3}
+    rootMidiNote: 21
+  - clip: {fileID: 8300000, guid: 5c070199ec84edb4b8932133f34e6bbb, type: 3}
+    rootMidiNote: 27
+  - clip: {fileID: 8300000, guid: 5056cffd85c043149a9fbcb4ff79ef89, type: 3}
+    rootMidiNote: 33
+  - clip: {fileID: 8300000, guid: e8e2e4f2126276d46ace0701b11708b2, type: 3}
+    rootMidiNote: 45
+  baseToneMidiNote: 33
+  fadeInDuration: 0.05
+  fadeOutDuration: 0.15
   leftGripAction: {fileID: 6558622148059887818, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   gripThreshold: 0.5
 --- !u!1 &3352728544413650932

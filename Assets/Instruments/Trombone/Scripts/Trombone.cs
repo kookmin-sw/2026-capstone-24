@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -5,25 +6,33 @@ namespace Instruments
 {
     /// <summary>
     /// Trombone.prefab root에 부착. InstrumentBase 계약 통과 (NoteOn/NoteOff + MidiTriggered).
-    /// 왼손 Grip rising/falling edge → C4 NoteOn(sustain loop chain) / NoteOff(release one-shot).
-    /// Grip 홀드 동안 매 LateUpdate slideController.NormalizedSlide → semitones=Lerp(0,-6,t)
-    /// → pitch=2^(s/12) 를 sustain voice의 AudioSource.pitch에 직접 적용. release voice는 NoteOff 시점 pitch 고정.
-    /// TromboneAnchor.IsAttached == false 면 새 NoteOn 무시 + 진행 중 발음 Choke (release 건너뜀, 즉시 silence).
+    /// 왼손 Grip rising/falling edge → baseToneMidiNote 기반 NoteOn(sustain loop + fadeIn) / NoteOff(fadeOut).
+    /// 4개 sample을 음역대 분할 멀티샘플로 두고, NoteOn 시점 effective MIDI에 가장 가까운 root sample을 선택해
+    /// pitch shift 폭을 최소화한다. 발음 중에는 sample을 고정하고 slide pitch만 AudioSource.pitch에 직접 갱신.
+    /// TromboneAnchor.IsAttached == false면 진행 중 발음을 Choke로 즉시 silence (fade 건너뜀).
     /// </summary>
     [DefaultExecutionOrder(10006)]
     [DisallowMultipleComponent]
     public sealed class Trombone : InstrumentBase
     {
+        [Serializable]
+        public struct TromboneSample
+        {
+            public AudioClip clip;
+            public int rootMidiNote;
+        }
+
         [SerializeField] TromboneAnchor tromboneAnchor;
         [SerializeField] TromboneSlideController slideController;
-        [SerializeField] AudioClip sustainClip;
-        [SerializeField] AudioClip releaseClip;
-        [SerializeField] int baseToneMidiNote = 60;
+        [SerializeField] TromboneSample[] samples = Array.Empty<TromboneSample>();
+        [SerializeField] int baseToneMidiNote = 33; // A1
+        [SerializeField, Min(0f)] float fadeInDuration = 0.05f;
+        [SerializeField, Min(0f)] float fadeOutDuration = 0.15f;
         [SerializeField] InputActionReference leftGripAction;
-
         [SerializeField] float gripThreshold = 0.5f;
 
         bool m_IsBlowing;
+        TromboneSample m_SelectedSample;
 
         void OnEnable()
         {
@@ -43,7 +52,6 @@ namespace Instruments
             {
                 if (m_IsBlowing)
                 {
-                    // anchor 이탈은 "악기에서 멀어짐"이므로 release 건너뛰고 즉시 silence (Choke 경로)
                     TriggerMidi(new MidiEvent(baseToneMidiNote, 0f, MidiEventType.Choke));
                     m_IsBlowing = false;
                 }
@@ -64,24 +72,67 @@ namespace Instruments
                 m_IsBlowing = false;
             }
 
-            if (m_IsBlowing && audioOutput != null)
-                audioOutput.TrySetActiveVoicePitch(baseToneMidiNote, ComputePitchFromSlide());
-        }
-
-        float ComputePitchFromSlide()
-        {
-            if (slideController == null) return 1f;
-            float t = slideController.NormalizedSlide;
-            float semitones = Mathf.Lerp(0f, -6f, t);
-            return Mathf.Pow(2f, semitones / 12f);
+            if (m_IsBlowing && audioOutput != null && m_SelectedSample.clip != null)
+                audioOutput.TrySetActiveVoicePitch(baseToneMidiNote, ComputePitchForSelectedSample());
         }
 
         protected override bool TryResolveNoteOn(MidiEvent midiEvent, out NotePlayback playback)
         {
             playback = default;
-            if (sustainClip == null || releaseClip == null) return false;
-            float pitch = ComputePitchFromSlide();
-            playback = new NotePlayback(sustainClip, pitch, midiEvent.Velocity, sustain: true, releaseClip: releaseClip);
+            float effectiveMidi = ComputeEffectiveMidi();
+            if (!TrySelectSampleForMidi(effectiveMidi, out m_SelectedSample))
+                return false;
+            float pitch = ComputePitchForSelectedSample(effectiveMidi);
+            playback = new NotePlayback(m_SelectedSample.clip, pitch, midiEvent.Velocity,
+                                        sustain: true,
+                                        fadeInDuration: fadeInDuration,
+                                        fadeOutDuration: fadeOutDuration);
+            return true;
+        }
+
+        protected override void OnChoke(MidiEvent midiEvent)
+        {
+            if (audioOutput != null)
+                audioOutput.StopNoteImmediate(midiEvent.Note);
+        }
+
+        float ComputeSlideSemitones()
+        {
+            if (slideController == null) return 0f;
+            float t = slideController.NormalizedSlide;
+            return Mathf.Lerp(0f, -6f, t);
+        }
+
+        float ComputeEffectiveMidi() => baseToneMidiNote + ComputeSlideSemitones();
+
+        float ComputePitchForSelectedSample() => ComputePitchForSelectedSample(ComputeEffectiveMidi());
+
+        float ComputePitchForSelectedSample(float effectiveMidi)
+        {
+            float diff = effectiveMidi - m_SelectedSample.rootMidiNote;
+            return Mathf.Pow(2f, diff / 12f);
+        }
+
+        bool TrySelectSampleForMidi(float effectiveMidi, out TromboneSample selected)
+        {
+            selected = default;
+            if (samples == null || samples.Length == 0) return false;
+
+            int bestIdx = -1;
+            float bestDistance = float.MaxValue;
+            for (int i = 0; i < samples.Length; i++)
+            {
+                if (samples[i].clip == null) continue;
+                float distance = Mathf.Abs(samples[i].rootMidiNote - effectiveMidi);
+                if (distance < bestDistance)
+                {
+                    bestDistance = distance;
+                    bestIdx = i;
+                }
+            }
+
+            if (bestIdx < 0) return false;
+            selected = samples[bestIdx];
             return true;
         }
     }
