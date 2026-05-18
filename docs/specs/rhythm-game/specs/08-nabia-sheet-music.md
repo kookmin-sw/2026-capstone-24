@@ -66,7 +66,7 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| _아직 없음_ | — | — | — |
+| 2026-05-18 | 나비야 6개 VMSong + drumkit instrumentKey 정합화 + 파서 테스트 6건 추가 | Done | [`2026-05-18-linksky0311-nabia-sheet-music.md`](../plans/2026-05-18-linksky0311-nabia-sheet-music.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/spec-build`가 planner sub-agent로 처리. 파일명은 날짜·작성자·slug 기반.

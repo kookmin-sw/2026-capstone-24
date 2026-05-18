@@ -1,4 +1,4 @@
-[Meta]
+﻿[Meta]
 title   = Test (Mary Had a Little Lamb)
 songid  = test_001
 
@@ -9,7 +9,7 @@ ticksPerQuarter = 480
 tick=0  bpm=100  beats=4  beatUnit=4
 
 [Channels]
-channel=10  instrument=DrumKit
+channel=10  instrument=drum
 
 [Track:10]
 # 8-bar drum test
