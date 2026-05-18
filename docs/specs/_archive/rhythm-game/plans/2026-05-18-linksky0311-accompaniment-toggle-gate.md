@@ -1,6 +1,6 @@
 # Accompaniment Toggle Gate — RhythmAccompaniment.Fire OFF Skip
 
-**Linked Spec:** [`07-session-options-instrument-toggle-tempo.md`](../specs/07-session-options-instrument-toggle-tempo.md)
+**Linked Spec:** [`07-session-options-instrument-toggle-tempo.md`](../../../rhythm-game/specs/07-session-options-instrument-toggle-tempo.md)
 **Status:** `Done`
 
 ## Goal

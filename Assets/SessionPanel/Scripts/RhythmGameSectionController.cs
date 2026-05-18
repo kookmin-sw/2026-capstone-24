@@ -43,6 +43,9 @@ namespace SessionPanel
         string _selectedDifficulty;
         VmSongChart _loadedChart;
 
+        // channel int -> parsed chart for that instrument (LoadChart fills, ResetSelection clears)
+        Dictionary<int, VmSongChart> _otherInstrumentCharts = new Dictionary<int, VmSongChart>();
+
         float _baseBpm = 120f;
         int _bpmOffset = 0;
         TextMeshProUGUI _bpmLabel;
@@ -221,6 +224,21 @@ namespace SessionPanel
 
             _loadedChart = result.chart;
             BuildBpmBar(_loadedChart);
+
+            // Parse charts for other active instruments
+            _otherInstrumentCharts.Clear();
+            foreach (var otherId in _selectedSong.SupportedInstrumentIds)
+            {
+                if (string.Equals(otherId, _currentInstrument.InstrumentId, StringComparison.OrdinalIgnoreCase)) continue;
+                string otherRel = _selectedSong.GetChartPath(otherId, _selectedDifficulty);
+                if (string.IsNullOrEmpty(otherRel)) continue;
+                string otherPath = Path.Combine(Application.streamingAssetsPath, otherRel);
+                if (!File.Exists(otherPath)) continue;
+                var otherResult = VmSongParser.Parse(File.ReadAllText(otherPath));
+                if (!otherResult.Success || otherResult.chart.channelMap.entries.Count == 0) continue;
+                int firstChannel = otherResult.chart.channelMap.entries[0].channel;
+                _otherInstrumentCharts[firstChannel] = otherResult.chart;
+            }
         }
 
         void BuildInstrumentToggles()
@@ -293,6 +311,59 @@ namespace SessionPanel
                 accompaniment[entry.channel] = on;
             }
             return accompaniment;
+        }
+
+        internal Dictionary<int, bool> BuildAccompanimentDictFromChart(int judgedChannel, VmSongChart sourceChart)
+        {
+            var dict = new Dictionary<int, bool>();
+            if (sourceChart == null) return dict;
+            foreach (var entry in sourceChart.channelMap.entries)
+            {
+                if (entry.channel == judgedChannel) continue;
+                bool on = true;
+                if (_instrumentToggleStates.TryGetValue(entry.instrumentKey ?? string.Empty, out var stored))
+                    on = stored;
+                dict[entry.channel] = on;
+            }
+            return dict;
+        }
+
+        internal VmSongChart BuildMergedChartForSession(float effectiveBpm)
+        {
+            if (_loadedChart == null) return null;
+
+            // Shallow in-memory clone of player chart
+            var merged = new VmSongChart
+            {
+                title  = _loadedChart.title,
+                artist = _loadedChart.artist,
+                songId = _loadedChart.songId,
+            };
+            merged.tempoMap.ticksPerQuarter = _loadedChart.tempoMap.ticksPerQuarter;
+            foreach (var seg in _loadedChart.tempoMap.segments) merged.tempoMap.segments.Add(seg);
+            foreach (var e   in _loadedChart.channelMap.entries) merged.channelMap.entries.Add(e);
+            foreach (var t   in _loadedChart.tracks)             merged.tracks.Add(t);
+
+            // Merge active instrument charts (dedup by channel)
+            var seen = new HashSet<int>();
+            foreach (var e in merged.channelMap.entries) seen.Add(e.channel);
+            foreach (var kv in _otherInstrumentCharts)
+            {
+                foreach (var entry in kv.Value.channelMap.entries)
+                {
+                    if (seen.Add(entry.channel)) merged.channelMap.entries.Add(entry);
+                }
+                foreach (var track in kv.Value.tracks) merged.tracks.Add(track);
+            }
+
+            // Stamp effectiveBpm into the merged chart first tempo segment (struct reassignment)
+            if (merged.tempoMap.segments.Count > 0)
+            {
+                var seg = merged.tempoMap.segments[0];
+                seg.bpm = effectiveBpm;
+                merged.tempoMap.segments[0] = seg;
+            }
+            return merged;
         }
 
         void BuildBpmBar(VmSongChart chart)
@@ -401,14 +472,9 @@ namespace SessionPanel
             host.SessionEnded += OnSessionEnded;
 
             float effectiveBpm = _baseBpm + _bpmOffset;
-            if (_loadedChart.tempoMap.segments.Count > 0)
-            {
-                var seg = _loadedChart.tempoMap.segments[0];
-                seg.bpm = effectiveBpm;
-                _loadedChart.tempoMap.segments[0] = seg;
-            }
+            var merged = BuildMergedChartForSession(effectiveBpm);
 
-            int judgedChannel = FindJudgedChannel(_loadedChart, _currentInstrument.InstrumentId);
+            int judgedChannel = FindJudgedChannel(merged, _currentInstrument.InstrumentId);
 
             RhythmSong rhythmSong = null;
             if (host.SongDatabase != null)
@@ -423,9 +489,9 @@ namespace SessionPanel
                 }
             }
 
-            var accompaniment = BuildAccompanimentDict(judgedChannel);
+            var accompaniment = BuildAccompanimentDictFromChart(judgedChannel, merged);
 
-            host.StartSession(_loadedChart, rhythmSong, judgedChannel, accompaniment);
+            host.StartSession(merged, rhythmSong, judgedChannel, accompaniment);
             GameStarted?.Invoke();
         }
 
@@ -465,6 +531,7 @@ namespace SessionPanel
             _bpmOffset         = 0;
             _selectedDiffBtn   = null;
             _instrumentToggleStates.Clear();
+            _otherInstrumentCharts.Clear();
             ClearChildren(difficultyContainer);
             HideBpmBar();
             if (instrumentToggleContainer != null)

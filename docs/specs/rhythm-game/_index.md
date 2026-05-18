@@ -31,7 +31,7 @@ VR 악기 연습 환경에서 박자감을 게임적으로 익히게 하는 학�
 | Drum Note Display | Done | [`specs/04-drum-note-display.md`](specs/04-drum-note-display.md) |
 | Song Catalog | Done | [`specs/05-song-catalog.md`](specs/05-song-catalog.md) |
 | Multi-File Song Catalog | Done | [`specs/06-multi-file-song-catalog.md`](specs/06-multi-file-song-catalog.md) |
-| Session Options — Instrument Toggle & Tempo | Draft | [`specs/07-session-options-instrument-toggle-tempo.md`](specs/07-session-options-instrument-toggle-tempo.md) |
+| Session Options — Instrument Toggle & Tempo | Done | [`specs/07-session-options-instrument-toggle-tempo.md`](specs/07-session-options-instrument-toggle-tempo.md) |
 
 > 상태 값: `Draft` / `Active` / `Done` / `Abandoned`
 

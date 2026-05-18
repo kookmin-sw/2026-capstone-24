@@ -255,6 +255,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   excludeTriggers: 0
+  excludeRigidbodies: 1
 --- !u!114 &811368726411212909
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -408,6 +409,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2101227801437210112}
   - component: {fileID: 2954525712387258519}
+  - component: {fileID: 224033922413188662}
   m_Layer: 0
   m_Name: RhythmGameHost
   m_TagString: Untagged
@@ -446,8 +448,20 @@ MonoBehaviour:
   uiRoot: {fileID: 8554759681546309594}
   noteDisplayPanel: {fileID: 0}
   targetInstrument: {fileID: 0}
-  accompaniment: {fileID: 0}
+  accompaniment: {fileID: 224033922413188662}
   leadInSeconds: 3
+--- !u!114 &224033922413188662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9193468048282879514}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fac62b9698e746c5a0b1302e228c71a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RhythmGame.Runtime::RhythmGame.Runtime.RhythmAccompaniment
 --- !u!1001 &698888174453874010
 PrefabInstance:
   m_ObjectHideFlags: 0

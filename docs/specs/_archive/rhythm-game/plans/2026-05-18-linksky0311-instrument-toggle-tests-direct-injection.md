@@ -1,6 +1,6 @@
 # Instrument Toggle Tests — Direct State Injection (Bypass LoadChart)
 
-**Linked Spec:** [`07-session-options-instrument-toggle-tempo.md`](../specs/07-session-options-instrument-toggle-tempo.md)
+**Linked Spec:** [`07-session-options-instrument-toggle-tempo.md`](../../../rhythm-game/specs/07-session-options-instrument-toggle-tempo.md)
 **Caused By:** [`2026-05-18-linksky0311-instrument-toggle-ui-builder.md`](./2026-05-18-linksky0311-instrument-toggle-ui-builder.md)
 **Status:** `Done`
 
