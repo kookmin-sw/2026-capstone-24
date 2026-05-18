@@ -10,16 +10,21 @@ public abstract class InstrumentBase : MonoBehaviour, IPlayable, IActiveInstrume
 
     protected readonly struct NotePlayback
     {
-        public NotePlayback(AudioClip clip, float pitch, float volume)
+        public NotePlayback(AudioClip clip, float pitch, float volume, bool sustain = false, AudioClip releaseClip = null)
         {
             Clip = clip;
             Pitch = pitch;
             Volume = volume;
+            Sustain = sustain;
+            ReleaseClip = releaseClip;
         }
 
         public AudioClip Clip { get; }
         public float Pitch { get; }
         public float Volume { get; }
+        public bool Sustain { get; }
+        // null이면 단일 클립 모드. Sustain=true && ReleaseClip!=null이면 release chain 경로 활성화.
+        public AudioClip ReleaseClip { get; }
     }
 
     [Tooltip("이 악기에서 출력될 스피커(Voice Pool) 컴포넌트입니다. 생략 시 자식에서 자동 탐색합니다.")]
@@ -117,7 +122,13 @@ public abstract class InstrumentBase : MonoBehaviour, IPlayable, IActiveInstrume
                 if (TryResolveNoteOn(midiEvent, out NotePlayback playback))
                 {
                     float finalVolume = playback.Volume * instanceVolume;
-                    audioOutput.PlayNote(midiEvent.Note, playback.Clip, playback.Pitch, finalVolume);
+                    // 분기: sustain+release 둘 다 set → release chain / sustain만 → loop / 둘 다 없음 → one-shot
+                    if (playback.Sustain && playback.ReleaseClip != null)
+                        audioOutput.PlayNoteSustainedWithRelease(midiEvent.Note, playback.Clip, playback.ReleaseClip, playback.Pitch, finalVolume);
+                    else if (playback.Sustain)
+                        audioOutput.PlayNoteSustained(midiEvent.Note, playback.Clip, playback.Pitch, finalVolume);
+                    else
+                        audioOutput.PlayNote(midiEvent.Note, playback.Clip, playback.Pitch, finalVolume);
                 }
                 break;
 

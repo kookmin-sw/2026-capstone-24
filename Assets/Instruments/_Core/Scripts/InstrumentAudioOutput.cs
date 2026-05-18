@@ -7,7 +7,7 @@ namespace Instruments
 [DisallowMultipleComponent]
 public class InstrumentAudioOutput : MonoBehaviour
 {
-    enum VoiceState { Idle, Active, Releasing }
+    enum VoiceState { Idle, Active, SustainedActive, Releasing }
 
     sealed class Voice
     {
@@ -17,6 +17,10 @@ public class InstrumentAudioOutput : MonoBehaviour
         public float StartedAt;
         public float ReleaseStartedAt;
         public float ReleaseStartVolume;
+        // NoteOff 시 재생할 release one-shot 클립. PlayNoteSustainedWithRelease 진입 시 sustain voice에 저장된다.
+        public AudioClip ReleaseClip;
+        // TrySetActiveVoicePitch가 이 voice의 pitch를 따라가게 할지. release voice는 false로 NoteOff 시점 pitch 고정.
+        public bool TrackPitch;
     }
 
     public struct AudioSourceSettings
@@ -96,10 +100,89 @@ public class InstrumentAudioOutput : MonoBehaviour
         voice.StartedAt = Time.time;
         voice.ReleaseStartedAt = 0f;
         voice.ReleaseStartVolume = 0f;
+        voice.ReleaseClip = null;
+        voice.TrackPitch = false;
+    }
+
+    public void PlayNoteSustained(int note, AudioClip clip, float pitch, float volume)
+    {
+        if (clip == null) return;
+        EnsureVoicePool();
+        Voice voice = GetBestVoice();
+        if (voice == null || voice.Source == null) return;
+        StopVoice(voice);
+        voice.Source.clip = clip;
+        voice.Source.pitch = pitch;
+        voice.Source.volume = Mathf.Clamp01(volume);
+        voice.Source.loop = true;
+        voice.Source.Play();
+        voice.Note = note;
+        voice.State = VoiceState.SustainedActive;
+        voice.StartedAt = Time.time;
+        voice.ReleaseStartedAt = 0f;
+        voice.ReleaseStartVolume = 0f;
+        voice.ReleaseClip = null;
+        voice.TrackPitch = true;
+    }
+
+    // Sustain loop + NoteOff 시 release one-shot 재생하는 chain 전용 API.
+    // releaseClipForLater는 sustain voice에 저장돼 StopNote 호출 시 idle voice로 재생된다.
+    public void PlayNoteSustainedWithRelease(int note, AudioClip sustainClip, AudioClip releaseClipForLater, float pitch, float volume)
+    {
+        if (sustainClip == null) return;
+        EnsureVoicePool();
+        // 재트리거 시 이전 chain의 voice가 남아있으면 즉시 정리 (release 중복 재생 방지)
+        StopAllNonIdleVoicesForNote(note);
+        Voice voice = GetBestVoice();
+        if (voice == null || voice.Source == null) return;
+        StopVoice(voice);
+        voice.Source.clip = sustainClip;
+        voice.Source.pitch = pitch;
+        voice.Source.volume = Mathf.Clamp01(volume);
+        voice.Source.loop = true;
+        voice.Source.Play();
+        voice.Note = note;
+        voice.State = VoiceState.SustainedActive;
+        voice.StartedAt = Time.time;
+        voice.ReleaseStartedAt = 0f;
+        voice.ReleaseStartVolume = 0f;
+        voice.ReleaseClip = releaseClipForLater;
+        voice.TrackPitch = true;
     }
 
     public void StopNote(int note)
     {
+        // ReleaseClip 있는 sustain voice가 있으면 release one-shot chain 경로
+        Voice sustainWithRelease = GetSustainedVoiceWithReleaseClip(note);
+        if (sustainWithRelease != null && sustainWithRelease.Source != null)
+        {
+            AudioClip releaseClip = sustainWithRelease.ReleaseClip;
+            float releasePitch = sustainWithRelease.Source.pitch;
+            float releaseVolume = sustainWithRelease.Source.volume;
+
+            // 기존 chain voice들 즉시 정지 (release 클립이 자체 attack envelope 제공)
+            StopAllNonIdleVoicesForNote(note);
+
+            // Idle voice가 남아있을 때만 release 재생 (다른 악기 voice 강탈 금지)
+            Voice releaseVoice = GetIdleVoice();
+            if (releaseVoice != null && releaseVoice.Source != null)
+            {
+                releaseVoice.Source.clip = releaseClip;
+                releaseVoice.Source.pitch = releasePitch;
+                releaseVoice.Source.volume = Mathf.Clamp01(releaseVolume);
+                releaseVoice.Source.loop = false;
+                releaseVoice.Source.Play();
+                releaseVoice.Note = note;
+                releaseVoice.State = VoiceState.Active;
+                releaseVoice.StartedAt = Time.time;
+                releaseVoice.ReleaseStartedAt = 0f;
+                releaseVoice.ReleaseStartVolume = 0f;
+                releaseVoice.ReleaseClip = null;
+                releaseVoice.TrackPitch = false;
+            }
+            return;
+        }
+
         Voice voice = GetOldestVoiceForNote(note);
         if (voice == null || voice.Source == null) return;
         if (m_CurrentSettings.ReleaseDuration <= 0f || !voice.Source.isPlaying) { StopVoice(voice); return; }
@@ -119,11 +202,17 @@ public class InstrumentAudioOutput : MonoBehaviour
 
     public bool TrySetActiveVoicePitch(int note, float pitch)
     {
-        Voice voice = GetOldestVoiceForNote(note);
-        if (voice == null || voice.Source == null) return false;
-        if (voice.State != VoiceState.Active) return false;
-        voice.Source.pitch = pitch;
-        return true;
+        bool updatedAny = false;
+        for (int i = 0; i < m_Voices.Count; i++)
+        {
+            Voice voice = m_Voices[i];
+            if (voice.Note != note || voice.Source == null) continue;
+            if (voice.State != VoiceState.Active && voice.State != VoiceState.SustainedActive) continue;
+            if (!voice.TrackPitch) continue;
+            voice.Source.pitch = pitch;
+            updatedAny = true;
+        }
+        return updatedAny;
     }
 
     public void StopAllVoices()
@@ -194,6 +283,41 @@ public class InstrumentAudioOutput : MonoBehaviour
         voice.StartedAt = 0f;
         voice.ReleaseStartedAt = 0f;
         voice.ReleaseStartVolume = 0f;
+        voice.ReleaseClip = null;
+        voice.TrackPitch = false;
+    }
+
+    Voice GetIdleVoice()
+    {
+        for (int i = 0; i < m_Voices.Count; i++)
+        {
+            Voice voice = m_Voices[i];
+            if (voice.State == VoiceState.Idle) return voice;
+        }
+        return null;
+    }
+
+    Voice GetSustainedVoiceWithReleaseClip(int note)
+    {
+        for (int i = 0; i < m_Voices.Count; i++)
+        {
+            Voice voice = m_Voices[i];
+            if (voice.Note != note || voice.Source == null) continue;
+            if (voice.State != VoiceState.SustainedActive) continue;
+            if (voice.ReleaseClip == null) continue;
+            return voice;
+        }
+        return null;
+    }
+
+    void StopAllNonIdleVoicesForNote(int note)
+    {
+        for (int i = 0; i < m_Voices.Count; i++)
+        {
+            Voice voice = m_Voices[i];
+            if (voice.Note != note || voice.State == VoiceState.Idle) continue;
+            StopVoice(voice);
+        }
     }
 
     Voice GetBestVoice()
