@@ -2795,7 +2795,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4320209731285378184, guid: 41250a0848877144faaf64cfcafc86f2, type: 3}
       propertyPath: m_Name
-      value: drum_merged_fixed
+      value: DrumKitMerged_Fix
       objectReference: {fileID: 0}
     - target: {fileID: 4685478203631124399, guid: 41250a0848877144faaf64cfcafc86f2, type: 3}
       propertyPath: m_LocalPosition.x

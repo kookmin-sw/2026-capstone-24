@@ -213,7 +213,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8835200742359306777, guid: 6a74ff3c7e5dcc042bcdfd8147142dc6, type: 3}
       propertyPath: m_Name
-      value: bass_drum
+      value: BassDrum
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
