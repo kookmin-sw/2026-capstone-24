@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -26,6 +27,10 @@ namespace SessionPanel
         [SerializeField] GameObject difficultyButtonPrefab;
         [SerializeField] Button playButton;
 
+        [Header("Instrument Toggles")]
+        [SerializeField] Transform instrumentToggleContainer;
+        [SerializeField] GameObject instrumentToggleButtonPrefab;
+
         [Header("Dependencies")]
         [SerializeField] UnityEngine.Object activeInstrumentProviderObject;
         [SerializeField] UnityEngine.Object songCatalogObject;
@@ -43,11 +48,12 @@ namespace SessionPanel
         TextMeshProUGUI _bpmLabel;
         DifficultyButtonUI _selectedDiffBtn;
 
+        Dictionary<string, bool> _instrumentToggleStates =
+            new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
+
         RhythmGameHost _activeHost;
 
-        /// <summary>리듬게임 세션이 시작됐을 때 발생. SessionPanelController가 패널 전체를 숨기는 데 사용한다.</summary>
         public event System.Action GameStarted;
-        /// <summary>리듬게임 세션이 종료됐을 때 발생. SessionPanelController가 패널 전체를 복원하는 데 사용한다.</summary>
         public event System.Action GameEnded;
 
         void Awake()
@@ -70,13 +76,11 @@ namespace SessionPanel
 
         void OnEnable()
         {
-            // null-safe fallback: Inject 이전에 OnEnable이 발화해도 SerializedField 값으로 시도한다.
             if (_provider == null)
                 _provider = activeInstrumentProviderObject as IActiveInstrumentProvider;
             if (_catalog == null)
                 _catalog = songCatalogObject as ISongCatalog;
 
-            // idempotent 구독: 중복 등록 방지를 위해 항상 -= 후 +=
             if (_provider != null)
             {
                 _provider.ActiveInstrumentChanged -= OnActiveInstrumentChanged;
@@ -171,8 +175,6 @@ namespace SessionPanel
                 }
             }
 
-            // 첫 번째 난이도를 자동 선택해 곡 클릭 직후 Play 가능하게 함
-            // (LoadChart 내부에서 BPM 바를 빌드하므로 AutoShowBpmFromSong은 fallback으로만 사용)
             if (firstBtn != null)
                 OnDifficultyClicked(firstDiff, firstBtn);
             else
@@ -200,6 +202,7 @@ namespace SessionPanel
 
             _selectedDifficulty = difficulty;
             LoadChart();
+            BuildInstrumentToggles();
         }
 
         void LoadChart()
@@ -209,7 +212,7 @@ namespace SessionPanel
             string path = Path.Combine(Application.streamingAssetsPath, _selectedSong.GetChartPath(_currentInstrument.InstrumentId, _selectedDifficulty));
             if (!File.Exists(path))
             {
-                Debug.LogWarning($"[RhythmGame] Chart not found: {path}");
+                Debug.LogWarning("[RhythmGame] Chart not found: " + path);
                 return;
             }
 
@@ -218,6 +221,78 @@ namespace SessionPanel
 
             _loadedChart = result.chart;
             BuildBpmBar(_loadedChart);
+        }
+
+        void BuildInstrumentToggles()
+        {
+            _instrumentToggleStates.Clear();
+
+            if (_selectedSong == null || _selectedDifficulty == null || _currentInstrument == null) return;
+            if (instrumentToggleContainer == null) return;
+
+            ClearChildren(instrumentToggleContainer);
+
+            var candidates = new List<string>();
+            foreach (var otherId in _selectedSong.SupportedInstrumentIds)
+            {
+                if (string.Equals(otherId, _currentInstrument.InstrumentId, StringComparison.OrdinalIgnoreCase))
+                    continue;
+                var diffs = _selectedSong.GetDifficultiesFor(otherId);
+                bool hasDiff = false;
+                foreach (var d in diffs)
+                {
+                    if (string.Equals(d, _selectedDifficulty, StringComparison.OrdinalIgnoreCase))
+                    {
+                        hasDiff = true;
+                        break;
+                    }
+                }
+                if (hasDiff) candidates.Add(otherId);
+            }
+
+            candidates.Sort(StringComparer.Ordinal);
+
+            if (candidates.Count == 0)
+            {
+                instrumentToggleContainer.gameObject.SetActive(false);
+                return;
+            }
+
+            instrumentToggleContainer.gameObject.SetActive(true);
+
+            foreach (var instrumentId in candidates)
+            {
+                _instrumentToggleStates[instrumentId] = true;
+
+                if (instrumentToggleButtonPrefab == null) continue;
+
+                var go = Instantiate(instrumentToggleButtonPrefab, instrumentToggleContainer);
+                var le = go.GetComponent<LayoutElement>() ?? go.AddComponent<LayoutElement>();
+                le.preferredHeight = 36f;
+                var toggleBtn = go.GetComponent<InstrumentToggleButtonUI>();
+                if (toggleBtn != null)
+                    toggleBtn.Setup(instrumentId, true, OnInstrumentToggleChanged);
+            }
+        }
+
+        void OnInstrumentToggleChanged(string instrumentId, bool isOn)
+        {
+            _instrumentToggleStates[instrumentId] = isOn;
+        }
+
+        internal Dictionary<int, bool> BuildAccompanimentDict(int judgedChannel)
+        {
+            var accompaniment = new Dictionary<int, bool>();
+            if (_loadedChart == null) return accompaniment;
+            foreach (var entry in _loadedChart.channelMap.entries)
+            {
+                if (entry.channel == judgedChannel) continue;
+                bool on = true;
+                if (_instrumentToggleStates.TryGetValue(entry.instrumentKey ?? string.Empty, out var stored))
+                    on = stored;
+                accompaniment[entry.channel] = on;
+            }
+            return accompaniment;
         }
 
         void BuildBpmBar(VmSongChart chart)
@@ -241,7 +316,7 @@ namespace SessionPanel
 
         void MakeBpmOffsetBtn(int delta)
         {
-            var go = new GameObject($"BPMBtn{(delta > 0 ? "+" : "")}{delta}");
+            var go = new GameObject("BPMBtn" + (delta > 0 ? "+" : "") + delta);
             go.transform.SetParent(bpmBar, false);
             var le = go.AddComponent<LayoutElement>();
             le.preferredWidth = 36f;
@@ -291,7 +366,7 @@ namespace SessionPanel
         void UpdateBpmLabel()
         {
             if (_bpmLabel != null)
-                _bpmLabel.text = $"{_baseBpm + _bpmOffset:F0} BPM";
+                _bpmLabel.text = (_baseBpm + _bpmOffset).ToString("F0") + " BPM";
         }
 
         void HideBpmBar()
@@ -320,16 +395,11 @@ namespace SessionPanel
             var host = _currentInstrument.InstrumentRoot.GetComponentInChildren<RhythmGameHost>();
             if (host == null) return;
 
-            // FindObjectsByType<NoteDisplayPanel> fallback 제거 — host의 SerializedField에
-            // noteDisplayPanel을 직접 박제하거나, 악기 본인이 자식 INoteDisplayController를 제공한다.
-
-            // 이전 세션 구독 정리
             if (_activeHost != null)
                 _activeHost.SessionEnded -= OnSessionEnded;
             _activeHost = host;
             host.SessionEnded += OnSessionEnded;
 
-            // BPM 오프셋 적용: tempoMap 세그먼트 BPM을 사용자 선택 값으로 교체
             float effectiveBpm = _baseBpm + _bpmOffset;
             if (_loadedChart.tempoMap.segments.Count > 0)
             {
@@ -353,10 +423,7 @@ namespace SessionPanel
                 }
             }
 
-            var accompaniment = new Dictionary<int, bool>();
-            foreach (var entry in _loadedChart.channelMap.entries)
-                if (entry.channel != judgedChannel)
-                    accompaniment[entry.channel] = true;
+            var accompaniment = BuildAccompanimentDict(judgedChannel);
 
             host.StartSession(_loadedChart, rhythmSong, judgedChannel, accompaniment);
             GameStarted?.Invoke();
@@ -374,7 +441,6 @@ namespace SessionPanel
 
         public void Inject(UnityEngine.Object providerObj, UnityEngine.Object catalogObj)
         {
-            // 기존 구독 해제 (idempotent)
             if (_provider != null)
                 _provider.ActiveInstrumentChanged -= OnActiveInstrumentChanged;
 
@@ -384,8 +450,6 @@ namespace SessionPanel
             _catalog           = songCatalogObject as ISongCatalog;
             _currentInstrument = _provider?.Current;
 
-            // isActiveAndEnabled 여부와 무관하게 구독 등록 (가설 2 수정):
-            // Inject -> SetActive(true) -> OnEnable 순서에서 OnEnable의 중복 -= +=가 안전하게 처리된다.
             if (_provider != null)
                 _provider.ActiveInstrumentChanged += OnActiveInstrumentChanged;
 
@@ -400,8 +464,14 @@ namespace SessionPanel
             _loadedChart       = null;
             _bpmOffset         = 0;
             _selectedDiffBtn   = null;
+            _instrumentToggleStates.Clear();
             ClearChildren(difficultyContainer);
             HideBpmBar();
+            if (instrumentToggleContainer != null)
+            {
+                ClearChildren(instrumentToggleContainer);
+                instrumentToggleContainer.gameObject.SetActive(false);
+            }
             ShowDetail(false);
         }
 

@@ -4,6 +4,8 @@
     "references": [
         "SessionPanel.Runtime",
         "Instruments",
+        "RhythmGame.Data",
+        "Unity.TextMeshPro",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],
