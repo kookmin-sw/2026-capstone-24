@@ -251,7 +251,7 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
         }
 
         // 모든 노트가 소진됐으면 Completed 이벤트 발생
-        if (active && _notesEverQueued && pendingQueue.Count == 0 && activeNotes.Count == 0)
+        if (active && pendingQueue.Count == 0 && activeNotes.Count == 0)
         {
             active = false;
             Completed?.Invoke();
