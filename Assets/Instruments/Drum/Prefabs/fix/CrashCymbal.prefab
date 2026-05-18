@@ -91,6 +91,38 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &4023850449547255851
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6310649143347237014}
+  m_Layer: 0
+  m_Name: HitZones
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6310649143347237014
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4023850449547255851}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6563186526278618501}
+  m_Father: {fileID: 7367378531230513676}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4074140426643584490
 GameObject:
   m_ObjectHideFlags: 0
@@ -181,6 +213,83 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &6324632589882901184
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6563186526278618501}
+  - component: {fileID: 3096007561194377746}
+  - component: {fileID: 1446743256317649892}
+  m_Layer: 0
+  m_Name: CrashZone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6563186526278618501
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6324632589882901184}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.11575656, y: -0, z: -0, w: 0.99327767}
+  m_LocalPosition: {x: -0.402, y: 1.048, z: 0.129}
+  m_LocalScale: {x: 0.93188024, y: 1.0428822, z: 1.2509648}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6310649143347237014}
+  m_LocalEulerAnglesHint: {x: -13.295, y: 0, z: 0}
+--- !u!65 &3096007561194377746
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6324632589882901184}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.241, y: 0.04, z: 0.241}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1446743256317649892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6324632589882901184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c223de5ab44e29146a54163dad9b6c7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Instruments::Instruments.DrumHitZone
+  targetPiece: {fileID: 4172639393737060943}
+  midiNote: 49
+  panelYOffset: 0
+  triggerCollider: {fileID: 3096007561194377746}
+  allowedLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  minImpactSpeed: 0.2
+  maxImpactSpeed: 4
+  retriggerCooldown: 0.05
+  useFingertipVelocityFallback: 1
 --- !u!1 &7074188854721727286
 GameObject:
   m_ObjectHideFlags: 0
@@ -190,6 +299,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7367378531230513676}
+  - component: {fileID: 4172639393737060943}
   m_Layer: 0
   m_Name: CrashCymbal
   m_TagString: Untagged
@@ -212,5 +322,18 @@ Transform:
   m_Children:
   - {fileID: 3725707833108296376}
   - {fileID: 1293701913401627936}
+  - {fileID: 6310649143347237014}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4172639393737060943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7074188854721727286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d1b908c8d869c64eaaea8f2f1d813ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Instruments::Instruments.DrumPiece
