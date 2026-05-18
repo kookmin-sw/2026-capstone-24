@@ -1,7 +1,7 @@
 # Session Panel Start Menu Section
 
-**Linked Spec:** [`02-start-menu-section.md`](../specs/02-start-menu-section.md)
-**Status:** `In Progress`
+**Linked Spec:** [`02-start-menu-section.md`](../../../session-panel/specs/02-start-menu-section.md)
+**Status:** `Done`
 
 ## Goal
 
@@ -170,7 +170,20 @@ session-panel `02-start-menu-section` sub-spec의 첫 plan이다. spec [`02-star
 - 코드베이스에 `RhythmGameHost.StartSession(...)` 호출부는 본 plan 작성 시점에 0건이다(grep). 본 plan이 첫 호출부를 추가하므로 시그니처 확장 시 외부 영향 없음.
 - `accompanimentEnabled` 마스킹은 `IReadOnlyDictionary<int, bool>`로 받는다. 키가 없는 채널은 default ON으로 간주하는 게 production accompaniment plan에서 자연스럽다 — 본 plan은 UI에서 후보 채널만 추려 명시적으로 키를 채워 넘긴다.
 - `SampleChart_Beginner.asset`이 orphan(missing script) 상태이므로 본 plan에선 그 자산을 무시하고 streamingAssets `Songs/test.vmsong` 텍스트 파일을 모든 곡의 Beginner 차트 source로 매핑한다. orphan 자산 자체의 정리는 본 plan 책임 밖(후속 catalog plan 또는 데이터 정리 task).
+- 2026-05-18 본 plan 의 실질 구현(`RhythmGameSectionController` 의 곡 목록·난이도·Play·BPM 바·자동 첫 난이도 선택) 이 코드 베이스에 적용된 상태로 확인됨.
+- 후속 sub-spec 의 흡수:
+  - sub-spec 04 (`Song Selection Activation`) 가 본 plan 의 곡 row 활성/비활성 분기 버그(Inject 타이밍 회귀) 수정 + EditMode 회귀 테스트 추가. manual-hard PASS.
+  - sub-spec 05 (`Song Catalog`) 가 본 plan 의 `ISongCatalog` stub 을 `FolderScanSongCatalog` 로 production 화 + OrdinalIgnoreCase 케이스 흡수.
+  - sub-spec 06 (`Multi-File Song Catalog`) 가 본 plan 의 단일 파일 다중-트랙 가정을 `<songname>-<instrument>-<difficulty>.vmsong` 분리 + `GetDifficultiesFor(instrumentId)`/`GetChartPath(instrumentId, difficulty)` 인터페이스로 확장.
+  - sub-spec 07 (`Session Options — Instrument Toggle & Tempo`) 가 본 plan 의 반주 트랙 on/off 토글 + chart 머지 + effectiveBpm 자동 반주 일관 적용을 production 구현. manual-hard PASS.
+- sub-spec 02 본문 What·Behavior 5조항 모두 코드 + 04/07 검증으로 충족. 형식적으로 본 plan + sub-spec 02 모두 Done 처리 + plan archive 이동.
 
 ## Handoff
 
-<!-- /spec-build가 plan 완료 시 doc-updater Task로 자동 갱신 -->
+세션 패널의 시작 메뉴 섹션 핵심(곡 목록·난이도·Play·BPM 바·자동 첫 난이도 선택·악기 전환 시 초기화) 구현 완료. RhythmGameSectionController 가 IActiveInstrumentProvider + ISongCatalog 인터페이스로 의존성 분리.
+
+후속 sub-spec 흡수:
+- 04: 곡 row 활성/비활성 회귀 버그 fix + Inject 타이밍 안정화.
+- 05: FolderScanSongCatalog production 카탈로그.
+- 06: `<songname>-<instrument>-<difficulty>.vmsong` 분리 파일 형식 + ISongEntry 인터페이스 확장.
+- 07: 반주 instrument 토글 + chart 머지 + effectiveBpm 자동 반주 일관성. manual-hard 검증 PASS.
