@@ -15,6 +15,12 @@ namespace Murang.Multiplayer.Room.Server
         private const string MaxPlayersArgument = "-maxPlayers";
         private const string PasswordHashArgument = "-passwordHash";
 
+        // ECS Fargate task definition container override (EcsRoomRuntimeProvider) 가
+        // 주입하는 env vars. command line argument 가 없을 때 fallback 으로 사용.
+        private const string EnvPhotonSessionName = "PHOTON_SESSION_NAME";
+        private const string EnvMaxPlayers = "MAX_PLAYERS";
+        private const string EnvPasswordHash = "ROOM_PASSWORD_HASH";
+
         [SerializeField] private RoomServerConfig config;
         [SerializeField] private bool autoStartOnAwake = true;
 
@@ -126,12 +132,26 @@ namespace Murang.Multiplayer.Room.Server
 
         private string ResolveRoomName()
         {
-            return GetOptionalArgumentValue(RoomNameArgument) ?? config.RoomName;
+            string fromArg = GetOptionalArgumentValue(RoomNameArgument);
+            if (!string.IsNullOrWhiteSpace(fromArg))
+            {
+                return fromArg;
+            }
+            string fromEnv = Environment.GetEnvironmentVariable(EnvPhotonSessionName);
+            if (!string.IsNullOrWhiteSpace(fromEnv))
+            {
+                return fromEnv;
+            }
+            return config.RoomName;
         }
 
         private int ResolveMaxPlayers()
         {
             string rawValue = GetOptionalArgumentValue(MaxPlayersArgument);
+            if (string.IsNullOrWhiteSpace(rawValue))
+            {
+                rawValue = Environment.GetEnvironmentVariable(EnvMaxPlayers);
+            }
             if (string.IsNullOrWhiteSpace(rawValue))
             {
                 return config.MaxPlayers;
@@ -147,7 +167,17 @@ namespace Murang.Multiplayer.Room.Server
 
         private string ResolvePasswordHash()
         {
-            return RoomPasswordHasher.NormalizeHash(GetOptionalArgumentValue(PasswordHashArgument) ?? config.PasswordHash);
+            string fromArg = GetOptionalArgumentValue(PasswordHashArgument);
+            if (!string.IsNullOrWhiteSpace(fromArg))
+            {
+                return RoomPasswordHasher.NormalizeHash(fromArg);
+            }
+            string fromEnv = Environment.GetEnvironmentVariable(EnvPasswordHash);
+            if (!string.IsNullOrWhiteSpace(fromEnv))
+            {
+                return RoomPasswordHasher.NormalizeHash(fromEnv);
+            }
+            return RoomPasswordHasher.NormalizeHash(config.PasswordHash);
         }
 
         private string ResolveCustomLobbyName()

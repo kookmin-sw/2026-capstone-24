@@ -70,19 +70,19 @@ namespace Murang.Multiplayer.Room.Client
             }
             if (string.IsNullOrWhiteSpace(accessToken))
             {
-                throw new ArgumentException("Backend access token 이 비어 있습니다.", nameof(accessToken));
+                throw new ArgumentException("Backend access token is empty.", nameof(accessToken));
             }
             if (string.IsNullOrWhiteSpace(roomRuntimeVersion))
             {
-                throw new ArgumentException("roomRuntimeVersion 이 비어 있습니다.", nameof(roomRuntimeVersion));
+                throw new ArgumentException("roomRuntimeVersion is empty.", nameof(roomRuntimeVersion));
             }
             if (string.IsNullOrWhiteSpace(options.RoomName))
             {
-                throw new ArgumentException("RoomName 이 비어 있습니다.", nameof(options));
+                throw new ArgumentException("RoomName is empty.", nameof(options));
             }
             if (string.IsNullOrWhiteSpace(options.PlayerId))
             {
-                throw new ArgumentException("PlayerId 가 비어 있습니다.", nameof(options));
+                throw new ArgumentException("PlayerId is empty.", nameof(options));
             }
 
             RoomCreateRequest request = new RoomCreateRequest
@@ -129,7 +129,7 @@ namespace Murang.Multiplayer.Room.Client
                 CompleteJoin(RoomJoinResult.CreateFailure(
                     RoomJoinFailureReason.Other,
                     _pendingJoin.RoomName,
-                    "룸 입장 시도가 취소되었습니다."));
+                    "Room join attempt was cancelled."));
             }
 
             if (_runner != null && _runner.IsRunning)
@@ -150,7 +150,7 @@ namespace Murang.Multiplayer.Room.Client
                 CompleteJoin(RoomJoinResult.CreateFailure(
                     RoomJoinFailureReason.Other,
                     _pendingJoin.RoomName,
-                    "RoomClient가 파괴되어 룸 입장을 완료하지 못했습니다."));
+                    "RoomClient was destroyed before room join completed."));
             }
         }
 
@@ -164,27 +164,27 @@ namespace Murang.Multiplayer.Room.Client
         {
             if (config == null)
             {
-                throw new InvalidOperationException("RoomClientConfig가 연결되지 않았습니다.");
+                throw new InvalidOperationException("RoomClientConfig is not connected.");
             }
 
             if (string.IsNullOrWhiteSpace(playerId))
             {
-                throw new ArgumentException("PlayerId가 비어 있습니다. 백엔드 인증을 먼저 완료해야 합니다.", nameof(playerId));
+                throw new ArgumentException("PlayerId is empty. Complete backend authentication first.", nameof(playerId));
             }
 
             if (string.IsNullOrWhiteSpace(roomName))
             {
-                throw new ArgumentException("RoomName이 비어 있습니다.", nameof(roomName));
+                throw new ArgumentException("RoomName is empty.", nameof(roomName));
             }
 
             if (_pendingJoin != null)
             {
-                throw new InvalidOperationException("이미 진행 중인 룸 입장 요청이 있습니다.");
+                throw new InvalidOperationException("A room join attempt is already in progress.");
             }
 
             if (_runner != null && _runner.IsRunning)
             {
-                throw new InvalidOperationException("이미 룸 세션에 연결되어 있습니다. 먼저 LeaveRoomAsync를 호출하세요.");
+                throw new InvalidOperationException("Already connected to a room session. Call LeaveRoomAsync first.");
             }
 
             string normalizedPlayerId = playerId.Trim();
@@ -231,7 +231,7 @@ namespace Murang.Multiplayer.Room.Client
                 RoomJoinResult canceled = RoomJoinResult.CreateFailure(
                     RoomJoinFailureReason.Other,
                     normalizedRoomName,
-                    "서버의 룸 입장 응답을 기다리다 시간 초과되었습니다.");
+                    "Timed out waiting for the server's room join response.");
                 CompleteJoin(canceled);
                 await ShutdownRunnerIfRunningAsync();
                 return canceled;
