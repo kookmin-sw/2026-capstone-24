@@ -24,6 +24,8 @@ VR 환경에서 사용자는 (a) 리듬게임 세션을 시작하고, (b) 자기
 | Start Menu Section | Done | [`specs/02-start-menu-section.md`](specs/02-start-menu-section.md) |
 | Volume Section | Done | [`specs/03-volume-section.md`](specs/03-volume-section.md) |
 | Song Selection Activation | Done | [`specs/04-song-selection-activation.md`](specs/04-song-selection-activation.md) |
+| Panel Theme | Draft | [`specs/05-panel-theme.md`](specs/05-panel-theme.md) |
+| Interactive Controls Style | Draft | [`specs/06-interactive-controls-style.md`](specs/06-interactive-controls-style.md) |
 
 > 상태 값: `Draft` / `Active` / `Done` / `Abandoned`
 
