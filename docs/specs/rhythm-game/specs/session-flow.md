@@ -47,6 +47,4 @@
 
 ## Open Questions
 
-- [ ] "악기 근처"의 판정 기준 (거리 / 시야 / 둘 다).
-- [ ] 한 악기에 대해 메뉴를 띄웠을 때 다른 악기 곡들도 보여줄지(필터링 정책).
-- [ ] 세션 도중 플레이어가 다른 악기 영역으로 이동했을 때의 정책 (계속 진행 / 즉시 중단).
+_현재 열린 질문 없음. (이 sub-spec은 Abandoned 처리됨 — 실질 기능은 RhythmGameSectionController + SessionPanel로 구현됨.)_

@@ -19,8 +19,8 @@ VR 악기 연습 환경에서 박자감을 게임적으로 익히게 하는 학�
 | 이름 | 상태 | 링크 |
 |---|---|---|
 | Chart Format | Done | [`chart-format.md`](../_archive/rhythm-game/specs/chart-format.md) |
-| Chart Import | Draft | [`specs/chart-import.md`](specs/chart-import.md) |
-| Session Flow | Draft | [`specs/session-flow.md`](specs/session-flow.md) |
+| Chart Import | Abandoned | [`specs/chart-import.md`](specs/chart-import.md) |
+| Session Flow | Abandoned | [`specs/session-flow.md`](specs/session-flow.md) |
 | Timing Clock | Done | [`timing-clock.md`](../_archive/rhythm-game/specs/timing-clock.md) |
 | Judgment | Done | [`judgment.md`](../_archive/rhythm-game/specs/judgment.md) |
 | Accompaniment | Done | [`specs/accompaniment.md`](specs/accompaniment.md) |

@@ -45,5 +45,4 @@
 
 ## Open Questions
 
-- [ ] 오류 보고 채널 (Unity 콘솔 / 에셋 인스펙터 / 둘 다).
-- [ ] 임포트 실패 시 자산을 어떤 상태로 둘지(자산 자체를 만들지 않음 / 빈 자산 / 이전 성공본 유지).
+_현재 열린 질문 없음. (이 sub-spec은 Abandoned 처리됨 — 실질 기능은 FolderScanSongCatalog + StreamingAssets 폴더 스캔으로 대체됨.)_
