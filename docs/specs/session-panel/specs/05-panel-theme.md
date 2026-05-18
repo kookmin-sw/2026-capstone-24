@@ -35,7 +35,7 @@ SessionPanel 컨테이너 배경이 불투명 단색이어서 VR 공간 환경�
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| _아직 없음_ | — | — | — |
+| 2026-05-18 | Panel Theme — Glassmorphism Background + Border | Done | [2026-05-18-linksky0311-panel-theme.md](../../_archive/session-panel/plans/2026-05-18-linksky0311-panel-theme.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/spec-build`가 planner sub-agent로 처리. 파일명은 날짜·작성자·slug 기반.
