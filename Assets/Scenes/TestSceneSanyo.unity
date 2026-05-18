@@ -2691,6 +2691,10 @@ PrefabInstance:
       propertyPath: rightPlayHandDriver
       value: 
       objectReference: {fileID: 7187747401014242040}
+    - target: {fileID: 7663274629528727135, guid: fc52e515dd232414db9528626212a1da, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.5888
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

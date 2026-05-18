@@ -40,7 +40,7 @@ VR 공간에서 사용자 입력을 MIDI 이벤트로 변환하고 오디오로 
 | `MidiEvent` (struct) | `_Core/Scripts/MidiEvent.cs` | Note · Velocity · Type · Channel · InstrumentId |
 | `MidiEventType` (enum) | `_Core/Scripts/MidiEventType.cs` | NoteOn / NoteOff / Choke / ControlChange |
 | `InstrumentBase` (abstract) | `_Core/Scripts/InstrumentBase.cs` | TriggerMidi 분기·볼륨 적용·오디오 위임. 자식 구현 의무: `TryResolveNoteOn(MidiEvent, out NotePlayback)` |
-| `InstrumentAudioOutput` | `_Core/Scripts/InstrumentAudioOutput.cs` | Voice Pool · spatialize · release fade. 자식이 `AudioSourceSettings` 오버라이드로 튜닝 |
+| `InstrumentAudioOutput` | `_Core/Scripts/InstrumentAudioOutput.cs` | Voice Pool · spatialize · release fade · sustain+release one-shot chain (§"Sustained Instrument의 Release Chain 패턴"). 자식이 `AudioSourceSettings` 오버라이드로 튜닝 |
 | `InstrumentLaneConfig` (SO) | `_Core/Scripts/InstrumentLaneConfig.cs` | MIDI 노트 ↔ 레인 인덱스 양방향 매핑 |
 | `IActiveInstrument` / `IActiveInstrumentProvider` | `_Core/Scripts/IActiveInstrumentProvider.cs` | 세션이 "현재 악기"를 추적하기 위한 계약 |
 | `InstanceVolumeStore` | `_Core/Scripts/InstanceVolumeStore.cs` | 악기별 볼륨 영속화 플러그인 (`Active.Load/Persist`) |
@@ -48,6 +48,22 @@ VR 공간에서 사용자 입력을 MIDI 이벤트로 변환하고 오디오로 
 | `InstrumentTeleportColliderBinder` | `_Core/Scripts/InstrumentTeleportColliderBinder.cs` | 본체 collider 들을 같은 GameObject 의 `TeleportationAnchor.colliders` 로 흡수해 ray 가 본체 어디에 hit 해도 anchor 가 받음 |
 
 **구현 의무 요약**: 새 악기는 `InstrumentBase`를 상속해 `TryResolveNoteOn`만 구현하면 NoteOn/Off/Choke·볼륨·이벤트 발행이 자동으로 동작한다. 입력 자식(충돌·압력·기타 모달)이 자체 로직으로 `TriggerMidi`를 호출하면 된다.
+
+### Sustained Instrument의 Release Chain 패턴
+
+Sustain loop + NoteOff release one-shot chain을 쓰려면 `TryResolveNoteOn`에서 `NotePlayback`을 만들 때 `sustain: true` + `releaseClip:` 둘 다 set한다. `InstrumentBase`가 자동으로 `InstrumentAudioOutput.PlayNoteSustainedWithRelease` 경로로 라우팅한다.
+
+- **NoteOn**: sustain voice가 loop 재생 + 내부에 release 클립 저장 (`TrackPitch=true`라 slide pitch 추적)
+- **NoteOff(`StopNote`)**: sustain voice 즉시 정지 + idle voice에 release 클립을 NoteOff 시점 pitch/volume으로 one-shot 재생 (`TrackPitch=false`라 release 중에는 pitch 고정)
+- **Choke / anchor 이탈**: release 건너뛰고 즉시 silence. 진행 중 sustain을 강제 종료할 땐 `NoteOff` 대신 `Choke`로 호출
+
+음원 준비 규약 (사용자가 새 sustained instrument 추가 시):
+- **파일 명명**: `<노트명>_sustain.wav`, `<노트명>_release.wav` (예: `C4_sustain.wav`). 악기 폴더(`Trombone/Sound/` 등)가 분리 컨텍스트 제공하므로 악기명 prefix 생략
+- **Sustain 클립**: 시작·끝 sample을 zero-crossing에 맞춘 안정 구간 (loop seam click 방지). 0.5~2초 권장
+- **Release 클립**: 자체 attack envelope을 가진 one-shot. 시작 음량이 sustain 평균과 비슷해야 transition 시 음량 점프 없음. 끝은 silence로 자연 감쇠
+- **부분 할당 동작**: `sustainClip`만 있고 `releaseClip` 누락이면 기존 `PlayNoteSustained`(loop + 볼륨 fade) 경로로 자동 폴백. 안전하지만 release chain 효과는 안 살음
+
+레퍼런스: `Assets/Instruments/Trombone/Scripts/Trombone.cs` (sustain+release chain), `Assets/Instruments/Trombone/Sound/C4_sustain.wav` · `C4_release.wav` (클립 예시)
 
 ## 4. 데이터 흐름
 

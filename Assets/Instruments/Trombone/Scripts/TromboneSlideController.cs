@@ -18,13 +18,15 @@ namespace Instruments
         [SerializeField] Transform rightGhostWristSource;
         [SerializeField] InputActionReference rightGripAction;
 
-        [SerializeField] float slideMinX = -0.7f;
-        [SerializeField] float slideMaxX = -0.3f;
+        [SerializeField] float slideMinX = -0.5895388f;
+        [SerializeField] float slideMaxX = -1.165f;
         [SerializeField] float gripThreshold = 0.5f;
 
         bool m_IsGripHeld;
         float m_BaselineHandX;
         float m_BaselineSlideX;
+
+        public float NormalizedSlide { get; private set; }
 
         void Reset()
         {
@@ -46,6 +48,7 @@ namespace Instruments
             if (tromboneAnchor == null || !tromboneAnchor.IsAttached)
             {
                 m_IsGripHeld = false;
+                UpdateNormalizedSlide();
                 return;
             }
 
@@ -65,6 +68,18 @@ namespace Instruments
 
             if (m_IsGripHeld)
                 ApplySlide();
+
+            UpdateNormalizedSlide();
+        }
+
+        void UpdateNormalizedSlide()
+        {
+            if (slide == null)
+            {
+                NormalizedSlide = 0f;
+                return;
+            }
+            NormalizedSlide = Mathf.InverseLerp(slideMinX, slideMaxX, slide.localPosition.x);
         }
 
         float ComputeHandLocalX()
@@ -79,7 +94,9 @@ namespace Instruments
             if (slide == null)
                 return;
             var current = ComputeHandLocalX();
-            var newX = Mathf.Clamp(m_BaselineSlideX + (current - m_BaselineHandX), slideMinX, slideMaxX);
+            var lo = Mathf.Min(slideMinX, slideMaxX);
+            var hi = Mathf.Max(slideMinX, slideMaxX);
+            var newX = Mathf.Clamp(m_BaselineSlideX + (current - m_BaselineHandX), lo, hi);
             var p = slide.localPosition;
             p.x = newX;
             slide.localPosition = p;
