@@ -1,7 +1,7 @@
 # Presence UI 로비 패널 (룸 생성 + 룸 목록)
 
 **Linked Spec:** [`04-presence-ui.md`](../specs/04-presence-ui.md)
-**Status:** `Ready`
+**Status:** `Done — superseded by 2026-05-18 lobby-migration-and-ux plan`
 
 ## Goal
 
