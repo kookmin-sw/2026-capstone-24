@@ -40,7 +40,7 @@ VR 공간에서 사용자 입력을 MIDI 이벤트로 변환하고 오디오로 
 | `MidiEvent` (struct) | `_Core/Scripts/MidiEvent.cs` | Note · Velocity · Type · Channel · InstrumentId |
 | `MidiEventType` (enum) | `_Core/Scripts/MidiEventType.cs` | NoteOn / NoteOff / Choke / ControlChange |
 | `InstrumentBase` (abstract) | `_Core/Scripts/InstrumentBase.cs` | TriggerMidi 분기·볼륨 적용·오디오 위임. 자식 구현 의무: `TryResolveNoteOn(MidiEvent, out NotePlayback)` |
-| `InstrumentAudioOutput` | `_Core/Scripts/InstrumentAudioOutput.cs` | Voice Pool · spatialize · release fade · sustain+release one-shot chain (§"Sustained Instrument의 Release Chain 패턴"). 자식이 `AudioSourceSettings` 오버라이드로 튜닝 |
+| `InstrumentAudioOutput` | `_Core/Scripts/InstrumentAudioOutput.cs` | Voice Pool · spatialize · sustain loop + per-voice fade envelope (Attacking/Releasing 단계, §"Sustained Instrument의 Fade Envelope 패턴"). 자식이 `AudioSourceSettings` 오버라이드로 튜닝 |
 | `InstrumentLaneConfig` (SO) | `_Core/Scripts/InstrumentLaneConfig.cs` | MIDI 노트 ↔ 레인 인덱스 양방향 매핑 |
 | `IActiveInstrument` / `IActiveInstrumentProvider` | `_Core/Scripts/IActiveInstrumentProvider.cs` | 세션이 "현재 악기"를 추적하기 위한 계약 |
 | `InstanceVolumeStore` | `_Core/Scripts/InstanceVolumeStore.cs` | 악기별 볼륨 영속화 플러그인 (`Active.Load/Persist`) |
@@ -49,21 +49,21 @@ VR 공간에서 사용자 입력을 MIDI 이벤트로 변환하고 오디오로 
 
 **구현 의무 요약**: 새 악기는 `InstrumentBase`를 상속해 `TryResolveNoteOn`만 구현하면 NoteOn/Off/Choke·볼륨·이벤트 발행이 자동으로 동작한다. 입력 자식(충돌·압력·기타 모달)이 자체 로직으로 `TriggerMidi`를 호출하면 된다.
 
-### Sustained Instrument의 Release Chain 패턴
+### Sustained Instrument의 Fade Envelope 패턴
 
-Sustain loop + NoteOff release one-shot chain을 쓰려면 `TryResolveNoteOn`에서 `NotePlayback`을 만들 때 `sustain: true` + `releaseClip:` 둘 다 set한다. `InstrumentBase`가 자동으로 `InstrumentAudioOutput.PlayNoteSustainedWithRelease` 경로로 라우팅한다.
+Sustain loop + fade-in/fade-out envelope을 쓰려면 `TryResolveNoteOn`에서 `NotePlayback`을 만들 때 `sustain: true` + `fadeInDuration:` / `fadeOutDuration:` 을 함께 전달한다. `InstrumentBase`가 자동으로 `InstrumentAudioOutput.PlayNoteSustained(...)` 경로로 라우팅하고, voice pool이 단계 전이를 처리한다.
 
-- **NoteOn**: sustain voice가 loop 재생 + 내부에 release 클립 저장 (`TrackPitch=true`라 slide pitch 추적)
-- **NoteOff(`StopNote`)**: sustain voice 즉시 정지 + idle voice에 release 클립을 NoteOff 시점 pitch/volume으로 one-shot 재생 (`TrackPitch=false`라 release 중에는 pitch 고정)
-- **Choke / anchor 이탈**: release 건너뛰고 즉시 silence. 진행 중 sustain을 강제 종료할 땐 `NoteOff` 대신 `Choke`로 호출
+- **NoteOn → Attacking**: voice가 loop 재생을 즉시 시작하되 volume을 0에서 target까지 `fadeInDuration` 동안 선형 증가. fade-in 종료 후 `SustainedActive`로 전이. (`TrackPitch=true`라 발음 중 slide pitch 추적 가능)
+- **NoteOff(`StopNote`) → Releasing**: voice의 `FadeOutDuration`(per-voice 박제값) 동안 현재 volume에서 0으로 선형 감소 후 정지. duration이 0이면 즉시 정지. (`TrackPitch=false`로 자동 전환되어 release 중 pitch 고정)
+- **Choke / anchor 이탈**: fade 건너뛰고 즉시 silence. `InstrumentBase.OnChoke` 기본 동작은 `StopNote`(fade-out)이므로, 즉시 silence가 필요한 악기는 `OnChoke`를 override해 `audioOutput.StopNoteImmediate(note)` 를 호출한다 (예: `Trombone.cs`).
 
 음원 준비 규약 (사용자가 새 sustained instrument 추가 시):
-- **파일 명명**: `<노트명>_sustain.wav`, `<노트명>_release.wav` (예: `C4_sustain.wav`). 악기 폴더(`Trombone/Sound/` 등)가 분리 컨텍스트 제공하므로 악기명 prefix 생략
-- **Sustain 클립**: 시작·끝 sample을 zero-crossing에 맞춘 안정 구간 (loop seam click 방지). 0.5~2초 권장
-- **Release 클립**: 자체 attack envelope을 가진 one-shot. 시작 음량이 sustain 평균과 비슷해야 transition 시 음량 점프 없음. 끝은 silence로 자연 감쇠
-- **부분 할당 동작**: `sustainClip`만 있고 `releaseClip` 누락이면 기존 `PlayNoteSustained`(loop + 볼륨 fade) 경로로 자동 폴백. 안전하지만 release chain 효과는 안 살음
+- **단일 클립**: 노트당 1개 wav. 별도 release sample 불필요. release tail은 fade-out으로 합성.
+- **Loop seam**: 시작·끝 sample을 zero-crossing에 맞춰 seam click 방지. 0.5~2초 권장.
+- **자연 attack/release tone**: 클립 자체에 자연스러운 톤이 담겨 있어야 fade-in/out 합성이 자연스러움. 강한 transient(스타카토 attack)는 fade-in이 어색하므로 피한다.
+- **멀티샘플 root MIDI**: 음역대 분할 멀티샘플을 쓰는 악기는 각 클립을 root MIDI 노트와 함께 인스펙터에 등록(예: `TromboneSample { clip, rootMidiNote }`). NoteOn 시점에 가장 가까운 root sample을 선택해 pitch shift 폭을 최소화한다. 발음 중 sample 전환은 click 위험이 있어 NoteOn 시점에만 결정한다.
 
-레퍼런스: `Assets/Instruments/Trombone/Scripts/Trombone.cs` (sustain+release chain), `Assets/Instruments/Trombone/Sound/C4_sustain.wav` · `C4_release.wav` (클립 예시)
+레퍼런스: `Assets/Instruments/Trombone/Scripts/Trombone.cs` (멀티샘플 + fade envelope), `Assets/Instruments/Trombone/Sound/A0.wav` · `Ds1.wav` · `A1.wav` · `A2.wav` (클립 예시)
 
 ## 4. 데이터 흐름
 
@@ -115,7 +115,7 @@ TeleportInstrumentProvider.Current 갱신 → ActiveInstrumentChanged 발행
 
 본문은 시그니처 수준에서 멈춘다. 구현 디테일이 필요하면 아래만 추가로 Read.
 
-- 입력 → MIDI 변환 분기: `_Core/Scripts/InstrumentBase.cs:109` (`TriggerMidi`)
-- 오디오 출력 파이프라인: `_Core/Scripts/InstrumentAudioOutput.cs:82` (`PlayNote`)
+- 입력 → MIDI 변환 분기: `_Core/Scripts/InstrumentBase.cs:117` (`TriggerMidi`)
+- 오디오 출력 파이프라인: `_Core/Scripts/InstrumentAudioOutput.cs:111` (`PlayNote`)
 - 레인 매핑 SO 구조: `_Core/Scripts/InstrumentLaneConfig.cs`
 - 활성 악기 전환 패턴: `_Core/Scripts/TeleportInstrumentProvider.cs`
