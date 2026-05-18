@@ -1,4 +1,4 @@
-# EC2 control-plane 전용 compose — spring + mariadb.
+# EC2 control-plane 전용 compose — spring + mariadb + caddy (HTTPS reverse proxy).
 # room-server (ECS Fargate task) 는 본 compose 에 포함하지 않는다 (Spring 내부
 # RoomServerManager 가 AWS API 로 on-demand 실행).
 #
@@ -29,12 +29,7 @@ services:
       context: backend
       dockerfile: Dockerfile
     restart: unless-stopped
-    ports:
-      - "8080:8080"
-    # Spring stdout/stderr 를 CloudWatch Logs 로 직접 송출. EC2 IAM Instance Profile 의
-    # CloudWatchLogsFullAccess 가 PutLogEvents 권한을 제공한다. 본 driver 로 전환되면
-    # `docker logs` 는 동작하지 않으므로 운영자는 CloudWatch console 또는
-    # `aws logs tail /ec2/murang-spring` 으로 확인한다.
+    # host port 제거 — Caddy 가 internal docker network 로만 접근 (외부 직접 노출 없음).
     logging:
       driver: awslogs
       options:
@@ -55,7 +50,7 @@ services:
       MURANG_META_APP_ID: ${MURANG_META_APP_ID}
       MURANG_META_APP_SECRET: ${MURANG_META_APP_SECRET}
       MURANG_META_GRAPH_BASE_URL: ${MURANG_META_GRAPH_BASE_URL:-https://graph.oculus.com}
-      # Room internal callback (EC2 public DNS or static IP)
+      # Room internal callback (HTTPS 도메인 경유 — Caddy 종단)
       MURANG_ROOM_INTERNAL_CALLBACK_BASE_URL: ${MURANG_ROOM_INTERNAL_CALLBACK_BASE_URL}
       MURANG_ROOM_INTERNAL_CALLBACK_SHARED_SECRET: ${MURANG_ROOM_INTERNAL_CALLBACK_SHARED_SECRET}
       # ECS runtime — Spring RoomServerManager 가 RunTask/StopTask/DescribeTasks 로 사용
@@ -72,5 +67,29 @@ services:
       mariadb:
         condition: service_healthy
 
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+    environment:
+      MURANG_PUBLIC_HOSTNAME: ${MURANG_PUBLIC_HOSTNAME}
+    # admin API (localhost:2019) 는 컨테이너 내부 전용 — 외부 노출 X.
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:2019/config/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    depends_on:
+      - spring
+
 volumes:
   mariadb-data:
+  caddy_data:
+  caddy_config:

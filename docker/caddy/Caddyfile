@@ -1,0 +1,8 @@
+{$MURANG_PUBLIC_HOSTNAME} {
+	reverse_proxy spring:8080
+	encode gzip
+	log {
+		output stdout
+		format json
+	}
+}

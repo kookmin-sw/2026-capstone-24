@@ -5,11 +5,16 @@
 ## 전체 그림
 
 ```
+Cloudflare (DNS only, gray cloud)
+└── A 레코드: dev.<zone> → EIP (Proxy OFF — HTTP-01 challenge 직통)
+
 VPC (단일)
 ├── Public Subnet
-│   ├── EC2 t3.small (Ubuntu 24.04 LTS)
+│   ├── Elastic IP → EC2 t3.small (Ubuntu 24.04 LTS)
 │   │   ├── docker-compose.ec2-dev.yml
-│   │   │   ├── spring container (port 8080 -> host 8080)
+│   │   │   ├── caddy container  HTTPS:443 / HTTP:80 (Let's Encrypt HTTP-01)
+│   │   │   │   └── reverse_proxy → spring:8080 (internal docker network)
+│   │   │   ├── spring container (host port 비공개, Caddy 내부 접근만)
 │   │   │   │   ├── Client-facing API
 │   │   │   │   ├── Auth/User Service
 │   │   │   │   └── RoomServerManager (ECS RunTask/DescribeTasks/StopTask)
@@ -18,20 +23,32 @@ VPC (단일)
 │   │
 │   └── ECS Fargate room-server task (on-demand, RoomServerManager 가 RunTask)
 │       ├── public IP (assignPublicIp=ENABLED)
-│       └── outbound -> EC2 8080 의 /internal/rooms/{id}/ready,heartbeat
+│       └── outbound -> https://<domain>/internal/rooms/{id}/ready,heartbeat (Caddy 경유)
 │
 └── Internet Gateway
 ```
+
+인증서 흐름: Caddy ↔ Let's Encrypt ACME HTTP-01 (port 80 inbound 필수) → 발급 후 443 서빙.
 
 ## 컴포넌트 책임
 
 ### EC2 (단일 인스턴스, t3.small)
 
+- Caddy 컨테이너: HTTPS 종단 + Let's Encrypt 자동 인증서 + reverse proxy → Spring 8080
 - Spring Boot App 컨테이너: `Client-facing API`, `Auth/User Service`, `RoomServerManager`
 - MariaDB 컨테이너: `users`, `rooms`, `room_server_instances` 영속
-- 둘 다 `docker-compose.ec2-dev.yml` 한 파일로 기동
+- 셋 모두 `docker-compose.ec2-dev.yml` 한 파일로 기동
 - `~/.env.aws-dev` 가 환경변수 단일 소스 (`docker compose --env-file` 로 주입)
 - IAM Instance Profile 에 ECS RunTask/StopTask/DescribeTasks, CloudWatch Logs PutLogEvents 권한 부여 (AWS SDK 가 instance metadata 로 자동 획득)
+
+### Caddy
+
+- image `caddy:2` (공식 Docker Hub)
+- 외부 80/443 수신 → `spring:8080` 으로 reverse proxy
+- Let's Encrypt HTTP-01 challenge: 80 inbound + DNS A 레코드가 EIP 를 가리키면 자동 발급/갱신
+- Caddyfile 의 도메인은 `MURANG_PUBLIC_HOSTNAME` env 로 주입 (`{$MURANG_PUBLIC_HOSTNAME}`)
+- 인증서 영속: `caddy_data` named volume (`/data/caddy/certificates/`)
+- admin API (`localhost:2019`) 는 컨테이너 내부 전용 — 외부 노출 X
 
 ### MariaDB
 
@@ -51,14 +68,14 @@ VPC (단일)
   - `PHOTON_SESSION_NAME`
   - `MAX_PLAYERS`
   - `ROOM_RUNTIME_VERSION`
-  - `ROOM_READY_CALLBACK_URL` — EC2 public DNS 의 `/internal/rooms/{id}/ready`
-  - `ROOM_HEARTBEAT_CALLBACK_URL` — EC2 public DNS 의 `/internal/rooms/{id}/heartbeat`
+  - `ROOM_READY_CALLBACK_URL` — `https://<domain>/internal/rooms/{id}/ready` (Caddy 경유 HTTPS)
+  - `ROOM_HEARTBEAT_CALLBACK_URL` — `https://<domain>/internal/rooms/{id}/heartbeat` (Caddy 경유 HTTPS)
 - 외부 클라이언트는 `public_ip:game_port/udp` 로 합류 (Photon Cloud 가 라우팅)
 
 ### Internet Gateway
 
 - Public subnet 의 outbound + inbound 게이트웨이
-- EC2 의 8080 inbound 와 Fargate task 의 game_port 인바운드 모두 IG 경유
+- EC2 의 80/443 inbound 와 Fargate task 의 game_port 인바운드 모두 IG 경유
 
 ## 네트워크 / 보안 그룹
 
@@ -67,15 +84,18 @@ VPC (단일)
 | Direction | Port | Source | 목적 |
 |---|---|---|---|
 | Inbound | 22 | 운영자 IP (관리) | SSH (선택, AWS Systems Manager Session Manager 권장) |
-| Inbound | 8080 | 0.0.0.0/0 | Spring public API + room-server 콜백 |
+| Inbound | 80 | 0.0.0.0/0 | Let's Encrypt ACME HTTP-01 challenge (Caddy) |
+| Inbound | 443 | 0.0.0.0/0 | HTTPS — Caddy 종단 (클라이언트 + Fargate 콜백) |
 | Outbound | * | 0.0.0.0/0 | AWS API, ECR pull, Meta Graph 호출 |
+
+> 8080 inbound 규칙 제거 — Spring 은 Caddy internal network 로만 접근 (외부 직접 노출 없음).
 
 ### Fargate room-server 보안 그룹 (sg-room-server)
 
 | Direction | Port | Source | 목적 |
 |---|---|---|---|
 | Inbound | game_port/UDP | 0.0.0.0/0 | 클라이언트 합류 (Photon Cloud 외부 라우팅 시 필요) |
-| Outbound | 8080/TCP | sg-ec2 | ready/heartbeat 콜백 |
+| Outbound | 443/TCP | 0.0.0.0/0 | ready/heartbeat 콜백 (HTTPS 경유) |
 | Outbound | * | 0.0.0.0/0 | Photon Cloud relay, AWS API |
 
 ## DB 스키마 (현재 적용 마이그레이션)
@@ -92,5 +112,6 @@ VPC (단일)
 - ECS task 의 별도 IAM role (`taskRoleArn`) 세부 정책 — 일단 비워두고 outbound 만 사용
 - S3 백업 동기화 (`/var/backups/mariadb` 까지만)
 - GitHub Actions / CI 자동 배포
+- Cloudflare Proxied (orange cloud) 모드 (본 토폴로지는 DNS only)
 
 후속 plan 에서 우선순위 정해서 채운다.
