@@ -6,7 +6,7 @@
 - 위 마이그레이션이 SampleScene의 4 root만 옮기고 **5번째 root `MultiplayerLobbyPanel` (adb46dc 시점 박힘)** 을 unity-scene-reader 점검 prompt 누락으로 빠뜨림.
 - 실기기 테스트에서 (1) 룸 이름 입력 시 VR 키보드 미발화 (2) 입력칸·버튼 배치 모서리 몰림 발견.
 
-**Status:** `Ready`
+**Status:** `Done — client-side scope (manual-hard #5/#6 blocked by backend DS READY 미달성, 별도 plan 로 위임)`
 
 ## Goal
 
@@ -190,4 +190,51 @@ SampleScene의 MultiplayerLobbyPanel 구조 (`unity-scene-reader 보고 (2026-05
 
 ## Handoff
 
-<!-- /spec-implement 가 plan 완료 후 채움. -->
+### 적용 결과 (2026-05-18)
+
+**Phase A — 마이그레이션 (commit 20cf4c0 + e084c06)**
+- TestSceneSanyo 에 `MultiplayerLobbyPanel` root + `LobbyRoot` + `CreateForm`/`RoomList`/`StatusLabel` 자식 트리 신설.
+- SerializeField 12건 + `MultiplayerInRoomPanel.lobbyPanel` cross-ref 와이어 완료.
+- 단 마이그레이션 시 **`PasswordEnabledToggle` 의 자식 트리 (Background + Checkmark) 가 누락** → manual-hard 단계에서 발견 → SampleScene 의 정상 토글을 Copy → Paste as Child 로 복원 + Toggle.Graphic / TargetGraphic 재와이어.
+
+**Phase B — UI 배치 (commit e084c06 + c3e7337 + Editor 수동 조정)**
+- LobbyPanel 자식 트리 좌표·spacing 정정. World Space Canvas 의 LocalPos / Rotation / Scale 은 어제 plan 박제값 유지 (사용자 강조사항 준수).
+- AuthGate root 의 LocalPos `(0, 0, 0.6)` → `(0, 0, 1.8)`, LocalRotation Y=90°, AnchoredPos `(4, 0.8)` 로 가독성 보강.
+- VRKeyboard 의 LocalPos `(0, 0, 0.15)` → `(0, 0, 1.8)`, AnchoredPos `(4, 1.5)`, SizeDelta `(400, 400)` 로 시야 정합.
+
+**Phase C — VR 키보드 (commit e084c06 + 후속 fix)**
+- `Assets/Multiplayer/Scripts/Presence/VRWorldKeyboard.cs` (런타임 World Space 키보드 prefab 생성기) + `VRKeyboardField.cs` (TMP_InputField → keyboard binder) 신설.
+- TestSceneSanyo 에 `VRKeyboard` root + 자체 Canvas + GraphicRaycaster + TrackedDeviceGraphicRaycaster 배치.
+- **manual-hard 디버깅 후속 fix**:
+  - `VRKeyboardField.keyboard` SerializeField 3건이 마이그레이션 직후 `{fileID: 0}` 으로 박혀 있어서 InputField 클릭 시 키보드 미발화. VRKeyboard component fileID 로 명시 와이어.
+  - Backspace 키 라벨 `⌫` (U+232B) 가 LiberationSans SDF atlas 미포함 → 빈 사각형 렌더링 → `DEL` 로 변경.
+
+**Phase D — supersede 처리**
+- 본 plan 의 atomic commit 후 [`2026-05-16-namae1128-presence-ui-lobby-panel.md`](./2026-05-16-namae1128-presence-ui-lobby-panel.md) Status 갱신은 별도 정리 commit (follow-up).
+
+### Acceptance Criteria 결과
+
+| AC | 결과 |
+|---|---|
+| Phase A `[auto-hard]` 6건 | ✅ 전부 통과 (TestSceneSanyo.unity 직렬화 grep) |
+| Phase B `[auto-soft]` Spacing ≥ 10 | ✅ |
+| Phase B `[manual-hard]` Quest 빌드 가독성 3건 | ✅ 사용자 확인 (input/toggle/button 시각 정상, raycast 정상) |
+| Phase C `[auto-hard]` Grep VRKeyboardField/XRKeyboard | ✅ |
+| Phase C `[manual-hard]` 키보드 발화·입력·deselect 흐름 | ✅ 사용자 확인 (RoomName/Password/MaxPlayers 모두 정상 입력) |
+| 전체 시나리오 `[manual-hard]` end-to-end | ⚠️ **Blocked — backend DS READY 미달성**. backend POST 는 성공 (룸 row 생성 + RoomListQuery 가 "1/9" 로 표시), 그러나 ECS Fargate dedicated server 가 READY 콜백 미발신 → `RoomProvisioningService.PollUntilReadyAsync` 120초 timeout. catch 분기 도달 확인 (logcat). 별도 plan (06-room-server-manager DS READY 진단) 으로 위임. |
+| 정합성 `[auto-hard]` git diff | ✅ TestSceneSanyo.unity + 신규 `VRWorldKeyboard.cs` / `VRKeyboardField.cs` 외 변경 없음 (단 Unity Editor 가 자동 save 한 ProjectSettings/Settings 일부 포함) |
+| 정합성 `[auto-hard]` console error 0건 | ✅ EditMode regression 14/14 통과 (LobbyInputValidatorTests) |
+
+### 진단을 위한 임시 변경 (rollback 대상)
+
+backend DS 진단 단계에서 statusLabel 의 한글 글리프 깨짐 (`The character with Unicode value \uXXXX was not found in [LiberationSans SDF]`) 때문에 fail 사유를 분간 불가 → `MultiplayerLobbyPanel.cs` + `LobbyInputValidator.cs` 의 사용자 가시 메시지 + ErrorMessage 를 영문화. `LobbyInputValidatorTests.cs` 의 한글 substring (`"영문"`) 검증도 `"letters"` 로 갱신.
+
+이는 본 plan Out of Scope ("한글 폰트 atlas 깨짐 처리 — 별도 plan") 의 정식 해결 전까지의 임시 조치. **별도 plan (한글 폰트 atlas 도입) 통과 후 한글 복원 권장**.
+
+### 후속 plan 후보
+
+1. **backend DS READY 진단** — `06-room-server-manager` 또는 새 sub-spec. ECS Fargate task 의 health check / READY 콜백 흐름 점검. AWS CloudWatch Logs 와 backend 측 status transition 로직.
+2. **한글 폰트 atlas 도입** — LiberationSans SDF 외 NotoSans / 본명조 등 한글 fallback 폰트 등록. statusLabel 의 영문 임시 메시지 복원.
+3. **`2026-05-16-namae1128-presence-ui-lobby-panel.md` plan Status 갱신** — Done — superseded by 본 plan.
+4. **SampleScene 의 LobbyPanel + 4 root multiplayer GameObject 정리** — Out of Scope 그대로 (별도 plan).
+
