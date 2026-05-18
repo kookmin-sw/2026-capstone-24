@@ -6,7 +6,7 @@
 - 위 마이그레이션이 SampleScene의 4 root만 옮기고 **5번째 root `MultiplayerLobbyPanel` (adb46dc 시점 박힘)** 을 unity-scene-reader 점검 prompt 누락으로 빠뜨림.
 - 실기기 테스트에서 (1) 룸 이름 입력 시 VR 키보드 미발화 (2) 입력칸·버튼 배치 모서리 몰림 발견.
 
-**Status:** `Done — client-side scope (manual-hard #5/#6 blocked by backend DS READY 미달성, 별도 plan 로 위임)`
+**Status:** `Done`
 
 ## Goal
 
@@ -221,20 +221,39 @@ SampleScene의 MultiplayerLobbyPanel 구조 (`unity-scene-reader 보고 (2026-05
 | Phase B `[manual-hard]` Quest 빌드 가독성 3건 | ✅ 사용자 확인 (input/toggle/button 시각 정상, raycast 정상) |
 | Phase C `[auto-hard]` Grep VRKeyboardField/XRKeyboard | ✅ |
 | Phase C `[manual-hard]` 키보드 발화·입력·deselect 흐름 | ✅ 사용자 확인 (RoomName/Password/MaxPlayers 모두 정상 입력) |
-| 전체 시나리오 `[manual-hard]` end-to-end | ⚠️ **Blocked — backend DS READY 미달성**. backend POST 는 성공 (룸 row 생성 + RoomListQuery 가 "1/9" 로 표시), 그러나 ECS Fargate dedicated server 가 READY 콜백 미발신 → `RoomProvisioningService.PollUntilReadyAsync` 120초 timeout. catch 분기 도달 확인 (logcat). 별도 plan (06-room-server-manager DS READY 진단) 으로 위임. |
+| 전체 시나리오 `[manual-hard]` end-to-end | ✅ **통과 (2026-05-19)**. ActivateButton → AuthGate 인증 → LobbyPanel → VR 키보드 입력 (RoomName/Password/MaxPlayers) → CreateButton → backend POST + ECS Fargate DS 부팅 + DS ready POST 성공 → Photon 합류 → InRoomPanel 활성화 + 참가자 리스트 본인 표시 → LeaveButton 클릭 → LobbyPanel 복귀. CloudWatch 로그 확인 (`[RoomServerCallbackReporter] ready POST 성공 room_id=3 public_ip=43.201.69.94` + `RegisterUniqueIdPlayerMapping`). |
 | 정합성 `[auto-hard]` git diff | ✅ TestSceneSanyo.unity + 신규 `VRWorldKeyboard.cs` / `VRKeyboardField.cs` 외 변경 없음 (단 Unity Editor 가 자동 save 한 ProjectSettings/Settings 일부 포함) |
 | 정합성 `[auto-hard]` console error 0건 | ✅ EditMode regression 14/14 통과 (LobbyInputValidatorTests) |
 
+### Backend DS READY 진단 (2026-05-19 추가)
+
+본 plan 의 전체 시나리오 manual-hard 가 backend DS READY 콜백 미발신으로 막혀있었음. CloudWatch Logs 점검 결과 2개 fix 적용:
+
+- **F1 (Dockerfile)** [`docker/dedicated-server/Dockerfile`](../../../../docker/dedicated-server/Dockerfile): ENTRYPOINT 에 `-logFile -` 추가 → Unity Player.log 가 stdout 으로 출력되어 ECS awslogs driver 가 CloudWatch 로 forward. 그 전엔 Player.log 가 컨테이너 내부 파일로만 저장되어 `[RoomServerCallbackReporter]` 메시지가 보이지 않았음.
+- **F2 (DS bootstrap)** [`Assets/Multiplayer/Scripts/Room/Server/RoomServerBootstrap.cs`](../../../../Assets/Multiplayer/Scripts/Room/Server/RoomServerBootstrap.cs): `ResolveRoomName`/`ResolveMaxPlayers`/`ResolvePasswordHash` 에 env var fallback 추가 (`PHOTON_SESSION_NAME` / `MAX_PLAYERS` / `ROOM_PASSWORD_HASH`). 기존엔 command line argument 가 없으면 `RoomServerConfig.asset` 의 hardcoded `roomName: murang-room` fallback → DS 가 항상 같은 sessionName 으로 Photon 등록 → client 가 만든 sessionName 과 불일치로 합류 불가였음. backend `EcsRoomRuntimeProvider` 가 이미 env vars 7개 주입 중이라 backend Java 코드는 무손, DS-side 만 보강.
+
+배포 절차: `tools/push-room-server-image.sh <tag>` → ECR push + `murang-room-server` task definition 새 revision 등록 → backend 는 family 이름만 가리키므로 다음 RunTask 부터 자동으로 latest revision 사용.
+
 ### 진단을 위한 임시 변경 (rollback 대상)
 
-backend DS 진단 단계에서 statusLabel 의 한글 글리프 깨짐 (`The character with Unicode value \uXXXX was not found in [LiberationSans SDF]`) 때문에 fail 사유를 분간 불가 → `MultiplayerLobbyPanel.cs` + `LobbyInputValidator.cs` 의 사용자 가시 메시지 + ErrorMessage 를 영문화. `LobbyInputValidatorTests.cs` 의 한글 substring (`"영문"`) 검증도 `"letters"` 로 갱신.
+backend DS 진단 단계에서 statusLabel 의 한글 글리프 깨짐 (`The character with Unicode value \uXXXX was not found in [LiberationSans SDF]`) 때문에 fail 사유를 분간 불가 → 다음 4개 파일의 사용자 가시 메시지를 영문화:
+
+- `MultiplayerLobbyPanel.cs` — TimeoutException / RoomProvisioningFailedException catch / FormatJoinFailure / IsReadyForBackendCall / ResolveBackendBaseUrl
+- `LobbyInputValidator.cs` — ValidatePhotonSessionName/MaxPlayers/Password ErrorMessage
+- `LobbyInputValidatorTests.cs` — 한글 substring (`"영문"`) → `"letters"`
+- `RoomClient.cs` — ArgumentException 4건 + InvalidOperationException 4건 (LeaveRoomAsync 후 statusLabel 깨짐 보강)
 
 이는 본 plan Out of Scope ("한글 폰트 atlas 깨짐 처리 — 별도 plan") 의 정식 해결 전까지의 임시 조치. **별도 plan (한글 폰트 atlas 도입) 통과 후 한글 복원 권장**.
 
+### 남은 minor issues (후속 plan 후보)
+
+1. **MaxPlayers PlayerCount off-by-one** — 사용자가 정원 4명으로 만든 룸이 InRoomPanel 에 `1/5` 로 표시. Photon Fusion `SessionInfo.MaxPlayers` 가 server 슬롯 추가로 +1 되거나 maxPlayersInput 입력 race 가능성. 본 plan AC 영향 없음.
+2. **passwordHash env var 누락** — backend `EcsRoomRuntimeProvider.buildEnvironment` 가 password hash 를 ECS env 에 안 보냄 → DS 가 잠금 룸 password check 불가. 무잠금 룸은 정상 동작. 잠금 룸 검증은 별도 plan.
+
 ### 후속 plan 후보
 
-1. **backend DS READY 진단** — `06-room-server-manager` 또는 새 sub-spec. ECS Fargate task 의 health check / READY 콜백 흐름 점검. AWS CloudWatch Logs 와 backend 측 status transition 로직.
-2. **한글 폰트 atlas 도입** — LiberationSans SDF 외 NotoSans / 본명조 등 한글 fallback 폰트 등록. statusLabel 의 영문 임시 메시지 복원.
-3. **`2026-05-16-namae1128-presence-ui-lobby-panel.md` plan Status 갱신** — Done — superseded by 본 plan.
-4. **SampleScene 의 LobbyPanel + 4 root multiplayer GameObject 정리** — Out of Scope 그대로 (별도 plan).
+1. **한글 폰트 atlas 도입** — LiberationSans SDF 외 NotoSans / 본명조 등 한글 fallback 폰트 등록. 위 4개 파일의 영문 임시 메시지 복원.
+2. **`2026-05-16-namae1128-presence-ui-lobby-panel.md` plan Status 갱신** — Done — superseded by 본 plan.
+3. **SampleScene 의 LobbyPanel + 4 root multiplayer GameObject 정리** — Out of Scope 그대로 (별도 plan).
+4. **MaxPlayers PlayerCount off-by-one 진단 + 잠금 룸 passwordHash env 보강** — 위 남은 minor issues.
 
