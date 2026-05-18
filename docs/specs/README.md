@@ -176,7 +176,7 @@ docs/specs/
 
 | Feature | Status | Sub-Specs | Plans (Done/Total) | 비고 |
 |---|---|---|---|---|
-| [rhythm-game](rhythm-game/_index.md) | Active | 14 | 16/16 | |
+| [rhythm-game](rhythm-game/_index.md) | Active | 14 | 17/17 | |
 | [hands](hands/_index.md) | Active | 3 | 1/2 | |
 | [drum-stick](drum-stick/_index.md) | Active | 2 | 3/3 | |
 | [session-panel](session-panel/_index.md) | Active | 4 | 5/6 | |

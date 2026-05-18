@@ -51,7 +51,7 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| _아직 없음_ | — | — | — |
+| 2026-05-18 | Accompaniment Toggle Gate — RhythmAccompaniment.Fire OFF Skip (Plan A) | Done | [`2026-05-18-linksky0311-accompaniment-toggle-gate.md`](../plans/2026-05-18-linksky0311-accompaniment-toggle-gate.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/spec-build`가 planner sub-agent로 처리. 파일명은 날짜·작성자·slug 기반.
