@@ -24,6 +24,7 @@ namespace Instruments
 
         [SerializeField] TromboneAnchor tromboneAnchor;
         [SerializeField] TromboneSlideController slideController;
+        [SerializeField] TrombonePartialController partialController;
         [SerializeField] TromboneSample[] samples = Array.Empty<TromboneSample>();
         [SerializeField] int baseToneMidiNote = 33; // A1
         [SerializeField, Min(0f)] float fadeInDuration = 0.05f;
@@ -32,6 +33,7 @@ namespace Instruments
         [SerializeField] float gripThreshold = 0.5f;
 
         bool m_IsBlowing;
+        int m_LastPartialIndex;
         TromboneSample m_SelectedSample;
 
         void OnEnable()
@@ -65,11 +67,20 @@ namespace Instruments
             {
                 TriggerMidi(new MidiEvent(baseToneMidiNote, 1f, MidiEventType.NoteOn));
                 m_IsBlowing = true;
+                m_LastPartialIndex = partialController != null ? partialController.PartialIndex : 0;
             }
             else if (!grip && m_IsBlowing)
             {
                 TriggerMidi(new MidiEvent(baseToneMidiNote, 0f, MidiEventType.NoteOff));
                 m_IsBlowing = false;
+            }
+
+            if (m_IsBlowing && partialController != null
+                && partialController.PartialIndex != m_LastPartialIndex)
+            {
+                TriggerMidi(new MidiEvent(baseToneMidiNote, 0f, MidiEventType.Choke));
+                TriggerMidi(new MidiEvent(baseToneMidiNote, 1f, MidiEventType.NoteOn));
+                m_LastPartialIndex = partialController.PartialIndex;
             }
 
             if (m_IsBlowing && audioOutput != null && m_SelectedSample.clip != null)
@@ -103,7 +114,10 @@ namespace Instruments
             return Mathf.Lerp(0f, -6f, t);
         }
 
-        float ComputeEffectiveMidi() => baseToneMidiNote + ComputeSlideSemitones();
+        float ComputeEffectiveMidi()
+            => baseToneMidiNote
+             + (partialController != null ? partialController.PartialOffsetSemitones : 0)
+             + ComputeSlideSemitones();
 
         float ComputePitchForSelectedSample() => ComputePitchForSelectedSample(ComputeEffectiveMidi());
 

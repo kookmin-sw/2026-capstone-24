@@ -779,6 +779,7 @@ GameObject:
   - component: {fileID: 6792978486195072924}
   - component: {fileID: 6855862333753624109}
   - component: {fileID: 6350044881741792298}
+  - component: {fileID: 4932485236075849092}
   m_Layer: 0
   m_Name: Trombone
   m_TagString: Untagged
@@ -837,6 +838,7 @@ MonoBehaviour:
   _panelAnchor: {fileID: 0}
   tromboneAnchor: {fileID: 6798659558522323895}
   slideController: {fileID: 4069711244863020258}
+  partialController: {fileID: 4932485236075849092}
   samples:
   - clip: {fileID: 8300000, guid: bebd4721ee158da4eb5ac09b67fd9582, type: 3}
     rootMidiNote: 21
@@ -851,6 +853,26 @@ MonoBehaviour:
   fadeOutDuration: 0.15
   leftGripAction: {fileID: 6558622148059887818, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   gripThreshold: 0.5
+--- !u!114 &4932485236075849092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3300842808265667475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 971e3295bb69fe64e932518907d9c9ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Instruments::Instruments.TrombonePartialController
+  tromboneAnchor: {fileID: 6798659558522323895}
+  tromboneRoot: {fileID: 9100000000000000002}
+  partialOffsetsSemitones: 0c00000013000000180000001c0000001f000000
+  anglePerPartial: 15
+  angleSignMultiplier: -1
+  hysteresisAngle: 2
+  initialPartialIndex: 0
+  centerPartialIndex: 2
 --- !u!1 &3352728544413650932
 GameObject:
   m_ObjectHideFlags: 0
