@@ -41,7 +41,7 @@ sub-spec 06 스타일 적용 후 수동 검증에서 두 가지 레이아웃 문
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| _아직 없음_ | — | — | — |
+| 2026-05-19 | Layout Fixes (sub-spec 07 단일 plan) | Ready | [`2026-05-19-linksky0311-layout-fixes.md`](../plans/2026-05-19-linksky0311-layout-fixes.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/spec-build`가 planner sub-agent로 처리. 파일명은 날짜·작성자·slug 기반.
