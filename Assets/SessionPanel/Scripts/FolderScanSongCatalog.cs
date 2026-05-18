@@ -129,7 +129,7 @@ namespace SessionPanel
 
         sealed class MultiFileSongEntry : ISongEntry
         {
-            static readonly string[] _diffPriority = { "Easy", "Normal", "Hard" };
+            static readonly string[] _diffPriority = { "1", "2", "3" };
 
             readonly string _id, _title, _artist;
             readonly Dictionary<(string, string), string> _files;
@@ -168,9 +168,15 @@ namespace SessionPanel
 
             public IReadOnlyCollection<string> GetDifficultiesFor(string instrumentId)
             {
-                if (_diffsByInstrument.TryGetValue(instrumentId, out var list))
-                    return list;
-                return System.Array.Empty<string>();
+                if (!_diffsByInstrument.TryGetValue(instrumentId, out var rawList))
+                    return System.Array.Empty<string>();
+
+                var remaining = new HashSet<string>(rawList, System.StringComparer.OrdinalIgnoreCase);
+                var sorted = new List<string>();
+                foreach (var p in _diffPriority)
+                    if (remaining.Remove(p)) sorted.Add(p);
+                sorted.AddRange(remaining.OrderBy(x => x, System.StringComparer.OrdinalIgnoreCase));
+                return sorted.AsReadOnly();
             }
 
             public string GetChartPath(string instrumentId, string difficulty)
@@ -191,3 +197,4 @@ namespace SessionPanel
         }
     }
 }
+

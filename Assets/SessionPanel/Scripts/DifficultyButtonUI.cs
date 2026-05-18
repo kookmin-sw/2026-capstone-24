@@ -38,6 +38,11 @@ namespace SessionPanel
                 _bg.color = selected ? SelectedColor : NormalColor;
         }
 
+        public void SetLabel(string text)
+        {
+            if (label != null) label.text = text;
+        }
+
         public void OnClick()
         {
             _callback?.Invoke(_difficulty, this);

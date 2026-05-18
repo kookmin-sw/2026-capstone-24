@@ -50,7 +50,8 @@ Unity 씬(SampleScene 또는 TestSceneSanyo)에서 다음 동작을 검증한다
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| _아직 없음_ | — | — | — |
+| 2026-05-18 | 나비야 플레이백 & 반주 연동 — Unity 씬 검증 | Ready | [`../plans/2026-05-18-linksky0311-nabia-playback-verification.md`](../plans/2026-05-18-linksky0311-nabia-playback-verification.md) |
+| 2026-05-18 | 나비야 검증 실패 3건 수정 — DrumKit instrumentId 일치 + 난이도 숫자화 | Ready | [`../plans/2026-05-18-linksky0311-nabia-playback-fix.md`](../plans/2026-05-18-linksky0311-nabia-playback-fix.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/spec-build`가 planner sub-agent로 처리. 파일명은 날짜·작성자·slug 기반.

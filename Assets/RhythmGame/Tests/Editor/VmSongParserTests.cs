@@ -313,7 +313,7 @@ tick=480 note=60 len=240 vel=100
     [Test]
     public void Nabia_PianoEasy_ParsesSuccessfully()
     {
-        var result = VmSongParser.Parse(LoadSong("nabia-piano-easy.vmsong"));
+        var result = VmSongParser.Parse(LoadSong("nabia-piano-1.vmsong"));
         Assert.IsTrue(result.Success,
             "Errors: " + string.Join(", ", result.errors.ConvertAll(e => e.message)));
         Assert.AreEqual(1, result.chart.tracks.Count);
@@ -329,7 +329,7 @@ tick=480 note=60 len=240 vel=100
     [Test]
     public void Nabia_PianoNormal_ParsesSuccessfully()
     {
-        var result = VmSongParser.Parse(LoadSong("nabia-piano-normal.vmsong"));
+        var result = VmSongParser.Parse(LoadSong("nabia-piano-2.vmsong"));
         Assert.IsTrue(result.Success,
             "Errors: " + string.Join(", ", result.errors.ConvertAll(e => e.message)));
         Assert.AreEqual(1, result.chart.tracks.Count);
@@ -345,7 +345,7 @@ tick=480 note=60 len=240 vel=100
     [Test]
     public void Nabia_PianoHard_ParsesSuccessfully()
     {
-        var result = VmSongParser.Parse(LoadSong("nabia-piano-hard.vmsong"));
+        var result = VmSongParser.Parse(LoadSong("nabia-piano-3.vmsong"));
         Assert.IsTrue(result.Success,
             "Errors: " + string.Join(", ", result.errors.ConvertAll(e => e.message)));
         Assert.AreEqual(1, result.chart.tracks.Count);
@@ -361,7 +361,7 @@ tick=480 note=60 len=240 vel=100
     [Test]
     public void Nabia_DrumEasy_ParsesSuccessfully()
     {
-        var result = VmSongParser.Parse(LoadSong("nabia-drum-easy.vmsong"));
+        var result = VmSongParser.Parse(LoadSong("nabia-drum-1.vmsong"));
         Assert.IsTrue(result.Success,
             "Errors: " + string.Join(", ", result.errors.ConvertAll(e => e.message)));
         Assert.AreEqual(1, result.chart.tracks.Count);
@@ -374,7 +374,7 @@ tick=480 note=60 len=240 vel=100
     [Test]
     public void Nabia_DrumNormal_ParsesSuccessfully()
     {
-        var result = VmSongParser.Parse(LoadSong("nabia-drum-normal.vmsong"));
+        var result = VmSongParser.Parse(LoadSong("nabia-drum-2.vmsong"));
         Assert.IsTrue(result.Success,
             "Errors: " + string.Join(", ", result.errors.ConvertAll(e => e.message)));
         Assert.AreEqual(1, result.chart.tracks.Count);
@@ -387,7 +387,7 @@ tick=480 note=60 len=240 vel=100
     [Test]
     public void Nabia_DrumHard_ParsesSuccessfully()
     {
-        var result = VmSongParser.Parse(LoadSong("nabia-drum-hard.vmsong"));
+        var result = VmSongParser.Parse(LoadSong("nabia-drum-3.vmsong"));
         Assert.IsTrue(result.Success,
             "Errors: " + string.Join(", ", result.errors.ConvertAll(e => e.message)));
         Assert.AreEqual(1, result.chart.tracks.Count);
@@ -400,7 +400,7 @@ tick=480 note=60 len=240 vel=100
     [Test]
     public void Nabia_DrumHard_SimultaneousNotesCappedAtTwo()
     {
-        var result = VmSongParser.Parse(LoadSong("nabia-drum-hard.vmsong"));
+        var result = VmSongParser.Parse(LoadSong("nabia-drum-3.vmsong"));
         Assert.IsTrue(result.Success,
             "Errors: " + string.Join(", ", result.errors.ConvertAll(e => e.message)));
         var counts = new Dictionary<int, int>();
@@ -415,7 +415,7 @@ tick=480 note=60 len=240 vel=100
     [Test]
     public void TestSongDrumEasy_InstrumentKeyIsDrum()
     {
-        var result = VmSongParser.Parse(LoadSong("test_song-drum-easy.vmsong"));
+        var result = VmSongParser.Parse(LoadSong("test_song-drum-1.vmsong"));
         Assert.IsTrue(result.Success,
             "Errors: " + string.Join(", ", result.errors.ConvertAll(e => e.message)));
         Assert.AreEqual("drum", result.chart.channelMap.entries[0].instrumentKey,
@@ -423,3 +423,4 @@ tick=480 note=60 len=240 vel=100
     }
 
 }
+

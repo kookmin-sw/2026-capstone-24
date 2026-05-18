@@ -174,6 +174,7 @@ namespace SessionPanel
                 if (btn != null)
                 {
                     btn.Setup(diff, OnDifficultyClicked, diffImg);
+                    btn.SetLabel(MapDifficultyLabel(diff));
                     if (firstBtn == null) { firstBtn = btn; firstDiff = diff; }
                 }
             }
@@ -540,6 +541,17 @@ namespace SessionPanel
                 instrumentToggleContainer.gameObject.SetActive(false);
             }
             ShowDetail(false);
+        }
+
+        static string MapDifficultyLabel(string diff)
+        {
+            switch (diff)
+            {
+                case "1": return "Easy";
+                case "2": return "Normal";
+                case "3": return "Hard";
+                default:  return diff;
+            }
         }
 
         static int FindJudgedChannel(VmSongChart chart, string instrumentId)
