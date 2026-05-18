@@ -1,7 +1,7 @@
 # Interactive Controls Glass Style (Sub-spec 06 단일 plan)
 
 **Linked Spec:** [`06-interactive-controls-style.md`](../specs/06-interactive-controls-style.md)
-**Status:** `Ready`
+**Status:** `Done`
 
 ## Goal
 
