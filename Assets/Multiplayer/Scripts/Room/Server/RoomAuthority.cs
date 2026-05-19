@@ -105,8 +105,10 @@ namespace Murang.Multiplayer.Room.Server
             }
         }
 
-        public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
+        void INetworkRunnerCallbacks.OnPlayerJoined(NetworkRunner runner, PlayerRef player)
         {
+            Debug.Log($"[RoomAuthority] OnPlayerJoined player={player} ActivePlayers={runner.ActivePlayers.Count()} IsServer={runner.IsServer}");
+
             if (!runner.IsServer)
             {
                 return;
@@ -138,7 +140,7 @@ namespace Murang.Multiplayer.Room.Server
                 disconnectAfterSend: true);
         }
 
-        public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
+        void INetworkRunnerCallbacks.OnPlayerLeft(NetworkRunner runner, PlayerRef player)
         {
             Debug.Log($"[RoomAuthority] OnPlayerLeft player={player} ActivePlayers={runner.ActivePlayers.Count()} IsServer={runner.IsServer}");
 
