@@ -28,9 +28,6 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash, Skill, Task
 - 인수가 있으면 그 내용을 컨텍스트로 받아 1단계로 진행.
 
 ### 1. 컨텍스트 파악 (필요할 때 read-only)
-
-처음부터 모든 것을 읽지 않는다. 사용자 아이디어가 잡힌 뒤, **필요할 때 필요한 만큼만** 읽는다.
-
 - 기존 피처의 sub-spec일 가능성이 보이면 → `docs/specs/`를 Glob하고 후보 root-spec(`_index.md`) 1개 정도만 읽는다.
 - 새 피처가 명백하면 이 단계를 건너뛴다.
 

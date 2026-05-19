@@ -124,94 +124,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5274399653974701141, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
   m_PrefabInstance: {fileID: 7187747401014242035}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &46134113
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 46134115}
-  - component: {fileID: 46134114}
-  m_Layer: 0
-  m_Name: ChartAutoPlayer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &46134114
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 46134113}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91536b08564f18e4fbff7c734eb2d2b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ChartAutoPlayer
---- !u!4 &46134115
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 46134113}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &113620543
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 113620545}
-  - component: {fileID: 113620544}
-  m_Layer: 0
-  m_Name: RhythmGameAutoLauncher_Piano
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &113620544
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 113620543}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af1fc24f081a43648e3232025673d4ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: RhythmGame.Runtime::RhythmGameAutoLauncher
---- !u!4 &113620545
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 113620543}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &233044943 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1181393932831831023, guid: 5d113da57d1dd5342847ea83b2ec3383, type: 3}
@@ -439,7 +351,7 @@ PrefabInstance:
     - target: {fileID: 6658207107864551913, guid: 20c3ebc0d8a60954b9bf428c65c948ce, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 966096146}
+      objectReference: {fileID: 515147752}
     - target: {fileID: 7100990362155429990, guid: 20c3ebc0d8a60954b9bf428c65c948ce, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0.449
@@ -496,6 +408,19 @@ PrefabInstance:
       addedObject: {fileID: 1229096219}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 20c3ebc0d8a60954b9bf428c65c948ce, type: 3}
+--- !u!134 &515147752
+PhysicsMaterial:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: ' (Instance)'
+  serializedVersion: 2
+  m_DynamicFriction: 0.6
+  m_StaticFriction: 0.6
+  m_Bounciness: 0
+  m_FrictionCombine: 0
+  m_BounceCombine: 0
 --- !u!1 &566037892
 GameObject:
   m_ObjectHideFlags: 0
@@ -608,50 +533,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 566037892}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &591792874
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 591792876}
-  - component: {fileID: 591792875}
-  m_Layer: 0
-  m_Name: RhythmGameAutoLauncher_Drum
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &591792875
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 591792874}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af1fc24f081a43648e3232025673d4ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: RhythmGame.Runtime::RhythmGameAutoLauncher
---- !u!4 &591792876
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 591792874}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &596974770
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -714,19 +595,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 652725695442906022, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
   m_PrefabInstance: {fileID: 7187747401014242035}
   m_PrefabAsset: {fileID: 0}
---- !u!134 &632237874
-PhysicsMaterial:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  serializedVersion: 2
-  m_DynamicFriction: 0.6
-  m_StaticFriction: 0.6
-  m_Bounciness: 0
-  m_FrictionCombine: 0
-  m_BounceCombine: 0
 --- !u!1 &675582843
 GameObject:
   m_ObjectHideFlags: 0
@@ -979,6 +847,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 741692058}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &759072457 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1239877275084951676, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
+  m_PrefabInstance: {fileID: 7187747401014242035}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &762219545
 GameObject:
   m_ObjectHideFlags: 0
@@ -1886,19 +1759,6 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
---- !u!134 &966096146
-PhysicsMaterial:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  serializedVersion: 2
-  m_DynamicFriction: 0.6
-  m_StaticFriction: 0.6
-  m_Bounciness: 0
-  m_FrictionCombine: 0
-  m_BounceCombine: 0
 --- !u!1 &999638533
 GameObject:
   m_ObjectHideFlags: 0
@@ -2372,6 +2232,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2445c7207410714cb0a60ec72091c57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!134 &1430906649
+PhysicsMaterial:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  serializedVersion: 2
+  m_DynamicFriction: 0.6
+  m_StaticFriction: 0.6
+  m_Bounciness: 0
+  m_FrictionCombine: 0
+  m_BounceCombine: 0
 --- !u!114 &1530775798 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5428658257290346933, guid: 20c3ebc0d8a60954b9bf428c65c948ce, type: 3}
@@ -2597,6 +2470,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: SessionPanel.Runtime::SessionPanel.FolderScanSongCatalog
   songsRelativePath: Songs
+--- !u!134 &1898236281
+PhysicsMaterial:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: ' (Instance)'
+  serializedVersion: 2
+  m_DynamicFriction: 0.6
+  m_StaticFriction: 0.6
+  m_Bounciness: 0
+  m_FrictionCombine: 0
+  m_BounceCombine: 0
 --- !u!1 &1977748801
 GameObject:
   m_ObjectHideFlags: 0
@@ -2763,9 +2649,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: Trombone
       objectReference: {fileID: 0}
+    - target: {fileID: 4069711244863020258, guid: fc52e515dd232414db9528626212a1da, type: 3}
+      propertyPath: rightGhostWristSource
+      value: 
+      objectReference: {fileID: 256669989}
+    - target: {fileID: 4447719634670783511, guid: fc52e515dd232414db9528626212a1da, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 1430906649}
     - target: {fileID: 6792978486195072924, guid: fc52e515dd232414db9528626212a1da, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.5745591
+      value: 2.711
       objectReference: {fileID: 0}
     - target: {fileID: 6792978486195072924, guid: fc52e515dd232414db9528626212a1da, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2773,7 +2667,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6792978486195072924, guid: fc52e515dd232414db9528626212a1da, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.268995
+      value: 0.888
       objectReference: {fileID: 0}
     - target: {fileID: 6792978486195072924, guid: fc52e515dd232414db9528626212a1da, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2803,6 +2697,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6798659558522323895, guid: fc52e515dd232414db9528626212a1da, type: 3}
+      propertyPath: mouthOnPlayer
+      value: 
+      objectReference: {fileID: 759072457}
+    - target: {fileID: 6798659558522323895, guid: fc52e515dd232414db9528626212a1da, type: 3}
+      propertyPath: leftPhysicsHand
+      value: 
+      objectReference: {fileID: 1661679355}
+    - target: {fileID: 6798659558522323895, guid: fc52e515dd232414db9528626212a1da, type: 3}
+      propertyPath: rightPhysicsHand
+      value: 
+      objectReference: {fileID: 247458534}
+    - target: {fileID: 6798659558522323895, guid: fc52e515dd232414db9528626212a1da, type: 3}
+      propertyPath: leftPlayHandDriver
+      value: 
+      objectReference: {fileID: 7187747401014242041}
+    - target: {fileID: 6798659558522323895, guid: fc52e515dd232414db9528626212a1da, type: 3}
+      propertyPath: rightPlayHandDriver
+      value: 
+      objectReference: {fileID: 7187747401014242040}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2823,7 +2737,7 @@ PrefabInstance:
     - target: {fileID: 2123342954557586726, guid: 5d113da57d1dd5342847ea83b2ec3383, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 632237874}
+      objectReference: {fileID: 1898236281}
     - target: {fileID: 3275038625828609090, guid: 5d113da57d1dd5342847ea83b2ec3383, type: 3}
       propertyPath: leftPhysicsHand
       value: 
@@ -3092,11 +3006,8 @@ SceneRoots:
   - {fileID: 447916926}
   - {fileID: 2757961452950761299}
   - {fileID: 3141592653589793238}
-  - {fileID: 46134115}
   - {fileID: 800309072}
-  - {fileID: 591792876}
   - {fileID: 2078871758}
-  - {fileID: 113620545}
   - {fileID: 1699638001}
   - {fileID: 596974770}
   - {fileID: 1368118599}
