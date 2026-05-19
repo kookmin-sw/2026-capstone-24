@@ -174,6 +174,7 @@ namespace Murang.Multiplayer.Presence
             int max = (networkRunner != null && networkRunner.SessionInfo != null)
                 ? networkRunner.SessionInfo.MaxPlayers
                 : 0;
+            Debug.Log($"[MultiplayerInRoomPanel] SessionInfo.MaxPlayers={max} ActiveCount={count}");
             participantCountLabel.text = max > 0 ? $"{count}/{max}" : count.ToString();
         }
 

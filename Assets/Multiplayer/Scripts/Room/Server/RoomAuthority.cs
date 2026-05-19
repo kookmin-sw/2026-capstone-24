@@ -140,6 +140,8 @@ namespace Murang.Multiplayer.Room.Server
 
         public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
         {
+            Debug.Log($"[RoomAuthority] OnPlayerLeft player={player} ActivePlayers={runner.ActivePlayers.Count()} IsServer={runner.IsServer}");
+
             if (!runner.IsServer)
             {
                 return;

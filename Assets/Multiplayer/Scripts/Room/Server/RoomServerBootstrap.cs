@@ -53,6 +53,8 @@ namespace Murang.Multiplayer.Room.Server
             bool useDefaultPhotonCloudPorts = ResolveUseDefaultPhotonCloudPorts();
             bool isVisible = ResolveIsVisible();
 
+            Debug.Log($"[RoomServerBootstrap] StartGameArgs.PlayerCount={maxPlayers} (sessionName={roomName})");
+
             StartGameArgs startArgs = new StartGameArgs
             {
                 GameMode = GameMode.Server,
