@@ -134,7 +134,7 @@ namespace Murang.Multiplayer.Room.Client
 
             if (_runner != null && _runner.IsRunning)
             {
-                await _runner.Shutdown();
+                await _runner.Shutdown(destroyGameObject: false);
             }
         }
 
@@ -369,7 +369,7 @@ namespace Murang.Multiplayer.Room.Client
         {
             if (_runner != null && _runner.IsRunning)
             {
-                await _runner.Shutdown();
+                await _runner.Shutdown(destroyGameObject: false);
             }
         }
 
