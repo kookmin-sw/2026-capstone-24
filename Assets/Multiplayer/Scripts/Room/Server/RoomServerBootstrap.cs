@@ -53,13 +53,17 @@ namespace Murang.Multiplayer.Room.Server
             bool useDefaultPhotonCloudPorts = ResolveUseDefaultPhotonCloudPorts();
             bool isVisible = ResolveIsVisible();
 
-            Debug.Log($"[RoomServerBootstrap] StartGameArgs.PlayerCount={maxPlayers} (sessionName={roomName})");
+            // Photon Fusion 2 dedicated-server 모드는 actor slot 에 server 1개를 포함한다.
+            // 사용자 가시 정원 (maxPlayers) 명의 client 가 모두 들어올 수 있으려면 actor slot 을
+            // maxPlayers + 1 로 등록해야 안전 (RoomAuthority._maxPlayers carve-out 와 정합).
+            int photonPlayerCount = maxPlayers + 1;
+            Debug.Log($"[RoomServerBootstrap] StartGameArgs.PlayerCount={photonPlayerCount} (clientCap={maxPlayers} sessionName={roomName})");
 
             StartGameArgs startArgs = new StartGameArgs
             {
                 GameMode = GameMode.Server,
                 SessionName = roomName,
-                PlayerCount = maxPlayers,
+                PlayerCount = photonPlayerCount,
                 IsVisible = isVisible,
                 SessionProperties = BuildSessionProperties(passwordHash),
                 CustomLobbyName = customLobbyName,
