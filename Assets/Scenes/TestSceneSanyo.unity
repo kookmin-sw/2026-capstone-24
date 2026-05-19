@@ -219,7 +219,7 @@ MonoBehaviour:
   m_StartingInteractionStrengthFilters: []
   m_AutoFindParentInteractableInHierarchy: 0
   m_ParentInteractableObject: {fileID: 0}
-  m_TeleportationProvider: {fileID: 0}
+  m_TeleportationProvider: {fileID: 868124237}
   m_MatchOrientation: 0
   m_MatchDirectionalInput: 0
   m_TeleportTrigger: 0
@@ -1493,6 +1493,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 4466217632400179204, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
   m_PrefabInstance: {fileID: 7187747401014242035}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &868124237 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4132918333813473092, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
+  m_PrefabInstance: {fileID: 7187747401014242035}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 868124236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01f69dc1cb084aa42b2f2f8cd87bc770, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &949974130
 GameObject:
   m_ObjectHideFlags: 0
@@ -2174,6 +2185,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1368118599}
   - component: {fileID: 1368118598}
+  - component: {fileID: 1368118600}
   m_Layer: 0
   m_Name: InstrumentSystem
   m_TagString: Untagged
@@ -2208,6 +2220,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1368118600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1368118597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2445c7207410714cb0a60ec72091c57, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!134 &1430906649
 PhysicsMaterial:
   m_ObjectHideFlags: 0
@@ -2395,6 +2419,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1857833109}
   - component: {fileID: 1857833108}
+  - component: {fileID: 1857833110}
   m_Layer: 0
   m_Name: StubSongCatalog
   m_TagString: Untagged
@@ -2432,6 +2457,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1857833110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1857833107}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 556fa330155d7f74aba22ecfcaa1b21d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SessionPanel.Runtime::SessionPanel.FolderScanSongCatalog
+  songsRelativePath: Songs
 --- !u!134 &1898236281
 PhysicsMaterial:
   m_ObjectHideFlags: 0
@@ -2531,7 +2569,7 @@ MonoBehaviour:
   fallbackSpawnLocalOffset: {x: 0, y: 0, z: 0.6}
   trackingEpsilon: 0.001
   _activeInstrumentProviderObject: {fileID: 1368118598}
-  _songCatalogObject: {fileID: 1857833108}
+  _songCatalogObject: {fileID: 1857833110}
   panelToggleAction: {fileID: 6276339513826019528, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   nearFarInteractorRoot: {fileID: 868124236}
 --- !u!4 &2039824627

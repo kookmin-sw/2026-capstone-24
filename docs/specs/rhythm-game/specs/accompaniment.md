@@ -41,7 +41,7 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| 2026-05-02 | RhythmClock 기반 자동 반주 구현 | Ready | [010-rhythm-clock-accompaniment.md](../plans/010-rhythm-clock-accompaniment.md) |
+| 2026-05-02 | RhythmClock 기반 자동 반주 구현 | Done | [010-rhythm-clock-accompaniment.md](../../_archive/rhythm-game/plans/010-rhythm-clock-accompaniment.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/spec-build`가 planner sub-agent로 처리. 파일명은 날짜·작성자·slug 기반.

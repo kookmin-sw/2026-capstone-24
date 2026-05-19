@@ -1,7 +1,7 @@
 # RhythmClock 기반 자동 반주 구현
 
-**Linked Spec:** [`accompaniment.md`](../specs/accompaniment.md)
-**Status:** `In Progress`
+**Linked Spec:** [`accompaniment.md`](../../../rhythm-game/specs/accompaniment.md)
+**Status:** `Done`
 
 ## Goal
 
@@ -73,4 +73,14 @@
 
 ## Notes
 
+- 2026-05-18 본 plan 의 실질 구현(`ChartAutoPlayer` → `RhythmAccompaniment` 교체 + RhythmClock 기반 시계 동기) 이 코드 베이스에 적용된 상태로 확인됨. `Assets/RhythmGame/Scripts/Runtime/RhythmAccompaniment.cs` 의 `Begin(chart, judgedChannel, clock)` + `Fire(ev)` + `End()` 가 의도대로 동작.
+- 2026-05-18 sub-spec 07 (`Session Options — Instrument Toggle & Tempo`) Plan A 가 본 RhythmAccompaniment 의 시그니처를 4-arg(enabled 옵션) 로 확장하고 ShouldFire seam + Fire OFF skip 게이트를 도입. sub-spec 07 manual-hard 사용자 직접 검증에서 자동 반주 발화·무음 4시나리오(Piano/DrumKit × ON/OFF) 모두 PASS — accompaniment sub-spec 의 Behavior 1·2·3·4 가 실측 검증됨.
+- 형식적으로 본 plan 을 Done 처리하고 sub-spec accompaniment 도 Done 처리. archive 이동.
+
 ## Handoff
+
+ChartAutoPlayer → RhythmAccompaniment 교체 완료. Begin(chart, judgedChannel, clock, enabled=null) 4-arg 시그니처. Update loop 가 RhythmClock.CurrentTime 기준으로 events fireTime 처리. 매핑 악기 없는 채널 skip(콘솔 경고 없음). 동시 시각 여러 트랙 while-loop 발화. End() 가 _playing=false.
+
+후속 확장(sub-spec 07 Plan A): ShouldFire(channel) internal seam + Fire 진입부 OFF skip 게이트. 4-arg Begin 의 enabled 옵션으로 dict[channel]==false 채널 skip.
+
+후속 plan 후보: 트랙별 음량/믹스(session-panel/03-volume-section 후속), 세션 도중 토글·템포 변경, 자동 반주 노트의 NoteDisplayPanel 시각화(현 Boundary).

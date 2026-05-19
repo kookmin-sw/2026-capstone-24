@@ -15,8 +15,8 @@ namespace SessionPanel
         Action<string, DifficultyButtonUI> _callback;
         Image _bg;
 
-        static readonly Color NormalColor   = new Color(0.18f, 0.22f, 0.4f,  0.9f);
-        static readonly Color SelectedColor = new Color(0.25f, 0.5f,  0.85f, 1.0f);
+        static readonly Color NormalColor   = new Color(1f, 1f, 1f, 0.15f);
+        static readonly Color SelectedColor = new Color(0.290f, 0.620f, 1.000f, 0.85f);
 
         void Awake()
         {
@@ -36,6 +36,11 @@ namespace SessionPanel
         {
             if (_bg != null)
                 _bg.color = selected ? SelectedColor : NormalColor;
+        }
+
+        public void SetLabel(string text)
+        {
+            if (label != null) label.text = text;
         }
 
         public void OnClick()

@@ -1,0 +1,161 @@
+[Meta]
+title  = Three Bears Normal
+songid = three_bears_002
+
+[Resolution]
+ticksPerQuarter = 480
+
+[Tempo]
+tick=0  bpm=120  beats=4  beatUnit=4
+
+[Channels]
+channel=1  instrument=piano
+
+[Track:1]
+# Piano Normal: melody + 4th note chord root+5th
+# C chord = C3(48)+G3(55), G7 chord = G3(55)+D4(62)
+
+# BAR 1 (0-1919): C chord
+tick=0     note=48  len=440  vel=68
+tick=0     note=55  len=440  vel=68
+tick=480   note=48  len=440  vel=68
+tick=480   note=55  len=440  vel=68
+tick=960   note=48  len=440  vel=68
+tick=960   note=55  len=440  vel=68
+tick=1440  note=48  len=440  vel=68
+tick=1440  note=55  len=440  vel=68
+# Melody
+tick=0     note=60  len=440  vel=92
+tick=480   note=60  len=440  vel=92
+tick=960   note=60  len=440  vel=92
+tick=1440  note=60  len=440  vel=92
+
+# BAR 2 (1920-3839): C chord
+tick=1920  note=48  len=440  vel=68
+tick=1920  note=55  len=440  vel=68
+tick=2400  note=48  len=440  vel=68
+tick=2400  note=55  len=440  vel=68
+tick=2880  note=48  len=440  vel=68
+tick=2880  note=55  len=440  vel=68
+tick=3360  note=48  len=440  vel=68
+tick=3360  note=55  len=440  vel=68
+# Melody
+tick=1920  note=60  len=440  vel=92
+tick=2400  note=64  len=440  vel=92
+tick=2880  note=67  len=440  vel=92
+tick=3360  note=67  len=440  vel=92
+
+# BAR 3 (3840-5759): C chord
+tick=3840  note=48  len=440  vel=68
+tick=3840  note=55  len=440  vel=68
+tick=4320  note=48  len=440  vel=68
+tick=4320  note=55  len=440  vel=68
+tick=4800  note=48  len=440  vel=68
+tick=4800  note=55  len=440  vel=68
+tick=5280  note=48  len=440  vel=68
+tick=5280  note=55  len=440  vel=68
+# Melody
+tick=3840  note=64  len=440  vel=92
+tick=4320  note=60  len=440  vel=92
+tick=4800  note=67  len=920  vel=92
+
+# BAR 4 (5760-7679): G7(2 beats) + C(2 beats)
+# Melody has 62(D4) at 5760 & 6240 -> chord note 62 REMOVED
+tick=5760  note=55  len=440  vel=68
+tick=6240  note=55  len=440  vel=68
+tick=6720  note=48  len=440  vel=68
+tick=6720  note=55  len=440  vel=68
+tick=7200  note=48  len=440  vel=68
+tick=7200  note=55  len=440  vel=68
+# Melody
+tick=5760  note=62  len=440  vel=92
+tick=6240  note=62  len=440  vel=92
+tick=6720  note=64  len=440  vel=92
+tick=7200  note=60  len=440  vel=92
+
+# BAR 5 (7680-9599): C chord
+tick=7680  note=48  len=440  vel=68
+tick=7680  note=55  len=440  vel=68
+tick=8160  note=48  len=440  vel=68
+tick=8160  note=55  len=440  vel=68
+tick=8640  note=48  len=440  vel=68
+tick=8640  note=55  len=440  vel=68
+tick=9120  note=48  len=440  vel=68
+tick=9120  note=55  len=440  vel=68
+# Melody
+tick=7680  note=67  len=440  vel=92
+tick=8160  note=67  len=440  vel=92
+tick=8640  note=64  len=440  vel=92
+tick=9120  note=60  len=440  vel=92
+
+# BAR 6 (9600-11519): G7 chord
+# Melody has 62(D4) at 10560 & 11040 -> chord note 62 REMOVED at those ticks
+tick=9600  note=55  len=440  vel=68
+tick=9600  note=62  len=440  vel=68
+tick=10080 note=55  len=440  vel=68
+tick=10080 note=62  len=440  vel=68
+tick=10560 note=55  len=440  vel=68
+tick=11040 note=55  len=440  vel=68
+# Melody
+tick=9600  note=67  len=440  vel=92
+tick=10080 note=67  len=440  vel=92
+tick=10560 note=62  len=440  vel=92
+tick=11040 note=62  len=440  vel=92
+
+# BAR 7 (11520-13439): C chord
+tick=11520 note=48  len=440  vel=68
+tick=11520 note=55  len=440  vel=68
+tick=12000 note=48  len=440  vel=68
+tick=12000 note=55  len=440  vel=68
+tick=12480 note=48  len=440  vel=68
+tick=12480 note=55  len=440  vel=68
+tick=12960 note=48  len=440  vel=68
+tick=12960 note=55  len=440  vel=68
+# Melody
+tick=11520 note=67  len=440  vel=92
+tick=12000 note=64  len=440  vel=92
+tick=12480 note=60  len=920  vel=92
+
+# BAR 8 (13440-15359): G7(2 beats) + C(2 beats)
+# Melody has 62(D4) at 13440 & 13920 -> G7 chord note 62 REMOVED
+tick=13440 note=55  len=440  vel=68
+tick=13920 note=55  len=440  vel=68
+tick=14400 note=48  len=440  vel=68
+tick=14400 note=55  len=440  vel=68
+tick=14880 note=48  len=440  vel=68
+tick=14880 note=55  len=440  vel=68
+# Melody
+tick=13440 note=62  len=440  vel=92
+tick=13920 note=62  len=440  vel=92
+tick=14400 note=64  len=440  vel=92
+tick=14880 note=60  len=440  vel=92
+
+# BAR 9 (15360-17279): C chord
+tick=15360 note=48  len=440  vel=68
+tick=15360 note=55  len=440  vel=68
+tick=15840 note=48  len=440  vel=68
+tick=15840 note=55  len=440  vel=68
+tick=16320 note=48  len=440  vel=68
+tick=16320 note=55  len=440  vel=68
+tick=16800 note=48  len=440  vel=68
+tick=16800 note=55  len=440  vel=68
+# Melody
+tick=15360 note=67  len=440  vel=92
+tick=15840 note=67  len=440  vel=92
+tick=16320 note=67  len=440  vel=92
+tick=16800 note=64  len=440  vel=92
+
+# BAR 10 (17280-19199): G7(2 beats) + C(2 beats)
+# Melody has 62(D4) at 17760 -> G7 chord note 62 REMOVED at tick 17760
+tick=17280 note=55  len=440  vel=68
+tick=17280 note=62  len=440  vel=68
+tick=17760 note=55  len=440  vel=68
+tick=18240 note=48  len=440  vel=68
+tick=18240 note=55  len=440  vel=68
+tick=18720 note=48  len=440  vel=68
+tick=18720 note=55  len=440  vel=68
+# Melody
+tick=17280 note=67  len=440  vel=92
+tick=17760 note=62  len=440  vel=92
+tick=18240 note=60  len=440  vel=92
+tick=18720 note=60  len=440  vel=92

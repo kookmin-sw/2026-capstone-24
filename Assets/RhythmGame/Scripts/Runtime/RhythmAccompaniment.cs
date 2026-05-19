@@ -32,16 +32,20 @@ public class RhythmAccompaniment : MonoBehaviour
     IRhythmClock                    _clock;
     int                             _next;
     bool                            _playing;
+    IReadOnlyDictionary<int, bool>  _enabled;
 
     /// <summary>
     /// 반주 세션을 시작한다.
     /// 씬의 InstrumentBase 목록을 chart.channelMap과 자동 매칭해 judgedChannel 외 채널을 재생한다.
+    /// enabled 사전이 지정된 경우 false 값인 채널은 발화하지 않는다 (null = 전체 ON).
     /// </summary>
-    public void Begin(VmSongChart chart, int judgedChannel, IRhythmClock clock)
+    public void Begin(VmSongChart chart, int judgedChannel, IRhythmClock clock,
+                      IReadOnlyDictionary<int, bool> enabled = null)
     {
         End();
-        _clock = clock;
-        _map   = BuildInstrumentMap(chart, judgedChannel);
+        _clock   = clock;
+        _enabled = enabled;
+        _map     = BuildInstrumentMap(chart, judgedChannel);
 
         _events = BuildEvents(chart, judgedChannel);
         _events.Sort((a, b) => a.fireTime.CompareTo(b.fireTime));
@@ -55,6 +59,7 @@ public class RhythmAccompaniment : MonoBehaviour
         _clock   = null;
         _events  = null;
         _next    = 0;
+        _enabled = null;
     }
 
     void Update()
@@ -68,6 +73,17 @@ public class RhythmAccompaniment : MonoBehaviour
 
         if (_next >= _events.Count)
             _playing = false;
+    }
+
+    /// <summary>
+    /// enabled 사전 기준으로 해당 채널을 발화해야 하는지 반환한다.
+    /// enabled == null 이면 true (전체 ON, 후방 호환).
+    /// 사전에 키가 없으면 true (fallback ON).
+    /// </summary>
+    internal bool ShouldFire(int channel)
+    {
+        if (_enabled == null) return true;
+        return _enabled.TryGetValue(channel, out var on) ? on : true;
     }
 
     /// <summary>
@@ -115,6 +131,7 @@ public class RhythmAccompaniment : MonoBehaviour
 
     void Fire(ScheduledEvent ev)
     {
+        if (!ShouldFire(ev.channel)) return;
         if (!_map.TryGetValue(ev.channel, out var inst)) return;
         inst.TriggerMidi(new MidiEvent(ev.midiNote, ev.velocity, ev.type, (byte)(ev.channel - 1)));
     }
