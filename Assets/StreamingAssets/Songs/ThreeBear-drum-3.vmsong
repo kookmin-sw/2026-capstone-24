@@ -1,0 +1,181 @@
+[Meta]
+title  = Three Bears Hard
+songid = three_bears_001
+
+[Resolution]
+ticksPerQuarter = 480
+
+[Tempo]
+tick=0  bpm=110  beats=4  beatUnit=4
+
+[Channels]
+channel=10  instrument=drum
+
+[Track:10]
+# Drum Hard: 16th HiHat(42) Main Groove + Snare/Tom Fill-in in bars 7-8
+# Max 2 simultaneous notes per tick
+# 36=Kick 38=Snare 42=HiHat 43=FloorTom 45=MidTom
+# 8 bars (0-15359)
+
+# BAR 1 (0-1919) - 16th HH 기본 루프
+tick=0     note=36  len=60  vel=100
+tick=0     note=42  len=60  vel=65
+tick=120   note=42  len=60  vel=65
+tick=240   note=42  len=60  vel=65
+tick=360   note=42  len=60  vel=65
+tick=480   note=38  len=60  vel=90
+tick=480   note=42  len=60  vel=65
+tick=600   note=42  len=60  vel=65
+tick=720   note=42  len=60  vel=65
+tick=840   note=42  len=60  vel=65
+tick=960   note=36  len=60  vel=100
+tick=960   note=42  len=60  vel=65
+tick=1080  note=42  len=60  vel=65
+tick=1200  note=42  len=60  vel=65
+tick=1320  note=42  len=60  vel=65
+tick=1440  note=38  len=60  vel=90
+tick=1440  note=42  len=60  vel=65
+tick=1560  note=42  len=60  vel=65
+tick=1680  note=42  len=60  vel=65
+tick=1800  note=42  len=60  vel=65
+
+# BAR 2 (1920-3839)
+tick=1920  note=36  len=60  vel=100
+tick=1920  note=42  len=60  vel=65
+tick=2040  note=42  len=60  vel=65
+tick=2160  note=42  len=60  vel=65
+tick=2280  note=42  len=60  vel=65
+tick=2400  note=38  len=60  vel=90
+tick=2400  note=42  len=60  vel=65
+tick=2520  note=42  len=60  vel=65
+tick=2640  note=42  len=60  vel=65
+tick=2760  note=42  len=60  vel=65
+tick=2880  note=36  len=60  vel=100
+tick=2880  note=42  len=60  vel=65
+tick=3000  note=42  len=60  vel=65
+tick=3120  note=42  len=60  vel=65
+tick=3240  note=42  len=60  vel=65
+tick=3360  note=38  len=60  vel=90
+tick=3360  note=42  len=60  vel=65
+tick=3480  note=42  len=60  vel=65
+tick=3600  note=42  len=60  vel=65
+tick=3720  note=42  len=60  vel=65
+
+# BAR 3 (3840-5759)
+tick=3840  note=36  len=60  vel=100
+tick=3840  note=42  len=60  vel=65
+tick=3960  note=42  len=60  vel=65
+tick=4080  note=42  len=60  vel=65
+tick=4200  note=42  len=60  vel=65
+tick=4320  note=38  len=60  vel=90
+tick=4320  note=42  len=60  vel=65
+tick=4440  note=42  len=60  vel=65
+tick=4560  note=42  len=60  vel=65
+tick=4680  note=42  len=60  vel=65
+tick=4800  note=36  len=60  vel=100
+tick=4800  note=42  len=60  vel=65
+tick=4920  note=42  len=60  vel=65
+tick=5040  note=42  len=60  vel=65
+tick=5160  note=42  len=60  vel=65
+tick=5280  note=38  len=60  vel=90
+tick=5280  note=42  len=60  vel=65
+tick=5400  note=42  len=60  vel=65
+tick=5520  note=42  len=60  vel=65
+tick=5640  note=42  len=60  vel=65
+
+# BAR 4 (5760-7679)
+tick=5760  note=36  len=60  vel=100
+tick=5760  note=42  len=60  vel=65
+tick=5880  note=42  len=60  vel=65
+tick=6000  note=42  len=60  vel=65
+tick=6120  note=42  len=60  vel=65
+tick=6240  note=38  len=60  vel=90
+tick=6240  note=42  len=60  vel=65
+tick=6360  note=42  len=60  vel=65
+tick=6480  note=42  len=60  vel=65
+tick=6600  note=42  len=60  vel=65
+tick=6720  note=36  len=60  vel=100
+tick=6720  note=42  len=60  vel=65
+tick=6840  note=42  len=60  vel=65
+tick=6960  note=42  len=60  vel=65
+tick=7080  note=42  len=60  vel=65
+tick=7200  note=38  len=60  vel=90
+tick=7200  note=42  len=60  vel=65
+tick=7320  note=42  len=60  vel=65
+tick=7440  note=42  len=60  vel=65
+tick=7560  note=42  len=60  vel=65
+
+# BAR 5 (7680-9599)
+tick=7680  note=36  len=60  vel=100
+tick=7680  note=42  len=60  vel=65
+tick=7800  note=42  len=60  vel=65
+tick=7920  note=42  len=60  vel=65
+tick=8040  note=42  len=60  vel=65
+tick=8160  note=38  len=60  vel=90
+tick=8160  note=42  len=60  vel=65
+tick=8280  note=42  len=60  vel=65
+tick=8400  note=42  len=60  vel=65
+tick=8520  note=42  len=60  vel=65
+tick=8640  note=36  len=60  vel=100
+tick=8640  note=42  len=60  vel=65
+tick=8760  note=42  len=60  vel=65
+tick=8880  note=42  len=60  vel=65
+tick=9000  note=42  len=60  vel=65
+tick=9120  note=38  len=60  vel=90
+tick=9120  note=42  len=60  vel=65
+tick=9240  note=42  len=60  vel=65
+tick=9360  note=42  len=60  vel=65
+tick=9480  note=42  len=60  vel=65
+
+# BAR 6 (9600-11519)
+tick=9600  note=36  len=60  vel=100
+tick=9600  note=42  len=60  vel=65
+tick=9720  note=42  len=60  vel=65
+tick=9840  note=42  len=60  vel=65
+tick=9960  note=42  len=60  vel=65
+tick=10080 note=38  len=60  vel=90
+tick=10080 note=42  len=60  vel=65
+tick=10200 note=42  len=60  vel=65
+tick=10320 note=42  len=60  vel=65
+tick=10440 note=42  len=60  vel=65
+tick=10560 note=36  len=60  vel=100
+tick=10560 note=42  len=60  vel=65
+tick=10680 note=42  len=60  vel=65
+tick=10800 note=42  len=60  vel=65
+tick=10920 note=42  len=60  vel=65
+tick=11040 note=38  len=60  vel=90
+tick=11040 note=42  len=60  vel=65
+tick=11160 note=42  len=60  vel=65
+tick=11280 note=42  len=60  vel=65
+tick=11400 note=42  len=60  vel=65
+
+# BAR 7 (11520-13439) - "뚱뚱해" 양손 스네어 16비트 필인 
+# 하이햇을 빼서 단독 1개로 처리 -> 양손을 빠르게 교대(오른손/왼손) 타격 유도
+tick=11520 note=36  len=60  vel=100 # 정박 킥은 하이햇 대신 배치
+tick=11640 note=38  len=60  vel=80
+tick=11760 note=38  len=60  vel=85
+tick=11880 note=38  len=60  vel=80
+tick=12000 note=38  len=60  vel=95  # 악센트 스네어
+tick=12120 note=38  len=60  vel=80
+tick=12240 note=38  len=60  vel=85
+tick=12320 note=38  len=60  vel=80
+tick=12480 note=36  len=60  vel=100 # 정박 킥
+tick=12600 note=38  len=60  vel=80
+tick=12720 note=38  len=60  vel=85
+tick=12840 note=38  len=60  vel=80
+tick=12960 note=38  len=60  vel=95  # 악센트 스네어
+tick=13080 note=38  len=60  vel=80
+tick=13200 note=38  len=60  vel=85
+tick=13320 note=38  len=60  vel=80
+
+# BAR 8 (13440-15359) - "날씬해" 미드탐(45) -> 플로어탐(43) 하행 필인 마무리
+tick=13440 note=45  len=60  vel=90  # 미드탐 R
+tick=13560 note=45  len=60  vel=80  # 미드탐 L
+tick=13680 note=45  len=60  vel=90  # 미드탐 R
+tick=13800 note=45  len=60  vel=80  # 미드탐 L
+tick=13920 note=43  len=60  vel=95  # 플로어탐 R
+tick=14040 note=43  len=60  vel=85  # 플로어탐 L
+tick=14160 note=43  len=60  vel=95  # 플로어탐 R
+tick=14280 note=43  len=60  vel=85  # 플로어탐 L
+tick=14400 note=36  len=60  vel=100 # 심벌 대용 심플 마무리 킥
+tick=14880 note=38  len=60  vel=90  # 최종 스네어 쾅!

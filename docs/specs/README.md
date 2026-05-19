@@ -173,10 +173,10 @@ docs/specs/
 
 | Feature | Status | Sub-Specs | Plans (Done/Total) | 비고 |
 |---|---|---|---|---|
-| [rhythm-game](rhythm-game/_index.md) | Active | 11 | 12/13 | |
+| [rhythm-game](rhythm-game/_index.md) | Active | 16 | 22/22 | |
 | [hands](hands/_index.md) | Active | 3 | 1/2 | |
 | [drum-stick](drum-stick/_index.md) | Active | 2 | 3/3 | |
-| [session-panel](session-panel/_index.md) | Active | 3 | 4/5 | |
+| [session-panel](session-panel/_index.md) | Active | 6 | 9/9 | |
 | [multiplayer-network](multiplayer-network/_index.md) | Active | 6 | 13/19 | |
 | [trombone](trombone/_index.md) | Done | 3 | 3/3 | |
 | [teleport-locomotion](_archive/teleport-locomotion/_index.md) | Done | 3 | 4/4 | |

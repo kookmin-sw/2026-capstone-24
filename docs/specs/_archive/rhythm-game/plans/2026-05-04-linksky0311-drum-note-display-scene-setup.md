@@ -1,7 +1,7 @@
 # Drum Note Display — 씬 설정 및 프리팹 생성
 
 **Linked Spec:** [`../specs/04-drum-note-display.md`](../specs/04-drum-note-display.md)
-**Status:** `In Progress`
+**Status:** `Done`
 
 ## Goal
 
@@ -92,4 +92,12 @@ Crash=49, Tom=45/47/48/50)와 일부 다르다. Hi-Hat Open(46) 대신 Ride(51)�
 FloorTom(43)이 추가로 존재한다. 이 plan은 씬의 실제 구성을 기준으로 사용하며,
 `Drum_LaneConfig.asset`이 이미 씬 HitZone과 일치하므로 에셋 수정은 불필요하다.
 
+- 2026-05-17: 사용자 manual-hard 검증 결과 (TestSceneSanyo, parksky0311@gmail.com 직접 Play 모드):
+  - AC1 컴파일 에러 0건 PASS — `read_console types=["error"] filter="error CS"` 결과 0건.
+  - AC2 DrumKit DrumNoteDisplayAdapter 부착 + noteDisplayPanelPrefab/laneConfig non-null PASS — Grep `Assets/Instruments/Drum/Prefabs/DrumKit.prefab` 결과 noteDisplayPanelPrefab guid a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d (NoteDisplayPanel.prefab), laneConfig guid f887c38da5cc4f35ab720e8144a4ccd1 (Drum_LaneConfig.asset) 둘 다 와이어링 확인.
+  - AC3 드럼 잡고 'O' 키 → 각 드럼 파츠 위 노트 레인 패널 노출 PASS — 의도대로 동작 확인.
+  - AC4 노트 낙하 + 판정 팝업 PASS — 의도대로 동작 확인.
+
 ## Handoff
+
+DrumNoteDisplayAdapter 씬 셋업이 모든 조건을 만족. NoteDisplayPanel.prefab + DrumKit prefab의 컴포넌트 부착·참조 와이어링이 이미 적용된 상태였고, 사용자 manual-hard 직접 검증으로 PASS 확정. 후속 plan 시드 없음. Out of Scope(46/47/50 HitZone 추가, 패널 외형 커스터마이징, 법선 자동 회전 등)는 별도 plan으로 분리 가능하지만 현 시점 요청 없음.

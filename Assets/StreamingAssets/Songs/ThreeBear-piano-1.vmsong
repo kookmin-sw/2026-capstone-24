@@ -1,0 +1,87 @@
+[Meta]
+title  = Three Bears
+songid = three_bears_001
+
+[Resolution]
+ticksPerQuarter = 480
+
+[Tempo]
+tick=0  bpm=120  beats=4  beatUnit=4
+
+[Channels]
+channel=1  instrument=piano
+
+[Track:1]
+# Piano Normal: 8th Note Melody + Sustained Chord (Root+5th)
+# C chord = C3(48)+G3(55), G7 chord = G3(55)+D4(62)
+# vel=68 for chord notes, vel=92 for melody
+# 8 bars total (0-15359)
+
+# BAR 1 (0-1919): C chord | 곰 세마리가
+tick=0     note=48  len=1880 vel=68  # C chord Root
+tick=0     note=55  len=1880 vel=68  # C chord 5th
+tick=0     note=60  len=440  vel=92  # 곰 (도)
+tick=480   note=60  len=200  vel=92  # 세 (도)
+tick=720   note=60  len=200  vel=92  # 마 (도)
+tick=960   note=60  len=440  vel=92  # 리 (도)
+tick=1440  note=64  len=440  vel=92  # 가 (미)
+
+# BAR 2 (1920-3839): C chord | 한 집에 있어
+tick=1920  note=48  len=1880 vel=68  # C chord Root
+tick=1920  note=55  len=1880 vel=68  # C chord 5th
+tick=1920  note=67  len=440  vel=92  # 한 (솔)
+tick=2400  note=67  len=200  vel=92  # 집 (솔)
+tick=2640  note=64  len=200  vel=92  # 에 (미)
+tick=2880  note=60  len=440  vel=92  # 있 (도)
+tick=3360  note=60  len=440  vel=92  # 어 (도)
+
+# BAR 3 (3840-5759): C chord | 아빠 곰 엄마 곰 애기 곰
+tick=3840  note=48  len=1880 vel=68  # C chord Root
+tick=3840  note=55  len=1880 vel=68  # C chord 5th
+tick=3840  note=67  len=440  vel=92  # 아 (솔)
+tick=4320  note=67  len=200  vel=92  # 빠 (솔)
+tick=4560  note=64  len=200  vel=92  # 곰 (미)
+tick=4800  note=67  len=440  vel=92  # 엄 (솔)
+tick=5280  note=67  len=200  vel=92  # 마 (솔)
+tick=5520  note=64  len=200  vel=92  # 곰 (미)
+
+# BAR 4 (5760-7679): C chord | 애기 곰 (이어서)
+tick=5760  note=48  len=1880 vel=68  # C chord Root
+tick=5760  note=55  len=1880 vel=68  # C chord 5th
+tick=5760  note=64  len=440  vel=92  # 애 (미)
+tick=6240  note=64  len=200  vel=92  # 기 (미)
+tick=6480  note=60  len=200  vel=92  # 곰 (도)
+tick=6720  note=67  len=920  vel=92  # (솔~~)
+
+# BAR 5 (7680-9599): G7(2beats) + C(2beats) | 아빠 곰은 뚱뚱해
+# 7680에 멜로디가 62(D4)이므로 G7 코드의 62(D4) 중복 제거 -> 55만 연주
+tick=7680  note=55  len=920  vel=68  # G7 chord 5th
+tick=8640  note=48  len=920  vel=68  # C chord Root
+tick=8640  note=55  len=920  vel=68  # C chord 5th
+tick=7680  note=62  len=440  vel=92  # 아 (레)
+tick=8160  note=62  len=440  vel=92  # 빠 (레)
+tick=8640  note=64  len=440  vel=92  # 곰 (미)
+tick=9120  note=60  len=440  vel=92  # 은 (도)
+
+# BAR 6 (9600-11519): C chord | 뚱뚱해 엄마 곰은
+tick=9600  note=48  len=1880 vel=68  # C chord Root
+tick=9600  note=55  len=1880 vel=68  # C chord 5th
+tick=9600  note=67  len=440  vel=92  # 뚱 (솔)
+tick=10080 note=67  len=440  vel=92  # 뚱 (솔)
+tick=10560 note=67  len=440  vel=92  # 해 (솔)
+tick=11040 note=64  len=440  vel=92  # 엄 (미)
+
+# BAR 7 (11520-13439): G7 chord | 마 곰은 날씬해
+# 12480, 12960에 멜로디가 62(D4)이므로 G7 코드의 62 중복 제거 -> 55만 연주
+tick=11520 note=55  len=1880 vel=68  # G7 chord 5th
+tick=11520 note=67  len=440  vel=92  # 마 (솔)
+tick=12000 note=67  len=440  vel=92  # 곰 (솔)
+tick=12480 note=62  len=440  vel=92  # 은 (레)
+tick=12960 note=62  len=440  vel=92  # 날 (레)
+
+# BAR 8 (13440-15359): C chord | 씬해 애기 곰은 너무 귀여워 으쓱으쓱 잘한다
+tick=13440 note=48  len=1880 vel=68  # C chord Root
+tick=13440 note=55  len=1880 vel=68  # C chord 5th
+tick=13440 note=64  len=440  vel=92  # 씬 (미)
+tick=13920 note=60  len=440  vel=92  # 해 (도)
+tick=14400 note=60  len=440  vel=92  # (도 - 다음 파트 브릿지 진입 전 여운)

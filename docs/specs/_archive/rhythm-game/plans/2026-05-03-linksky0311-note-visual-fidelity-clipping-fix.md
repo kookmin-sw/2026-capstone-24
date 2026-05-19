@@ -1,6 +1,6 @@
 # Note Visual Fidelity 클리핑 버그 수정
 
-**Linked Spec:** [`../specs/02-note-visual-fidelity.md`](../specs/02-note-visual-fidelity.md)
+**Linked Spec:** [`../../../rhythm-game/specs/02-note-visual-fidelity.md`](../../../rhythm-game/specs/02-note-visual-fidelity.md)
 **Caused By:** [`2026-05-03-linksky0311-note-visual-fidelity-height-and-skin.md`](./2026-05-03-linksky0311-note-visual-fidelity-height-and-skin.md)
 **Status:** `Done`
 

@@ -56,7 +56,7 @@ public class RhythmGameHost : MonoBehaviour
         float lookAhead = noteDisplayPanel != null ? noteDisplayPanel.LookAheadSeconds : 0f;
         double effectiveLeadIn = System.Math.Max(leadInSeconds, lookAhead);
         clock.Start(chart, effectiveLeadIn);
-        accompaniment?.Begin(chart, judgedChannel, clock);
+        accompaniment?.Begin(chart, judgedChannel, clock, accompanimentEnabled);
         judge.Start(chart, judgedChannel);
         activeSession = new RhythmSession(instrument, song, clock, judge);
         activeSession.Start();

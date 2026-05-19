@@ -1,0 +1,165 @@
+[Meta]
+title  = Three Bears Hard
+songid = three_bears_003
+
+[Resolution]
+ticksPerQuarter = 480
+
+[Tempo]
+tick=0  bpm=120  beats=4  beatUnit=4
+
+[Channels]
+channel=1  instrument=piano
+
+[Track:1]
+# Piano Hard: melody + 8th note arpeggio (repeating ascending/descending)
+# C arpeggio: C3(48) E3(52) G3(55) E3(52)
+# G7 arpeggio: G3(55) B3(59) D4(62) B3(59)
+
+# BAR 1 (0-1919): C arpeggio
+tick=0     note=48  len=220  vel=65
+tick=240   note=52  len=220  vel=65
+tick=480   note=55  len=220  vel=65
+tick=720   note=52  len=220  vel=65
+tick=960   note=48  len=220  vel=65
+tick=1200  note=52  len=220  vel=65
+tick=1440  note=55  len=220  vel=65
+tick=1680  note=52  len=220  vel=65
+# Melody
+tick=0     note=60  len=440  vel=92
+tick=480   note=60  len=440  vel=92
+tick=960   note=60  len=440  vel=92
+tick=1440  note=60  len=440  vel=92
+
+# BAR 2 (1920-3839): C arpeggio
+tick=1920  note=48  len=220  vel=65
+tick=2160  note=52  len=220  vel=65
+tick=2400  note=55  len=220  vel=65
+tick=2630  note=52  len=220  vel=65
+tick=2880  note=48  len=220  vel=65
+tick=3120  note=52  len=220  vel=65
+tick=3360  note=55  len=220  vel=65
+tick=3600  note=52  len=220  vel=65
+# Melody
+tick=1920  note=60  len=440  vel=92
+tick=2400  note=64  len=440  vel=92
+tick=2880  note=67  len=440  vel=92
+tick=3360  note=67  len=440  vel=92
+
+# BAR 3 (3840-5759): C arpeggio
+tick=3840  note=48  len=220  vel=65
+tick=4080  note=52  len=220  vel=65
+tick=4320  note=55  len=220  vel=65
+tick=4560  note=52  len=220  vel=65
+tick=4800  note=48  len=220  vel=65
+tick=5040  note=52  len=220  vel=65
+tick=5280  note=55  len=220  vel=65
+tick=5520  note=52  len=220  vel=65
+# Melody
+tick=3840  note=64  len=440  vel=92
+tick=4320  note=60  len=440  vel=92
+tick=4800  note=67  len=920  vel=92
+
+# BAR 4 (5760-7679): G7(2 beats) + C(2 beats) arpeggio
+# Melody has 62(D4) at 5760. Arpeggio tick 6240 would be 62(D4) but melody is 62 -> REMOVED note=62 at tick 6240
+tick=5760  note=55  len=220  vel=65
+tick=6000  note=59  len=220  vel=65
+tick=6480  note=59  len=220  vel=65
+tick=6720  note=48  len=220  vel=65
+tick=6960  note=52  len=220  vel=65
+tick=7200  note=55  len=220  vel=65
+tick=7440  note=52  len=220  vel=65
+# Melody
+tick=5760  note=62  len=440  vel=92
+tick=6240  note=62  len=440  vel=92
+tick=6720  note=64  len=440  vel=92
+tick=7200  note=60  len=440  vel=92
+
+# BAR 5 (7680-9599): C arpeggio
+tick=7680  note=48  len=220  vel=65
+tick=7920  note=52  len=220  vel=65
+tick=8160  note=55  len=220  vel=65
+tick=8400  note=52  len=220  vel=65
+tick=8640  note=48  len=220  vel=65
+tick=8880  note=52  len=220  vel=65
+tick=9120  note=55  len=220  vel=65
+tick=9360  note=52  len=220  vel=65
+# Melody
+tick=7680  note=67  len=440  vel=92
+tick=8160  note=67  len=440  vel=92
+tick=8640  note=64  len=440  vel=92
+tick=9120  note=60  len=440  vel=92
+
+# BAR 6 (9600-11519): G7 arpeggio
+# Melody has 62(D4) at 10560 & 11040. Arpeggio tick 10080 & 11040 is note=62. Melody is 62 at 11040 -> REMOVED note 62 at tick 11040
+tick=9600  note=55  len=220  vel=65
+tick=9840  note=59  len=220  vel=65
+tick=10080 note=62  len=220  vel=65
+tick=10320 note=59  len=220  vel=65
+tick=10560 note=55  len=220  vel=65
+tick=10800 note=59  len=220  vel=65
+tick=11280 note=59  len=220  vel=65
+# Melody
+tick=9600  note=67  len=440  vel=92
+tick=10080 note=67  len=440  vel=92
+tick=10560 note=62  len=440  vel=92
+tick=11040 note=62  len=440  vel=92
+
+# BAR 7 (11520-13439): C arpeggio
+tick=11520 note=48  len=220  vel=65
+tick=11760 note=52  len=220  vel=65
+tick=12000 note=55  len=220  vel=65
+tick=12240 note=52  len=220  vel=65
+tick=12480 note=48  len=220  vel=65
+tick=12720 note=52  len=220  vel=65
+tick=12960 note=55  len=220  vel=65
+tick=13200 note=52  len=220  vel=65
+# Melody
+tick=11520 note=67  len=440  vel=92
+tick=12000 note=64  len=440  vel=92
+tick=12480 note=60  len=920  vel=92
+
+# BAR 8 (13440-15359): G7(2 beats) + C(2 beats) arpeggio
+# Melody is 62(D4) at 13440 & 13920 -> Arpeggio note 62 at tick 13920 REMOVED
+tick=13440 note=55  len=220  vel=65
+tick=13680 note=59  len=220  vel=65
+tick=14160 note=59  len=220  vel=65
+tick=14400 note=48  len=220  vel=65
+tick=14640 note=52  len=220  vel=65
+tick=14880 note=55  len=220  vel=65
+tick=15120 note=52  len=220  vel=65
+# Melody
+tick=13440 note=62  len=440  vel=92
+tick=13920 note=62  len=440  vel=92
+tick=14400 note=64  len=440  vel=92
+tick=14880 note=60  len=440  vel=92
+
+# BAR 9 (15360-17279): C arpeggio
+tick=15360 note=48  len=220  vel=65
+tick=15600 note=52  len=220  vel=65
+tick=15840 note=55  len=220  vel=65
+tick=16080 note=52  len=220  vel=65
+tick=16320 note=48  len=220  vel=65
+tick=16560 note=52  len=220  vel=65
+tick=16800 note=55  len=220  vel=65
+tick=17040 note=52  len=220  vel=65
+# Melody
+tick=15360 note=67  len=440  vel=92
+tick=15840 note=67  len=440  vel=92
+tick=16320 note=67  len=440  vel=92
+tick=16800 note=64  len=440  vel=92
+
+# BAR 10 (17280-19199): G7(2 beats) + C(2 beats) arpeggio
+# Melody is 62(D4) at tick 17760 -> Arpeggio note 62 at tick 17760 REMOVED
+tick=17280 note=55  len=220  vel=65
+tick=17520 note=59  len=220  vel=65
+tick=18000 note=59  len=220  vel=65
+tick=18240 note=48  len=220  vel=65
+tick=18480 note=52  len=220  vel=65
+tick=18720 note=55  len=220  vel=65
+tick=18960 note=52  len=220  vel=65
+# Melody
+tick=17280 note=67  len=440  vel=92
+tick=17760 note=62  len=440  vel=92
+tick=18240 note=60  len=440  vel=92
+tick=18720 note=60  len=440  vel=92
