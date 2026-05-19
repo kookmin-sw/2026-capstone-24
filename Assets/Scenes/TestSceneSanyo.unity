@@ -2797,6 +2797,30 @@ PrefabInstance:
       propertyPath: m_Material
       value: 
       objectReference: {fileID: 1898236281}
+    - target: {fileID: 2186370331056226291, guid: 41250a0848877144faaf64cfcafc86f2, type: 3}
+      propertyPath: leftPhysicsHand
+      value: 
+      objectReference: {fileID: 1661679355}
+    - target: {fileID: 2186370331056226291, guid: 41250a0848877144faaf64cfcafc86f2, type: 3}
+      propertyPath: rightPhysicsHand
+      value: 
+      objectReference: {fileID: 247458534}
+    - target: {fileID: 2186370331056226291, guid: 41250a0848877144faaf64cfcafc86f2, type: 3}
+      propertyPath: leftPlayHandDriver
+      value: 
+      objectReference: {fileID: 7187747401014242041}
+    - target: {fileID: 2186370331056226291, guid: 41250a0848877144faaf64cfcafc86f2, type: 3}
+      propertyPath: rightPlayHandDriver
+      value: 
+      objectReference: {fileID: 7187747401014242040}
+    - target: {fileID: 2186370331056226291, guid: 41250a0848877144faaf64cfcafc86f2, type: 3}
+      propertyPath: leftGhostWristSource
+      value: 
+      objectReference: {fileID: 45021259}
+    - target: {fileID: 2186370331056226291, guid: 41250a0848877144faaf64cfcafc86f2, type: 3}
+      propertyPath: rightGhostWristSource
+      value: 
+      objectReference: {fileID: 256669989}
     - target: {fileID: 4320209731285378184, guid: 41250a0848877144faaf64cfcafc86f2, type: 3}
       propertyPath: m_Name
       value: DrumKitMerged_Fix
