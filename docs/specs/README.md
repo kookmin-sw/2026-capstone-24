@@ -178,6 +178,7 @@ docs/specs/
 | [drum-stick](drum-stick/_index.md) | Active | 2 | 3/3 | |
 | [session-panel](session-panel/_index.md) | Active | 9 | 9/9 | sub-spec 08·09 추가 |
 | [multiplayer-network](multiplayer-network/_index.md) | Active | 7 | 13/19 | sub-spec 07 추가 |
+| [multiplayer-hand-midi-sync](multiplayer-hand-midi-sync/_index.md) | Draft | 2 | 0/0 | |
 | [trombone](trombone/_index.md) | Active | 4 | 3/3 | sub-spec 04 추가 |
 | [teleport-locomotion](_archive/teleport-locomotion/_index.md) | Done | 3 | 4/4 | |
 
