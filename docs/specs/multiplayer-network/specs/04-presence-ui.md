@@ -40,6 +40,7 @@
 | 2026-05-16 | Presence UI 인-룸 패널 (참가자 리스트 + 퇴장) | `Ready` (stale — [c495623] 이 SampleScene 에 실현, 2026-05-18 마이그레이션 plan 으로 supersede 예정) | [2026-05-16-namae1128-presence-ui-in-room-panel.md](../plans/2026-05-16-namae1128-presence-ui-in-room-panel.md) |
 | 2026-05-18 | Presence UI SampleScene → TestSceneSanyo 마이그레이션 | `Ready` (commit 20cf4c0 — auto-hard 통과, manual-hard 1건은 #6 사이클 대기) | [2026-05-18-namae1128-presence-ui-migration-to-testscenesanyo.md](../plans/2026-05-18-namae1128-presence-ui-migration-to-testscenesanyo.md) |
 | 2026-05-18 | Presence UI LobbyPanel 마이그레이션 + UX 리디자인 + VR 키보드 통합 | `Done` (2026-05-19 — end-to-end manual-hard 통과) | [2026-05-18-namae1128-presence-ui-lobby-migration-and-ux.md](../plans/2026-05-18-namae1128-presence-ui-lobby-migration-and-ux.md) |
+| 2026-05-19 | Presence UI 후속 — Leave 후 reference 살리기 + stale room 정리 + MaxPlayers 카운트 보정 | `Ready` | [2026-05-19-namae1128-presence-ui-lobby-followup-leave-and-room-count.md](../plans/2026-05-19-namae1128-presence-ui-lobby-followup-leave-and-room-count.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/plan-new` 사용.

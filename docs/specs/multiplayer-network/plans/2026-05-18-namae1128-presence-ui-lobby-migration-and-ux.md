@@ -247,8 +247,10 @@ backend DS 진단 단계에서 statusLabel 의 한글 글리프 깨짐 (`The cha
 
 ### 남은 minor issues (후속 plan 후보)
 
-1. **MaxPlayers PlayerCount off-by-one** — 사용자가 정원 4명으로 만든 룸이 InRoomPanel 에 `1/5` 로 표시. Photon Fusion `SessionInfo.MaxPlayers` 가 server 슬롯 추가로 +1 되거나 maxPlayersInput 입력 race 가능성. 본 plan AC 영향 없음.
+1. **MaxPlayers PlayerCount off-by-one** — 사용자 입력 정원이 InRoomPanel 에 N+1 로 표시 (입력 4 → 1/5, 입력 2 → 1/3 재현). Photon Fusion `SessionInfo.MaxPlayers` 가 server slot 1을 추가로 카운트하는 가능성 높음. 본 plan AC 영향 없음.
 2. **passwordHash env var 누락** — backend `EcsRoomRuntimeProvider.buildEnvironment` 가 password hash 를 ECS env 에 안 보냄 → DS 가 잠금 룸 password check 불가. 무잠금 룸은 정상 동작. 잠금 룸 검증은 별도 plan.
+3. **Leave 후 RoomClient reference missing** — InRoomPanel 의 LeaveButton → `RoomClient.LeaveRoomAsync()` → `_runner.Shutdown()` (default `destroyGameObject: true`) → MultiplayerRoomNetworking GameObject 가 destroy → 같은 GameObject 의 RoomClient/RoomListQuery 도 함께 destroy → LobbyPanel 의 SerializeField 가 Missing. 다음 CreateButton 누르면 `IsReadyForBackendCall` 의 `roomClient == null` 체크에서 "Failed: RoomClient reference is missing." 발화. fix: `Shutdown(destroyGameObject: false)` 옵션 명시. 2명 e2e 테스트 (2026-05-19) 에서 재현.
+4. **Leave 후 stale room 목록** — 본인이 떠난 후에도 빈 룸이 RoomListQuery 결과에 그대로 표시 + 인원수 갱신 안 됨. backend `RoomServerInstance.status` 가 ACTIVE 유지 (DS 가 살아있는 한). 마지막 player leave 시 DS 자체 종료 (`RoomServerCallbackReporter.ReportTerminated`) 로직 또는 backend reconciliation 강화 필요. 2명 e2e 테스트 (2026-05-19) 에서 재현.
 
 ### 후속 plan 후보
 
@@ -256,4 +258,6 @@ backend DS 진단 단계에서 statusLabel 의 한글 글리프 깨짐 (`The cha
 2. **`2026-05-16-namae1128-presence-ui-lobby-panel.md` plan Status 갱신** — Done — superseded by 본 plan.
 3. **SampleScene 의 LobbyPanel + 4 root multiplayer GameObject 정리** — Out of Scope 그대로 (별도 plan).
 4. **MaxPlayers PlayerCount off-by-one 진단 + 잠금 룸 passwordHash env 보강** — 위 남은 minor issues.
+
+> 후속 plan 박제 (2026-05-19): minor issue 1·3·4 (Leave 후 reference / stale room / MaxPlayers off-by-one) 은 [`2026-05-19-namae1128-presence-ui-lobby-followup-leave-and-room-count.md`](./2026-05-19-namae1128-presence-ui-lobby-followup-leave-and-room-count.md) 가 묶어 다룬다. minor issue 2 (passwordHash env) 는 backend Java 코드 fix + 잠금 룸 e2e 검증 인프라가 별도 cycle 이라 추가 후속 plan 후보로 남음.
 
