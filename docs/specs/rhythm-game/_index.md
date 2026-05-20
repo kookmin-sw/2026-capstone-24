@@ -36,7 +36,7 @@ VR 악기 연습 환경에서 박자감을 게임적으로 익히게 하는 학�
 | 나비야 플레이백 & 반주 연동 검증 | Draft | [`specs/09-nabia-playback-verification.md`](specs/09-nabia-playback-verification.md) |
 | Note Panel Y Position Fix | Done | [`specs/10-note-panel-y-fix.md`](specs/10-note-panel-y-fix.md) |
 | Drum Note Panel Rotation Fix | Done | [`specs/11-drum-note-panel-rotation-fix.md`](specs/11-drum-note-panel-rotation-fix.md) |
-| Drum Session Panel Position Fix | Draft | [`specs/12-drum-session-panel-position-fix.md`](specs/12-drum-session-panel-position-fix.md) |
+| Drum Session Panel Position Fix | Done | [`specs/12-drum-session-panel-position-fix.md`](specs/12-drum-session-panel-position-fix.md) |
 | Trombone Note Display | Draft | [`specs/13-trombone-note-display.md`](specs/13-trombone-note-display.md) |
 | Trombone Session Panel | Draft | [`specs/14-trombone-session-panel.md`](specs/14-trombone-session-panel.md) |
 
