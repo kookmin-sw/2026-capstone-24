@@ -34,6 +34,9 @@ VR 악기 연습 환경에서 박자감을 게임적으로 익히게 하는 학�
 | Session Options — Instrument Toggle & Tempo | Done | [`specs/07-session-options-instrument-toggle-tempo.md`](specs/07-session-options-instrument-toggle-tempo.md) |
 | 나비야 악보 제작 & instrumentKey 버그 수정 | Done | [`specs/08-nabia-sheet-music.md`](specs/08-nabia-sheet-music.md) |
 | 나비야 플레이백 & 반주 연동 검증 | Draft | [`specs/09-nabia-playback-verification.md`](specs/09-nabia-playback-verification.md) |
+| Note Panel Y Position Fix | Draft | [`specs/10-note-panel-y-fix.md`](specs/10-note-panel-y-fix.md) |
+| Drum Note Panel Rotation Fix | Draft | [`specs/11-drum-note-panel-rotation-fix.md`](specs/11-drum-note-panel-rotation-fix.md) |
+| Drum Session Panel Position Fix | Draft | [`specs/12-drum-session-panel-position-fix.md`](specs/12-drum-session-panel-position-fix.md) |
 
 > 상태 값: `Draft` / `Active` / `Done` / `Abandoned`
 
