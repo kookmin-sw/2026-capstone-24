@@ -52,6 +52,10 @@ public class DrumNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
 
         if (config == null || noteDisplayPanelPrefab == null) return;
 
+        // 고정 회전 1회 계산 — 사용자(카메라) 이동과 무관하게 세션 내내 불변
+        InstrumentBase host = GetComponent<InstrumentBase>() ?? GetComponentInParent<InstrumentBase>();
+        Quaternion panelRotation = ComputePanelRotation(host != null ? host.PanelAnchor : null);
+
         DrumHitZone[] hitZones = GetComponentsInChildren<DrumHitZone>(includeInactive: true);
         HashSet<byte> processedNotes = new HashSet<byte>();
 
@@ -70,7 +74,7 @@ public class DrumNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
             Vector3 worldPos = ComputePanelPosition(zone.transform, zone.PanelYOffset);
             NoteDisplayPanel panel = Instantiate(noteDisplayPanelPrefab);
             panel.transform.position = worldPos;
-            panel.gameObject.AddComponent<BillboardUI>().tiltDegrees = panelTiltDegrees;
+            panel.transform.rotation = panelRotation;
 
             panel.SetLaneConfig(singleConfig);
             panel.Show(chart, judgedChannel, clock);
@@ -126,6 +130,19 @@ public class DrumNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
     {
         if (noteToPanel.TryGetValue(e.midiNote, out NoteDisplayPanel panel) && panel != null)
             panel.OnJudged(e);
+    }
+
+    internal Quaternion ComputePanelRotation(Transform anchor)
+    {
+        if (anchor == null) return Quaternion.identity;
+
+        // anchor.forward는 DrumKit의 front 방향(플레이어 반대쪽)이므로 반전해 패널이 플레이어를 향하게 한다.
+        Vector3 forward = -anchor.forward;
+        forward.y = 0f;
+        if (forward.sqrMagnitude < 0.0001f) return Quaternion.identity;
+
+        return Quaternion.LookRotation(forward.normalized, Vector3.up)
+             * Quaternion.Euler(-panelTiltDegrees, 0f, 0f);
     }
 
     internal Vector3 ComputePanelPosition(Transform t, float extraOffset = 0f)

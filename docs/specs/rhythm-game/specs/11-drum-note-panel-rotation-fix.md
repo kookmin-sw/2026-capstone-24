@@ -37,7 +37,7 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| _아직 없음_ | — | — | — |
+| 2026-05-20 | PanelAnchor 기반 고정 회전 1회 계산 | Done | [`2026-05-20-linksky0311-drum-note-panel-rotation-fix.md`](../plans/2026-05-20-linksky0311-drum-note-panel-rotation-fix.md) |
 
 ## Open Questions
 
