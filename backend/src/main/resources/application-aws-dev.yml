@@ -21,6 +21,7 @@ management:
 murang:
   room:
     internal-callback:
+      # HTTPS 경유 권장 — Cloudflare DNS only + Caddy 종단 (https://${MURANG_PUBLIC_HOSTNAME})
       base-url: ${MURANG_ROOM_INTERNAL_CALLBACK_BASE_URL}
       shared-secret: ${MURANG_ROOM_INTERNAL_CALLBACK_SHARED_SECRET}
     runtime:

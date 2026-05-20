@@ -65,19 +65,19 @@ namespace Murang.Multiplayer.Presence
             string trimmed = value == null ? string.Empty : value.Trim();
             if (trimmed.Length < MinPhotonSessionNameLength)
             {
-                return LobbyValidationResult.Fail(FieldPhotonSessionName, "룸 이름을 입력해주세요.");
+                return LobbyValidationResult.Fail(FieldPhotonSessionName, "Room name is required.");
             }
             if (trimmed.Length > MaxPhotonSessionNameLength)
             {
                 return LobbyValidationResult.Fail(
                     FieldPhotonSessionName,
-                    $"룸 이름은 최대 {MaxPhotonSessionNameLength}자까지 허용됩니다.");
+                    $"Room name must be at most {MaxPhotonSessionNameLength} characters.");
             }
             if (!PhotonSessionNamePattern.IsMatch(trimmed))
             {
                 return LobbyValidationResult.Fail(
                     FieldPhotonSessionName,
-                    "룸 이름은 영문/숫자/_/- 만 허용됩니다.");
+                    "Room name allows letters, digits, _ and - only.");
             }
             return LobbyValidationResult.Ok();
         }
@@ -88,7 +88,7 @@ namespace Murang.Multiplayer.Presence
             {
                 return LobbyValidationResult.Fail(
                     FieldMaxPlayers,
-                    $"정원은 {MinMaxPlayers}~{MaxMaxPlayers} 사이여야 합니다.");
+                    $"Max players must be between {MinMaxPlayers} and {MaxMaxPlayers}.");
             }
             return LobbyValidationResult.Ok();
         }
@@ -98,14 +98,14 @@ namespace Murang.Multiplayer.Presence
             if (string.IsNullOrEmpty(raw))
             {
                 return required
-                    ? LobbyValidationResult.Fail(FieldPassword, "비밀번호를 입력해주세요.")
+                    ? LobbyValidationResult.Fail(FieldPassword, "Password is required.")
                     : LobbyValidationResult.Ok();
             }
             if (raw.Length > MaxPasswordRawLength)
             {
                 return LobbyValidationResult.Fail(
                     FieldPassword,
-                    $"비밀번호는 최대 {MaxPasswordRawLength}자까지 허용됩니다.");
+                    $"Password must be at most {MaxPasswordRawLength} characters.");
             }
             return LobbyValidationResult.Ok();
         }

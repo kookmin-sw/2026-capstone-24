@@ -3,13 +3,18 @@ package com.murang.room.controller;
 import com.murang.common.exception.ApiException;
 import com.murang.room.config.RoomInternalCallbackProperties;
 import com.murang.room.controller.dto.RoomReadyCallbackRequest;
+import com.murang.room.controller.dto.RoomTerminateCallbackRequest;
+import com.murang.room.domain.RoomServerInstanceStatus;
 import com.murang.room.manager.RoomReadySignal;
 import com.murang.room.manager.RoomServerManager;
+import com.murang.room.manager.RoomServerSnapshot;
 import jakarta.validation.Valid;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.time.Clock;
 import java.time.Instant;
+import java.util.Optional;
+import java.util.Set;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,15 +29,15 @@ public class RoomInternalCallbackController {
 
     static final String INTERNAL_TOKEN_HEADER = "X-Internal-Token";
 
+    private static final Set<RoomServerInstanceStatus> TERMINAL_STATUSES = Set.of(
+            RoomServerInstanceStatus.TERMINATED, RoomServerInstanceStatus.FAILED);
+
     private final RoomServerManager roomServerManager;
     private final RoomInternalCallbackProperties properties;
     private final Clock clock;
 
-    public RoomInternalCallbackController(
-            RoomServerManager roomServerManager,
-            RoomInternalCallbackProperties properties,
-            Clock clock
-    ) {
+    public RoomInternalCallbackController(RoomServerManager roomServerManager,
+            RoomInternalCallbackProperties properties, Clock clock) {
         this.roomServerManager = roomServerManager;
         this.properties = properties;
         this.clock = clock;
@@ -42,32 +47,39 @@ public class RoomInternalCallbackController {
     public ResponseEntity<Void> ready(
             @PathVariable Long roomId,
             @RequestHeader(value = INTERNAL_TOKEN_HEADER, required = false) String token,
-            @Valid @RequestBody RoomReadyCallbackRequest request
-    ) {
+            @Valid @RequestBody RoomReadyCallbackRequest request) {
         verifyInternalToken(token);
         roomServerManager.notifyReady(roomId, new RoomReadySignal(
-                request.taskPublicIp(),
-                request.gamePort(),
-                request.roomRuntimeVersion()
-        ));
+                request.taskPublicIp(), request.gamePort(), request.roomRuntimeVersion()));
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{roomId}/heartbeat")
     public ResponseEntity<Void> heartbeat(
             @PathVariable Long roomId,
-            @RequestHeader(value = INTERNAL_TOKEN_HEADER, required = false) String token
-    ) {
+            @RequestHeader(value = INTERNAL_TOKEN_HEADER, required = false) String token) {
         verifyInternalToken(token);
         roomServerManager.notifyHeartbeat(roomId, Instant.now(clock));
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/{roomId}/terminate")
+    public ResponseEntity<Void> terminate(
+            @PathVariable Long roomId,
+            @RequestHeader(value = INTERNAL_TOKEN_HEADER, required = false) String token,
+            @Valid @RequestBody RoomTerminateCallbackRequest request) {
+        verifyInternalToken(token);
+        Optional<RoomServerSnapshot> snapshot = roomServerManager.findByRoomId(roomId);
+        if (snapshot.isEmpty() || TERMINAL_STATUSES.contains(snapshot.get().status())) {
+            return ResponseEntity.noContent().build();
+        }
+        roomServerManager.terminate(roomId, "ds-callback:" + request.reason());
+        return ResponseEntity.noContent().build();
+    }
+
     private void verifyInternalToken(String token) {
         String expected = properties.sharedSecret();
-        if (expected == null || expected.isBlank()) {
-            return;
-        }
+        if (expected == null || expected.isBlank()) { return; }
         if (token == null || !constantTimeEquals(token, expected)) {
             throw ApiException.roomInternalForbidden();
         }

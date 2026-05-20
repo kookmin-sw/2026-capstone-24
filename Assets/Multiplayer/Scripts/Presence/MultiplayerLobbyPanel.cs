@@ -226,12 +226,12 @@ namespace Murang.Multiplayer.Presence
             }
             catch (RoomProvisioningFailedException ex)
             {
-                SetStatus($"Failed: room {ex.RoomId} → {ex.LastStatus}");
+                SetStatus($"Failed: room {ex.RoomId} -> {ex.LastStatus}");
                 Debug.LogWarning($"[MultiplayerLobbyPanel] provisioning failed: {ex}");
             }
             catch (TimeoutException ex)
             {
-                SetStatus("Failed: 룸이 준비 시간 안에 READY 상태로 진입하지 못했습니다.");
+                SetStatus("Failed: room did not reach READY within timeout window.");
                 Debug.LogWarning($"[MultiplayerLobbyPanel] provisioning timeout: {ex.Message}");
             }
             catch (OperationCanceledException)
@@ -403,14 +403,14 @@ namespace Murang.Multiplayer.Presence
         {
             if (authConfig == null)
             {
-                throw new InvalidOperationException("MultiplayerAuthConfig 가 연결되지 않았습니다.");
+                throw new InvalidOperationException("MultiplayerAuthConfig is not connected.");
             }
-            // BackendBaseUrl 은 Android device 빌드 / Editor 분기 + fallback 처리 포함.
+            // BackendBaseUrl resolves Android device build vs Editor with fallback handling.
             string url = authConfig.BackendBaseUrl;
             if (string.IsNullOrWhiteSpace(url))
             {
                 throw new InvalidOperationException(
-                    "MultiplayerAuthConfig.BackendBaseUrl 이 비어 있습니다. editorBackendBaseUrl / deviceBackendBaseUrl 중 하나는 채워야 합니다.");
+                    "MultiplayerAuthConfig.BackendBaseUrl is empty. Set editorBackendBaseUrl or deviceBackendBaseUrl.");
             }
             return url;
         }
@@ -419,27 +419,27 @@ namespace Murang.Multiplayer.Presence
         {
             if (authGate == null)
             {
-                reason = "MultiplayerAuthGate 참조 없음.";
+                reason = "MultiplayerAuthGate reference is missing.";
                 return false;
             }
             if (!authGate.IsAuthenticated)
             {
-                reason = "인증이 완료되지 않았습니다. 먼저 Activate 를 눌러주세요.";
+                reason = "Not authenticated. Press Activate first.";
                 return false;
             }
             if (string.IsNullOrWhiteSpace(authGate.CurrentAccessToken))
             {
-                reason = "access token 이 비어 있습니다.";
+                reason = "Access token is empty.";
                 return false;
             }
             if (string.IsNullOrWhiteSpace(authGate.CurrentPlayerId))
             {
-                reason = "playerId 가 비어 있습니다. /api/v1/users/me 조회를 다시 시도해주세요.";
+                reason = "playerId is empty. Retry /api/v1/users/me lookup.";
                 return false;
             }
             if (roomClient == null)
             {
-                reason = "RoomClient 참조 없음.";
+                reason = "RoomClient reference is missing.";
                 return false;
             }
             reason = string.Empty;
@@ -460,15 +460,15 @@ namespace Murang.Multiplayer.Presence
             switch (result.Reason)
             {
                 case RoomJoinFailureReason.RoomFull:
-                    return "Failed: 정원이 가득 찼습니다.";
+                    return "Failed: room is full.";
                 case RoomJoinFailureReason.WrongPassword:
-                    return "Failed: 비밀번호가 일치하지 않습니다.";
+                    return "Failed: wrong password.";
                 case RoomJoinFailureReason.RoomNotFound:
-                    return "Failed: 룸을 찾을 수 없습니다.";
+                    return "Failed: room not found.";
                 case RoomJoinFailureReason.ConnectionFailed:
-                    return "Failed: 룸 서버 연결에 실패했습니다.";
+                    return "Failed: connection to room server failed.";
                 default:
-                    return "Failed: " + (string.IsNullOrEmpty(result.Message) ? "알 수 없는 오류" : result.Message);
+                    return "Failed: " + (string.IsNullOrEmpty(result.Message) ? "unknown error" : result.Message);
             }
         }
 

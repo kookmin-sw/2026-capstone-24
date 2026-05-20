@@ -31,4 +31,6 @@ COPY Builds/RoomAutomation/LinuxServer/ .
 RUN rm -rf ./*_BurstDebugInformation_DoNotShip \
  && chmod +x ./RoomServer.x86_64
 
-ENTRYPOINT ["./RoomServer.x86_64", "-batchmode", "-nographics"]
+# -logFile - 로 Unity Player.log 를 stdout 으로 강제. ECS Fargate awslogs driver
+# 가 stdout 만 수집하므로 이게 없으면 Debug.Log 가 CloudWatch 에 안 들어간다.
+ENTRYPOINT ["./RoomServer.x86_64", "-batchmode", "-nographics", "-logFile", "-"]
