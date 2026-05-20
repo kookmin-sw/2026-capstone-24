@@ -98,30 +98,31 @@ public class DrumNoteDisplayAdapterTests
     {
         Assert.IsNotNull(_computeRotationMethod, "ComputePanelRotation 메서드가 존재해야 한다.");
 
-        var result = (Quaternion)_computeRotationMethod.Invoke(_adapter, new object[] { (Transform)null });
+        var result = (Quaternion)_computeRotationMethod.Invoke(_adapter, new object[] { (Transform)null, Vector3.zero });
         Assert.AreEqual(Quaternion.identity, result,
             "anchor가 null이면 Quaternion.identity를 반환해야 한다.");
     }
 
     /// <summary>
-    /// anchor.forward가 수평(0,0,1)이면 LookRotation(forward) * Euler(-tilt,0,0)을 반환한다.
+    /// anchor가 패널 정면 (0,0,1)에 있으면 LookRotation((0,0,1)) * Euler(-tilt,0,0)을 반환한다.
     /// </summary>
     [Test]
-    public void ComputePanelRotation_WhenAnchorForwardHorizontal_ReturnsLookRotationWithTilt()
+    public void ComputePanelRotation_WhenAnchorInFront_ReturnsLookRotationWithTilt()
     {
         Assert.IsNotNull(_computeRotationMethod, "ComputePanelRotation 메서드가 존재해야 한다.");
 
         var anchorGo = new GameObject("Anchor");
-        anchorGo.transform.rotation = Quaternion.identity; // anchor.forward = (0,0,1) → 반전 후 (0,0,-1)
+        anchorGo.transform.position = new Vector3(0f, 0f, 1f); // anchor at (0,0,1)
 
-        // ComputePanelRotation은 -anchor.forward를 사용하므로 기대값도 반전된 방향 기준
+        Vector3 panelPos = Vector3.zero; // panel at origin
+        // dir = (0,0,1)-(0,0,0) = (0,0,1)
         float tilt = 50f;
-        Quaternion expected = Quaternion.LookRotation(-Vector3.forward, Vector3.up)
+        Quaternion expected = Quaternion.LookRotation(Vector3.forward, Vector3.up)
                             * Quaternion.Euler(-tilt, 0f, 0f);
 
         try
         {
-            var result = (Quaternion)_computeRotationMethod.Invoke(_adapter, new object[] { anchorGo.transform });
+            var result = (Quaternion)_computeRotationMethod.Invoke(_adapter, new object[] { anchorGo.transform, panelPos });
             Assert.AreEqual(expected.x, result.x, 0.001f, "Quaternion.x 불일치");
             Assert.AreEqual(expected.y, result.y, 0.001f, "Quaternion.y 불일치");
             Assert.AreEqual(expected.z, result.z, 0.001f, "Quaternion.z 불일치");
@@ -134,22 +135,23 @@ public class DrumNoteDisplayAdapterTests
     }
 
     /// <summary>
-    /// anchor.forward가 수직(0,1,0)으로 XZ 성분 없으면 Quaternion.identity를 반환한다.
+    /// anchor가 패널과 동일한 XZ에 있으면(Y만 다름) Quaternion.identity를 반환한다.
     /// </summary>
     [Test]
-    public void ComputePanelRotation_WhenAnchorForwardVerticalOnly_ReturnsIdentity()
+    public void ComputePanelRotation_WhenAnchorSameXZ_ReturnsIdentity()
     {
         Assert.IsNotNull(_computeRotationMethod, "ComputePanelRotation 메서드가 존재해야 한다.");
 
         var anchorGo = new GameObject("VerticalAnchor");
-        // forward가 (0,1,0)이 되도록 -90도 X 회전
-        anchorGo.transform.rotation = Quaternion.Euler(-90f, 0f, 0f);
+        anchorGo.transform.position = new Vector3(0f, 2f, 0f); // same XZ as panel, only Y differs
+
+        Vector3 panelPos = Vector3.zero;
 
         try
         {
-            var result = (Quaternion)_computeRotationMethod.Invoke(_adapter, new object[] { anchorGo.transform });
+            var result = (Quaternion)_computeRotationMethod.Invoke(_adapter, new object[] { anchorGo.transform, panelPos });
             Assert.AreEqual(Quaternion.identity, result,
-                "forward.y만 있고 XZ 성분이 없으면 Quaternion.identity를 반환해야 한다.");
+                "anchor와 패널이 같은 XZ 위치면 방향 벡터 XZ=0 → Quaternion.identity를 반환해야 한다.");
         }
         finally
         {

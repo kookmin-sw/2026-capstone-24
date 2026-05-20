@@ -52,9 +52,8 @@ public class DrumNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
 
         if (config == null || noteDisplayPanelPrefab == null) return;
 
-        // 고정 회전 1회 계산 — 사용자(카메라) 이동과 무관하게 세션 내내 불변
         InstrumentBase host = GetComponent<InstrumentBase>() ?? GetComponentInParent<InstrumentBase>();
-        Quaternion panelRotation = ComputePanelRotation(host != null ? host.PanelAnchor : null);
+        Transform panelAnchor = host != null ? host.PanelAnchor : null;
 
         DrumHitZone[] hitZones = GetComponentsInChildren<DrumHitZone>(includeInactive: true);
         HashSet<byte> processedNotes = new HashSet<byte>();
@@ -71,10 +70,11 @@ public class DrumNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
             InstrumentLaneConfig singleConfig = InstrumentLaneConfig.CreateSingleNote(note);
             runtimeConfigs.Add(singleConfig);
 
+            // 각 파츠의 패널 위치를 먼저 계산한 뒤, 그 위치에서 anchor를 향하는 방향으로 회전 결정
             Vector3 worldPos = ComputePanelPosition(zone.transform, zone.PanelYOffset);
             NoteDisplayPanel panel = Instantiate(noteDisplayPanelPrefab);
             panel.transform.position = worldPos;
-            panel.transform.rotation = panelRotation;
+            panel.transform.rotation = ComputePanelRotation(panelAnchor, worldPos);
 
             panel.SetLaneConfig(singleConfig);
             panel.Show(chart, judgedChannel, clock);
@@ -132,16 +132,16 @@ public class DrumNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
             panel.OnJudged(e);
     }
 
-    internal Quaternion ComputePanelRotation(Transform anchor)
+    internal Quaternion ComputePanelRotation(Transform anchor, Vector3 panelWorldPos)
     {
         if (anchor == null) return Quaternion.identity;
 
-        // anchor.forward는 DrumKit의 front 방향(플레이어 반대쪽)이므로 반전해 패널이 플레이어를 향하게 한다.
-        Vector3 forward = -anchor.forward;
-        forward.y = 0f;
-        if (forward.sqrMagnitude < 0.0001f) return Quaternion.identity;
+        // 패널 위치에서 anchor 위치를 향하는 수평 방향으로 각 패널이 개별적으로 향한다.
+        Vector3 dir = anchor.position - panelWorldPos;
+        dir.y = 0f;
+        if (dir.sqrMagnitude < 0.0001f) return Quaternion.identity;
 
-        return Quaternion.LookRotation(forward.normalized, Vector3.up)
+        return Quaternion.LookRotation(dir.normalized, Vector3.up)
              * Quaternion.Euler(-panelTiltDegrees, 0f, 0f);
     }
 
