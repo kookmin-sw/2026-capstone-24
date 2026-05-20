@@ -36,7 +36,7 @@ _panelAnchor 위치를 기준으로 배치되므로, DrumKit prefab의 _panelAnc
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| _아직 없음_ | — | — | — |
+| 2026-05-20 | _panelAnchor Y·Z 거리 검증 및 미세 조정 | Done | [`2026-05-20-linksky0311-drum-session-panel-position-fix.md`](../plans/2026-05-20-linksky0311-drum-session-panel-position-fix.md) |
 
 ## Open Questions
 
