@@ -43,7 +43,7 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| _아직 없음_ | — | — | — |
+| 2026-05-17 | TromboneSlideController — 오른손 Grip baseline 기반 1DoF Slide 운전 | Done | [../plans/02-2026-05-17-sanyoentertain-slide-tracking-right-grip.md](../plans/02-2026-05-17-sanyoentertain-slide-tracking-right-grip.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/spec-build`가 planner sub-agent로 처리.

@@ -10,16 +10,24 @@ public abstract class InstrumentBase : MonoBehaviour, IPlayable, IActiveInstrume
 
     protected readonly struct NotePlayback
     {
-        public NotePlayback(AudioClip clip, float pitch, float volume)
+        public NotePlayback(AudioClip clip, float pitch, float volume,
+                            bool sustain = false,
+                            float fadeInDuration = 0f, float fadeOutDuration = 0f)
         {
             Clip = clip;
             Pitch = pitch;
             Volume = volume;
+            Sustain = sustain;
+            FadeInDuration = fadeInDuration;
+            FadeOutDuration = fadeOutDuration;
         }
 
         public AudioClip Clip { get; }
         public float Pitch { get; }
         public float Volume { get; }
+        public bool Sustain { get; }
+        public float FadeInDuration { get; }
+        public float FadeOutDuration { get; }
     }
 
     [Tooltip("이 악기에서 출력될 스피커(Voice Pool) 컴포넌트입니다. 생략 시 자식에서 자동 탐색합니다.")]
@@ -117,7 +125,11 @@ public abstract class InstrumentBase : MonoBehaviour, IPlayable, IActiveInstrume
                 if (TryResolveNoteOn(midiEvent, out NotePlayback playback))
                 {
                     float finalVolume = playback.Volume * instanceVolume;
-                    audioOutput.PlayNote(midiEvent.Note, playback.Clip, playback.Pitch, finalVolume);
+                    if (playback.Sustain)
+                        audioOutput.PlayNoteSustained(midiEvent.Note, playback.Clip, playback.Pitch, finalVolume,
+                                                      playback.FadeInDuration, playback.FadeOutDuration);
+                    else
+                        audioOutput.PlayNote(midiEvent.Note, playback.Clip, playback.Pitch, finalVolume);
                 }
                 break;
 

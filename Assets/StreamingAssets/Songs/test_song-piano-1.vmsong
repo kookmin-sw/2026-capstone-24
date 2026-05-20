@@ -1,0 +1,117 @@
+[Meta]
+title   = Test (Mary Had a Little Lamb)
+songid  = test_001
+
+[Resolution]
+ticksPerQuarter = 480
+
+[Tempo]
+tick=0  bpm=100  beats=4  beatUnit=4
+
+[Channels]
+channel=1   instrument=piano
+
+[Track:1]
+# Piano test score - Mary Had a Little Lamb
+# 100 BPM, ticksPerQuarter=480
+# C2=36 C3=48 C4=60 C5=72 C6=84 C7=96
+
+# BAR 1 (0-1919): C3 to C4 major scale (8th notes)
+tick=0      note=48  len=200  vel=90
+tick=240    note=50  len=200  vel=85
+tick=480    note=52  len=200  vel=85
+tick=720    note=53  len=200  vel=85
+tick=960    note=55  len=200  vel=85
+tick=1200   note=57  len=200  vel=85
+tick=1440   note=59  len=200  vel=85
+tick=1680   note=60  len=200  vel=90
+
+# BAR 2 (1920-3839): C4 to C5 major scale (8th notes)
+tick=1920   note=60  len=200  vel=90
+tick=2160   note=62  len=200  vel=85
+tick=2400   note=64  len=200  vel=85
+tick=2640   note=65  len=200  vel=85
+tick=2880   note=67  len=200  vel=85
+tick=3120   note=69  len=200  vel=85
+tick=3360   note=71  len=200  vel=85
+tick=3600   note=72  len=200  vel=90
+
+# BAR 3 (3840-5759): C5 to C6 major scale (8th notes)
+tick=3840   note=72  len=200  vel=90
+tick=4080   note=74  len=200  vel=85
+tick=4320   note=76  len=200  vel=85
+tick=4560   note=77  len=200  vel=85
+tick=4800   note=79  len=200  vel=85
+tick=5040   note=81  len=200  vel=85
+tick=5280   note=83  len=200  vel=85
+tick=5520   note=84  len=200  vel=90
+
+# BAR 4 (5760-7679): Chromatic C4 to C5 (16th notes)
+tick=5760   note=60  len=120  vel=85
+tick=5880   note=61  len=120  vel=75
+tick=6000   note=62  len=120  vel=85
+tick=6120   note=63  len=120  vel=75
+tick=6240   note=64  len=120  vel=85
+tick=6360   note=65  len=120  vel=85
+tick=6480   note=66  len=120  vel=75
+tick=6600   note=67  len=120  vel=85
+tick=6720   note=68  len=120  vel=75
+tick=6840   note=69  len=120  vel=85
+tick=6960   note=70  len=120  vel=75
+tick=7080   note=71  len=120  vel=85
+tick=7200   note=72  len=240  vel=90
+
+# BAR 5 (7680-9599): Octave jumps C2 to C7
+tick=7680   note=36  len=350  vel=90
+tick=8040   note=48  len=350  vel=90
+tick=8400   note=60  len=350  vel=90
+tick=8760   note=72  len=350  vel=90
+tick=9120   note=84  len=350  vel=90
+tick=9480   note=96  len=350  vel=90
+
+# BAR 6 (9600-11519): Chord test I-IV-V-I (C major)
+tick=9600   note=60  len=450  vel=85
+tick=9600   note=64  len=450  vel=80
+tick=9600   note=67  len=450  vel=80
+tick=10080  note=65  len=450  vel=85
+tick=10080  note=69  len=450  vel=80
+tick=10080  note=72  len=450  vel=80
+tick=10560  note=67  len=450  vel=85
+tick=10560  note=71  len=450  vel=80
+tick=10560  note=74  len=450  vel=80
+tick=11040  note=48  len=900  vel=90
+tick=11040  note=64  len=900  vel=85
+tick=11040  note=67  len=900  vel=85
+tick=11040  note=72  len=900  vel=85
+
+# BAR 7 (11520-13439): Arpeggio + chord mix
+tick=11520  note=60  len=200  vel=85
+tick=11760  note=64  len=200  vel=85
+tick=12000  note=67  len=200  vel=85
+tick=12240  note=57  len=200  vel=85
+tick=12480  note=60  len=200  vel=85
+tick=12720  note=64  len=200  vel=85
+tick=12960  note=65  len=450  vel=85
+tick=12960  note=69  len=450  vel=80
+tick=12960  note=72  len=450  vel=80
+tick=13440  note=67  len=450  vel=85
+tick=13440  note=71  len=450  vel=80
+tick=13440  note=74  len=450  vel=80
+tick=13440  note=77  len=450  vel=75
+
+# BAR 8 (13920-15839): Finale
+tick=13920  note=36  len=200  vel=90
+tick=14160  note=48  len=200  vel=90
+tick=14400  note=60  len=200  vel=90
+tick=14640  note=72  len=200  vel=90
+tick=14880  note=84  len=200  vel=90
+tick=15120  note=36  len=300  vel=90
+tick=15120  note=48  len=300  vel=90
+tick=15120  note=60  len=300  vel=90
+tick=15120  note=72  len=300  vel=90
+tick=15120  note=84  len=300  vel=90
+tick=15480  note=48  len=960  vel=90
+tick=15480  note=60  len=960  vel=90
+tick=15480  note=64  len=960  vel=85
+tick=15480  note=67  len=960  vel=85
+tick=15480  note=72  len=960  vel=85

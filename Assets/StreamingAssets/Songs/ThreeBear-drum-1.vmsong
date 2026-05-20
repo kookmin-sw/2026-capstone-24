@@ -1,0 +1,65 @@
+[Meta]
+title  = Three Bears Easy
+songid = three_bears_001
+
+[Resolution]
+ticksPerQuarter = 480
+
+[Tempo]
+tick=0  bpm=110  beats=4  beatUnit=4
+
+[Channels]
+channel=10  instrument=drum
+
+[Track:10]
+# Drum Easy: Kick(36) on beat 1&3, Snare(38) on beat 2&4
+# Max 1 simultaneous note per tick
+# 8 bars (0-15359)
+
+# BAR 1 (0-1919) - 곰 세마리가
+tick=0     note=36  len=60  vel=100
+tick=480   note=38  len=60  vel=90
+tick=960   note=36  len=60  vel=100
+tick=1440  note=38  len=60  vel=90
+
+# BAR 2 (1920-3839) - 한 집에 있어
+tick=1920  note=36  len=60  vel=100
+tick=2400  note=38  len=60  vel=90
+tick=2880  note=36  len=60  vel=100
+tick=3360  note=38  len=60  vel=90
+
+# BAR 3 (3840-5759) - 아빠 곰
+tick=3840  note=36  len=60  vel=100
+tick=4320  note=38  len=60  vel=90
+tick=4800  note=36  len=60  vel=100
+tick=5280  note=38  len=60  vel=90
+
+# BAR 4 (5760-7679) - 엄마 곰
+tick=5760  note=36  len=60  vel=100
+tick=6240  note=38  len=60  vel=90
+tick=6720  note=36  len=60  vel=100
+tick=7200  note=38  len=60  vel=90
+
+# BAR 5 (7680-9599) - 애기 곰
+tick=7680  note=36  len=60  vel=100
+tick=8160  note=38  len=60  vel=90
+tick=8640  note=36  len=60  vel=100
+tick=9120  note=38  len=60  vel=90
+
+# BAR 6 (9600-11519) - 아빠 곰은
+tick=9600  note=36  len=60  vel=100
+tick=10080 note=38  len=60  vel=90
+tick=10560 note=36  len=60  vel=100
+tick=11040 note=38  len=60  vel=90
+
+# BAR 7 (11520-13439) - 뚱뚱해
+tick=11520 note=36  len=60  vel=100
+tick=12000 note=38  len=60  vel=90
+tick=12480 note=36  len=60  vel=100
+tick=12960 note=38  len=60  vel=90
+
+# BAR 8 (13440-15359) - 엄마 곰은 (마무리 정박)
+tick=13440 note=36  len=60  vel=100
+tick=13920 note=38  len=60  vel=90
+tick=14400 note=36  len=60  vel=100
+tick=14880 note=38  len=60  vel=90

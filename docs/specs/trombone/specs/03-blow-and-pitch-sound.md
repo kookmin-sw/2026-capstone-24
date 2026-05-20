@@ -55,7 +55,7 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| _아직 없음_ | — | — | — |
+| 2026-05-17 | Trombone(InstrumentBase) — 왼손 Grip 발음 + 연속 pitch 운전 | Done | [plans/03-2026-05-17-sanyoentertain-blow-and-pitch-sound.md](../plans/03-2026-05-17-sanyoentertain-blow-and-pitch-sound.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/spec-build`가 planner sub-agent로 처리.

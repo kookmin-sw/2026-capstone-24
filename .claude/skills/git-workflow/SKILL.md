@@ -39,6 +39,7 @@ allowed-tools: Bash, Read, Grep, Glob
 
 - GitHub 이슈/PR 조회, 작성, 수정은 기본적으로 `gh`를 사용한다.
 - 작업 전에 `gh auth status`로 인증 상태를 확인하고, `git remote -v` 또는 `gh repo view`로 대상 저장소를 확인한다.
+- `gh`의 default repo가 `upstream`(`kookmin-sw/2026-capstone-template`)으로 잡혀 있어 인자 없는 `gh issue view`/`gh pr list`가 엉뚱한 저장소를 조회할 수 있다. 이슈/PR 명령에는 항상 `--repo kookmin-sw/2026-capstone-24`를 명시하거나, 세션 초반 1회 `gh repo set-default kookmin-sw/2026-capstone-24`로 origin을 고정한다.
 - 이슈 목록 확인, 이슈 본문/댓글 확인, PR 초안 작성, PR/이슈 메타데이터 수정 같은 GitHub 쪽 작업은 `gh`로 처리 가능한지 먼저 확인한다.
 
 ## 커밋 절차

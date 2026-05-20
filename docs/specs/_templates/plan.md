@@ -105,4 +105,4 @@ evidence가 "파일 존재" 또는 "함수 존재" 같은 단일 사실에만 �
 
 ## Handoff
 
-<선택. `/spec-build`가 plan 완료 시 doc-updater Task로 자동 갱신한다. 다음 plan이 알아야 할 공개 API 시그니처·자산 경로·결정 사항 5~15줄. 빈 채로 둬도 OK.>
+<선택. `/spec-build`가 plan 완료 시 메인 세션에서 직접 갱신한다. 다음 plan이 알아야 할 공개 API 시그니처·자산 경로·결정 사항 5~15줄. 빈 채로 둬도 OK.>

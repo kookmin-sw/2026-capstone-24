@@ -25,13 +25,20 @@ namespace SessionPanel
             _song     = song;
             _callback = callback;
 
+            // null-safe lazy fetch: SerializedField wiring 누락 케이스 fall-back
+            if (button == null)
+            {
+                button = GetComponent<Button>();
+                if (button != null)
+                    button.onClick.AddListener(OnClick);
+            }
+
             if (titleLabel  != null) titleLabel.text  = song.Title;
             if (artistLabel != null) artistLabel.text = song.Artist;
 
             if (button != null)
             {
                 button.interactable = active;
-                var colors = button.colors;
                 float a = active ? 1f : 0.4f;
                 if (titleLabel  != null) { var c = titleLabel.color;  c.a = a; titleLabel.color  = c; }
                 if (artistLabel != null) { var c = artistLabel.color; c.a = a; artistLabel.color = c; }

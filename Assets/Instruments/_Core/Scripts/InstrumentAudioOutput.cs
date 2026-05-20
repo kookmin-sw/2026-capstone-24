@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -7,7 +7,7 @@ namespace Instruments
 [DisallowMultipleComponent]
 public class InstrumentAudioOutput : MonoBehaviour
 {
-    enum VoiceState { Idle, Active, Releasing }
+    enum VoiceState { Idle, Attacking, Active, SustainedActive, Releasing }
 
     sealed class Voice
     {
@@ -17,6 +17,13 @@ public class InstrumentAudioOutput : MonoBehaviour
         public float StartedAt;
         public float ReleaseStartedAt;
         public float ReleaseStartVolume;
+        // Attack 단계 fade-in 목표 볼륨. PlayNoteSustained 진입 시 박제.
+        public float TargetVolume;
+        // Per-voice fade duration. NoteOn 시점에 박제돼 Attacking/Releasing 단계가 각각 사용.
+        public float FadeInDuration;
+        public float FadeOutDuration;
+        // TrySetActiveVoicePitch가 이 voice의 pitch를 따라가게 할지. release 중에는 false로 NoteOff 시점 pitch 고정.
+        public bool TrackPitch;
     }
 
     public struct AudioSourceSettings
@@ -67,13 +74,35 @@ public class InstrumentAudioOutput : MonoBehaviour
         for (int i = 0; i < m_Voices.Count; i++)
         {
             Voice voice = m_Voices[i];
-            if (voice.State != VoiceState.Releasing) continue;
             if (voice.Source == null) { ResetVoice(voice); continue; }
-            if (m_CurrentSettings.ReleaseDuration <= 0f) { StopVoice(voice); continue; }
-            float elapsed = now - voice.ReleaseStartedAt;
-            if (elapsed >= m_CurrentSettings.ReleaseDuration) { StopVoice(voice); continue; }
-            float t = 1f - (elapsed / m_CurrentSettings.ReleaseDuration);
-            voice.Source.volume = voice.ReleaseStartVolume * Mathf.Clamp01(t);
+
+            if (voice.State == VoiceState.Attacking)
+            {
+                if (voice.FadeInDuration <= 0f)
+                {
+                    voice.Source.volume = voice.TargetVolume;
+                    voice.State = VoiceState.SustainedActive;
+                    continue;
+                }
+                float elapsed = now - voice.StartedAt;
+                if (elapsed >= voice.FadeInDuration)
+                {
+                    voice.Source.volume = voice.TargetVolume;
+                    voice.State = VoiceState.SustainedActive;
+                    continue;
+                }
+                float t = elapsed / voice.FadeInDuration;
+                voice.Source.volume = voice.TargetVolume * Mathf.Clamp01(t);
+            }
+            else if (voice.State == VoiceState.Releasing)
+            {
+                float fadeOut = voice.FadeOutDuration > 0f ? voice.FadeOutDuration : m_CurrentSettings.ReleaseDuration;
+                if (fadeOut <= 0f) { StopVoice(voice); continue; }
+                float elapsed = now - voice.ReleaseStartedAt;
+                if (elapsed >= fadeOut) { StopVoice(voice); continue; }
+                float t = 1f - (elapsed / fadeOut);
+                voice.Source.volume = voice.ReleaseStartVolume * Mathf.Clamp01(t);
+            }
         }
     }
 
@@ -86,9 +115,10 @@ public class InstrumentAudioOutput : MonoBehaviour
         Voice voice = GetBestVoice();
         if (voice == null || voice.Source == null) return;
         StopVoice(voice);
+        float targetVolume = Mathf.Clamp01(volume);
         voice.Source.clip = clip;
         voice.Source.pitch = pitch;
-        voice.Source.volume = Mathf.Clamp01(volume);
+        voice.Source.volume = targetVolume;
         voice.Source.loop = false;
         voice.Source.Play();
         voice.Note = note;
@@ -96,16 +126,48 @@ public class InstrumentAudioOutput : MonoBehaviour
         voice.StartedAt = Time.time;
         voice.ReleaseStartedAt = 0f;
         voice.ReleaseStartVolume = 0f;
+        voice.TargetVolume = targetVolume;
+        voice.FadeInDuration = 0f;
+        voice.FadeOutDuration = 0f;
+        voice.TrackPitch = false;
+    }
+
+    public void PlayNoteSustained(int note, AudioClip clip, float pitch, float volume,
+                                  float fadeInDuration, float fadeOutDuration)
+    {
+        if (clip == null) return;
+        EnsureVoicePool();
+        Voice voice = GetBestVoice();
+        if (voice == null || voice.Source == null) return;
+        StopVoice(voice);
+        float targetVolume = Mathf.Clamp01(volume);
+        bool hasFadeIn = fadeInDuration > 0f;
+        voice.Source.clip = clip;
+        voice.Source.pitch = pitch;
+        voice.Source.volume = hasFadeIn ? 0f : targetVolume;
+        voice.Source.loop = true;
+        voice.Source.Play();
+        voice.Note = note;
+        voice.State = hasFadeIn ? VoiceState.Attacking : VoiceState.SustainedActive;
+        voice.StartedAt = Time.time;
+        voice.ReleaseStartedAt = 0f;
+        voice.ReleaseStartVolume = 0f;
+        voice.TargetVolume = targetVolume;
+        voice.FadeInDuration = Mathf.Max(0f, fadeInDuration);
+        voice.FadeOutDuration = Mathf.Max(0f, fadeOutDuration);
+        voice.TrackPitch = true;
     }
 
     public void StopNote(int note)
     {
         Voice voice = GetOldestVoiceForNote(note);
         if (voice == null || voice.Source == null) return;
-        if (m_CurrentSettings.ReleaseDuration <= 0f || !voice.Source.isPlaying) { StopVoice(voice); return; }
+        float fadeOut = voice.FadeOutDuration > 0f ? voice.FadeOutDuration : m_CurrentSettings.ReleaseDuration;
+        if (fadeOut <= 0f || !voice.Source.isPlaying) { StopVoice(voice); return; }
         voice.State = VoiceState.Releasing;
         voice.ReleaseStartedAt = Time.time;
         voice.ReleaseStartVolume = voice.Source.volume;
+        voice.TrackPitch = false;
     }
 
     public void StopNoteImmediate(int note)
@@ -115,6 +177,21 @@ public class InstrumentAudioOutput : MonoBehaviour
             Voice voice = m_Voices[i];
             if (voice.Note == note && voice.State != VoiceState.Idle) StopVoice(voice);
         }
+    }
+
+    public bool TrySetActiveVoicePitch(int note, float pitch)
+    {
+        bool updatedAny = false;
+        for (int i = 0; i < m_Voices.Count; i++)
+        {
+            Voice voice = m_Voices[i];
+            if (voice.Note != note || voice.Source == null) continue;
+            if (voice.State != VoiceState.Active && voice.State != VoiceState.SustainedActive && voice.State != VoiceState.Attacking) continue;
+            if (!voice.TrackPitch) continue;
+            voice.Source.pitch = pitch;
+            updatedAny = true;
+        }
+        return updatedAny;
     }
 
     public void StopAllVoices()
@@ -185,6 +262,10 @@ public class InstrumentAudioOutput : MonoBehaviour
         voice.StartedAt = 0f;
         voice.ReleaseStartedAt = 0f;
         voice.ReleaseStartVolume = 0f;
+        voice.TargetVolume = 0f;
+        voice.FadeInDuration = 0f;
+        voice.FadeOutDuration = 0f;
+        voice.TrackPitch = false;
     }
 
     Voice GetBestVoice()

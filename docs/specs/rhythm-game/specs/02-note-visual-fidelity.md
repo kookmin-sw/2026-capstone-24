@@ -45,7 +45,7 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| 2026-05-03 | Note Visual Fidelity 구현 — 높이 비례 표시 + 3D 프리팹 스킨 | In Progress | [2026-05-03-linksky0311-note-visual-fidelity-height-and-skin.md](../plans/2026-05-03-linksky0311-note-visual-fidelity-height-and-skin.md) |
+| 2026-05-03 | Note Visual Fidelity 구현 — 높이 비례 표시 + 3D 프리팹 스킨 | Done | [2026-05-03-linksky0311-note-visual-fidelity-height-and-skin.md](../../_archive/rhythm-game/plans/2026-05-03-linksky0311-note-visual-fidelity-height-and-skin.md) |
 | 2026-05-03 | Note Visual Fidelity 클리핑 버그 수정 | Done | [2026-05-03-linksky0311-note-visual-fidelity-clipping-fix.md](../../_archive/rhythm-game/plans/2026-05-03-linksky0311-note-visual-fidelity-clipping-fix.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
