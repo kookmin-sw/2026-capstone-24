@@ -15,7 +15,7 @@ public class DrumNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
 {
     [SerializeField] NoteDisplayPanel noteDisplayPanelPrefab;
     [Tooltip("각 드럼 파츠 위 패널의 y 오프셋 (월드 단위)")]
-    [SerializeField] float yOffset = 0.15f;
+    [SerializeField] float yOffset = -0.1f;
     [Tooltip("패널 상단을 카메라 반대 방향으로 기울이는 각도 (0 = 수직, 클수록 더 눕혀짐)")]
     [SerializeField, Range(0f, 70f)] float panelTiltDegrees = 50f;
 
@@ -128,11 +128,10 @@ public class DrumNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
             panel.OnJudged(e);
     }
 
-    Vector3 ComputePanelPosition(Transform t, float extraOffset = 0f)
+    internal Vector3 ComputePanelPosition(Transform t, float extraOffset = 0f)
     {
         float totalOffset = yOffset + extraOffset;
 
-        // Y: 히트존 Collider 상단 (실제 타격면 높이)
         Collider col = t.GetComponentInChildren<Collider>();
         float worldY = col != null
             ? col.bounds.max.y + totalOffset
