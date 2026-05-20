@@ -290,7 +290,7 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
             jlRect.anchorMax = new Vector2(1f, 0f);
             jlRect.pivot     = new Vector2(0.5f, 0f);
             jlRect.offsetMin = Vector2.zero;
-            jlRect.offsetMax = new Vector2(0f, 4f);
+            jlRect.offsetMax = new Vector2(0f, 1f);
             jlGo.AddComponent<Image>().color = new Color(1f, 1f, 0f, 0.9f);
 
             // 중앙 가이드선 (노트 낙하 기준)
@@ -322,7 +322,7 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
         pjlRect.anchorMax = new Vector2(1f, 0f);
         pjlRect.pivot     = new Vector2(0.5f, 0f);
         pjlRect.offsetMin = Vector2.zero;
-        pjlRect.offsetMax = new Vector2(0f, 4f);
+        pjlRect.offsetMax = new Vector2(0f, 1f);
         pjlGo.AddComponent<Image>().color = new Color(1f, 1f, 0f, 0.8f);
 
         // ── 세로 구분선: 흰 건반 경계 (0 ~ WHITE_KEY_COUNT = 53개) ──
