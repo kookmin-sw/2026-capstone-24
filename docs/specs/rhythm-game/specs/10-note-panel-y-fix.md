@@ -42,7 +42,7 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| _아직 없음_ | — | — | — |
+| 2026-05-20 | worldYOverride 필드 추가 | Done | [`../plans/2026-05-20-linksky0311-note-panel-y-fix.md`](../plans/2026-05-20-linksky0311-note-panel-y-fix.md) |
 
 ## Open Questions
 

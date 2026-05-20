@@ -173,12 +173,12 @@ docs/specs/
 
 | Feature | Status | Sub-Specs | Plans (Done/Total) | 비고 |
 |---|---|---|---|---|
-| [rhythm-game](rhythm-game/_index.md) | Active | 19 | 22/22 | |
+| [rhythm-game](rhythm-game/_index.md) | Active | 21 | 23/23 | |
 | [hands](hands/_index.md) | Active | 3 | 1/2 | |
 | [drum-stick](drum-stick/_index.md) | Active | 2 | 3/3 | |
-| [session-panel](session-panel/_index.md) | Active | 6 | 9/9 | |
-| [multiplayer-network](multiplayer-network/_index.md) | Active | 6 | 13/19 | |
-| [trombone](trombone/_index.md) | Done | 3 | 3/3 | |
+| [session-panel](session-panel/_index.md) | Active | 9 | 9/9 | sub-spec 08·09 추가 |
+| [multiplayer-network](multiplayer-network/_index.md) | Active | 7 | 13/19 | sub-spec 07 추가 |
+| [trombone](trombone/_index.md) | Active | 4 | 3/3 | sub-spec 04 추가 |
 | [teleport-locomotion](_archive/teleport-locomotion/_index.md) | Done | 3 | 4/4 | |
 
 > Status 값: `Draft` / `Active` / `Done` / `Abandoned`. `/spec-build` 메인 세션이 sub-spec/feature 종료 시점에 갱신.
