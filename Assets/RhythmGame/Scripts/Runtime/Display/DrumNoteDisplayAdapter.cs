@@ -55,6 +55,10 @@ public class DrumNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
         InstrumentBase host = GetComponent<InstrumentBase>() ?? GetComponentInParent<InstrumentBase>();
         Transform panelAnchor = host != null ? host.PanelAnchor : null;
 
+        // 노트 패널 회전 기준: 플레이어가 서는 InstrumentAnchor 중심. 없으면 PanelAnchor 폴백.
+        InstrumentTeleportColliderBinder binder = GetComponentInChildren<InstrumentTeleportColliderBinder>(true);
+        Transform rotationTarget = binder != null ? binder.transform : panelAnchor;
+
         DrumHitZone[] hitZones = GetComponentsInChildren<DrumHitZone>(includeInactive: true);
         HashSet<byte> processedNotes = new HashSet<byte>();
 
@@ -74,7 +78,7 @@ public class DrumNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
             Vector3 worldPos = ComputePanelPosition(zone.transform, zone.PanelYOffset);
             NoteDisplayPanel panel = Instantiate(noteDisplayPanelPrefab);
             panel.transform.position = worldPos;
-            panel.transform.rotation = ComputePanelRotation(panelAnchor, worldPos);
+            panel.transform.rotation = ComputePanelRotation(rotationTarget, worldPos);
 
             panel.SetLaneConfig(singleConfig);
             panel.Show(chart, judgedChannel, clock);
