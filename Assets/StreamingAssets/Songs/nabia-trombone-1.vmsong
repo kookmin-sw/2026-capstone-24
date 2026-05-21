@@ -1,0 +1,59 @@
+[Meta]
+title  = Nabia
+songid = nabia_001
+
+[Resolution]
+ticksPerQuarter = 480
+
+[Tempo]
+tick=0  bpm=120  beats=4  beatUnit=4
+
+[Channels]
+channel=2  instrument=trombone
+
+[Track:1]
+# Trombone Easy: melody line (transferred from piano)
+# 8 bars (1 bar = 1920 ticks, total 0-15359)
+# Melody: G4=67, E4=64, F4=65, D4=62, C4=60
+
+# BAR 1 (0-1919): Melody G4-E4-E4(half)
+tick=0     note=67  len=440  vel=92
+tick=480   note=64  len=440  vel=92
+tick=960   note=64  len=920  vel=92
+
+# BAR 2 (1920-3839): Melody F4-D4-D4(half)
+tick=1920  note=65  len=440  vel=92
+tick=2400  note=62  len=440  vel=92
+tick=2880  note=62  len=920  vel=92
+
+# BAR 3 (3840-5759): Melody C4-D4-E4-F4
+tick=3840  note=60  len=440  vel=92
+tick=4320  note=62  len=440  vel=92
+tick=4800  note=64  len=440  vel=92
+tick=5280  note=65  len=440  vel=92
+
+# BAR 4 (5760-7679): Melody G4-G4-G4(half)
+tick=5760  note=67  len=440  vel=92
+tick=6240  note=67  len=440  vel=92
+tick=6720  note=67  len=920  vel=92
+
+# BAR 5 (7680-9599): same as bar 1
+tick=7680  note=67  len=440  vel=92
+tick=8160  note=64  len=440  vel=92
+tick=8640  note=64  len=920  vel=92
+
+# BAR 6 (9600-11519): same as bar 2
+tick=9600  note=65  len=440  vel=92
+tick=10080 note=62  len=440  vel=92
+tick=10560 note=62  len=920  vel=92
+
+# BAR 7 (11520-13439): Melody C4-E4-G4-G4
+tick=11520 note=60  len=440  vel=92
+tick=12000 note=64  len=440  vel=92
+tick=12480 note=67  len=440  vel=92
+tick=12960 note=67  len=440  vel=92
+
+# BAR 8 (13440-15359): Melody E4-E4-E4(half)
+tick=13440 note=64  len=440  vel=92
+tick=13920 note=64  len=440  vel=92
+tick=14400 note=64  len=920  vel=92
