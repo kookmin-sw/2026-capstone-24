@@ -55,6 +55,7 @@
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
 | 2026-05-21 | Trombone 파셜 패널 5종 (반원형) 노트 디스플레이 | Ready | [`2026-05-21-linksky0311-trombone-note-display.md`](../plans/2026-05-21-linksky0311-trombone-note-display.md) |
+| 2026-05-21 | SessionPanel snap-once 모드 — 트롬본 픽업 시 SessionPanel 위치 1회 고정 | Ready | [`2026-05-21-linksky0311-trombone-session-panel-snap-once.md`](../plans/2026-05-21-linksky0311-trombone-session-panel-snap-once.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/spec-build`가 planner sub-agent로 처리. 파일명은 날짜·작성자·slug 기반.
