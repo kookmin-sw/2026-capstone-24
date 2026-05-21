@@ -10,7 +10,7 @@
 
 서버에서 인증된 유저 정보를 DB에 저장하고 조회하는 기능을 제공한다. 최초 로그인 시 유저 레코드를 생성하고, 재접속 시 기존 레코드를 조회해 같은 유저로 연결한다. DB 내부 조인과 FK는 `users.user_id`(내부 PK)를 사용하고, 외부 시스템과 클라이언트가 참조하는 영구 플레이어 식별자는 서버가 발급하는 ULID 기반 `users.player_id`로 분리한다. `metaAccountId`는 로그인 제공자 식별자, `nickname`은 표시용 값으로만 취급한다.
 
-룸 콘텐츠 상태는 영속화 대상이 아니다. 모든 룸은 default 씬(`SampleScene`)에 미리 배치된 오브젝트만 사용하며, 유저별 룸 snapshot·악기 배치·오브젝트 설정은 본 spec의 책임 범위 밖이다.
+룸 콘텐츠 상태는 영속화 대상이 아니다. 모든 룸은 default 씬([`decisions/01-default-scene.md`](../decisions/01-default-scene.md))에 미리 배치된 오브젝트만 사용하며, 유저별 룸 snapshot·악기 배치·오브젝트 설정은 본 spec의 책임 범위 밖이다.
 
 ## Behavior
 

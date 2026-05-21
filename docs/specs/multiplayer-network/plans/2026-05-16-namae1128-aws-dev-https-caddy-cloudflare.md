@@ -1,4 +1,4 @@
-# AWS dev HTTPS 종단 (Caddy reverse proxy + Let's Encrypt + DuckDNS)
+# AWS dev HTTPS 종단 (Elastic IP + Cloudflare DNS + Caddy reverse proxy + Let's Encrypt)
 
 **Linked Spec:** [`05-room-server-manager.md`](../specs/05-room-server-manager.md)
 **Status:** `Ready`
@@ -20,7 +20,7 @@ EC2 control plane 앞에 Caddy reverse proxy 를 두고 Let's Encrypt 자동 인
 2. 새로운 클라이언트 환경 (예: iOS, 다른 안드로이드 기기) 으로 확장 시 같은 우회가 필요.
 3. 운영 단계로 갈 때 결국 HTTPS 가 필요하므로 어차피 한 번은 마이그레이션 필요.
 
-본 plan 은 그 마이그레이션을 dev 단계에서 미리 처리해 production-style 토폴로지를 유지한다. 도메인은 무료 dynamic DNS (DuckDNS) 를 사용해 비용 0, EC2 EIP 가 attached 인 한 IP 도 무료.
+본 plan 은 그 마이그레이션을 dev 단계에서 미리 처리해 production-style 토폴로지를 유지한다. 도메인은 사용자가 이미 보유한 Cloudflare zone 의 서브도메인을 사용한다. Cloudflare 는 **DNS only (gray cloud)** 로 운영해 모든 HTTPS 종단·인증서 발급은 EC2 Caddy + Let's Encrypt 가 책임지고, Cloudflare 는 A 레코드 1개만 담당한다. EC2 Elastic IP 가 attached 인 한 IP 도 무료 (EIP 자체는 detached 시 월 ~$3.6).
 
 ### 왜 Caddy 인가
 
@@ -50,7 +50,7 @@ Lock-in 위험은 낮음 — 추후 nginx 로 swap 필요 시 docker-compose 의
 본 plan 은 코드 변경 + 인프라 절차 갱신 + Unity 자산 변경이 섞여 있다. 분담:
 
 - Claude 자율: docker-compose / Caddyfile / docs / .env.aws-dev.example / Unity asset (MCP)
-- 사용자: AWS 콘솔 (EIP/SG), DuckDNS 가입, EC2 SSH 절차 적용, Quest cleartext 토글 OFF + 빌드
+- 사용자: AWS 콘솔 (EIP/SG), Cloudflare 대시보드 (A 레코드 + DNS only 토글), EC2 SSH 절차 적용, Quest cleartext 토글 OFF + 빌드
 
 ### 코드/문서 변경 (Claude)
 
@@ -70,37 +70,40 @@ Lock-in 위험은 낮음 — 추후 nginx 로 swap 필요 시 docker-compose 의
        }
    }
    ```
-   - 도메인은 `MURANG_PUBLIC_HOSTNAME` env 로 주입 (예: `murang-dev.duckdns.org`)
-   - Caddy 가 자동으로 80 → 443 리다이렉트 + Let's Encrypt 발급/갱신
+   - 도메인은 `MURANG_PUBLIC_HOSTNAME` env 로 주입 (예: `dev.<사용자 Cloudflare 도메인>`)
+   - Caddy 가 자동으로 80 → 443 리다이렉트 + Let's Encrypt 발급/갱신 (HTTP-01 challenge)
 3. **`.env.aws-dev.example` 갱신**.
-   - 신규: `MURANG_PUBLIC_HOSTNAME=REPLACE_WITH_PUBLIC_DOMAIN` (DuckDNS 도메인)
+   - 신규: `MURANG_PUBLIC_HOSTNAME=REPLACE_WITH_PUBLIC_DOMAIN` (사용자 Cloudflare zone 의 서브도메인)
    - 기존 `MURANG_ROOM_INTERNAL_CALLBACK_BASE_URL` 의 예시를 `https://${MURANG_PUBLIC_HOSTNAME}` 로 안내 (주석)
 4. **`docs/ops/aws-dev-topology.md` 갱신**.
    - 아키텍처 도식에 Caddy 노드 추가 (HTTPS:443 → Caddy → http:8080 → Spring)
    - SG sg-ec2 inbound 표 갱신: 8080 → 80/443
-   - 인증서/도메인 노드(DuckDNS) 추가
+   - 도메인/DNS 노드는 `Cloudflare (DNS only, gray cloud)` 로 명시 — proxy 모드 아님
 5. **`docs/ops/aws-dev-runbook.md` 갱신**.
    - §1 (VPC/SG) 의 inbound 규칙 80/443 으로 교체
-   - 신규 §1.1: Elastic IP 할당 + EC2 attach + DuckDNS 등록 절차
-   - 신규 §1.2: 첫 인증서 발급 절차 (Caddy 컨테이너 기동 시 자동, 도메인 A 레코드 + SG 80 inbound 가 필수 조건)
-   - 트러블슈팅 표에 "ACME challenge 실패" / "도메인 미반영" 추가
+   - 신규 §1.1: Elastic IP 할당 + EC2 attach + Cloudflare zone 에 A 레코드 추가 (Proxy status = DNS only) 절차
+   - 신규 §1.2: 첫 인증서 발급 절차 (Caddy 컨테이너 기동 시 자동, A 레코드 + SG 80 inbound + Proxy status = DNS only 가 필수 조건 — Proxied 상태면 HTTP-01 challenge 가 Cloudflare edge 에서 종단되어 발급 실패)
+   - 트러블슈팅 표에 "ACME challenge 실패" / "도메인 미반영" / "Cloudflare Proxied 상태로 challenge 실패" 추가
 6. **Unity `MultiplayerAuthConfig.asset` 갱신**.
-   - `deviceBackendBaseUrl` 을 placeholder `https://murang-dev.duckdns.org` 로 (사용자가 실제 도메인 확정 후 다시 갱신)
+   - `deviceBackendBaseUrl` 을 placeholder `https://dev.example.com` 로 (사용자가 실제 Cloudflare 도메인 확정 후 다시 갱신)
    - MCP `manage_asset` 또는 `UNITY_YAML_OVERRIDE=1` 우회 Edit (단순 propertyPath 변경이라 안전)
 7. **(선택) `application-aws-dev.yml` 주석 추가**.
    - `internal-callback.base-url` 위에 "HTTPS 경유 권장" 코멘트만 한 줄
 
 ### 사용자 인프라 작업
 
-A. **Elastic IP 할당**: AWS 콘솔 → EC2 → Elastic IPs → Allocate → 기존 인스턴스에 Associate. IP 한 개 확보 (attached 동안 무료, detached 시 월 ~$3.6).
+A. **Elastic IP 할당**: AWS 콘솔 → EC2 → Elastic IPs → Allocate → 기존 인스턴스에 Associate. IP 한 개 확보 (attached 동안 무료, detached 시 월 ~$3.6). 기존에 random EC2 public IP 를 쓰고 있었다면 attach 와 동시에 IP 가 새 EIP 로 교체됨 (DNS 반영 + Photon Custom Auth 화이트리스트 등 다운스트림 영향 점검).
 
-B. **DuckDNS 가입 + 서브도메인 등록**: `duckdns.org` 로그인 (GitHub/Google OAuth) → 서브도메인 신청 (예: `murang-dev`) → 위 EIP 를 매핑. 토큰 한 개 발급됨 (Caddy 는 토큰 필요 없음, 자동 갱신 cron 만들 때 사용).
+B. **Cloudflare A 레코드 추가**: Cloudflare 대시보드 → 사용자 zone 선택 → DNS → Records → Add record.
+   - Type `A`, Name `dev` (또는 사용자 선택 서브도메인), IPv4 = 위 EIP, **Proxy status = DNS only (gray cloud)**, TTL `Auto`.
+   - **Proxied (orange cloud) 로 두지 말 것** — Cloudflare edge 가 80/443 을 가로채 HTTP-01 challenge 가 Caddy 에 도달하지 못해 인증서 발급 실패.
+   - 반영 확인: `dig +short dev.<zone>` 또는 `nslookup dev.<zone>` 가 EIP 1줄 반환 (Cloudflare anycast IP 가 반환되면 Proxied 상태이니 토글 재확인).
 
 C. **SG sg-ec2 inbound 갱신**: 8080 제거, **80 + 443 추가** (둘 다 0.0.0.0/0). 80 은 Let's Encrypt ACME HTTP-01 challenge 에 필수.
 
 D. **`~/.env.aws-dev` 갱신**:
-   - 추가: `MURANG_PUBLIC_HOSTNAME=murang-dev.duckdns.org` (본인 도메인)
-   - 변경: `MURANG_ROOM_INTERNAL_CALLBACK_BASE_URL=https://murang-dev.duckdns.org`
+   - 추가: `MURANG_PUBLIC_HOSTNAME=dev.<사용자 Cloudflare 도메인>` (예: `dev.example.com`)
+   - 변경: `MURANG_ROOM_INTERNAL_CALLBACK_BASE_URL=https://dev.<사용자 Cloudflare 도메인>`
 
 E. **EC2 redeploy**:
    ```bash
@@ -115,8 +118,8 @@ E. **EC2 redeploy**:
 
 F. **검증**:
    ```bash
-   curl -fsS https://murang-dev.duckdns.org/actuator/health
-   # {"status":"UP"} 응답 + 인증서 Issuer: R3 (Let's Encrypt) 확인
+   curl -fsS https://dev.<사용자 Cloudflare 도메인>/actuator/health
+   # {"status":"UP"} 응답 + 인증서 Issuer: R3 또는 E1 (Let's Encrypt) 확인
    ```
 
 G. **Quest 빌드 cleartext 토글 OFF**: `Player Settings → Android → Other Settings → Allow downloads over HTTP* = Not allowed`. 빌드 + 사이드로드 + 시연.
@@ -127,7 +130,7 @@ G. **Quest 빌드 cleartext 토글 OFF**: `Player Settings → Android → Other
 - `docker/caddy/Caddyfile` 신규
 - `.env.aws-dev.example` 에 `MURANG_PUBLIC_HOSTNAME` 추가 + `MURANG_ROOM_INTERNAL_CALLBACK_BASE_URL` 예시 https 로 갱신
 - `docs/ops/aws-dev-topology.md` 갱신 (Caddy 노드 + 인증서 경로 도식)
-- `docs/ops/aws-dev-runbook.md` 갱신 (EIP/DuckDNS/Caddy 절차 추가, 트러블슈팅 표 보강)
+- `docs/ops/aws-dev-runbook.md` 갱신 (EIP / Cloudflare A 레코드 (DNS only) / Caddy 절차 추가, 트러블슈팅 표 보강)
 - `Assets/Multiplayer/Resources/MultiplayerAuthConfig.asset` `deviceBackendBaseUrl` HTTPS 로 갱신
 - `ProjectSettings/ProjectSettings.asset` Android cleartext 토글 OFF (사용자 측 Editor 작업 후 commit)
 
@@ -145,17 +148,19 @@ G. **Quest 빌드 cleartext 토글 OFF**: `Player Settings → Android → Other
 - 운영(prod) 도메인 + 다중 환경 (dev/staging/prod) 분리
 - ACM/CloudFront/ALB 같은 AWS 매니지드 옵션 (별도 plan)
 - Caddy access log 의 CloudWatch Logs 송출 (현재는 stdout JSON, Spring 과 같은 log driver 로 흡수)
-- 본인 도메인 (`.com` 등) 구매 (DuckDNS 무료 sub-domain 사용)
+- Cloudflare Proxied (orange cloud) 모드 + Cloudflare Origin Certificate / Authenticated Origin Pulls (DDoS 완화·edge caching 이점이 있으나 본 plan 의 Caddy + Let's Encrypt 구성과 직교. 운영 단계에서 별도 plan)
+- ACME DNS-01 challenge + caddy-dns/cloudflare 플러그인 (port 80 노출 불필요 + wildcard 인증서 발급 가능. Caddy custom image 빌드 + Cloudflare API token 관리 비용이 dev 단계에는 과함. 후속 plan 후보)
 - nginx + certbot 으로의 swap (필요 시 별도 plan)
 
 ## Notes
 
 - Caddy 가 첫 인증서 발급 후 `/data/caddy/certificates/` 아래에 보관 — 볼륨 `caddy_data` 가 영속화. 컨테이너 재시작·재배포에도 인증서 유지.
 - Let's Encrypt rate limit: 도메인당 주당 50건. `caddy_data` 볼륨을 함부로 날리면 재발급 폭주 위험 → 운영자가 의도적으로만 삭제.
-- DuckDNS 의 A 레코드 TTL 60초. EIP 변경 시 1분 내 반영.
+- Cloudflare A 레코드 TTL `Auto` 는 보통 300초. EIP 변경 시 약 5분 내 반영 (TTL 을 1분으로 명시 가능). Proxy status 가 DNS only 가 아니면 `dig` 가 EIP 대신 Cloudflare anycast IP 를 반환하므로 항상 사전 확인.
 - Caddy admin API (`localhost:2019`) 는 컨테이너 안에서만. 외부 노출 X — 보안 측면 자동 안전.
 - Caddyfile 만 수정 후 `docker compose restart caddy` 또는 `docker compose exec caddy caddy reload --config /etc/caddy/Caddyfile` (zero-downtime reload).
 - 본 plan 의 manual-hard 검증은 [`quest-onsite-integration-verification`](./2026-05-11-namae1128-quest-onsite-integration-verification.md) plan 시나리오와 같은 cycle 안에서 합쳐 검증 가능.
+- Cloudflare API token 은 본 plan 에서는 사용하지 않는다 (HTTP-01 challenge + 수동 A 레코드 1개). 향후 DNS-01 로 전환하거나 ddns 자동화가 필요해지면 zone-scoped DNS Edit token 1개를 발급하는 후속 plan 으로 분리.
 
 ## Handoff
 

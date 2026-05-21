@@ -24,9 +24,41 @@ EC2 control-plane + ECS Fargate room-server 토폴로지([`aws-dev-topology.md`]
 2. **Public Subnet** — `10.10.1.0/24`, Auto-assign public IPv4 ON
 3. **Internet Gateway** — VPC 에 attach, public subnet route table 에 `0.0.0.0/0 -> IGW` 추가
 4. **Security Groups**
-   - `sg-ec2`: inbound 22 (운영자 IP), 8080 (0.0.0.0/0); outbound all
-   - `sg-room-server`: inbound `game_port/UDP` 0.0.0.0/0, outbound TCP 8080 → `sg-ec2`, outbound all
+   - `sg-ec2`: inbound 22 (운영자 IP), 80 (0.0.0.0/0, Let's Encrypt HTTP-01 challenge), 443 (0.0.0.0/0, HTTPS — Caddy 종단); outbound all. **8080 inbound 불필요** — Caddy 가 internal docker network 로만 Spring 에 접근한다.
+   - `sg-room-server`: inbound `game_port/UDP` 0.0.0.0/0, outbound TCP 443 0.0.0.0/0 (Caddy HTTPS 경유 ready/heartbeat 콜백), outbound all
    - 보안 그룹 ID 두 개를 `.env.aws-dev` 의 `MURANG_ROOM_RUNTIME_ECS_SECURITY_GROUP_IDS` 에 채울 것
+
+### 1.1 Elastic IP 할당 + Cloudflare A 레코드 (DNS only)
+
+1. **Elastic IP 할당**: AWS 콘솔 → EC2 → Elastic IPs → Allocate Elastic IP address → Allocate. 만들어진 EIP 를 기존 EC2 인스턴스에 **Associate**. EIP 가 attach 되어 있는 한 IP 사용료 무료 (detach 시 시간당 ~$0.005 = 월 ~$3.6).
+2. **Cloudflare A 레코드 추가**: Cloudflare 대시보드 → 보유 zone 선택 → DNS → Records → Add record.
+   - Type `A`, Name `dev` (또는 사용자 선택 서브도메인), IPv4 = 위 EIP, **Proxy status = DNS only (gray cloud)**, TTL `Auto`.
+   - **Proxied (orange cloud) 로 두지 말 것** — Cloudflare edge 가 80/443 을 가로채면 HTTP-01 challenge 가 Caddy 까지 도달하지 못해 인증서 발급이 실패한다.
+3. **반영 확인**: 로컬에서
+
+   ```bash
+   dig +short dev.<zone>     # EIP 1줄만 반환되어야 함
+   ```
+
+   Cloudflare anycast IP (`104.21.*.*` / `172.67.*.*`) 가 반환되면 Proxy status 가 Proxied 상태이므로 토글 재확인 후 1~5분 대기.
+
+### 1.2 Caddy 첫 인증서 발급
+
+**필수 조건 (셋 다 만족해야 자동 발급 성공)**:
+
+- Cloudflare A 레코드가 EIP 를 가리키고 있음 (`dig` 가 EIP 1줄 반환)
+- sg-ec2 inbound **80** 허용 (ACME HTTP-01 challenge)
+- Cloudflare Proxy status = **DNS only**
+
+EC2 에서 control-plane 을 처음 기동하면 Caddy 가 자동으로 ACME HTTP-01 challenge 를 진행하고 Let's Encrypt 인증서를 발급한다.
+
+```bash
+docker compose -f docker-compose.ec2-dev.yml --env-file ~/.env.aws-dev up -d
+docker compose -f docker-compose.ec2-dev.yml --env-file ~/.env.aws-dev logs -f caddy
+# 10~30초 안에 "certificate obtained successfully" 로그가 보여야 한다.
+```
+
+인증서는 `caddy_data` named volume (`/data/caddy/certificates/`) 에 영속화된다 — 컨테이너 재시작·재배포에도 인증서 유지. **볼륨을 함부로 삭제하면 Let's Encrypt rate limit (도메인당 주당 50건) 안에서 재발급이 폭주할 수 있으니 의도적으로만 삭제할 것.**
 
 ---
 
@@ -215,6 +247,9 @@ tools/deploy-ec2-control-plane.sh redeploy
 | Fargate task `READY` 까지 못 감 | task log 확인 (`/ecs/murang-room-server`), ready callback URL 의 도달성 확인 — Fargate SG outbound 8080 -> sg-ec2 inbound 8080 |
 | `room_server_instances.ecs_task_arn` 은 채워졌는데 `ready_at` 이 null | task 부팅 시간 (Fargate cold start + Unity headless 부팅) 또는 callback URL 도달성 문제 |
 | `mysqldump` cron 결과 파일 없음 | `cron` 데몬 동작 여부 (`sudo systemctl status cron`), `/etc/cron.d/murang-mariadb-dump` 권한 (644 권장) |
+| Caddy 로그에 ACME challenge 실패 / `no acme client` | sg-ec2 inbound 80 허용 여부 + `dig +short <domain>` 가 EIP 반환하는지 + Cloudflare Proxy status = DNS only 인지 셋 다 확인 |
+| HTTPS 응답이 자체서명 인증서 / 도메인 매칭 실패 | Cloudflare A 레코드 반영 대기 (TTL Auto ≈ 300초). `dig +short` 결과가 EIP 1줄로 안정될 때까지 대기 후 `docker compose restart caddy`. |
+| `dig` 가 Cloudflare anycast IP (`104.21.*.*` / `172.67.*.*`) 반환 → HTTP-01 challenge 실패 | Cloudflare 대시보드에서 해당 레코드의 Proxy status 를 **DNS only (gray cloud)** 로 변경 후 Caddy 재시작 |
 
 ---
 
