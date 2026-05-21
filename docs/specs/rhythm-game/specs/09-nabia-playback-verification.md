@@ -1,6 +1,7 @@
 # 나비야 플레이백 & 반주 연동 검증
 
 **Parent:** [`_index.md`](../_index.md)
+**Status:** `Done`
 
 **Tech Spec:** skipped
 

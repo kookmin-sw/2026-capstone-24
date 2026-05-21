@@ -173,7 +173,7 @@ docs/specs/
 
 | Feature | Status | Sub-Specs | Plans (Done/Total) | 비고 |
 |---|---|---|---|---|
-| [rhythm-game](rhythm-game/_index.md) | Active | 21 | 24/27 | |
+| [rhythm-game](rhythm-game/_index.md) | Active | 21 | 26/27 | sub-spec 09 완료 |
 | [hands](hands/_index.md) | Active | 3 | 1/2 | |
 | [drum-stick](drum-stick/_index.md) | Active | 2 | 3/3 | |
 | [session-panel](session-panel/_index.md) | Active | 9 | 9/9 | sub-spec 08·09 추가 |
