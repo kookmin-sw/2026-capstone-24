@@ -171,9 +171,14 @@ namespace Murang.Multiplayer.Presence
             {
                 return;
             }
-            int max = (networkRunner != null && networkRunner.SessionInfo != null)
+            int rawMax = (networkRunner != null && networkRunner.SessionInfo != null)
                 ? networkRunner.SessionInfo.MaxPlayers
                 : 0;
+            // Photon Fusion 2 의 dedicated-server 모드는 server actor 1슬롯을 자동 추가하여
+            // SessionInfo.MaxPlayers = DS PlayerCount + 1 로 반환한다 (2026-05-19 e2e 측정 확정:
+            // DS PlayerCount=8 → client SessionInfo.MaxPlayers=9). 사용자 가시 정원은 그 -1.
+            int max = rawMax > 0 ? rawMax - 1 : 0;
+            Debug.Log($"[MultiplayerInRoomPanel] SessionInfo.MaxPlayers={rawMax} displayMax={max} ActiveCount={count}");
             participantCountLabel.text = max > 0 ? $"{count}/{max}" : count.ToString();
         }
 

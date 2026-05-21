@@ -1,11 +1,11 @@
 # Presence UI 로비 패널 (룸 생성 + 룸 목록)
 
 **Linked Spec:** [`04-presence-ui.md`](../specs/04-presence-ui.md)
-**Status:** `Ready`
+**Status:** `Done — superseded by 2026-05-18 lobby-migration-and-ux plan`
 
 ## Goal
 
-`SampleScene` 안 월드스페이스 Canvas 로 구현된 로비 패널을 추가해, 인증 통과한 유저가 (1) 새 룸을 생성하거나 (2) admission 가능한 룸 목록을 보고 합류할 수 있게 한다. 룸 생성 흐름은 [`RoomClient.CreateRoomThroughBackendAsync`](../../../../Assets/Multiplayer/Scripts/Room/Client/RoomClient.cs)(backend 경유) 를 통해 ECS Fargate 룸 서버를 띄우고 READY 도달 후 합류한다. 룸 목록은 기존 [`RoomListQuery`](../../../../Assets/Multiplayer/Scripts/Room/Client/RoomListQuery.cs) 의 Photon SessionList 결과를 사용한다. [`quest-onsite-integration-verification`](./2026-05-11-namae1128-quest-onsite-integration-verification.md) AC #5 (Quest 빌드 → EC2 → Fargate 합류 → 서버 로그 입장 기록) 가 본 plan 완료로 발화 가능해진다.
+default 씬([`../decisions/01-default-scene.md`](../decisions/01-default-scene.md)) 안 월드스페이스 Canvas 로 구현된 로비 패널을 추가해, 인증 통과한 유저가 (1) 새 룸을 생성하거나 (2) admission 가능한 룸 목록을 보고 합류할 수 있게 한다. 룸 생성 흐름은 [`RoomClient.CreateRoomThroughBackendAsync`](../../../../Assets/Multiplayer/Scripts/Room/Client/RoomClient.cs)(backend 경유) 를 통해 ECS Fargate 룸 서버를 띄우고 READY 도달 후 합류한다. 룸 목록은 기존 [`RoomListQuery`](../../../../Assets/Multiplayer/Scripts/Room/Client/RoomListQuery.cs) 의 Photon SessionList 결과를 사용한다. [`quest-onsite-integration-verification`](./2026-05-11-namae1128-quest-onsite-integration-verification.md) AC #5 (Quest 빌드 → EC2 → Fargate 합류 → 서버 로그 입장 기록) 가 본 plan 완료로 발화 가능해진다.
 
 ## Context
 
@@ -23,7 +23,7 @@ In-room 측 참가자 리스트 + 퇴장 버튼은 [`2026-05-16-namae1128-presen
 
 ## Verified Structural Assumptions
 
-- `SampleScene` 안 `MultiplayerAuthGate` GameObject 는 World-Space Canvas 하위 (`activateButton`/`statusLabel` 필드 보유). 로비 패널 Canvas 는 그 옆 형제 GameObject 로 두고 패널 토글로 표시 — `Read Assets/Multiplayer/Scripts/Auth/MultiplayerAuthGate.cs (2026-05-16)`
+- default 씬 (당시 매핑 `SampleScene`, 2026-05-16 기준) 안 `MultiplayerAuthGate` GameObject 는 World-Space Canvas 하위 (`activateButton`/`statusLabel` 필드 보유). 로비 패널 Canvas 는 그 옆 형제 GameObject 로 두고 패널 토글로 표시 — `Read Assets/Multiplayer/Scripts/Auth/MultiplayerAuthGate.cs (2026-05-16)`. **default 씬 매핑이 변경된 경우 implementer 는 현재 매핑 씬([`../decisions/01-default-scene.md`](../decisions/01-default-scene.md))에서 `MultiplayerAuthGate` 의 존재·구조를 재검증한다.**
 - `RoomClient`/`RoomListQuery` 는 같은 GameObject 에 `NetworkRunner` 와 함께 부착되는 패턴 — `Read Assets/Multiplayer/Scripts/Room/Client/RoomClient.cs (2026-05-16)` , `Read Assets/Multiplayer/Scripts/Room/Client/RoomListQuery.cs (2026-05-16)`
 - `MultiplayerAuthConfig` 는 `deviceBackendBaseUrl` (Quest 빌드용) 과 `editorBackendBaseUrl` (Editor 용) 두 URL 을 보유. `BackendApiClient` 를 빌드할 때 둘 중 하나를 골라 base URL 로 사용해야 함 — `Read Assets/Multiplayer/Resources/MultiplayerAuthConfig.asset (2026-05-16)`
 - `RoomCreateRequest.maxPlayers` backend validation: `@Min(1) @Max(32)`, `photonSessionName` pattern: `^[A-Za-z0-9_\-]+$`, length ≤ 128 — `Read backend/src/main/java/com/murang/room/controller/dto/RoomCreateRequest.java (2026-05-16)`
@@ -56,7 +56,7 @@ In-room 측 참가자 리스트 + 퇴장 버튼은 [`2026-05-16-namae1128-presen
 5. **로비 ↔ in-room 토글 이벤트**.
    - `MultiplayerLobbyPanel.OnEnteredRoom : event Action<string roomName>` 발행.
    - `OnLeftRoom` 은 두 번째 plan 의 in-room 패널 측 이벤트로 위임. 본 plan 에선 좌측 화살표만: in-room 측이 leave 했음을 다시 lobby 에 알리는 채널 (event 또는 직접 메서드 호출) 은 두 번째 plan 의 in-room 패널이 `MultiplayerLobbyPanel.ShowLobby()` 메서드 호출하는 식.
-6. **SampleScene 변경**.
+6. **default 씬 변경**.
    - `unity-scene-writer` 로 `MultiplayerAuthGate` Canvas 옆에 `MultiplayerLobbyPanel` GameObject + Canvas + UI 자식들 (input fields, buttons, scroll view) 배치.
    - 인스펙터 referencing 완료. 초기 `lobbyRoot.SetActive(false)`.
    - `RoomRow.prefab` 별도 prefab 생성 (`Assets/Multiplayer/Resources/RoomRow.prefab`).
@@ -70,7 +70,7 @@ In-room 측 참가자 리스트 + 퇴장 버튼은 [`2026-05-16-namae1128-presen
 - `Assets/Multiplayer/Scripts/Presence/RoomRowEntry.cs` — 룸 목록 행 UI 컴포넌트
 - `Assets/Multiplayer/Scripts/Presence/LobbyInputValidator.cs` — 순수 검증 함수 (static)
 - `Assets/Multiplayer/Resources/RoomRow.prefab` — 룸 목록 행 prefab
-- `Assets/Scenes/SampleScene.unity` — `MultiplayerLobbyPanel` Canvas + 자식 UI 배치 + reference 와이어링
+- default 씬 자산 ([`../decisions/01-default-scene.md`](../decisions/01-default-scene.md) 가 현재 매핑된 `.unity` 경로 박제) — `MultiplayerLobbyPanel` Canvas + 자식 UI 배치 + reference 와이어링
 - `Assets/Multiplayer/Scripts/Auth/MultiplayerAuthGate.cs` — `CurrentPlayerId` getter 추가 (필요시)
 - `Assets/Multiplayer/Scripts/Room/Tests/LobbyInputValidatorTests.cs` — EditMode 검증 함수 단위 테스트
 

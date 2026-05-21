@@ -12,7 +12,7 @@ VirtualMusicStudio의 핵심 경험은 여러 유저가 같은 VR 공간에서 �
 - 유저 정보가 저장되고 재사용된다.
 - 여러 유저가 같은 룸에 동시에 접속할 수 있다.
 - 현재 접속 상태를 UI에서 확인할 수 있다.
-- 모든 룸은 동일한 default 씬(`SampleScene`)을 사용하며, 씬에는 악기·오브젝트가 미리 배치되어 있다. 유저는 그 배치된 오브젝트만 사용할 수 있고 룸 내부에서 오브젝트를 추가·이동·삭제하지 않는다.
+- 모든 룸은 동일한 default 씬을 사용하며, 씬에는 악기·오브젝트가 미리 배치되어 있다. 유저는 그 배치된 오브젝트만 사용할 수 있고 룸 내부에서 오브젝트를 추가·이동·삭제하지 않는다. default 씬이 실제로 어떤 Unity 씬에 매핑되는지는 [`decisions/01-default-scene.md`](decisions/01-default-scene.md) 가 단일 source of truth.
 - 룸 서버 lifecycle과 실행 환경을 Spring 내부 `RoomServerManager` 모듈로 관리한다.
 
 ## 현재 진행 스냅샷
@@ -46,6 +46,7 @@ VirtualMusicStudio의 핵심 경험은 여러 유저가 같은 VR 공간에서 �
 | 빌드 타깃 분리 | `Draft` | [06-build-targets.md](specs/06-build-targets.md) |
 | 멀티플레이 로비 패널 UI | `Draft` | [07-lobby-panel-ui.md](specs/07-lobby-panel-ui.md) |
 
+
 > 상태 값은 `Draft` / `Active` / `Done` / `Abandoned`
 
 ## Out of Scope
@@ -59,8 +60,11 @@ VirtualMusicStudio의 핵심 경험은 여러 유저가 같은 VR 공간에서 �
 
 ## Open Questions
 
-- 접속 현황 UI는 `SampleScene` 월드스페이스 패널로 시작할지, 별도 로비/테스트 씬으로 분리할지?
-- 실기기 테스트 1차 목표는 `현재 인원/정원`만으로 충분한지, 아니면 `닉네임 목록`까지 바로 필요한지?
+- _없음_
+
+> 닫힌 OQ trace:
+> - "접속 현황 UI는 default 씬 월드스페이스 패널 vs 별도 로비/테스트 씬" → default 씬 월드스페이스 패널 + 같은 씬 lobby/in-room 토글로 결정 ([`specs/04-presence-ui.md`](specs/04-presence-ui.md) What 섹션).
+> - "1차 목표는 현재 인원/정원만으로 충분한지 vs 닉네임 목록까지 바로 필요한지" → 1차 출시는 `playerId` prefix 6자만 표시, nickname 채널은 실기기 검증 결과에 따른 후속 plan으로 분리 ([`plans/2026-05-16-namae1128-presence-ui-in-room-panel.md`](plans/2026-05-16-namae1128-presence-ui-in-room-panel.md) Context).
 
 ## Status
 

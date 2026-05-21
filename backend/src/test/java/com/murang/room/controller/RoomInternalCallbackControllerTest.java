@@ -9,6 +9,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.murang.room.domain.RoomServerInstanceStatus;
+import com.murang.room.manager.RoomServerSnapshot;
+import java.util.Optional;
+import static org.mockito.Mockito.when;
 import com.murang.room.manager.RoomReadySignal;
 import com.murang.room.manager.RoomServerManager;
 import org.junit.jupiter.api.Test;
@@ -88,5 +92,42 @@ class RoomInternalCallbackControllerTest {
                 .andExpect(status().isForbidden());
 
         verify(roomServerManager, never()).notifyHeartbeat(anyLong(), any());
+    }
+
+    private static final String TERMINATE_BODY = "{\"reason\":\"last-player-left\"}";
+
+    @Test
+    void terminate_withValidToken_returnsNoContentAndCallsManager() throws Exception {
+        RoomServerSnapshot snapshot = org.mockito.Mockito.mock(RoomServerSnapshot.class);
+        when(snapshot.status()).thenReturn(RoomServerInstanceStatus.READY);
+        when(roomServerManager.findByRoomId(42L)).thenReturn(Optional.of(snapshot));
+        mockMvc.perform(post("/internal/rooms/42/terminate")
+                        .header(RoomInternalCallbackController.INTERNAL_TOKEN_HEADER, VALID_TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(TERMINATE_BODY))
+                .andExpect(status().isNoContent());
+        verify(roomServerManager).terminate(eq(42L), eq("ds-callback:last-player-left"));
+    }
+
+    @Test
+    void terminate_missingToken_returnsForbidden() throws Exception {
+        mockMvc.perform(post("/internal/rooms/42/terminate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(TERMINATE_BODY))
+                .andExpect(status().isForbidden());
+        verify(roomServerManager, never()).terminate(anyLong(), any());
+    }
+
+    @Test
+    void terminate_alreadyTerminated_returnsNoContentAndDoesNotCallManager() throws Exception {
+        RoomServerSnapshot snapshot = org.mockito.Mockito.mock(RoomServerSnapshot.class);
+        when(snapshot.status()).thenReturn(RoomServerInstanceStatus.TERMINATED);
+        when(roomServerManager.findByRoomId(42L)).thenReturn(Optional.of(snapshot));
+        mockMvc.perform(post("/internal/rooms/42/terminate")
+                        .header(RoomInternalCallbackController.INTERNAL_TOKEN_HEADER, VALID_TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(TERMINATE_BODY))
+                .andExpect(status().isNoContent());
+        verify(roomServerManager, never()).terminate(anyLong(), any());
     }
 }

@@ -52,7 +52,7 @@ public class LobbyInputValidatorTests
 
         Assert.That(result.Success, Is.False);
         Assert.That(result.ErrorField, Is.EqualTo(LobbyInputValidator.FieldPhotonSessionName));
-        Assert.That(result.ErrorMessage, Does.Contain("영문"));
+        Assert.That(result.ErrorMessage, Does.Contain("letters"));
     }
 
     [Test]
