@@ -16,18 +16,6 @@ namespace RhythmGame.Runtime
 /// </summary>
 public class TromboneNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
 {
-    // 슬라이드 0(가장 가까움) → 보라, 슬라이드 6(가장 멀음) → 빨강
-    static readonly Color[] SlideColors =
-    {
-        new Color(0.55f, 0.00f, 0.85f, 1f), // 0: 보라
-        new Color(0.00f, 0.00f, 1.00f, 1f), // 1: 파랑
-        new Color(0.00f, 0.75f, 1.00f, 1f), // 2: 하늘색
-        new Color(0.00f, 0.80f, 0.20f, 1f), // 3: 초록
-        new Color(1.00f, 1.00f, 0.00f, 1f), // 4: 노랑
-        new Color(1.00f, 0.45f, 0.00f, 1f), // 5: 주황
-        new Color(1.00f, 0.00f, 0.00f, 1f), // 6: 빨강
-    };
-
     [SerializeField] NoteDisplayPanel noteDisplayPanelPrefab;
 
     [Tooltip("패널 배치 기준 Transform. null이면 InstrumentBase.PanelAnchor로 폴백")]
@@ -138,7 +126,7 @@ public class TromboneNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
                 byte note = (byte)midi;
                 if (assignedNotes.Contains(note)) continue;
                 notes.Add(note);
-                colorMap[note] = SlideColors[Mathf.Clamp(s, 0, SlideColors.Length - 1)];
+                colorMap[note] = TromboneSlideColors.Palette[Mathf.Clamp(s, 0, TromboneSlideColors.Palette.Length - 1)];
             }
             foreach (byte note in notes) assignedNotes.Add(note);
             if (notes.Count == 0) continue;
