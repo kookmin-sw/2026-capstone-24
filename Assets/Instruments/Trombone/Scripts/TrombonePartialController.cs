@@ -25,6 +25,8 @@ namespace Instruments
         int m_PartialIndex;
 
         public int PartialIndex => m_PartialIndex;
+        public float AnglePerPartial => anglePerPartial;
+        public int PartialCount => (partialOffsetsSemitones != null) ? partialOffsetsSemitones.Length : 0;
 
         public int PartialOffsetSemitones
         {

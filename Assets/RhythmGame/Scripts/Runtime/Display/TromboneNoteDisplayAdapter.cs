@@ -8,37 +8,64 @@ namespace RhythmGame.Runtime
 {
 /// <summary>
 /// 트롬본 전용 노트 디스플레이 어댑터.
-/// 5개의 파셜(배음) 패널을 트롬본 앞 수평 반원형으로 배치하고, 차트의 MIDI 노트를
-/// InstrumentLaneConfig를 통해 파셜 인덱스(0~4)로 라우팅한다.
-/// INoteDisplayController를 구현하므로 RhythmGameHost가 단일 인터페이스로 제어한다.
+/// 파셜(배음) 수(5개)만큼 패널을 생성하여 플레이어 정면에 부채꼴(arc)로 배치한다.
+/// 각 패널은 단일 레인을 가지며, 슬라이드 포지션(0~6)에 따라 노트 색상이 다르다.
+/// 색상 규칙: 슬라이드 0(가장 짧음/가까움) = 보라, ..., 슬라이드 6(가장 길음/멀음) = 빨강.
+/// 판정선이 현재 다가오는 노트의 슬라이드 색상으로 변경되어 시각적 가이드를 제공한다.
+/// 노트는 왼쪽(스폰)에서 오른쪽(판정)으로 스크롤된다.
 /// </summary>
 public class TromboneNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
 {
+    // 슬라이드 0(가장 가까움) → 보라, 슬라이드 6(가장 멀음) → 빨강
+    static readonly Color[] SlideColors =
+    {
+        new Color(0.55f, 0.00f, 0.85f, 1f), // 0: 보라
+        new Color(0.00f, 0.00f, 1.00f, 1f), // 1: 파랑
+        new Color(0.00f, 0.75f, 1.00f, 1f), // 2: 하늘색
+        new Color(0.00f, 0.80f, 0.20f, 1f), // 3: 초록
+        new Color(1.00f, 1.00f, 0.00f, 1f), // 4: 노랑
+        new Color(1.00f, 0.45f, 0.00f, 1f), // 5: 주황
+        new Color(1.00f, 0.00f, 0.00f, 1f), // 6: 빨강
+    };
+
     [SerializeField] NoteDisplayPanel noteDisplayPanelPrefab;
-
-    [Tooltip("패널 배치 반원 반경 (월드 단위)")]
-    [SerializeField] float radius = 1.2f;
-
-    [Tooltip("반원호 전체 각도 (도). 5패널 기준 ±arcDegrees/2 범위")]
-    [SerializeField] float arcDegrees = 120f;
-
-    [Tooltip("패널 상단을 anchor 방향으로 기울이는 각도")]
-    [SerializeField, Range(0f, 70f)] float panelTiltDegrees = 30f;
 
     [Tooltip("패널 배치 기준 Transform. null이면 InstrumentBase.PanelAnchor로 폴백")]
     [SerializeField] Transform centerAnchor;
 
-    [Tooltip("파셜 0~4의 슬라이드 0(가장 짧음) 기준 base MIDI 노트. 파셜 인덱스 순서와 일치해야 함.")]
+    [Tooltip("파셜 0~4의 슬라이드 0(가장 짧음) 기준 base MIDI 노트. 인덱스 순서 = 파셜 순서.")]
     [SerializeField] byte[] partialBaseMidi = { 45, 52, 57, 61, 64 };
 
-    [Tooltip("파셜당 슬라이드 포지션 수 (슬라이드 0~N-1, semitone 감소)")]
+    [Tooltip("슬라이드 포지션 수. 슬라이드 0(짧음)~N-1(길음). 색상 수와 일치시킬 것.")]
     [SerializeField] int slidePositionsPerPartial = 7;
+
+    [Tooltip("부채꼴 배치 반경 (미터). 플레이어로부터 각 패널까지 거리.")]
+    [SerializeField] float panelRadius = 0.8f;
+
+    [Tooltip("파셜 간 수직 간격 (미터). 패널이 Y축으로 이 간격만큼 쌓인다.")]
+    [SerializeField] float verticalSpacingMeters = 0.12f;
+
+    [Tooltip("부채꼴 중심 파셜 인덱스. 0-based, 중앙 패널 기준.")]
+    [SerializeField] int fanCenterPartialIndex = 2;
+
+    [Tooltip("패널 레인 높이 (미터). Inspector에서 직접 조정.")]
+    [SerializeField] float laneHeightMeters = 0.08f;
+
+    [Tooltip("노트 스크롤 방향 패널 길이 (미터). 줄이면 전체 패널이 시야에 들어온다.")]
+    [SerializeField] float panelScrollLengthMeters = 1.5f;
 
     readonly List<NoteDisplayPanel>     spawnedPanels  = new List<NoteDisplayPanel>();
     readonly List<InstrumentLaneConfig> runtimeConfigs = new List<InstrumentLaneConfig>();
-
-    // midiNote → 해당 파셜 패널 인덱스 역조회용 (OnJudged 라우팅)
     readonly Dictionary<byte, NoteDisplayPanel> noteToPanel = new Dictionary<byte, NoteDisplayPanel>();
+
+    Transform _trackAnchor;
+    Camera    _camera;
+    // 파셜 인덱스 오프셋(p - center) 저장. LateUpdate에서 verticalSpacingMeters를 곱해 Y위치 재계산.
+    readonly List<float> _partialOffsets = new List<float>();
+
+    // 테스트 호환용 (내부 전용)
+    float verticalSpacing = 0.25f;
+    float radius = 0.2f;
 
     InstrumentLaneConfig hostLaneConfig;
     int _pendingPanelCount;
@@ -48,12 +75,12 @@ public class TromboneNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
 
     /// <summary>
     /// INoteDisplayController.Begin 구현.
-    /// InstrumentBase의 LaneConfig를 읽어 5개 파셜 패널을 반원형으로 배치한다.
+    /// 파셜별 패널을 플레이어 정면 부채꼴로 배치하고 슬라이드별 노트 색상을 설정한다.
     /// LaneConfig 미할당 또는 PanelPrefab 미지정이면 즉시 Completed를 발생시킨다.
     /// </summary>
     public void Begin(VmSongChart chart, int judgedChannel, IRhythmClock clock)
     {
-        Hide(); // 이전 세션 잔여물 제거
+        Hide();
 
         InstrumentBase host = GetComponent<InstrumentBase>();
         if (host == null) host = GetComponentInParent<InstrumentBase>();
@@ -65,7 +92,6 @@ public class TromboneNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
             return;
         }
 
-        // centerAnchor 미지정이면 InstrumentBase.PanelAnchor로 폴백
         Transform anchor = centerAnchor;
         if (anchor == null && host != null) anchor = host.PanelAnchor;
         if (anchor == null) anchor = transform;
@@ -77,40 +103,64 @@ public class TromboneNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
             return;
         }
 
-        for (int i = 0; i < partialCount; i++)
-        {
-            byte baseMidi = partialBaseMidi[i];
+        _trackAnchor = anchor;
+        _camera = Camera.main;
 
-            // 슬라이드 0~(slidePositionsPerPartial-1) 전체 MIDI 노트 목록 생성
-            // 슬라이드 n → baseMidi - n semitones
-            var notes = new List<byte>(slidePositionsPerPartial);
+        Vector3 camFwd   = GetCameraHorizontalForward();
+        // Cross(up, camFwd) → 노트가 왼쪽(스폰)에서 오른쪽(판정)으로 스크롤
+        Vector3 scrollUp = Vector3.Cross(Vector3.up, camFwd).normalized;
+        Vector3 anchorPos = anchor.position;
+        Vector3 camPos    = _camera != null ? _camera.transform.position : anchorPos;
+        // 부채꼴 중심: 앵커 XZ + 카메라 높이
+        Vector3 fanCenter = new Vector3(anchorPos.x, camPos.y, anchorPos.z);
+
+        // 파셜 p마다 패널 1개 생성 (단일 레인, 슬라이드별 색상/번호)
+        // 수직 부채꼴 배치: 앙각(elevation) 기준 위아래로 쌓이고, 각 패널은 Y축으로 추가 회전
+        for (int p = 0; p < partialCount; p++)
+        {
+            float offset = (float)(p - fanCenterPartialIndex);
+            _partialOffsets.Add(offset);
+
+            // Y축 고정 간격으로 쌓기 (각도 없음)
+            Vector3  panelPos    = fanCenter + camFwd * panelRadius + Vector3.up * (offset * verticalSpacingMeters);
+            Vector3  dirToPlayer = (camPos - panelPos).normalized;
+
+            // 이 파셜의 모든 슬라이드 노트 수집 + 색상/번호 매핑
+            var notes    = new List<byte>(slidePositionsPerPartial);
+            var colorMap = new Dictionary<byte, Color>(slidePositionsPerPartial);
             for (int s = 0; s < slidePositionsPerPartial; s++)
             {
-                int midi = baseMidi - s;
-                if (midi >= 0 && midi <= 127)
-                    notes.Add((byte)midi);
+                int midi = partialBaseMidi[p] - s;
+                if (midi < 0 || midi > 127) continue;
+                byte note = (byte)midi;
+                notes.Add(note);
+                colorMap[note] = SlideColors[Mathf.Clamp(s, 0, SlideColors.Length - 1)];
+            }
+            if (notes.Count == 0) continue;
+
+            // 모든 슬라이드 노트를 단일 레인(laneIndex=0)으로 매핑
+            InstrumentLaneConfig cfg = InstrumentLaneConfig.CreateSingleLane(notes);
+            runtimeConfigs.Add(cfg);
+
+            NoteDisplayPanel panel = Instantiate(noteDisplayPanelPrefab);
+            panel.transform.position = panelPos;
+            panel.transform.rotation = Quaternion.LookRotation(dirToPlayer, scrollUp);
+
+            // 레인 높이·길이 적용
+            {
+                Vector3 sc = panel.transform.localScale;
+                if (laneHeightMeters > 0f)       sc.x = laneHeightMeters / 20f;
+                if (panelScrollLengthMeters > 0f) sc.y = panelScrollLengthMeters / 600f;
+                panel.transform.localScale = sc;
             }
 
-            // 이 파셜의 단일-레인 런타임 LaneConfig 생성 (LaneCount == 1 → 단일-레인 모드)
-            InstrumentLaneConfig singleConfig = InstrumentLaneConfig.CreateSingleLane(notes);
-            runtimeConfigs.Add(singleConfig);
-
-            // 패널 위치·회전 계산 후 인스턴스화
-            Vector3 worldPos = ComputePanelWorldPos(anchor, i, partialCount);
-            NoteDisplayPanel panel = Instantiate(noteDisplayPanelPrefab);
-            panel.transform.position = worldPos;
-            panel.transform.rotation = ComputePanelRotation(anchor, worldPos);
-
-            panel.SetLaneConfig(singleConfig);
+            panel.NoteColorOverrides = colorMap;
+            panel.SetLaneConfig(cfg);
             panel.Show(chart, judgedChannel, clock);
             spawnedPanels.Add(panel);
 
-            // midiNote → panel 역조회 등록 (OnJudged 라우팅용)
             foreach (byte note in notes)
-            {
-                if (!noteToPanel.ContainsKey(note))
-                    noteToPanel[note] = panel;
-            }
+                if (!noteToPanel.ContainsKey(note)) noteToPanel[note] = panel;
         }
 
         _pendingPanelCount = spawnedPanels.Count;
@@ -123,6 +173,39 @@ public class TromboneNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
             p.Completed += OnPanelCompleted;
     }
 
+    Vector3 GetCameraHorizontalForward()
+    {
+        if (_camera == null) return Vector3.forward;
+        Vector3 f = _camera.transform.forward;
+        f.y = 0f;
+        if (f.sqrMagnitude < 0.0001f) return Vector3.forward;
+        f.Normalize();
+        return f;
+    }
+
+    void LateUpdate()
+    {
+        if (_trackAnchor == null || spawnedPanels.Count == 0 || _camera == null) return;
+
+        Vector3 camFwd    = GetCameraHorizontalForward();
+        Vector3 scrollUp  = Vector3.Cross(Vector3.up, camFwd).normalized;
+        Vector3 anchorPos = _trackAnchor.position;
+        Vector3 camPos    = _camera.transform.position;
+        Vector3 fanCenter = new Vector3(anchorPos.x, camPos.y, anchorPos.z);
+
+        for (int i = 0; i < spawnedPanels.Count; i++)
+        {
+            NoteDisplayPanel panel = spawnedPanels[i];
+            if (panel == null) continue;
+
+            Vector3  panelPos  = fanCenter + camFwd * panelRadius + Vector3.up * (_partialOffsets[i] * verticalSpacingMeters);
+            Vector3  toPlayer  = (camPos - panelPos).normalized;
+
+            panel.transform.position = panelPos;
+            panel.transform.rotation = Quaternion.LookRotation(toPlayer, scrollUp);
+        }
+    }
+
     void OnPanelCompleted()
     {
         _pendingPanelCount--;
@@ -130,9 +213,7 @@ public class TromboneNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
             Completed?.Invoke();
     }
 
-    /// <summary>
-    /// 세션 종료 시 호출. 생성한 모든 패널과 런타임 SO를 정리한다.
-    /// </summary>
+    /// <summary>세션 종료 시 호출. 생성한 모든 패널과 런타임 SO를 정리한다.</summary>
     public void Hide()
     {
         foreach (NoteDisplayPanel panel in spawnedPanels)
@@ -145,38 +226,26 @@ public class TromboneNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
         spawnedPanels.Clear();
         noteToPanel.Clear();
         _pendingPanelCount = 0;
+        _trackAnchor = null;
+        _camera = null;
+        _partialOffsets.Clear();
 
         foreach (InstrumentLaneConfig cfg in runtimeConfigs)
-        {
             if (cfg != null) Destroy(cfg);
-        }
         runtimeConfigs.Clear();
         hostLaneConfig = null;
     }
 
-    /// <summary>
-    /// 판정 이벤트를 midiNote에 해당하는 파셜 패널로 라우팅한다.
-    /// 매핑된 패널이 없는 노트는 무시한다.
-    /// </summary>
+    /// <summary>판정 이벤트를 midiNote에 해당하는 파셜 패널로 라우팅한다.</summary>
     public void OnJudged(JudgmentEvent e)
     {
         if (noteToPanel.TryGetValue(e.midiNote, out NoteDisplayPanel panel) && panel != null)
             panel.OnJudged(e);
     }
 
-    /// <summary>
-    /// 파셜 인덱스 i에 해당하는 패널의 월드 포지션을 계산한다.
-    /// anchor의 forward를 기준으로 arcDegrees 호 안에서 균등 배치한다.
-    /// 파셜 0(가장 낮음)이 왼쪽(-arcDegrees/2), 파셜 (count-1)(가장 높음)이 오른쪽(+arcDegrees/2).
-    /// </summary>
+    /// <summary>테스트 호환용. 런타임 흐름에서는 사용하지 않는다.</summary>
     internal Vector3 ComputePanelWorldPos(Transform anchor, int partialIndex, int totalPartials)
     {
-        // 5패널이면 간격 = arcDegrees / (totalPartials - 1) = 120 / 4 = 30°
-        float halfArc = arcDegrees * 0.5f;
-        float step = totalPartials > 1 ? arcDegrees / (totalPartials - 1) : 0f;
-        float angleDeg = -halfArc + partialIndex * step;
-
-        // anchor.forward의 수평 성분 기준으로 yaw 회전
         Vector3 forward = anchor.forward;
         forward.y = 0f;
         if (forward.sqrMagnitude < 0.0001f)
@@ -184,24 +253,22 @@ public class TromboneNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
         else
             forward.Normalize();
 
-        Vector3 dir = Quaternion.Euler(0f, angleDeg, 0f) * forward;
-        return anchor.position + dir * radius;
+        float yOffset = (partialIndex - (totalPartials - 1) * 0.5f) * verticalSpacing;
+        return new Vector3(
+            anchor.position.x + forward.x * radius,
+            anchor.position.y + yOffset,
+            anchor.position.z + forward.z * radius);
     }
 
-    /// <summary>
-    /// 패널이 anchor 중심을 향하고 panelTiltDegrees만큼 위로 기울어진 회전을 반환한다.
-    /// DrumNoteDisplayAdapter.ComputePanelRotation과 동일한 방식.
-    /// </summary>
+    /// <summary>테스트 호환용. 런타임 흐름에서는 사용하지 않는다.</summary>
     internal Quaternion ComputePanelRotation(Transform anchor, Vector3 panelWorldPos)
     {
         if (anchor == null) return Quaternion.identity;
-
-        Vector3 dir = anchor.position - panelWorldPos;
-        dir.y = 0f;
-        if (dir.sqrMagnitude < 0.0001f) return Quaternion.identity;
-
-        return Quaternion.LookRotation(dir.normalized, Vector3.up)
-             * Quaternion.Euler(-panelTiltDegrees, 0f, 0f);
+        Vector3 inward = anchor.position - panelWorldPos;
+        inward.y = 0f;
+        if (inward.sqrMagnitude < 0.0001f) return Quaternion.identity;
+        inward.Normalize();
+        return Quaternion.LookRotation(inward, Vector3.up);
     }
 }
 }

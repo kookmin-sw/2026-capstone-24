@@ -61,6 +61,23 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
     bool               _notesEverQueued;
     RectTransform      _panelRt;
 
+    /// <summary>
+    /// 슬라이드 포지션별 노트 색상 오버라이드 (midiNote → Color).
+    /// null이면 기본 색상 사용. TromboneNoteDisplayAdapter가 Begin() 전에 설정한다.
+    /// </summary>
+    public System.Collections.Generic.Dictionary<byte, Color> NoteColorOverrides;
+
+    /// <summary>
+    /// 노트에 표시할 레이블 문자열 (midiNote → "1"~"7" 등).
+    /// null이면 레이블 미표시. TromboneNoteDisplayAdapter가 Begin() 전에 설정한다.
+    /// </summary>
+    public System.Collections.Generic.Dictionary<byte, string> NoteLabels;
+
+    /// <summary>현재 판정선에 가장 가까운 활성 노트의 색상. 판정선 지시자 갱신에 사용된다.</summary>
+    public Color CurrentNoteColor { get; private set; } = Color.gray;
+
+    Image _judgmentLineImage;
+
     /// <summary>모든 노트가 화면에서 사라지면 발생. RhythmGameHost가 자동 StopSession에 활용한다.</summary>
     public event System.Action Completed;
 
@@ -143,6 +160,8 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
 
     /// <summary>laneConfig가 정확히 1개 노트일 때 단일 레인 모드(드럼 파츠 패널 등).</summary>
     bool IsSingleLane => laneConfig != null && laneConfig.LaneCount == 1;
+    /// <summary>laneConfig가 2개 이상의 레인을 가질 때 N-레인 제네릭 모드(트롬본 슬라이드 등).</summary>
+    bool IsNLaneMode  => laneConfig != null && laneConfig.LaneCount > 1;
 
     /// <summary>런타임에 laneConfig를 교체한다. Show() 호출 전에 사용해야 한다.</summary>
     public void SetLaneConfig(InstrumentLaneConfig config)
@@ -270,6 +289,22 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
             active = false;
             Completed?.Invoke();
         }
+
+        // 판정선 슬라이드 색상 지시자 갱신
+        if (NoteColorOverrides != null && _judgmentLineImage != null)
+        {
+            Color nearest = Color.gray;
+            float nearestY = float.MaxValue;
+            for (int j = 0; j < activeNotes.Count; j++)
+            {
+                var nv2 = activeNotes[j];
+                if (nv2 == null || nv2.AssignedColor.a < 0.01f) continue;
+                float y = nv2.transform.localPosition.y;
+                if (y < nearestY) { nearestY = y; nearest = nv2.AssignedColor; }
+            }
+            CurrentNoteColor = nearest;
+            _judgmentLineImage.color = new Color(nearest.r, nearest.g, nearest.b, 0.9f);
+        }
     }
 
     // ─── 레이아웃 빌드 ───────────────────────────────────────────────────────
@@ -283,15 +318,16 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
         // ── 단일 레인 모드(드럼 파츠 패널): 좌우 경계선 + 판정선만 구성 ──
         if (IsSingleLane)
         {
-            // 판정선 (하단)
+            // 판정선 (하단) — 슬라이드 색상 지시자로도 활용
             var jlGo   = MakeUI("JudgeLine", transform);
             var jlRect = jlGo.GetComponent<RectTransform>();
             jlRect.anchorMin = new Vector2(0f, 0f);
             jlRect.anchorMax = new Vector2(1f, 0f);
             jlRect.pivot     = new Vector2(0.5f, 0f);
             jlRect.offsetMin = Vector2.zero;
-            jlRect.offsetMax = new Vector2(0f, 0f);
-            jlGo.AddComponent<Image>().color = new Color(1f, 1f, 0f, 0.9f);
+            jlRect.offsetMax = new Vector2(0f, 3f);
+            _judgmentLineImage = jlGo.AddComponent<Image>();
+            _judgmentLineImage.color = new Color(1f, 1f, 0f, 0.9f);
 
             // 중앙 가이드선 (노트 낙하 기준)
             var centerDiv  = MakeUI("LaneDivC", transform);
@@ -303,6 +339,33 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
             centerRect.offsetMax = new Vector2(1f, 0f);
             centerDiv.AddComponent<Image>().color = new Color(1f, 1f, 1f, 0.6f);
 
+            return;
+        }
+
+        // ── N-레인 제네릭 모드(트롬본 슬라이드 등): N개 등폭 레인 ──
+        if (IsNLaneMode)
+        {
+            int n = laneConfig.LaneCount;
+            var njlGo   = MakeUI("JudgeLine", transform);
+            var njlRect = njlGo.GetComponent<RectTransform>();
+            njlRect.anchorMin = new Vector2(0f, 0f);
+            njlRect.anchorMax = new Vector2(1f, 0f);
+            njlRect.pivot     = new Vector2(0.5f, 0f);
+            njlRect.offsetMin = Vector2.zero;
+            njlRect.offsetMax = new Vector2(0f, 2f);
+            njlGo.AddComponent<Image>().color = new Color(1f, 1f, 0f, 0.9f);
+            for (int i = 0; i <= n; i++)
+            {
+                float normX  = (float)i / n;
+                var divGo   = MakeUI($"LaneDiv_{i}", transform);
+                var divRect = divGo.GetComponent<RectTransform>();
+                divRect.anchorMin = new Vector2(normX, 0f);
+                divRect.anchorMax = new Vector2(normX, 1f);
+                divRect.pivot     = new Vector2(0.5f, 0f);
+                divRect.offsetMin = Vector2.zero;
+                divRect.offsetMax = new Vector2(1f, 0f);
+                divGo.AddComponent<Image>().color = new Color(1f, 1f, 1f, 0.35f);
+            }
             return;
         }
 
@@ -377,6 +440,15 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
             localX = pr.x + pw * 0.5f;
             noteW  = pw * 0.80f;
         }
+        else if (IsNLaneMode)
+        {
+            // N-레인 제네릭 모드: laneIndex 기반 등폭 배치
+            if (!laneConfig.TryGetLane(pn.midiNote, out int laneIdx)) return;
+            int n = laneConfig.LaneCount;
+            float centerNormX = (laneIdx + 0.5f) / n;
+            localX = pr.x + centerNormX * pw;
+            noteW  = pw / n * 0.85f;
+        }
         else
         {
             // 피아노 모드: 건반 위치 기반 X
@@ -429,6 +501,38 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
 
         float noteLifetime = (startY + noteH) / fallSpeed + 0.5f;
         nv.Init(fallSpeed, noteLifetime);
+
+        // 슬라이드 색상 오버라이드 적용
+        if (NoteColorOverrides != null && NoteColorOverrides.TryGetValue(pn.midiNote, out Color slideColor))
+        {
+            nv.AssignedColor = slideColor;
+            var imgs = nv.GetComponentsInChildren<Image>(true);
+            foreach (var img in imgs) img.color = slideColor;
+        }
+
+        // 슬라이드 번호 레이블 표시
+        if (NoteLabels != null && NoteLabels.TryGetValue(pn.midiNote, out string noteLabel))
+        {
+            Color bg = nv.AssignedColor.a > 0.01f ? nv.AssignedColor : Color.gray;
+            float brightness = bg.r * 0.299f + bg.g * 0.587f + bg.b * 0.114f;
+            Color textColor = brightness > 0.55f ? new Color(0.05f, 0.05f, 0.05f) : Color.white;
+
+            var lblGo = new GameObject("NoteLabel", typeof(RectTransform));
+            lblGo.transform.SetParent(nv.transform, false);
+            var lblRect = lblGo.GetComponent<RectTransform>();
+            lblRect.anchorMin = Vector2.zero;
+            lblRect.anchorMax = Vector2.one;
+            lblRect.offsetMin = Vector2.zero;
+            lblRect.offsetMax = Vector2.zero;
+            var txt = lblGo.AddComponent<Text>();
+            txt.text = noteLabel;
+            txt.alignment = TextAnchor.MiddleCenter;
+            txt.fontSize = 12;
+            txt.fontStyle = FontStyle.Bold;
+            txt.color = textColor;
+            txt.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        }
+
         activeNotes.Add(nv);
     }
 
