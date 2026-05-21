@@ -1,7 +1,7 @@
 # 나비야 플레이백 & 반주 연동 — Unity 씬 검증
 
 **Linked Spec:** [`09-nabia-playback-verification.md`](../specs/09-nabia-playback-verification.md)
-**Status:** `Ready`
+**Status:** `Done`
 
 ## Goal
 
@@ -85,4 +85,4 @@
 
 ## Handoff
 
-_미작성 — 검증 완료 후 doc-updater가 관찰 결과를 채운다._
+검증 완료(2026-05-21). 피아노·드럼 grab 양방향으로 Nabia 곡 선택·난이도 전환·반주 토글 ON/OFF·세션 플레이백 전 시나리오 통과. drum 토글 OFF 시 드럼 소리 없음, ON 시 드럼 소리 들림. 난이도 전환 시 토글 컨테이너 재구성 및 ON 리셋 정상 동작 확인. nabia 피아노 노트 시각적 낙하·판정 정상. 3건 실패(AC 4·6·7)는 후속 plan(nabia-playback-fix)으로 파생돼 수정 완료.
