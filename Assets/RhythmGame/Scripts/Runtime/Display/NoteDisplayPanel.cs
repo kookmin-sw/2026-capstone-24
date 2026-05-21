@@ -41,6 +41,9 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
     [Header("Billboard Tilt (0 = 수직 고정, >0 = 카메라 방향 + 기울기)")]
     [SerializeField, Range(0f, 70f)] float panelTiltDegrees = 0f;
 
+    [Header("World Y Override (NaN = 미적용, 값 지정 시 transform.position.y 강제)")]
+    [SerializeField] float worldYOverride = float.NaN;
+
     // ─── Runtime ─────────────────────────────────────────────────────────────
     struct PendingNote
     {
@@ -75,6 +78,16 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
             if (billboard == null) billboard = gameObject.AddComponent<BillboardUI>();
             billboard.tiltDegrees = panelTiltDegrees;
         }
+
+        ApplyWorldYOverride();
+    }
+
+    void ApplyWorldYOverride()
+    {
+        if (float.IsNaN(worldYOverride)) return;
+        Vector3 p = transform.position;
+        p.y = worldYOverride;
+        transform.position = p;
     }
 
     // ─── 건반 분류 유틸 ──────────────────────────────────────────────────────
@@ -190,6 +203,7 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
         _notesEverQueued = pendingQueue.Count > 0;
         active = true;
         gameObject.SetActive(true);
+        ApplyWorldYOverride();
     }
 
     /// <summary>세션 종료 시 호출. 모든 노트를 즉시 제거하고 패널을 숨긴다.</summary>
@@ -276,7 +290,7 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
             jlRect.anchorMax = new Vector2(1f, 0f);
             jlRect.pivot     = new Vector2(0.5f, 0f);
             jlRect.offsetMin = Vector2.zero;
-            jlRect.offsetMax = new Vector2(0f, 4f);
+            jlRect.offsetMax = new Vector2(0f, 0f);
             jlGo.AddComponent<Image>().color = new Color(1f, 1f, 0f, 0.9f);
 
             // 중앙 가이드선 (노트 낙하 기준)
@@ -308,7 +322,7 @@ public class NoteDisplayPanel : MonoBehaviour, INoteDisplayController
         pjlRect.anchorMax = new Vector2(1f, 0f);
         pjlRect.pivot     = new Vector2(0.5f, 0f);
         pjlRect.offsetMin = Vector2.zero;
-        pjlRect.offsetMax = new Vector2(0f, 4f);
+        pjlRect.offsetMax = new Vector2(0f, 0f);
         pjlGo.AddComponent<Image>().color = new Color(1f, 1f, 0f, 0.8f);
 
         // ── 세로 구분선: 흰 건반 경계 (0 ~ WHITE_KEY_COUNT = 53개) ──

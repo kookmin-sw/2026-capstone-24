@@ -15,7 +15,7 @@ public class DrumNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
 {
     [SerializeField] NoteDisplayPanel noteDisplayPanelPrefab;
     [Tooltip("각 드럼 파츠 위 패널의 y 오프셋 (월드 단위)")]
-    [SerializeField] float yOffset = 0.15f;
+    [SerializeField] float yOffset = -0.1f;
     [Tooltip("패널 상단을 카메라 반대 방향으로 기울이는 각도 (0 = 수직, 클수록 더 눕혀짐)")]
     [SerializeField, Range(0f, 70f)] float panelTiltDegrees = 50f;
 
@@ -52,6 +52,13 @@ public class DrumNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
 
         if (config == null || noteDisplayPanelPrefab == null) return;
 
+        InstrumentBase host = GetComponent<InstrumentBase>() ?? GetComponentInParent<InstrumentBase>();
+        Transform panelAnchor = host != null ? host.PanelAnchor : null;
+
+        // 노트 패널 회전 기준: 플레이어가 서는 InstrumentAnchor 중심. 없으면 PanelAnchor 폴백.
+        InstrumentTeleportColliderBinder binder = GetComponentInChildren<InstrumentTeleportColliderBinder>(true);
+        Transform rotationTarget = binder != null ? binder.transform : panelAnchor;
+
         DrumHitZone[] hitZones = GetComponentsInChildren<DrumHitZone>(includeInactive: true);
         HashSet<byte> processedNotes = new HashSet<byte>();
 
@@ -67,10 +74,11 @@ public class DrumNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
             InstrumentLaneConfig singleConfig = InstrumentLaneConfig.CreateSingleNote(note);
             runtimeConfigs.Add(singleConfig);
 
+            // 각 파츠의 패널 위치를 먼저 계산한 뒤, 그 위치에서 anchor를 향하는 방향으로 회전 결정
             Vector3 worldPos = ComputePanelPosition(zone.transform, zone.PanelYOffset);
             NoteDisplayPanel panel = Instantiate(noteDisplayPanelPrefab);
             panel.transform.position = worldPos;
-            panel.gameObject.AddComponent<BillboardUI>().tiltDegrees = panelTiltDegrees;
+            panel.transform.rotation = ComputePanelRotation(rotationTarget, worldPos);
 
             panel.SetLaneConfig(singleConfig);
             panel.Show(chart, judgedChannel, clock);
@@ -128,11 +136,23 @@ public class DrumNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
             panel.OnJudged(e);
     }
 
-    Vector3 ComputePanelPosition(Transform t, float extraOffset = 0f)
+    internal Quaternion ComputePanelRotation(Transform anchor, Vector3 panelWorldPos)
+    {
+        if (anchor == null) return Quaternion.identity;
+
+        // 패널 위치에서 anchor 위치를 향하는 수평 방향으로 각 패널이 개별적으로 향한다.
+        Vector3 dir = anchor.position - panelWorldPos;
+        dir.y = 0f;
+        if (dir.sqrMagnitude < 0.0001f) return Quaternion.identity;
+
+        return Quaternion.LookRotation(dir.normalized, Vector3.up)
+             * Quaternion.Euler(-panelTiltDegrees, 0f, 0f);
+    }
+
+    internal Vector3 ComputePanelPosition(Transform t, float extraOffset = 0f)
     {
         float totalOffset = yOffset + extraOffset;
 
-        // Y: 히트존 Collider 상단 (실제 타격면 높이)
         Collider col = t.GetComponentInChildren<Collider>();
         float worldY = col != null
             ? col.bounds.max.y + totalOffset
