@@ -12,31 +12,75 @@ tick=0  bpm=120  beats=4  beatUnit=4
 channel=1  instrument=piano
 
 [Track:1]
-# Piano Easy: sustained chord roots only (melody moved to trombone)
+# Piano Easy: melody + sustained chord root
 # 8 bars (1 bar = 1920 ticks, total 0-15359)
+# Melody: G4=67, E4=64, F4=65, D4=62, C4=60
+# Chord roots (Sustained): 1 full-bar chord = len=1880, 2-beat chord = len=920
 # Chord roots: C3=48, G3=55
 
-# BAR 1 (0-1919): C chord (Whole Note)
+# BAR 1 (0-1919): C chord (Whole Note) | Melody G4-E4-E4(half)
+# Chord root - Sustained for 4 beats (len=1880)
 tick=0     note=48  len=1880 vel=70
+# Melody
+tick=0     note=67  len=440  vel=92
+tick=480   note=64  len=440  vel=92
+tick=960   note=64  len=920  vel=92
 
-# BAR 2 (1920-3839): G7 chord (Whole Note)
+# BAR 2 (1920-3839): G7 chord (Whole Note) | Melody F4-D4-D4(half)
+# Chord root - Sustained for 4 beats (len=1880)
 tick=1920  note=55  len=1880 vel=70
+# Melody
+tick=1920  note=65  len=440  vel=92
+tick=2400  note=62  len=440  vel=92
+tick=2880  note=62  len=920  vel=92
 
-# BAR 3 (3840-5759): C chord (Whole Note)
+# BAR 3 (3840-5759): C chord (Whole Note) | Melody C4-D4-E4-F4
+# Chord root - Sustained for 4 beats (len=1880)
 tick=3840  note=48  len=1880 vel=70
+# Melody
+tick=3840  note=60  len=440  vel=92
+tick=4320  note=62  len=440  vel=92
+tick=4800  note=64  len=440  vel=92
+tick=5280  note=65  len=440  vel=92
 
-# BAR 4 (5760-7679): C(2 beats) + G7(2 beats)
+# BAR 4 (5760-7679): C(2 beats) + G7(2 beats) (Half Notes) | Melody G4-G4-G4(half)
+# Chord roots - Two half notes (len=920 each)
 tick=5760  note=48  len=920  vel=70
 tick=6720  note=55  len=920  vel=70
+# Melody
+tick=5760  note=67  len=440  vel=92
+tick=6240  note=67  len=440  vel=92
+tick=6720  note=67  len=920  vel=92
 
 # BAR 5 (7680-9599): same as bar 1
+# Chord root - Sustained for 4 beats (len=1880)
 tick=7680  note=48  len=1880 vel=70
+# Melody
+tick=7680  note=67  len=440  vel=92
+tick=8160  note=64  len=440  vel=92
+tick=8640  note=64  len=920  vel=92
 
 # BAR 6 (9600-11519): same as bar 2
+# Chord root - Sustained for 4 beats (len=1880)
 tick=9600  note=55  len=1880 vel=70
+# Melody
+tick=9600  note=65  len=440  vel=92
+tick=10080 note=62  len=440  vel=92
+tick=10560 note=62  len=920  vel=92
 
-# BAR 7 (11520-13439): C chord (Whole Note)
+# BAR 7 (11520-13439): C chord (Whole Note) | Melody C4-E4-G4-G4
+# Chord root - Sustained for 4 beats (len=1880)
 tick=11520 note=48  len=1880 vel=70
+# Melody
+tick=11520 note=60  len=440  vel=92
+tick=12000 note=64  len=440  vel=92
+tick=12480 note=67  len=440  vel=92
+tick=12960 note=67  len=440  vel=92
 
-# BAR 8 (13440-15359): C chord (Whole Note)
+# BAR 8 (13440-15359): C chord (Whole Note) | Melody E4-D4-C4(half)
+# Chord root - Sustained for 4 beats (len=1880)
 tick=13440 note=48  len=1880 vel=70
+# Melody
+tick=13440 note=64  len=440  vel=92
+tick=13920 note=64  len=440  vel=92
+tick=14400 note=64  len=920  vel=92

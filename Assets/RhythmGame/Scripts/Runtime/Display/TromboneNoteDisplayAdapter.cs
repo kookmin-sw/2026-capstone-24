@@ -116,6 +116,8 @@ public class TromboneNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
 
         // 파셜 p마다 패널 1개 생성 (단일 레인, 슬라이드별 색상/번호)
         // 수직 부채꼴 배치: 앙각(elevation) 기준 위아래로 쌓이고, 각 패널은 Y축으로 추가 회전
+        // 인접 파셜 간 겹치는 MIDI 노트는 슬라이드 거리가 가장 짧은(인덱스가 낮은) 파셜에만 표시.
+        var assignedNotes = new HashSet<byte>();
         for (int p = 0; p < partialCount; p++)
         {
             float offset = (float)(p - fanCenterPartialIndex);
@@ -126,6 +128,7 @@ public class TromboneNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
             Vector3  dirToPlayer = (camPos - panelPos).normalized;
 
             // 이 파셜의 모든 슬라이드 노트 수집 + 색상/번호 매핑
+            // 이미 낮은 인덱스 파셜에 할당된 노트는 건너뜀 (중복 표시 방지)
             var notes    = new List<byte>(slidePositionsPerPartial);
             var colorMap = new Dictionary<byte, Color>(slidePositionsPerPartial);
             for (int s = 0; s < slidePositionsPerPartial; s++)
@@ -133,9 +136,11 @@ public class TromboneNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
                 int midi = partialBaseMidi[p] - s;
                 if (midi < 0 || midi > 127) continue;
                 byte note = (byte)midi;
+                if (assignedNotes.Contains(note)) continue;
                 notes.Add(note);
                 colorMap[note] = SlideColors[Mathf.Clamp(s, 0, SlideColors.Length - 1)];
             }
+            foreach (byte note in notes) assignedNotes.Add(note);
             if (notes.Count == 0) continue;
 
             // 모든 슬라이드 노트를 단일 레인(laneIndex=0)으로 매핑

@@ -121,7 +121,11 @@ namespace Instruments
         protected override bool TryResolveNoteOn(MidiEvent midiEvent, out NotePlayback playback)
         {
             playback = default;
-            float effectiveMidi = ComputeEffectiveMidi();
+            // 사용자 직접 연주: note == baseToneMidiNote(플레이스홀더) → 물리 슬라이드/파셜로 실제 음 결정
+            // 반주 시스템 트리거: note != baseToneMidiNote → 악보 MIDI 노트를 그대로 사용
+            float effectiveMidi = (midiEvent.Note == baseToneMidiNote)
+                ? ComputeEffectiveMidi()
+                : midiEvent.Note;
             if (!TrySelectSampleForMidi(effectiveMidi, out m_SelectedSample))
                 return false;
             float pitch = ComputePitchForSelectedSample(effectiveMidi);

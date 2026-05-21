@@ -12,13 +12,14 @@ tick=0  bpm=120  beats=4  beatUnit=4
 channel=1  instrument=piano
 
 [Track:1]
-# Piano Hard: 8th note arpeggio only (melody moved to trombone)
-# 8 bars (1 bar = 1920 ticks, total 0-15359)
+# Piano Hard: melody + 8th note arpeggio (3-note repeating ascending)
+# Arpeggio notes lowered by 1 octave:
 # C arpeggio: C3(48) E3(52) G3(55) repeating
 # G7 arpeggio: G3(55) B3(59) D4(62) repeating
-# arpeggio len=220 vel=65
+# arpeggio len=220 vel=65, melody len=440/920 vel=92
 
-# BAR 1 (0-1919): C chord arpeggio
+# BAR 1 (0-1919): C chord arpeggio | Melody G4-E4-E4(half)
+# Arpeggio - Lowered to 48, 52, 55
 tick=0     note=48  len=220  vel=65
 tick=240   note=52  len=220  vel=65
 tick=480   note=55  len=220  vel=65
@@ -27,8 +28,13 @@ tick=960   note=52  len=220  vel=65
 tick=1200  note=55  len=220  vel=65
 tick=1440  note=48  len=220  vel=65
 tick=1680  note=52  len=220  vel=65
+# Melody
+tick=0     note=67  len=440  vel=92
+tick=480   note=64  len=440  vel=92
+tick=960   note=64  len=920  vel=92
 
-# BAR 2 (1920-3839): G7 arpeggio
+# BAR 2 (1920-3839): G7 arpeggio | Melody F4-D4-D4(half)
+# Arpeggio - Lowered to 55, 59, 62
 tick=1920  note=55  len=220  vel=65
 tick=2160  note=59  len=220  vel=65
 tick=2400  note=62  len=220  vel=65
@@ -37,8 +43,13 @@ tick=2880  note=59  len=220  vel=65
 tick=3120  note=62  len=220  vel=65
 tick=3360  note=55  len=220  vel=65
 tick=3600  note=59  len=220  vel=65
+# Melody
+tick=1920  note=65  len=440  vel=92
+tick=2400  note=62  len=440  vel=92
+tick=2880  note=62  len=920  vel=92
 
-# BAR 3 (3840-5759): C chord arpeggio
+# BAR 3 (3840-5759): C chord arpeggio | Melody C4-D4-E4-F4
+# Arpeggio - Lowered to 48, 52, 55
 tick=3840  note=48  len=220  vel=65
 tick=4080  note=52  len=220  vel=65
 tick=4320  note=55  len=220  vel=65
@@ -47,18 +58,30 @@ tick=4800  note=52  len=220  vel=65
 tick=5040  note=55  len=220  vel=65
 tick=5280  note=48  len=220  vel=65
 tick=5520  note=52  len=220  vel=65
+# Melody
+tick=3840  note=60  len=440  vel=92
+tick=4320  note=62  len=440  vel=92
+tick=4800  note=64  len=440  vel=92
+tick=5280  note=65  len=440  vel=92
 
-# BAR 4 (5760-7679): C(2 beats)+G7(2 beats) arpeggio
+# BAR 4 (5760-7679): C(2 beats)+G7(2 beats) arpeggio | Melody G4-G4-G4(half)
+# beats 1-2: C arpeggio C3 E3 G3 C3 (48, 52, 55, 48)
 tick=5760  note=48  len=220  vel=65
 tick=6000  note=52  len=220  vel=65
 tick=6240  note=55  len=220  vel=65
 tick=6480  note=48  len=220  vel=65
+# beats 3-4: G7 arpeggio G3 B3 D4 G3 (55, 59, 62, 55)
 tick=6720  note=55  len=220  vel=65
 tick=6960  note=59  len=220  vel=65
 tick=7200  note=62  len=220  vel=65
 tick=7440  note=55  len=220  vel=65
+# Melody
+tick=5760  note=67  len=440  vel=92
+tick=6240  note=67  len=440  vel=92
+tick=6720  note=67  len=920  vel=92
 
 # BAR 5 (7680-9599): same as bar 1
+# Arpeggio - Lowered to 48, 52, 55
 tick=7680  note=48  len=220  vel=65
 tick=7920  note=52  len=220  vel=65
 tick=8160  note=55  len=220  vel=65
@@ -67,8 +90,13 @@ tick=8640  note=52  len=220  vel=65
 tick=8880  note=55  len=220  vel=65
 tick=9120  note=48  len=220  vel=65
 tick=9360  note=52  len=220  vel=65
+# Melody
+tick=7680  note=67  len=440  vel=92
+tick=8160  note=64  len=440  vel=92
+tick=8640  note=64  len=920  vel=92
 
-# BAR 6 (9600-11519): G7 arpeggio (same as bar 2)
+# BAR 6 (9600-11519): same as bar 2
+# Arpeggio - Lowered to 55, 59, 62
 tick=9600   note=55  len=220  vel=65
 tick=9840   note=59  len=220  vel=65
 tick=10080  note=62  len=220  vel=65
@@ -77,8 +105,13 @@ tick=10560  note=59  len=220  vel=65
 tick=10800  note=62  len=220  vel=65
 tick=11040  note=55  len=220  vel=65
 tick=11280  note=59  len=220  vel=65
+# Melody
+tick=9600   note=65  len=440  vel=92
+tick=10080  note=62  len=440  vel=92
+tick=10560  note=62  len=920  vel=92
 
-# BAR 7 (11520-13439): C chord arpeggio
+# BAR 7 (11520-13439): C chord arpeggio | Melody C4-E4-G4-G4
+# Arpeggio - Lowered to 48, 52, 55
 tick=11520  note=48  len=220  vel=65
 tick=11760  note=52  len=220  vel=65
 tick=12000  note=55  len=220  vel=65
@@ -87,8 +120,14 @@ tick=12480  note=52  len=220  vel=65
 tick=12720  note=55  len=220  vel=65
 tick=12960  note=48  len=220  vel=65
 tick=13200  note=52  len=220  vel=65
+# Melody
+tick=11520  note=60  len=440  vel=92
+tick=12000  note=64  len=440  vel=92
+tick=12480  note=67  len=440  vel=92
+tick=12960  note=67  len=440  vel=92
 
-# BAR 8 (13440-15359): C chord arpeggio
+# BAR 8 (13440-15359): C chord arpeggio | Melody E4-D4-C4(half)
+# Arpeggio - Lowered to 48, 52, 55
 tick=13440  note=48  len=220  vel=65
 tick=13680  note=52  len=220  vel=65
 tick=13920  note=55  len=220  vel=65
@@ -97,3 +136,7 @@ tick=14400  note=52  len=220  vel=65
 tick=14640  note=55  len=220  vel=65
 tick=14880  note=48  len=220  vel=65
 tick=15120  note=52  len=220  vel=65
+# Melody
+tick=13440  note=64  len=440  vel=92
+tick=13920  note=64  len=440  vel=92
+tick=14400  note=64  len=920  vel=92
