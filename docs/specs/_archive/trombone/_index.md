@@ -24,6 +24,7 @@
 | Slide Tracking by Right Grip | Done | [specs/02-slide-tracking.md](specs/02-slide-tracking.md) |
 | Blow & Continuous Pitch Sound | Done | [specs/03-blow-and-pitch-sound.md](specs/03-blow-and-pitch-sound.md) |
 | DSP Pitch Crossfade | Done | [specs/04-dsp-pitch-crossfade.md](specs/04-dsp-pitch-crossfade.md) |
+| Audio Click Noise Suppression | Active | [specs/05-audio-click-suppression.md](specs/05-audio-click-suppression.md) |
 
 > 상태 값: `Draft` / `Active` / `Done` / `Abandoned`
 

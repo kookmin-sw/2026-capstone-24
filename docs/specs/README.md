@@ -178,7 +178,7 @@ docs/specs/
 | [drum-stick](drum-stick/_index.md) | Active | 2 | 3/3 | |
 | [session-panel](session-panel/_index.md) | Active | 9 | 9/9 | sub-spec 08·09 추가 |
 | [multiplayer-network](multiplayer-network/_index.md) | Active | 7 | 13/19 | sub-spec 07 추가 |
-| [trombone](_archive/trombone/_index.md) | Done | 4 | 4/4 | sub-spec 04 완료 후 archive |
+| [trombone](_archive/trombone/_index.md) | Active | 5 | 4/5 | sub-spec 05 추가 (클릭 노이즈 억제) |
 | [teleport-locomotion](_archive/teleport-locomotion/_index.md) | Done | 3 | 4/4 | |
 
 > Status 값: `Draft` / `Active` / `Done` / `Abandoned`. `/spec-build` 메인 세션이 sub-spec/feature 종료 시점에 갱신.
