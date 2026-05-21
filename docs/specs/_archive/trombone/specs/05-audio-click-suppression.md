@@ -45,7 +45,8 @@ sub-spec 04(DSP Pitch Crossfade)는 슬라이드·Partial 변경 시 크로스�
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| _아직 없음_ | — | — | — |
+| 2026-05-21 | Audio Click Suppression — 루프 경계 fade + Grip release DSP fade-out + 크로스페이드 중단 볼륨 점프 봉합 | Ready | [plans/05-2026-05-21-sanyoentertain-audio-click-suppression.md](../plans/05-2026-05-21-sanyoentertain-audio-click-suppression.md) |
+| 2026-05-21 | Audio Click Suppression Retry — loop seam pre-fade + post-wrap fade-in 첫 샘플 wt=0 버그 제거 + Grip release race 봉합 | Ready | [plans/06-2026-05-21-sanyoentertain-audio-click-suppression-retry.md](../plans/06-2026-05-21-sanyoentertain-audio-click-suppression-retry.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/spec-build`가 planner sub-agent로 처리.
