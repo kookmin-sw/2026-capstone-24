@@ -62,6 +62,13 @@ public class InstrumentAudioOutput : MonoBehaviour
     [Tooltip("voice AudioSource에 적용할 AudioMixerGroup. SessionMixer/Master를 할당.")]
     [SerializeField] AudioMixerGroup voiceMixerGroup;
 
+    /// <summary>
+    /// voice GameObject가 생성될 때마다 발화한다 (EnsureVoicePool 내부).
+    /// 구독자는 전달된 GameObject에 외부 컴포넌트(TrombonePitchDsp 등)를 부착할 수 있다.
+    /// Trombone 외 악기는 구독하지 않으므로 동작 영향 없음.
+    /// </summary>
+    public event System.Action<GameObject> VoiceGameObjectCreated;
+
     readonly List<Voice> m_Voices = new List<Voice>();
     Transform m_VoicePoolRoot;
     AudioSourceSettings m_CurrentSettings = AudioSourceSettings.CreateDefault();
@@ -156,6 +163,10 @@ public class InstrumentAudioOutput : MonoBehaviour
         voice.FadeInDuration = Mathf.Max(0f, fadeInDuration);
         voice.FadeOutDuration = Mathf.Max(0f, fadeOutDuration);
         voice.TrackPitch = true;
+        // NoteOn 시 voice 재사용 직후 DSP 상태가 Idle로 reset되도록 보장.
+        // TrombonePitchDsp 미부착 voice(Piano/DrumKit)는 TryGetComponent가 null 반환 → noop.
+        if (voice.Source.TryGetComponent<TrombonePitchDsp>(out var dspReset))
+            dspReset.ResetEnvelope();
     }
 
     public void StopNote(int note)
@@ -188,7 +199,10 @@ public class InstrumentAudioOutput : MonoBehaviour
             if (voice.Note != note || voice.Source == null) continue;
             if (voice.State != VoiceState.Active && voice.State != VoiceState.SustainedActive && voice.State != VoiceState.Attacking) continue;
             if (!voice.TrackPitch) continue;
-            voice.Source.pitch = pitch;
+            if (voice.Source.TryGetComponent<TrombonePitchDsp>(out var dsp))
+                dsp.RequestPitchChange(pitch);
+            else
+                voice.Source.pitch = pitch;
             updatedAny = true;
         }
         return updatedAny;
@@ -243,9 +257,14 @@ public class InstrumentAudioOutput : MonoBehaviour
         }
         while (m_Voices.Count < m_CurrentSettings.MaxVoices)
         {
-            AudioSource source = m_VoicePoolRoot.gameObject.AddComponent<AudioSource>();
+            int index = m_Voices.Count;
+            GameObject voiceGo = new GameObject(string.Format("Voice_{0}", index));
+            voiceGo.transform.SetParent(m_VoicePoolRoot, false);
+            AudioSource source = voiceGo.AddComponent<AudioSource>();
             ApplySettingsToSource(source, m_CurrentSettings);
-            m_Voices.Add(new Voice { Source = source, State = VoiceState.Idle });
+            Voice voice = new Voice { Source = source, State = VoiceState.Idle };
+            m_Voices.Add(voice);
+            VoiceGameObjectCreated?.Invoke(voiceGo);
         }
     }
 

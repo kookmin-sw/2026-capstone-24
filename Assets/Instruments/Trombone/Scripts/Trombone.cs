@@ -40,6 +40,29 @@ namespace Instruments
         public int CurrentMidiNote => Mathf.RoundToInt(ComputeEffectiveMidi());
         public bool IsBlowing => m_IsBlowing;
 
+        protected override void Awake()
+        {
+            // base.Awake() 안에서 Initialize() → EnsureVoicePool() → VoiceGameObjectCreated 이벤트 발화.
+            // 구독을 base 호출 전에 해야 모든 voice GameObject의 이벤트를 수신할 수 있다.
+            if (audioOutput == null)
+                audioOutput = GetComponentInChildren<InstrumentAudioOutput>(true);
+            if (audioOutput != null)
+                audioOutput.VoiceGameObjectCreated += OnVoiceGameObjectCreated;
+            base.Awake();
+        }
+
+        void OnDestroy()
+        {
+            if (audioOutput != null)
+                audioOutput.VoiceGameObjectCreated -= OnVoiceGameObjectCreated;
+        }
+
+        void OnVoiceGameObjectCreated(GameObject voiceGo)
+        {
+            if (voiceGo.GetComponent<TrombonePitchDsp>() == null)
+                voiceGo.AddComponent<TrombonePitchDsp>();
+        }
+
         void OnEnable()
         {
             leftGripAction?.action?.Enable();
@@ -80,13 +103,15 @@ namespace Instruments
                 m_IsBlowing = false;
             }
 
-            // Partial 또는 Slide 인덱스 변경 시 1회만 retrigger (둘이 동시에 바뀌어도 NoteOn 한 번).
+            // Partial 또는 Slide 인덱스 변경 시 끊김 없이 pitch만 갱신 (retrigger 제거).
             bool partialChanged = partialController != null && partialController.PartialIndex != m_LastPartialIndex;
             bool slideChanged = slideController != null && slideController.SlideIndex != m_LastSlideIndex;
             if (m_IsBlowing && (partialChanged || slideChanged))
             {
-                TriggerMidi(new MidiEvent(baseToneMidiNote, 0f, MidiEventType.Choke));
-                TriggerMidi(new MidiEvent(baseToneMidiNote, 1f, MidiEventType.NoteOn));
+                float newEffectiveMidi = ComputeEffectiveMidi();
+                float newPitch = ComputePitchForSelectedSample(newEffectiveMidi);
+                if (audioOutput != null)
+                    audioOutput.TrySetActiveVoicePitch(baseToneMidiNote, newPitch);
                 if (partialController != null) m_LastPartialIndex = partialController.PartialIndex;
                 if (slideController != null) m_LastSlideIndex = slideController.SlideIndex;
             }
