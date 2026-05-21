@@ -12,9 +12,13 @@ namespace SessionPanel
 {
     public class SessionPanelController : MonoBehaviour
     {
-        private enum PanelState { Hidden, RayOnly, InstrumentOpened }
+        private enum PanelState { Hidden, PinchOpened, InstrumentOpened }
 
         [SerializeField] private GameObject panelPrefab;
+        [SerializeField] private Transform leftHandSpawnTransform;
+        [SerializeField] private Vector3 pinchSpawnLocalOffset = new Vector3(0f, 0.08f, 0.1f);
+        [SerializeField] private Transform headFallbackTransform;
+        [SerializeField] private Vector3 fallbackSpawnLocalOffset = new Vector3(0f, 0f, 0.6f);
         [SerializeField] private float trackingEpsilon = 0.001f;
         [SerializeField] private UnityEngine.Object _activeInstrumentProviderObject;
         [SerializeField] private UnityEngine.Object _songCatalogObject;
@@ -118,14 +122,15 @@ namespace SessionPanel
 
         private void OnPanelToggle(InputAction.CallbackContext ctx)
         {
-            bool onInstrumentAnchor = _provider != null && _provider.Current != null;
-
             switch (_state)
             {
                 case PanelState.Hidden:
-                    TransitionTo(onInstrumentAnchor ? PanelState.InstrumentOpened : PanelState.RayOnly);
+                    if (_provider == null || _provider.Current == null)
+                        TransitionTo(PanelState.PinchOpened);
+                    else
+                        TransitionTo(PanelState.InstrumentOpened);
                     break;
-                case PanelState.RayOnly:
+                case PanelState.PinchOpened:
                 case PanelState.InstrumentOpened:
                     TransitionTo(PanelState.Hidden);
                     break;
@@ -160,9 +165,10 @@ namespace SessionPanel
                     SetInteractorsActive(false);
                     break;
 
-                case PanelState.RayOnly:
+                case PanelState.PinchOpened:
                     _trackInstrument = false;
-                    _panelInstance.SetActive(false);
+                    PositionAtWrist();
+                    _panelInstance.SetActive(true);
                     SetInteractorsActive(true);
                     break;
 
@@ -170,7 +176,7 @@ namespace SessionPanel
                     _trackInstrument = true;
                     if (_panelInstance.activeSelf)
                     {
-                        // 이미 패널이 보이는 상태: 즉시 재배치
+                        // 이미 패널이 보이는 상태(PinchOpened에서 전환 등): 즉시 재배치
                         PositionAtInstrument();
                         SetInteractorsActive(true);
                     }
@@ -303,6 +309,22 @@ namespace SessionPanel
                 }
             }
             _hitDot.SetActive(found);
+        }
+
+        private void PositionAtWrist()
+        {
+            if (_mainCamera == null) return;
+
+            Vector3 horizontalForward = _mainCamera.transform.forward;
+            horizontalForward.y = 0f;
+            if (horizontalForward.sqrMagnitude < 0.001f)
+                horizontalForward = Vector3.forward;
+            else
+                horizontalForward.Normalize();
+
+            _panelInstance.transform.position = _mainCamera.transform.position
+                                                + horizontalForward * fallbackSpawnLocalOffset.z;
+            _panelInstance.transform.rotation = Quaternion.LookRotation(horizontalForward);
         }
 
         private void PositionAtInstrument()
