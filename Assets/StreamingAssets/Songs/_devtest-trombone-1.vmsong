@@ -1,0 +1,68 @@
+[Meta]
+title  = Trombone Dev Test 1
+songid = devtest_trombone_001
+
+[Resolution]
+ticksPerQuarter = 480
+
+[Tempo]
+tick=0  bpm=80  beats=4  beatUnit=4
+
+[Channels]
+channel=2  instrument=trombone
+
+[Track:2]
+# Trombone dev test: 파셜 0~4를 각 1마디씩 순회
+# BPM=80, 1beat=480ticks, 1bar=1920ticks
+# 슬라이드 0(가장 짧음) 기준 각 파셜 base MIDI 노트 사용
+# 파셜 0(lane=0): MIDI 45 (A2), 파셜 1(lane=1): MIDI 52 (E3)
+# 파셜 2(lane=2): MIDI 57 (A3), 파셜 3(lane=3): MIDI 61 (C#4)
+# 파셜 4(lane=4): MIDI 64 (E4)
+
+# BAR 1 (0-1919): 파셜 0 (MIDI 45, A2)
+tick=0     note=45  len=400  vel=100
+tick=480   note=45  len=400  vel=100
+tick=960   note=45  len=400  vel=100
+tick=1440  note=45  len=400  vel=100
+
+# BAR 2 (1920-3839): 파셜 1 (MIDI 52, E3)
+tick=1920  note=52  len=400  vel=100
+tick=2400  note=52  len=400  vel=100
+tick=2880  note=52  len=400  vel=100
+tick=3360  note=52  len=400  vel=100
+
+# BAR 3 (3840-5759): 파셜 2 (MIDI 57, A3)
+tick=3840  note=57  len=400  vel=100
+tick=4320  note=57  len=400  vel=100
+tick=4800  note=57  len=400  vel=100
+tick=5280  note=57  len=400  vel=100
+
+# BAR 4 (5760-7679): 파셜 3 (MIDI 61, C#4)
+tick=5760  note=61  len=400  vel=100
+tick=6240  note=61  len=400  vel=100
+tick=6720  note=61  len=400  vel=100
+tick=7200  note=61  len=400  vel=100
+
+# BAR 5 (7680-9599): 파셜 4 (MIDI 64, E4)
+tick=7680  note=64  len=400  vel=100
+tick=8160  note=64  len=400  vel=100
+tick=8640  note=64  len=400  vel=100
+tick=9120  note=64  len=400  vel=100
+
+# BAR 6 (9600-11519): 파셜 0~4 순차 (각 1beat)
+tick=9600  note=45  len=400  vel=100
+tick=10080 note=52  len=400  vel=100
+tick=10560 note=57  len=400  vel=100
+tick=11040 note=61  len=400  vel=100
+
+# BAR 7 (11520-13439): 파셜 4~0 역순차 (각 1beat)
+tick=11520 note=64  len=400  vel=100
+tick=12000 note=61  len=400  vel=100
+tick=12480 note=57  len=400  vel=100
+tick=12960 note=52  len=400  vel=100
+
+# BAR 8 (13440-15359): 슬라이드 포지션 혼합 (파셜 0의 슬라이드 0~6)
+tick=13440 note=45  len=380  vel=100
+tick=13920 note=44  len=380  vel=100
+tick=14400 note=43  len=380  vel=100
+tick=14880 note=42  len=380  vel=100

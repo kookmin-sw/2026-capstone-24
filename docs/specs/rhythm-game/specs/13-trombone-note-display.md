@@ -54,7 +54,7 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| _아직 없음_ | — | — | — |
+| 2026-05-21 | Trombone 파셜 패널 5종 (반원형) 노트 디스플레이 | Ready | [`2026-05-21-linksky0311-trombone-note-display.md`](../plans/2026-05-21-linksky0311-trombone-note-display.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/spec-build`가 planner sub-agent로 처리. 파일명은 날짜·작성자·slug 기반.
