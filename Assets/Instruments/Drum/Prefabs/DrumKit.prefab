@@ -207,6 +207,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 189ba6cb36ff90349812b97c04a7cfeb, type: 3}
   - {fileID: 8300000, guid: e2e6b963b932f214a80f1d7401cf1288, type: 3}
   - {fileID: 8300000, guid: 0ad64276452446648851603dca420531, type: 3}
+  - {fileID: 8300000, guid: 270248ec6818cdc41a0ba95033333be7, type: 3}
   laneConfig: {fileID: 11400000, guid: f887c38da5cc4f35ab720e8144a4ccd1, type: 2}
   instrumentId: drum
   instanceVolume: 0.5

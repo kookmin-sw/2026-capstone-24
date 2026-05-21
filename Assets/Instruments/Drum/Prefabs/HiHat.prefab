@@ -132,6 +132,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6474618862753209177}
   - component: {fileID: 8240335924673747653}
+  - component: {fileID: 1473829100200000002}
   m_Layer: 0
   m_Name: HiHat
   m_TagString: Untagged
@@ -430,3 +431,22 @@ MonoBehaviour:
   maxImpactSpeed: 4
   retriggerCooldown: 0.05
   useFingertipVelocityFallback: 1
+--- !u!114 &1473829100200000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1416915061190495546}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b2744fb4ed06094d8442914d0019953, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Instruments::Instruments.HiHatOpenStateController
+  anchor: {fileID: 0}
+  hitZone: {fileID: 1188261535890164871}
+  closedMidiNote: 42
+  openMidiNote: 46
+  leftGripAction: {fileID: 6558622148059887818, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  rightGripAction: {fileID: -1758520528963094988, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  gripThreshold: 0.5
