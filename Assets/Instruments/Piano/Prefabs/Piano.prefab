@@ -4570,7 +4570,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: dba845c25f0abb74f9a649ebd34a056e, type: 3}
   - {fileID: 8300000, guid: af152ec87c747b64bbc8d20833b1c11d, type: 3}
   laneConfig: {fileID: 0}
-  instrumentId: Piano
+  instrumentId: piano
   instanceVolume: 0.5
   _panelAnchor: {fileID: 1149117177022473562}
   fingertipSwitchMargin: 0.05
