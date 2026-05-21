@@ -1,4 +1,4 @@
-%YAML 1.1
+﻿%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!1 &22120037534109210
 GameObject:
@@ -557,6 +557,57 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1434237477939237279}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2697649137764804009
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3580856657460150794}
+  - component: {fileID: 2543222451725470667}
+  m_Layer: 0
+  m_Name: TromboneNoteDisplay
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3580856657460150794
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2697649137764804009}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.5745591, y: -0.817, z: -1.268995}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6792978486195072924}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2543222451725470667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2697649137764804009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c778b13f3d4cef04cafd3c7e4b632042, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RhythmGame.Runtime::RhythmGame.Runtime.TromboneNoteDisplayAdapter
+  noteDisplayPanelPrefab: {fileID: 7000000004, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
+  radius: 1.2
+  arcDegrees: 120
+  panelTiltDegrees: 30
+  centerAnchor: {fileID: 9100000000000000002}
+  partialBaseMidi: 2d34393d40
+  slidePositionsPerPartial: 7
 --- !u!1 &2808752052491962096
 GameObject:
   m_ObjectHideFlags: 0
@@ -881,6 +932,8 @@ Transform:
   m_Children:
   - {fileID: 9100000000000000002}
   - {fileID: 1631298027454150780}
+  - {fileID: 3580856657460150794}
+  - {fileID: 8800000000000000002}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6855862333753624109
@@ -911,10 +964,10 @@ MonoBehaviour:
   audioOutput: {fileID: 6855862333753624109}
   soundClips:
   - {fileID: 8300000, guid: f26d0d954cda956439e8fca5f0a2daa9, type: 3}
-  laneConfig: {fileID: 0}
+  laneConfig: {fileID: 11400000, guid: 94771330457054445811655f3f499c11, type: 2}
   instrumentId: Trombone
   instanceVolume: 0.5
-  _panelAnchor: {fileID: 0}
+  _panelAnchor: {fileID: 9100000000000000002}
   tromboneAnchor: {fileID: 6798659558522323895}
   slideController: {fileID: 4069711244863020258}
   partialController: {fileID: 4932485236075849092}
@@ -2846,3 +2899,67 @@ Transform:
   - {fileID: 524896994668186971}
   m_Father: {fileID: 6792978486195072924}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+
+--- !u!1 &8800000000000000001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8800000000000000002}
+  - component: {fileID: 8800000000000000003}
+  - component: {fileID: 8800000000000000004}
+  m_Layer: 0
+  m_Name: RhythmGameHost
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8800000000000000002
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8800000000000000001}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6792978486195072924}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8800000000000000003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8800000000000000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d13a917061a5fe4494bd64fa722585d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RhythmGame.Runtime::RhythmGame.Runtime.RhythmGameHost
+  songDatabase: {fileID: 0}
+  uiRoot: {fileID: 0}
+  noteDisplayPanel: {fileID: 0}
+  targetInstrument: {fileID: 0}
+  accompaniment: {fileID: 8800000000000000004}
+  leadInSeconds: 3
+--- !u!114 &8800000000000000004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8800000000000000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fac62b9698e746c5a0b1302e228c71a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RhythmGame.Runtime::RhythmGame.Runtime.RhythmAccompaniment

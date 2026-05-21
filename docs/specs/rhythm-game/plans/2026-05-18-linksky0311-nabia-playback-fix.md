@@ -2,7 +2,7 @@
 
 **Linked Spec:** [`09-nabia-playback-verification.md`](../specs/09-nabia-playback-verification.md)
 **Caused By:** [`2026-05-18-linksky0311-nabia-playback-verification.md`](./2026-05-18-linksky0311-nabia-playback-verification.md)
-**Status:** `Ready`
+**Status:** `Done`
 
 ## Goal
 
@@ -121,4 +121,4 @@
 
 ## Handoff
 
-_미작성 — 적용 완료 후 doc-updater가 (a) DrumKit instrumentId 새 키, (b) vmsong 파일명 컨벤션(`<song>-<instrument>-<1|2|3>.vmsong`), (c) 난이도 UI 라벨 매핑 규칙을 박제한다._
+적용 완료(2026-05-21). (a) DrumKit.prefab `instrumentId: drum` — vmsong `instrument=drum`과 OrdinalIgnoreCase 매칭. (b) vmsong 파일명 컨벤션 확정: `<song>-<instrument>-<1|2|3>.vmsong` (`1=Easy, 2=Normal, 3=Hard`). (c) UI 라벨 매핑: `RhythmGameSectionController.MapDifficultyLabel("1"→"Easy", "2"→"Normal", "3"→"Hard")`, `DifficultyButtonUI.SetLabel`로 식별자·표시 분리. 재검증 통과: drum 반주 소리 들림(AC 4), drum grab 시 Nabia 활성색(AC 6), Hard 선택 시 piano 토글 표시(AC 7), 난이도 버튼 순서 Easy→Normal→Hard. EditMode 133/133 PASS.

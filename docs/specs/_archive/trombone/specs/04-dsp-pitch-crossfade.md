@@ -45,7 +45,7 @@ sub-spec 03 (Blow & Continuous Pitch Sound)은 발음 중 슬라이드 이동 �
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| _아직 없음_ | — | — | — |
+| 2026-05-21 | DSP Pitch Crossfade — Choke→pitch-update 경로 전환 + TrombonePitchDsp 도입 | Done | [plans/04-2026-05-21-sanyoentertain-dsp-pitch-crossfade.md](../plans/04-2026-05-21-sanyoentertain-dsp-pitch-crossfade.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/spec-build`가 planner sub-agent로 처리.

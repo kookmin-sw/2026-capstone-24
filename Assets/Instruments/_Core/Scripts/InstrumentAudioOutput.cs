@@ -7,7 +7,7 @@ namespace Instruments
 [DisallowMultipleComponent]
 public class InstrumentAudioOutput : MonoBehaviour
 {
-    enum VoiceState { Idle, Attacking, Active, SustainedActive, Releasing }
+    enum VoiceState { Idle, Attacking, Active, SustainedActive, Releasing, FadingOutDsp }
 
     sealed class Voice
     {
@@ -62,6 +62,13 @@ public class InstrumentAudioOutput : MonoBehaviour
     [Tooltip("voice AudioSource에 적용할 AudioMixerGroup. SessionMixer/Master를 할당.")]
     [SerializeField] AudioMixerGroup voiceMixerGroup;
 
+    /// <summary>
+    /// voice GameObject가 생성될 때마다 발화한다 (EnsureVoicePool 내부).
+    /// 구독자는 전달된 GameObject에 외부 컴포넌트(TrombonePitchDsp 등)를 부착할 수 있다.
+    /// Trombone 외 악기는 구독하지 않으므로 동작 영향 없음.
+    /// </summary>
+    public event System.Action<GameObject> VoiceGameObjectCreated;
+
     readonly List<Voice> m_Voices = new List<Voice>();
     Transform m_VoicePoolRoot;
     AudioSourceSettings m_CurrentSettings = AudioSourceSettings.CreateDefault();
@@ -102,6 +109,18 @@ public class InstrumentAudioOutput : MonoBehaviour
                 if (elapsed >= fadeOut) { StopVoice(voice); continue; }
                 float t = 1f - (elapsed / fadeOut);
                 voice.Source.volume = voice.ReleaseStartVolume * Mathf.Clamp01(t);
+            }
+            else if (voice.State == VoiceState.FadingOutDsp)
+            {
+                if (voice.Source.TryGetComponent<TrombonePitchDsp>(out var dsp))
+                {
+                    if (dsp.IsStopReady)
+                        StopVoice(voice);
+                }
+                else
+                {
+                    StopVoice(voice); // 안전망: DSP가 사라진 경우
+                }
             }
         }
     }
@@ -156,6 +175,10 @@ public class InstrumentAudioOutput : MonoBehaviour
         voice.FadeInDuration = Mathf.Max(0f, fadeInDuration);
         voice.FadeOutDuration = Mathf.Max(0f, fadeOutDuration);
         voice.TrackPitch = true;
+        // NoteOn 시 voice 재사용 직후 DSP 상태가 Idle로 reset되도록 보장.
+        // TrombonePitchDsp 미부착 voice(Piano/DrumKit)는 TryGetComponent가 null 반환 → noop.
+        if (voice.Source.TryGetComponent<TrombonePitchDsp>(out var dspReset))
+            dspReset.ResetEnvelope();
     }
 
     public void StopNote(int note)
@@ -179,6 +202,31 @@ public class InstrumentAudioOutput : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Grip release 전용 DSP fade-out 요청. TrombonePitchDsp가 부착된 voice에 한해
+    /// ≤10ms DSP fade-out 후 StopVoice를 폴링으로 회수한다.
+    /// DSP 미부착 voice(Piano/DrumKit 등)는 StopNote fallback으로 처리.
+    /// Choke 경로(StopNoteImmediate)와는 별개 — ARD 06 분리 정합.
+    /// main thread에서만 호출.
+    /// </summary>
+    public void RequestGripReleaseFadeOut(int note)
+    {
+        Voice voice = GetOldestVoiceForNote(note);
+        if (voice == null || voice.Source == null) return;
+        if (voice.State == VoiceState.Idle || voice.State == VoiceState.Releasing || voice.State == VoiceState.FadingOutDsp) return;
+        if (voice.Source.TryGetComponent<TrombonePitchDsp>(out var dsp))
+        {
+            dsp.RequestFadeOut();
+            voice.State = VoiceState.FadingOutDsp;
+            voice.TrackPitch = false;
+        }
+        else
+        {
+            // DSP 미부착 voice (시블링 호출 가정 없으나 안전망)
+            StopNote(note);
+        }
+    }
+
     public bool TrySetActiveVoicePitch(int note, float pitch)
     {
         bool updatedAny = false;
@@ -188,7 +236,10 @@ public class InstrumentAudioOutput : MonoBehaviour
             if (voice.Note != note || voice.Source == null) continue;
             if (voice.State != VoiceState.Active && voice.State != VoiceState.SustainedActive && voice.State != VoiceState.Attacking) continue;
             if (!voice.TrackPitch) continue;
-            voice.Source.pitch = pitch;
+            if (voice.Source.TryGetComponent<TrombonePitchDsp>(out var dsp))
+                dsp.RequestPitchChange(pitch);
+            else
+                voice.Source.pitch = pitch;
             updatedAny = true;
         }
         return updatedAny;
@@ -243,9 +294,14 @@ public class InstrumentAudioOutput : MonoBehaviour
         }
         while (m_Voices.Count < m_CurrentSettings.MaxVoices)
         {
-            AudioSource source = m_VoicePoolRoot.gameObject.AddComponent<AudioSource>();
+            int index = m_Voices.Count;
+            GameObject voiceGo = new GameObject(string.Format("Voice_{0}", index));
+            voiceGo.transform.SetParent(m_VoicePoolRoot, false);
+            AudioSource source = voiceGo.AddComponent<AudioSource>();
             ApplySettingsToSource(source, m_CurrentSettings);
-            m_Voices.Add(new Voice { Source = source, State = VoiceState.Idle });
+            Voice voice = new Voice { Source = source, State = VoiceState.Idle };
+            m_Voices.Add(voice);
+            VoiceGameObjectCreated?.Invoke(voiceGo);
         }
     }
 

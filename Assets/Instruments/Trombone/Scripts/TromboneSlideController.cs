@@ -34,6 +34,8 @@ namespace Instruments
 
         public float NormalizedSlide { get; private set; }
         public int SlideIndex => m_SlideIndex;
+        public float SlideMinX => slideMinX;
+        public float SlideMaxX => slideMaxX;
         public event Action<int> SlideIndexChanged;
 
         void Reset()
