@@ -6911,19 +6911,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: SessionPanel.Runtime::SessionPanel.FolderScanSongCatalog
   songsRelativePath: Songs
---- !u!134 &1898236281
-PhysicsMaterial:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: ' (Instance)'
-  serializedVersion: 2
-  m_DynamicFriction: 0.6
-  m_StaticFriction: 0.6
-  m_Bounciness: 0
-  m_FrictionCombine: 0
-  m_BounceCombine: 0
 --- !u!1 &1977748801
 GameObject:
   m_ObjectHideFlags: 0
@@ -7437,10 +7424,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1458070870568510486, guid: 41250a0848877144faaf64cfcafc86f2, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 1898236281}
     - target: {fileID: 2186370331056226291, guid: 41250a0848877144faaf64cfcafc86f2, type: 3}
       propertyPath: leftPhysicsHand
       value: 
