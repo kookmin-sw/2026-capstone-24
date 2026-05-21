@@ -3,11 +3,12 @@
     "rootNamespace": "Murang.Multiplayer",
     "references": [
         "Fusion.Unity",
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "Instruments"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
-    "allowUnsafeCode": false,
+    "allowUnsafeCode": true,
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,

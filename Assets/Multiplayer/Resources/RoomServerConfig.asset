@@ -18,3 +18,7 @@ MonoBehaviour:
   isVisible: 1
   customLobbyName: 
   useDefaultPhotonCloudPorts: 0
+  playerHandRigPrefab:
+    RawGuidValue: 33bdebb1c91aca946be858f0b16dc91a
+  midiNetBusPrefab:
+    RawGuidValue: 9ed73c94534293944abb1f8b720abd05

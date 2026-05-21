@@ -55,7 +55,7 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| _아직 없음_ | — | — | — |
+| 2026-05-20 | 원격 MIDI 브로드캐스트 + ApplyRemoteMidi 진입점 — 사운드 회귀 | `Ready` | [2026-05-20-namae1128-remote-midi-broadcast-and-apply.md](../plans/2026-05-20-namae1128-remote-midi-broadcast-and-apply.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/spec-build`가 planner sub-agent로 처리.

@@ -112,7 +112,7 @@ public class ChartAutoPlayer : MonoBehaviour
     void Fire(ScheduledEvent ev)
     {
         if (!_map.TryGetValue(ev.channel, out var inst)) return;
-        inst.TriggerMidi(new MidiEvent(ev.midiNote, ev.velocity, ev.type, (byte)(ev.channel - 1)));
+        inst.TriggerSystemMidi(new MidiEvent(ev.midiNote, ev.velocity, ev.type, (byte)(ev.channel - 1)));
     }
 
     void ResetPlaybackState()
