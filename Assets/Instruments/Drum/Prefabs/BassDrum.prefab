@@ -121,6 +121,7 @@ GameObject:
   - component: {fileID: 7769332046483102538}
   - component: {fileID: 5664287406869399968}
   - component: {fileID: 5712344472458212494}
+  - component: {fileID: 1473829100200000001}
   m_Layer: 0
   m_Name: BassDrum
   m_TagString: Untagged
@@ -213,5 +214,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2d1b908c8d869c64eaaea8f2f1d813ff, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Instruments::Instruments.DrumPiece
+--- !u!114 &1473829100200000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8835200742359306777}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14786d85f94f86546b02f9dbeba8e7d7, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Instruments::Instruments.BassDrumSelectTrigger
+  anchor: {fileID: 0}
+  targetPiece: {fileID: 5712344472458212494}
+  midiNote: 36
+  velocity: 1
+  leftSelectAction: {fileID: -5982496924579745919, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  rightSelectAction: {fileID: 83097790271614945, guid: c348712bda248c246b8c49b3db54643f, type: 3}
