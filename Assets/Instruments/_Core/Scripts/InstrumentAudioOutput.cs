@@ -7,7 +7,7 @@ namespace Instruments
 [DisallowMultipleComponent]
 public class InstrumentAudioOutput : MonoBehaviour
 {
-    enum VoiceState { Idle, Attacking, Active, SustainedActive, Releasing }
+    enum VoiceState { Idle, Attacking, Active, SustainedActive, Releasing, FadingOutDsp }
 
     sealed class Voice
     {
@@ -110,6 +110,18 @@ public class InstrumentAudioOutput : MonoBehaviour
                 float t = 1f - (elapsed / fadeOut);
                 voice.Source.volume = voice.ReleaseStartVolume * Mathf.Clamp01(t);
             }
+            else if (voice.State == VoiceState.FadingOutDsp)
+            {
+                if (voice.Source.TryGetComponent<TrombonePitchDsp>(out var dsp))
+                {
+                    if (dsp.IsStopReady)
+                        StopVoice(voice);
+                }
+                else
+                {
+                    StopVoice(voice); // 안전망: DSP가 사라진 경우
+                }
+            }
         }
     }
 
@@ -187,6 +199,31 @@ public class InstrumentAudioOutput : MonoBehaviour
         {
             Voice voice = m_Voices[i];
             if (voice.Note == note && voice.State != VoiceState.Idle) StopVoice(voice);
+        }
+    }
+
+    /// <summary>
+    /// Grip release 전용 DSP fade-out 요청. TrombonePitchDsp가 부착된 voice에 한해
+    /// ≤10ms DSP fade-out 후 StopVoice를 폴링으로 회수한다.
+    /// DSP 미부착 voice(Piano/DrumKit 등)는 StopNote fallback으로 처리.
+    /// Choke 경로(StopNoteImmediate)와는 별개 — ARD 06 분리 정합.
+    /// main thread에서만 호출.
+    /// </summary>
+    public void RequestGripReleaseFadeOut(int note)
+    {
+        Voice voice = GetOldestVoiceForNote(note);
+        if (voice == null || voice.Source == null) return;
+        if (voice.State == VoiceState.Idle || voice.State == VoiceState.Releasing || voice.State == VoiceState.FadingOutDsp) return;
+        if (voice.Source.TryGetComponent<TrombonePitchDsp>(out var dsp))
+        {
+            dsp.RequestFadeOut();
+            voice.State = VoiceState.FadingOutDsp;
+            voice.TrackPitch = false;
+        }
+        else
+        {
+            // DSP 미부착 voice (시블링 호출 가정 없으나 안전망)
+            StopNote(note);
         }
     }
 

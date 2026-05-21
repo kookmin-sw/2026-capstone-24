@@ -99,7 +99,8 @@ namespace Instruments
             }
             else if (!grip && m_IsBlowing)
             {
-                TriggerMidi(new MidiEvent(baseToneMidiNote, 0f, MidiEventType.NoteOff));
+                if (audioOutput != null)
+                    audioOutput.RequestGripReleaseFadeOut(baseToneMidiNote);
                 m_IsBlowing = false;
             }
 
