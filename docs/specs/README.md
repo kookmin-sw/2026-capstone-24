@@ -61,7 +61,6 @@ docs/specs/
 | `implementer` | `/spec-build` (메인) | plan의 코드/자산 변경 적용 (Unity MCP write 권한) |
 | `reviewer` | `/spec-build` (메인) | 구현 후 git diff vs plan 의도 검증 |
 | `unity-test-runner` | `/spec-build` (메인) | EditMode·PlayMode 회귀 테스트 |
-| `unity-scene-reader` | `planner`, `/spec-interview` | Unity 자산 read-only 사실 추출 (Prefab Hierarchy 박제 등) |
 
 ## 검증 실패 시 후속 plan 시드 (3택)
 
