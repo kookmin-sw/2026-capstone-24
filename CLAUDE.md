@@ -1,5 +1,3 @@
-# VirtualMusicStudio Unity 에이전트 가이드
-
 ## 프로젝트
 - 주요 씬: `Assets/Scenes/SampleScene.unity`, `Assets/Scenes/TestSceneSanyo`
 - Unity 6000.3.10f1 / URP / Unity MCP: `com.coplaydev.unity-mcp`
