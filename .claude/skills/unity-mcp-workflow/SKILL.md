@@ -4,10 +4,6 @@ description: Unity MCP 도구로 스크립트·씬·컴포넌트·프리팹·직
 allowed-tools: Read, Edit, Glob, Grep, Bash, mcp__UnityMCP__read_console, mcp__UnityMCP__refresh_unity, mcp__UnityMCP__find_gameobjects, mcp__UnityMCP__manage_asset, mcp__UnityMCP__manage_material, mcp__UnityMCP__manage_components, mcp__UnityMCP__manage_gameobject, mcp__UnityMCP__manage_scene, mcp__UnityMCP__manage_prefabs, mcp__UnityMCP__manage_script
 ---
 
-# Unity MCP 워크플로우 규칙
-
-본 skill은 절차의 단일 진실원만 제공한다. 호출 측이 자동 invoke하지 않으며, 필요한 § 만 참조한다.
-
 ## 1. 스크립트 변경 워크플로우
 
 `.cs` 생성/수정 후엔 **반드시** 컴파일 통과 확인 후에만 새 타입 사용.
