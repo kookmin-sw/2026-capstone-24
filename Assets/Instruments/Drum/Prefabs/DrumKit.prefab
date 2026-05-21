@@ -904,46 +904,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4685478203631124399}
     m_Modifications:
-    - target: {fileID: 6563186526278618501, guid: 19029c2ce77eadc4289f77df93b94c58, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.2334042
-      objectReference: {fileID: 0}
-    - target: {fileID: 6563186526278618501, guid: 19029c2ce77eadc4289f77df93b94c58, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.036701627
-      objectReference: {fileID: 0}
-    - target: {fileID: 6563186526278618501, guid: 19029c2ce77eadc4289f77df93b94c58, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.395
-      objectReference: {fileID: 0}
-    - target: {fileID: 6563186526278618501, guid: 19029c2ce77eadc4289f77df93b94c58, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1.047
-      objectReference: {fileID: 0}
-    - target: {fileID: 6563186526278618501, guid: 19029c2ce77eadc4289f77df93b94c58, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.13
-      objectReference: {fileID: 0}
-    - target: {fileID: 6563186526278618501, guid: 19029c2ce77eadc4289f77df93b94c58, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.99256617
-      objectReference: {fileID: 0}
-    - target: {fileID: 6563186526278618501, guid: 19029c2ce77eadc4289f77df93b94c58, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0.115673624
-      objectReference: {fileID: 0}
-    - target: {fileID: 6563186526278618501, guid: 19029c2ce77eadc4289f77df93b94c58, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.0043804073
-      objectReference: {fileID: 0}
-    - target: {fileID: 6563186526278618501, guid: 19029c2ce77eadc4289f77df93b94c58, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0.03758716
-      objectReference: {fileID: 0}
-    - target: {fileID: 6563186526278618501, guid: 19029c2ce77eadc4289f77df93b94c58, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: -4.337
-      objectReference: {fileID: 0}
     - target: {fileID: 7074188854721727286, guid: 19029c2ce77eadc4289f77df93b94c58, type: 3}
       propertyPath: m_Name
       value: CrashCymbal
