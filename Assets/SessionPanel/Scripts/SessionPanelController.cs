@@ -1,7 +1,10 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
 using UnityEngine.XR.Interaction.Toolkit.Interactors.Visuals;
+using UnityEngine.XR.Interaction.Toolkit.UI;
 using UnityEngine.InputSystem;
 using Instruments;
 
@@ -28,6 +31,9 @@ namespace SessionPanel
         // LineRenderer는 Renderer 계열, CurveVisualController/NearFarInteractor는 Behaviour 계열이라 분리.
         readonly List<Behaviour> _nearFarBehaviours = new List<Behaviour>();
         readonly List<Renderer> _nearFarRenderers = new List<Renderer>();
+        readonly List<NearFarInteractor> _nearFarInteractors = new List<NearFarInteractor>();
+        readonly HashSet<NearFarInteractor> _hoveringInteractors = new HashSet<NearFarInteractor>();
+        private GameObject _hitDot;
 
         private PanelState _state = PanelState.Hidden;
         private GameObject _panelInstance;
@@ -37,12 +43,14 @@ namespace SessionPanel
         private VolumeSectionController _volCtrl;
         private RhythmGameSectionController _rhythmCtrl;
         private bool _hiddenByGame;
+        private Coroutine _activateInteractorsCoroutine;
 
         private void Awake()
         {
             _mainCamera = Camera.main;
             _provider = _activeInstrumentProviderObject as IActiveInstrumentProvider;
             CollectInteractors();
+            CreateHitDot();
         }
 
         private void Start()
@@ -53,19 +61,42 @@ namespace SessionPanel
 
         private void CollectInteractors()
         {
+            foreach (var nf in _nearFarInteractors)
+            {
+                if (nf == null) continue;
+                nf.uiHoverEntered.RemoveListener(OnUIHoverEntered);
+                nf.uiHoverExited.RemoveListener(OnUIHoverExited);
+            }
             _nearFarBehaviours.Clear();
             _nearFarRenderers.Clear();
+            _nearFarInteractors.Clear();
+            _hoveringInteractors.Clear();
             if (nearFarInteractorRoot == null) return;
             // NearFarInteractor (양 손 UI 레이)만 수집 — 텔레포트(XRRayInteractor)는 제외.
             // 명시적 root(XR Origin) 산하만 스캔해 explicit wiring 보장.
             foreach (var nf in nearFarInteractorRoot.GetComponentsInChildren<NearFarInteractor>(true))
             {
                 _nearFarBehaviours.Add(nf);
+                _nearFarInteractors.Add(nf);
+                nf.uiHoverEntered.AddListener(OnUIHoverEntered);
+                nf.uiHoverExited.AddListener(OnUIHoverExited);
                 var curve = nf.GetComponentInChildren<CurveVisualController>(true);
                 if (curve != null) _nearFarBehaviours.Add(curve);
                 var line = nf.GetComponentInChildren<LineRenderer>(true);
                 if (line != null) _nearFarRenderers.Add(line);
             }
+        }
+
+        private void OnUIHoverEntered(UIHoverEventArgs args)
+        {
+            if (args.interactorObject is NearFarInteractor nf)
+                _hoveringInteractors.Add(nf);
+        }
+
+        private void OnUIHoverExited(UIHoverEventArgs args)
+        {
+            if (args.interactorObject is NearFarInteractor nf)
+                _hoveringInteractors.Remove(nf);
         }
 
         private void OnEnable()
@@ -134,6 +165,12 @@ namespace SessionPanel
             _state = next;
             EnsurePanelInstance();
 
+            if (_activateInteractorsCoroutine != null)
+            {
+                StopCoroutine(_activateInteractorsCoroutine);
+                _activateInteractorsCoroutine = null;
+            }
+
             switch (next)
             {
                 case PanelState.Hidden:
@@ -151,20 +188,57 @@ namespace SessionPanel
 
                 case PanelState.InstrumentOpened:
                     _trackInstrument = true;
-                    PositionAtInstrument();
-                    _panelInstance.SetActive(true);
-                    SetInteractorsActive(true);
+                    if (_panelInstance.activeSelf)
+                    {
+                        // 이미 패널이 보이는 상태(PinchOpened에서 전환 등): 즉시 재배치
+                        PositionAtInstrument();
+                        SetInteractorsActive(true);
+                    }
+                    else
+                    {
+                        // Hidden에서 전환: TeleportInteractor가 OnCancelTeleport 후 다음 프레임
+                        // Update에서야 SetActive(false)되므로 2프레임 대기 후 패널·레이저를 함께 표시.
+                        // 패널만 먼저 보이고 레이저가 없는 불완전한 상태를 방지한다.
+                        _activateInteractorsCoroutine = StartCoroutine(ShowPanelAndInteractorsDelayed());
+                    }
                     if (_volCtrl != null && _activeInstrumentProviderObject != null)
                         _volCtrl.InjectProvider(_activeInstrumentProviderObject);
                     break;
             }
         }
 
+        private IEnumerator ShowPanelAndInteractorsDelayed()
+        {
+            yield return null;
+            yield return null;
+            if (_state != PanelState.InstrumentOpened) yield break;
+            PositionAtInstrument();
+            _panelInstance.SetActive(true);
+            SetInteractorsActive(true);
+            _activateInteractorsCoroutine = null;
+        }
+
         private void LateUpdate()
         {
-            if (_panelInstance == null || !_panelInstance.activeSelf) return;
+            if (_panelInstance == null || !_panelInstance.activeSelf)
+            {
+                if (_hitDot != null) _hitDot.SetActive(false);
+                return;
+            }
             if (_state == PanelState.InstrumentOpened && _trackInstrument)
                 PositionAtInstrument();
+            UpdateHitDot();
+        }
+
+        private void OnDestroy()
+        {
+            foreach (var nf in _nearFarInteractors)
+            {
+                if (nf == null) continue;
+                nf.uiHoverEntered.RemoveListener(OnUIHoverEntered);
+                nf.uiHoverExited.RemoveListener(OnUIHoverExited);
+            }
+            if (_hitDot != null) Destroy(_hitDot);
         }
 
         private void EnsurePanelInstance()
@@ -172,6 +246,7 @@ namespace SessionPanel
             if (_panelInstance != null) return;
 
             _panelInstance = Instantiate(panelPrefab);
+            _panelInstance.SetActive(false); // TransitionTo가 가시성 제어. 초기 비활성으로 시작.
 
             _volCtrl = _panelInstance.GetComponentInChildren<VolumeSectionController>(true);
             if (_volCtrl != null && _activeInstrumentProviderObject != null)
@@ -212,6 +287,42 @@ namespace SessionPanel
                 if (b != null) b.enabled = active;
             foreach (var r in _nearFarRenderers)
                 if (r != null) r.enabled = active;
+        }
+
+        private void CreateHitDot()
+        {
+            _hitDot = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            _hitDot.name = "SessionPanelLaserDot";
+            _hitDot.transform.localScale = Vector3.one * 0.02f;
+            Destroy(_hitDot.GetComponent<SphereCollider>());
+
+            var r = _hitDot.GetComponent<Renderer>();
+            var mat = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+            mat.color = new Color(0.15f, 0.45f, 1f);
+            mat.SetColor("_EmissionColor", new Color(0.15f, 0.45f, 1f) * 2f);
+            mat.EnableKeyword("_EMISSION");
+            r.material = mat;
+            r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            r.receiveShadows = false;
+
+            _hitDot.SetActive(false);
+        }
+
+        private void UpdateHitDot()
+        {
+            if (_hitDot == null) return;
+            bool found = false;
+            foreach (var nf in _hoveringInteractors)
+            {
+                if (nf == null) continue;
+                if (nf.TryGetCurveEndPoint(out Vector3 pos) != EndPointType.None)
+                {
+                    _hitDot.transform.position = pos;
+                    found = true;
+                    break;
+                }
+            }
+            _hitDot.SetActive(found);
         }
 
         private void PositionAtWrist()

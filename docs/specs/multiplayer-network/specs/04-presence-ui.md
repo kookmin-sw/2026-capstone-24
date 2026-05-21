@@ -8,7 +8,7 @@
 
 ## What
 
-현재 룸에 접속 중인 유저 목록을 실시간으로 표시하고, 룸 생성·입장·퇴장을 수행할 수 있는 UI를 제공한다. 클라이언트 빌드의 단일 씬(`SampleScene`) 안에 월드스페이스 UI로 통합 제공하며, 룸 입장 전(로비) 상태와 입장 후(멀티 합주) 상태는 같은 씬에서 UI/오브젝트 활성화 토글로 전환된다. 모든 룸은 동일한 default 씬과 그 안에 미리 배치된 오브젝트를 공유하므로, 룸 생성 UI는 룸 이름·비밀번호·정원 같은 메타 옵션만 다루고 콘텐츠 옵션은 노출하지 않는다. 룸 목록은 백엔드가 admission 가능 상태로 공개한 룸만 기준으로 표시하고, 접속자 목록은 실제 룸 세션의 실시간 상태를 기준으로 닉네임만 표시한다.
+현재 룸에 접속 중인 유저 목록을 실시간으로 표시하고, 룸 생성·입장·퇴장을 수행할 수 있는 UI를 제공한다. 클라이언트 빌드의 default 씬([`../decisions/01-default-scene.md`](../decisions/01-default-scene.md)) 안에 월드스페이스 UI로 통합 제공하며, 룸 입장 전(로비) 상태와 입장 후(멀티 합주) 상태는 같은 씬에서 UI/오브젝트 활성화 토글로 전환된다. 모든 룸은 동일한 default 씬과 그 안에 미리 배치된 오브젝트를 공유하므로, 룸 생성 UI는 룸 이름·비밀번호·정원 같은 메타 옵션만 다루고 콘텐츠 옵션은 노출하지 않는다. 룸 목록은 백엔드가 admission 가능 상태로 공개한 룸만 기준으로 표시하고, 접속자 목록은 실제 룸 세션의 실시간 상태를 기준으로 닉네임만 표시한다.
 
 ## Behavior
 
@@ -36,8 +36,13 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| 2026-05-16 | Presence UI 로비 패널 (룸 생성 + 룸 목록) | `Ready` | [2026-05-16-namae1128-presence-ui-lobby-panel.md](../plans/2026-05-16-namae1128-presence-ui-lobby-panel.md) |
-| 2026-05-16 | Presence UI 인-룸 패널 (참가자 리스트 + 퇴장) | `Ready` | [2026-05-16-namae1128-presence-ui-in-room-panel.md](../plans/2026-05-16-namae1128-presence-ui-in-room-panel.md) |
+| 2026-05-16 | Presence UI 로비 패널 (룸 생성 + 룸 목록) | `Abandoned` | [2026-05-16-namae1128-presence-ui-lobby-panel.md](../plans/2026-05-16-namae1128-presence-ui-lobby-panel.md) |
+| 2026-05-16 | Presence UI 인-룸 패널 (참가자 리스트 + 퇴장) | `Abandoned` | [2026-05-16-namae1128-presence-ui-in-room-panel.md](../plans/2026-05-16-namae1128-presence-ui-in-room-panel.md) |
+| 2026-05-16 | Presence UI 로비 패널 (룸 생성 + 룸 목록) | `Done — superseded by 2026-05-18 lobby-migration-and-ux plan` | [2026-05-16-namae1128-presence-ui-lobby-panel.md](../plans/2026-05-16-namae1128-presence-ui-lobby-panel.md) |
+| 2026-05-16 | Presence UI 인-룸 패널 (참가자 리스트 + 퇴장) | `Ready` (stale — [c495623] 이 SampleScene 에 실현, 2026-05-18 마이그레이션 plan 으로 supersede 예정) | [2026-05-16-namae1128-presence-ui-in-room-panel.md](../plans/2026-05-16-namae1128-presence-ui-in-room-panel.md) |
+| 2026-05-18 | Presence UI SampleScene → TestSceneSanyo 마이그레이션 | `Ready` (commit 20cf4c0 — auto-hard 통과, manual-hard 1건은 #6 사이클 대기) | [2026-05-18-namae1128-presence-ui-migration-to-testscenesanyo.md](../plans/2026-05-18-namae1128-presence-ui-migration-to-testscenesanyo.md) |
+| 2026-05-18 | Presence UI LobbyPanel 마이그레이션 + UX 리디자인 + VR 키보드 통합 | `Done` (2026-05-19 — end-to-end manual-hard 통과) | [2026-05-18-namae1128-presence-ui-lobby-migration-and-ux.md](../plans/2026-05-18-namae1128-presence-ui-lobby-migration-and-ux.md) |
+| 2026-05-19 | Presence UI 후속 — Leave 후 reference 살리기 + stale room 정리 + MaxPlayers 카운트 보정 | `Ready` | [2026-05-19-namae1128-presence-ui-lobby-followup-leave-and-room-count.md](../plans/2026-05-19-namae1128-presence-ui-lobby-followup-leave-and-room-count.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/plan-new` 사용.

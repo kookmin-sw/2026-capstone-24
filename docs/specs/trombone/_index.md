@@ -23,6 +23,7 @@
 | Anchor & Mouth Attach/Detach | Done | [specs/01-anchor-mouth-attach-detach.md](specs/01-anchor-mouth-attach-detach.md) |
 | Slide Tracking by Right Grip | Done | [specs/02-slide-tracking.md](specs/02-slide-tracking.md) |
 | Blow & Continuous Pitch Sound | Done | [specs/03-blow-and-pitch-sound.md](specs/03-blow-and-pitch-sound.md) |
+| DSP Pitch Crossfade | Draft | [specs/04-dsp-pitch-crossfade.md](specs/04-dsp-pitch-crossfade.md) |
 
 > 상태 값: `Draft` / `Active` / `Done` / `Abandoned`
 
@@ -32,4 +33,4 @@ _현재 열린 질문 없음._
 
 ## Status
 
-`Done`
+`Active`

@@ -6,7 +6,7 @@
 
 ## Goal
 
-`SampleScene` 안 월드스페이스 Canvas 로 구현된 인-룸 패널을 추가해, 룸에 합류한 유저가 (1) 현재 룸 참가자의 닉네임 목록을 실시간으로 보고 (2) 퇴장 버튼으로 룸을 떠나 로비 상태로 복귀할 수 있게 한다. 룸 합류·퇴장 이벤트로 로비 패널과의 토글이 닫히는 사이클을 완성한다. [`04-presence-ui.md`](../specs/04-presence-ui.md) Behavior 의 "다른 유저 입퇴장 → 접속 유저 목록 즉시 갱신" 항목을 본 plan 이 닫는다.
+default 씬([`../decisions/01-default-scene.md`](../decisions/01-default-scene.md)) 안 월드스페이스 Canvas 로 구현된 인-룸 패널을 추가해, 룸에 합류한 유저가 (1) 현재 룸 참가자의 닉네임 목록을 실시간으로 보고 (2) 퇴장 버튼으로 룸을 떠나 로비 상태로 복귀할 수 있게 한다. 룸 합류·퇴장 이벤트로 로비 패널과의 토글이 닫히는 사이클을 완성한다. [`04-presence-ui.md`](../specs/04-presence-ui.md) Behavior 의 "다른 유저 입퇴장 → 접속 유저 목록 즉시 갱신" 항목을 본 plan 이 닫는다.
 
 ## Context
 
@@ -51,7 +51,7 @@
 - `Assets/Multiplayer/Scripts/Presence/ParticipantRowEntry.cs` — 참가자 행 UI 컴포넌트
 - `Assets/Multiplayer/Scripts/Presence/ParticipantDisplayFormatter.cs` — `PlayerRef`/`playerId` → 표시 문자열 매핑 (static)
 - `Assets/Multiplayer/Resources/ParticipantRow.prefab` — 참가자 행 prefab
-- `Assets/Scenes/SampleScene.unity` — `MultiplayerInRoomPanel` Canvas + 자식 UI 배치 + reference 와이어링
+- default 씬 자산 ([`../decisions/01-default-scene.md`](../decisions/01-default-scene.md) 가 현재 매핑된 `.unity` 경로 박제) — `MultiplayerInRoomPanel` Canvas + 자식 UI 배치 + reference 와이어링
 - `Assets/Multiplayer/Scripts/Presence/MultiplayerLobbyPanel.cs` — `ShowLobby()` public 메서드 한 줄 보강
 - `Assets/Multiplayer/Scripts/Room/Tests/ParticipantDisplayFormatterTests.cs` — EditMode 단위 테스트
 
