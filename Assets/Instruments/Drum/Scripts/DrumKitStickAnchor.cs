@@ -35,6 +35,8 @@ public sealed class DrumKitStickAnchor : MonoBehaviour
 
     bool m_IsAttached;
     int m_PendingAttachFrame = -1;
+
+    public bool IsAttached => m_IsAttached;
     GameObject m_LeftStickInstance;
     GameObject m_RightStickInstance;
 

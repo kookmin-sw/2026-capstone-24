@@ -143,25 +143,11 @@ namespace SessionPanel
 
         private void OnActiveInstrumentChanged(IActiveInstrument instrument)
         {
-            if (instrument != null)
-            {
-                if (_state == PanelState.Hidden)
-                {
-                    _trackInstrument = true;
-                    TransitionTo(PanelState.InstrumentOpened);
-                }
-                else
-                {
-                    _trackInstrument = false;
-                    _state = PanelState.InstrumentOpened;
-                }
-            }
-            else
-            {
-                _trackInstrument = false;
-                if (_state != PanelState.Hidden)
-                    TransitionTo(PanelState.Hidden);
-            }
+            // anchor 전환은 패널을 자동으로 열지 않는다. 이미 열려 있던 패널은 닫아
+            // 이전 위치 잔류를 막고, 사용자가 panelToggleAction(pinch)으로 명시적으로 열 때만 표시된다.
+            _trackInstrument = false;
+            if (_state != PanelState.Hidden)
+                TransitionTo(PanelState.Hidden);
         }
 
         private void TransitionTo(PanelState next)

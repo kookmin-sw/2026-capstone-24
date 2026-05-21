@@ -78,7 +78,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash, Skill, Task
 
 **Prefab 구조 박제 (필수, sub-spec이 prefab 계층에 의존할 때).**
 
-- MCP 사용 가능: `unity-scene-reader` Pattern A를 1회 호출 → 반환 `data.hierarchy[]`를 Tech Spec `## Components` 또는 `## Assumptions`의 "**Prefab Hierarchy**" 서브섹션에 박제. 출처는 `unity-scene-reader Pattern A (YYYY-MM-DD)` 표기.
+- MCP 사용 가능: 메인 세션이 `manage_prefabs.get_hierarchy`를 1회 호출 → 반환 `data.items[]`(path / componentTypes / nested prefab assetPath 발췌)를 Tech Spec `## Components` 또는 `## Assumptions`의 "**Prefab Hierarchy**" 서브섹션에 박제. 출처는 `Unity MCP manage_prefabs.get_hierarchy (YYYY-MM-DD)` 표기.
 - MCP 미가용: 사용자에게 "MCP 없이 진행할까요?"를 묻고 yes면 `.prefab` YAML을 Read해 계층만 발췌 박제 + 정확도 낮음 1줄 경고. no면 인터뷰 멈춤.
 
 #### 2.5-3. ARD 후보 추출

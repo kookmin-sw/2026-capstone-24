@@ -31,6 +31,12 @@ public sealed class DrumHitZone : MonoBehaviour
     /// </summary>
     public float PanelYOffset => panelYOffset;
 
+    /// <summary>
+    /// 발음 대상 MIDI 노트를 런타임에 교체한다. HiHat의 Open/Closed 토글 같이
+    /// 외부 상태가 노트 매핑을 바꾸어야 할 때 사용한다.
+    /// </summary>
+    public void SetMidiNote(int note) => midiNote = note;
+
     void Awake()
     {
         ResolveReferences();
