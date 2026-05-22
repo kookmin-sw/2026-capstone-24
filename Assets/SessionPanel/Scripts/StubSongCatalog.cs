@@ -15,6 +15,8 @@ namespace SessionPanel
         public IReadOnlyList<ISongEntry> Songs => _readOnly;
         public event System.Action Changed;
 
+        public string GetChartText(string relPath) => null;
+
         void Awake()
         {
             BuildCatalog();

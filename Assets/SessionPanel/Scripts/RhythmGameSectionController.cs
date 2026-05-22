@@ -89,6 +89,11 @@ namespace SessionPanel
                 _provider.ActiveInstrumentChanged -= OnActiveInstrumentChanged;
                 _provider.ActiveInstrumentChanged += OnActiveInstrumentChanged;
             }
+            if (_catalog != null)
+            {
+                _catalog.Changed -= OnCatalogChanged;
+                _catalog.Changed += OnCatalogChanged;
+            }
             _currentInstrument = _provider?.Current;
             RefreshSongList();
         }
@@ -97,7 +102,11 @@ namespace SessionPanel
         {
             if (_provider != null)
                 _provider.ActiveInstrumentChanged -= OnActiveInstrumentChanged;
+            if (_catalog != null)
+                _catalog.Changed -= OnCatalogChanged;
         }
+
+        void OnCatalogChanged() => RefreshSongList();
 
         void OnActiveInstrumentChanged(IActiveInstrument instrument)
         {
@@ -192,9 +201,9 @@ namespace SessionPanel
             var __diffs = song.GetDifficultiesFor(_currentInstrument?.InstrumentId ?? string.Empty);
             if (__diffs.Count == 0) return;
             var __firstDiff = System.Linq.Enumerable.First(__diffs);
-            string path = Path.Combine(Application.streamingAssetsPath, song.GetChartPath(_currentInstrument.InstrumentId, __firstDiff));
-            if (!File.Exists(path)) return;
-            var result = VmSongParser.Parse(File.ReadAllText(path));
+            string text = _catalog?.GetChartText(song.GetChartPath(_currentInstrument.InstrumentId, __firstDiff));
+            if (string.IsNullOrEmpty(text)) return;
+            var result = VmSongParser.Parse(text);
             if (result.Success) BuildBpmBar(result.chart);
         }
 
@@ -213,14 +222,10 @@ namespace SessionPanel
         {
             if (_selectedSong == null || _selectedDifficulty == null) return;
 
-            string path = Path.Combine(Application.streamingAssetsPath, _selectedSong.GetChartPath(_currentInstrument.InstrumentId, _selectedDifficulty));
-            if (!File.Exists(path))
-            {
-                Debug.LogWarning("[RhythmGame] Chart not found: " + path);
-                return;
-            }
+            string text = _catalog?.GetChartText(_selectedSong.GetChartPath(_currentInstrument.InstrumentId, _selectedDifficulty));
+            if (string.IsNullOrEmpty(text)) return;
 
-            var result = VmSongParser.Parse(File.ReadAllText(path));
+            var result = VmSongParser.Parse(text);
             if (!result.Success) return;
 
             _loadedChart = result.chart;
@@ -233,9 +238,9 @@ namespace SessionPanel
                 if (string.Equals(otherId, _currentInstrument.InstrumentId, StringComparison.OrdinalIgnoreCase)) continue;
                 string otherRel = _selectedSong.GetChartPath(otherId, _selectedDifficulty);
                 if (string.IsNullOrEmpty(otherRel)) continue;
-                string otherPath = Path.Combine(Application.streamingAssetsPath, otherRel);
-                if (!File.Exists(otherPath)) continue;
-                var otherResult = VmSongParser.Parse(File.ReadAllText(otherPath));
+                string otherText = _catalog?.GetChartText(otherRel);
+                if (string.IsNullOrEmpty(otherText)) continue;
+                var otherResult = VmSongParser.Parse(otherText);
                 if (!otherResult.Success || otherResult.chart.channelMap.entries.Count == 0) continue;
                 int firstChannel = otherResult.chart.channelMap.entries[0].channel;
                 _otherInstrumentCharts[firstChannel] = otherResult.chart;
@@ -510,6 +515,8 @@ namespace SessionPanel
         {
             if (_provider != null)
                 _provider.ActiveInstrumentChanged -= OnActiveInstrumentChanged;
+            if (_catalog != null)
+                _catalog.Changed -= OnCatalogChanged;
 
             activeInstrumentProviderObject = providerObj;
             songCatalogObject              = catalogObj;
@@ -519,6 +526,8 @@ namespace SessionPanel
 
             if (_provider != null)
                 _provider.ActiveInstrumentChanged += OnActiveInstrumentChanged;
+            if (_catalog != null)
+                _catalog.Changed += OnCatalogChanged;
 
             ResetSelection();
             RefreshSongList();

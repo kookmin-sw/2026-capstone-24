@@ -56,6 +56,7 @@ namespace SessionPanel
             public IReadOnlyList<ISongEntry> Songs => _songs;
             public event Action Changed;
             public void Add(ISongEntry e) => _songs.Add(e);
+            public string GetChartText(string relPath) => null;
         }
 
         class StubInstrument : IActiveInstrument

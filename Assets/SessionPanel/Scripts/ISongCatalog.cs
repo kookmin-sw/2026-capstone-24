@@ -6,6 +6,12 @@ namespace SessionPanel
     {
         IReadOnlyList<ISongEntry> Songs { get; }
         event System.Action Changed;
+
+        /// <summary>
+        /// "Songs/xxx.vmsong" 상대 경로로 캐시된 차트 텍스트 조회. 미존재 시 null.
+        /// Android에선 StreamingAssets 직접 IO가 불가능해 카탈로그가 미리 로드해둔다.
+        /// </summary>
+        string GetChartText(string relPath);
     }
 
     public interface ISongEntry
