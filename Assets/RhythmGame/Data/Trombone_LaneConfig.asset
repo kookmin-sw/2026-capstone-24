@@ -1,0 +1,85 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ea3863fa700496e88bb1e930fde6a56, type: 3}
+  m_Name: Trombone_LaneConfig
+  m_EditorClassIdentifier: Instruments::Instruments.InstrumentLaneConfig
+  lanes:
+  - laneIndex: 0
+    midiNote: 45
+  - laneIndex: 0
+    midiNote: 44
+  - laneIndex: 0
+    midiNote: 43
+  - laneIndex: 0
+    midiNote: 42
+  - laneIndex: 0
+    midiNote: 41
+  - laneIndex: 0
+    midiNote: 40
+  - laneIndex: 0
+    midiNote: 39
+  - laneIndex: 1
+    midiNote: 52
+  - laneIndex: 1
+    midiNote: 51
+  - laneIndex: 1
+    midiNote: 50
+  - laneIndex: 1
+    midiNote: 49
+  - laneIndex: 1
+    midiNote: 48
+  - laneIndex: 1
+    midiNote: 47
+  - laneIndex: 1
+    midiNote: 46
+  - laneIndex: 2
+    midiNote: 57
+  - laneIndex: 2
+    midiNote: 56
+  - laneIndex: 2
+    midiNote: 55
+  - laneIndex: 2
+    midiNote: 54
+  - laneIndex: 2
+    midiNote: 53
+  - laneIndex: 2
+    midiNote: 52
+  - laneIndex: 2
+    midiNote: 51
+  - laneIndex: 3
+    midiNote: 61
+  - laneIndex: 3
+    midiNote: 60
+  - laneIndex: 3
+    midiNote: 59
+  - laneIndex: 3
+    midiNote: 58
+  - laneIndex: 3
+    midiNote: 57
+  - laneIndex: 3
+    midiNote: 56
+  - laneIndex: 3
+    midiNote: 55
+  - laneIndex: 4
+    midiNote: 64
+  - laneIndex: 4
+    midiNote: 63
+  - laneIndex: 4
+    midiNote: 62
+  - laneIndex: 4
+    midiNote: 61
+  - laneIndex: 4
+    midiNote: 60
+  - laneIndex: 4
+    midiNote: 59
+  - laneIndex: 4
+    midiNote: 58

@@ -14,7 +14,7 @@ Tech Spec = 한 sub-spec의 시스템 설계 윤곽 박제. 결정 자체는 하
   ARD에서 다룬다. Tech Spec은 *서술*만, ARD는 *분기 결정*.
 - Components·Data/Control Flow에는 알고리즘이나 구현 디테일을 적지 않는다 (그건 plan으로).
 - Assumptions에는 외부에서 받아오는 사실 + 출처 표기를 함께 둔다
-  (`Read <경로> (YYYY-MM-DD)` 또는 `unity-scene-reader 보고 (YYYY-MM-DD)`).
+  (`Read <경로> (YYYY-MM-DD)` 또는 `Unity MCP (manage_prefabs.get_hierarchy / manage_scene.get_hierarchy) (YYYY-MM-DD)`).
 - Open Tech Decisions의 각 항목은 후속 ARD 1건으로 1:1 매핑되어야 한다. ARD가 작성되면
   해당 항목 끝에 `→ decisions/<NN>-*.md` 한 줄로 닫는다.
 -->
@@ -59,7 +59,7 @@ Tech Spec = 한 sub-spec의 시스템 설계 윤곽 박제. 결정 자체는 하
 
 <외부에서 받아오는 사실 + 출처. 이 가정이 깨지면 본 Tech Spec이 무효화된다.>
 
-- <가정 1> — 출처: `Read <경로> (YYYY-MM-DD)` 또는 `unity-scene-reader 보고 (YYYY-MM-DD)`
+- <가정 1> — 출처: `Read <경로> (YYYY-MM-DD)` 또는 `Unity MCP (manage_prefabs.get_hierarchy / manage_scene.get_hierarchy) (YYYY-MM-DD)`
 - <가정 2> — 출처: ...
 
 ## Comparable Siblings
