@@ -1,0 +1,65 @@
+# 원격 MIDI 오디오
+
+**Parent:** [`_index.md`](../_index.md)
+
+## Why
+
+같은 공간에 있는 사람의 연주가 들리지 않으면 합주가 성립하지 않는다. 다른 플레이어가 무엇을 연주하는지 청각으로 인지해야 자기 연주를 거기에 맞출 수 있고, 손 동작이 보이는 것만으로는 "같이 연주한다" 가 완성되지 않는다.
+
+## What
+
+같은 룸의 다른 플레이어가 악기를 연주하면 그 악기에서 발생한 MIDI 이벤트가 자기 클라이언트로 전달되어 자기 헤드폰에서 들린다. 모든 룸은 같은 default 씬을 공유하고 악기는 모든 클라이언트에서 동일 위치에 배치되어 있으므로, 자기 클라이언트의 해당 악기가 그 이벤트를 받아 자기 spatial audio 로 재생하면 자연스럽게 "그 위치에서 들린다" 가 성립한다.
+
+대상 악기는 현재 안정 구현된 Piano · Drum · Trombone 셋이다. 자기가 친 MIDI 는 자기 헤드폰에서 두 번 들리지 않는다 (로컬 재생 + 원격 echo 중복 방지). 자기 클라이언트의 악기별 볼륨 설정 (InstanceVolume) 은 원격 노트에도 적용된다 — 자기가 피아노 볼륨을 낮춰뒀으면 다른 사람이 친 피아노도 같은 볼륨으로 들린다.
+
+## Behavior
+
+- **Given** 룸에 두 명 이상이 있고 자기와 상대가 서로 다른 악기 앞에 있을 때
+  **When** 상대가 자기 악기를 연주하면
+  **Then** 자기 헤드폰에서 그 악기의 소리가 들린다.
+
+- **Given** 상대가 sustained note (Trombone) 를 연주하기 시작했을 때
+  **When** 상대가 그 note 를 놓으면
+  **Then** 자기 헤드폰에서 들리던 sustained 소리가 자연스럽게 release 된다.
+
+- **Given** 상대가 드럼을 강하게 / 약하게 칠 때
+  **When** 자기 헤드폰에서 그 소리가 들리면
+  **Then** velocity 가 반영되어 강약이 구분된다.
+
+- **Given** 자기가 자기 악기를 연주할 때
+  **When** 자기 헤드폰에서 그 소리를 들으면
+  **Then** 자기 소리는 정확히 한 번만 들린다 (로컬 + 네트워크 echo 중복 없음).
+
+- **Given** 자기가 자기 클라이언트에서 특정 악기의 InstanceVolume 을 변경했을 때
+  **When** 다른 플레이어가 그 악기를 연주하면
+  **Then** 자기 헤드폰에서 들리는 원격 노트도 자기 InstanceVolume 설정대로 들린다.
+
+- **Given** 룸에 새로 합류한 플레이어가
+  **When** 합류 후 자기 악기를 처음 친다
+  **Then** 합류 이전 플레이어들 모두에게 그 소리가 들린다.
+
+- **Given** 상대가 룸을 떠난 시점에 sustained note 를 발음 중이었다면
+  **When** 그 플레이어가 사라지면
+  **Then** 자기 헤드폰에서 그 sustained 음이 정지된다.
+
+## Out of Scope
+
+- 타이밍 보정·예측·지연 보상 (네트워크 지연이 그대로 노출되어도 OK)
+- 한 악기를 두 명이 동시에 점유한 채 동시 연주 (multiplayer-network 의 teleport anchor 단일 점유 모델이 막아준다고 가정)
+- 자기 InstanceVolume 이 다른 플레이어의 헤드폰에 영향을 주는 동기화 (각자의 InstanceVolume 은 클라이언트 로컬)
+- 음성 채팅 / 텍스트 채팅
+- 채널 / 패닝 / 마스터 mix 같은 글로벌 오디오 mix 정책
+- 본 피처 범위 외 신규 악기에 대한 동기화
+
+## Implementation Plans
+
+| 작성일 | 제목 | 상태 | 링크 |
+|---|---|---|---|
+| 2026-05-20 | 원격 MIDI 브로드캐스트 + ApplyRemoteMidi 진입점 — 사운드 회귀 | `Ready` | [2026-05-20-namae1128-remote-midi-broadcast-and-apply.md](../plans/2026-05-20-namae1128-remote-midi-broadcast-and-apply.md) |
+
+> 상태 값: `Ready` / `In Progress` / `Done`
+> Plan 추가는 `/spec-build`가 planner sub-agent로 처리.
+
+## Open Questions
+
+_현재 열린 질문 없음._

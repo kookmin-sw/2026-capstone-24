@@ -53,7 +53,7 @@ namespace Murang.Multiplayer.Editor
                 target = target,
                 targetGroup = BuildTargetGroup.Standalone,
                 subtarget = (int)StandaloneBuildSubtarget.Server,
-                options = BuildOptions.StrictMode
+                options = BuildOptions.StrictMode | BuildOptions.CleanBuildCache
             };
 
             string[] backupLoaderGuids = BackupAndClearStandaloneXrLoaders();
@@ -80,7 +80,7 @@ namespace Murang.Multiplayer.Editor
                 target = target,
                 targetGroup = BuildTargetGroup.Standalone,
                 subtarget = (int)StandaloneBuildSubtarget.Player,
-                options = BuildOptions.StrictMode
+                options = BuildOptions.StrictMode | BuildOptions.CleanBuildCache
             };
 
             BuildReport report = BuildPipeline.BuildPlayer(options);

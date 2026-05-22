@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Fusion;
+using Murang.Multiplayer.Multiplay;
 using Murang.Multiplayer.Room.Common;
 using UnityEngine;
 
@@ -28,6 +29,8 @@ namespace Murang.Multiplayer.Room.Server
         private RoomAuthority _authority;
         private RoomServerAutomationMonitor _automationMonitor;
         private RoomServerCallbackReporter _callbackReporter;
+        private PlayerHandRigSpawner _handRigSpawner;
+        private MidiNetBusSpawner _midiNetBusSpawner;
 
         private async void Awake()
         {
@@ -78,6 +81,10 @@ namespace Murang.Multiplayer.Room.Server
             if (result.Ok)
             {
                 _callbackReporter?.ReportReady();
+
+                // OnSceneLoadDone callback 의존 없이 MidiNetBus 를 명시적 spawn — RoomServerBoot.unity 는
+                // 추가 씬 로드를 하지 않아 OnSceneLoadDone 이 안정적 trigger 가 아니다.
+                _midiNetBusSpawner?.SpawnNow(_runner);
             }
 
             return result;
@@ -123,6 +130,26 @@ namespace Murang.Multiplayer.Room.Server
             }
 
             _callbackReporter.Initialize(RoomServerCallbackConfig.FromProcessEnvironment());
+
+            _handRigSpawner = GetComponent<PlayerHandRigSpawner>();
+            if (_handRigSpawner == null)
+            {
+                _handRigSpawner = gameObject.AddComponent<PlayerHandRigSpawner>();
+            }
+
+            _handRigSpawner.Initialize(config);
+            _runner.RemoveCallbacks(_handRigSpawner);
+            _runner.AddCallbacks(_handRigSpawner);
+
+            _midiNetBusSpawner = GetComponent<MidiNetBusSpawner>();
+            if (_midiNetBusSpawner == null)
+            {
+                _midiNetBusSpawner = gameObject.AddComponent<MidiNetBusSpawner>();
+            }
+
+            _midiNetBusSpawner.Initialize(config);
+            _runner.RemoveCallbacks(_midiNetBusSpawner);
+            _runner.AddCallbacks(_midiNetBusSpawner);
         }
 
         private NetworkSceneManagerDefault GetOrAddSceneManager()
