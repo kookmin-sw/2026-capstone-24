@@ -6,9 +6,13 @@ namespace Instruments
 {
     /// <summary>
     /// Trombone.prefab root에 부착. InstrumentBase 계약 통과 (NoteOn/NoteOff + MidiTriggered).
-    /// 왼손 Grip rising/falling edge → baseToneMidiNote 기반 NoteOn(sustain loop + fadeIn) / NoteOff(fadeOut).
+    /// 왼손 Grip rising/falling edge → 현재 partial/slide 로 계산한 **effective MIDI** 를 NoteOn(sustain loop + fadeIn) /
+    /// NoteOff(fadeOut) 의 MidiEvent.Note 에 직접 박아 발행한다 (멀티플레이 수신측이 자기 로컬 partial/slide 로
+    /// 재계산하면 음정이 어긋나므로 wire payload 자체에 effective 값을 동봉).
     /// 4개 sample을 음역대 분할 멀티샘플로 두고, NoteOn 시점 effective MIDI에 가장 가까운 root sample을 선택해
-    /// pitch shift 폭을 최소화한다. Partial/Slide 인덱스 변경 시에는 Choke + NoteOn 으로 재트리거해 sample 재선택을 보장.
+    /// pitch shift 폭을 최소화한다. Partial/Slide 인덱스 변경 시에는 Choke(이전 effective) + NoteOn(새 effective)으로
+    /// 재트리거해 sample 재선택과 발음 페어링을 보장. m_LastEffectiveMidi 로 활성 발음의 effective 값을 박제해
+    /// NoteOff/Choke 가 항상 같은 키로 매칭되도록 한다.
     /// TromboneAnchor.IsAttached == false면 진행 중 발음을 Choke로 즉시 silence (fade 건너뜀).
     /// </summary>
     [DefaultExecutionOrder(10006)]
@@ -35,13 +39,15 @@ namespace Instruments
         bool m_IsBlowing;
         int m_LastPartialIndex;
         int m_LastSlideIndex;
+        int m_LastEffectiveMidi;
         TromboneSample m_SelectedSample;
 
         public int CurrentMidiNote => Mathf.RoundToInt(ComputeEffectiveMidi());
         public bool IsBlowing => m_IsBlowing;
 
-        void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
             leftGripAction?.action?.Enable();
         }
 
@@ -58,7 +64,7 @@ namespace Instruments
             {
                 if (m_IsBlowing)
                 {
-                    TriggerMidi(new MidiEvent(baseToneMidiNote, 0f, MidiEventType.Choke));
+                    TriggerMidi(new MidiEvent(m_LastEffectiveMidi, 0f, MidiEventType.Choke));
                     m_IsBlowing = false;
                 }
                 return;
@@ -69,14 +75,16 @@ namespace Instruments
 
             if (grip && !m_IsBlowing)
             {
-                TriggerMidi(new MidiEvent(baseToneMidiNote, 1f, MidiEventType.NoteOn));
+                int newEffective = Mathf.RoundToInt(ComputeEffectiveMidi());
+                TriggerMidi(new MidiEvent(newEffective, 1f, MidiEventType.NoteOn));
+                m_LastEffectiveMidi = newEffective;
                 m_IsBlowing = true;
                 m_LastPartialIndex = partialController != null ? partialController.PartialIndex : 0;
                 m_LastSlideIndex = slideController != null ? slideController.SlideIndex : 0;
             }
             else if (!grip && m_IsBlowing)
             {
-                TriggerMidi(new MidiEvent(baseToneMidiNote, 0f, MidiEventType.NoteOff));
+                TriggerMidi(new MidiEvent(m_LastEffectiveMidi, 0f, MidiEventType.NoteOff));
                 m_IsBlowing = false;
             }
 
@@ -85,8 +93,10 @@ namespace Instruments
             bool slideChanged = slideController != null && slideController.SlideIndex != m_LastSlideIndex;
             if (m_IsBlowing && (partialChanged || slideChanged))
             {
-                TriggerMidi(new MidiEvent(baseToneMidiNote, 0f, MidiEventType.Choke));
-                TriggerMidi(new MidiEvent(baseToneMidiNote, 1f, MidiEventType.NoteOn));
+                TriggerMidi(new MidiEvent(m_LastEffectiveMidi, 0f, MidiEventType.Choke));
+                int newEffective = Mathf.RoundToInt(ComputeEffectiveMidi());
+                TriggerMidi(new MidiEvent(newEffective, 1f, MidiEventType.NoteOn));
+                m_LastEffectiveMidi = newEffective;
                 if (partialController != null) m_LastPartialIndex = partialController.PartialIndex;
                 if (slideController != null) m_LastSlideIndex = slideController.SlideIndex;
             }
@@ -95,7 +105,10 @@ namespace Instruments
         protected override bool TryResolveNoteOn(MidiEvent midiEvent, out NotePlayback playback)
         {
             playback = default;
-            float effectiveMidi = ComputeEffectiveMidi();
+            // sender 가 LateUpdate 에서 effective MIDI 를 MidiEvent.Note 에 직접 박아 보내므로
+            // 로컬·원격 모두 midiEvent.Note 를 그대로 effective MIDI 로 신뢰한다. 수신측에서
+            // 자기 로컬 partial/slide 상태로 재계산하면 음정이 어긋나기 때문에 ComputeEffectiveMidi 사용 금지.
+            int effectiveMidi = midiEvent.Note;
             if (!TrySelectSampleForMidi(effectiveMidi, out m_SelectedSample))
                 return false;
             float pitch = ComputePitchForSelectedSample(effectiveMidi);
