@@ -65,8 +65,8 @@ namespace Murang.Multiplayer.Multiplay
                 return;
             }
 
-            Debug.Log($"[LocalMidiEmitter] Sending Rpc_BroadcastMidi instrumentId={instId} note={e.Note} velocity={e.Velocity} type={e.Type}");
-            _cachedBus.Rpc_BroadcastMidi(instId, e.Note, e.Velocity, (byte)e.Type, e.Channel);
+            Debug.Log($"[LocalMidiEmitter] Sending RPC_SendMidiToServer instrumentId={instId} note={e.Note} velocity={e.Velocity} type={e.Type}");
+            _cachedBus.RPC_SendMidiToServer(instId, e.Note, e.Velocity, (byte)e.Type, e.Channel);
         }
 
         private void OnDestroy()

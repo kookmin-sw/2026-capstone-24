@@ -6,23 +6,24 @@ using UnityEngine;
 namespace Murang.Multiplayer.Multiplay
 {
     /// <summary>
-    /// 룸당 1개 spawn 되는 NetworkObject.
-    /// 클라이언트가 친 MIDI 이벤트를 룸 전체에 RPC 브로드캐스트하고,
-    /// 수신 측은 InstrumentIdRegistry 로 해당 InstrumentBase 를 조회해 ApplyRemoteMidi 를 호출한다.
-    /// server 측은 오디오 dispatch 없이 sustained note 트래킹만 담당한다.
+    /// NetworkObject spawned once per room for MIDI broadcast.
+    /// Fusion 2 dedicated-server 토폴로지에서는 client → other client 직접 RPC 가 동작하지 않으므로
+    /// 2단계 relay 패턴을 사용한다:
+    ///   1) client → server : RPC_SendMidiToServer (RpcSources.All, RpcTargets.StateAuthority)
+    ///   2) server → all clients : RPC_RelayMidiToClients (RpcSources.StateAuthority, RpcTargets.All)
     /// </summary>
     public sealed class MidiNetBus : NetworkBehaviour
     {
-        // server-side: 플레이어별 sustained NoteOn 트래킹 (NoteOff/Choke 가 없을 때 PlayerLeft 시 flush)
+        // Server-side sustained note tracking for cleanup on player leave.
         private readonly Dictionary<PlayerRef, List<(ushort instId, int note)>> _sustainedNotes =
             new Dictionary<PlayerRef, List<(ushort, int)>>();
 
         /// <summary>
-        /// 모든 클라이언트에 MIDI 이벤트를 브로드캐스트한다.
-        /// LocalMidiEmitter 가 클라이언트 측에서 자기 MidiTriggered 를 받아 호출한다.
+        /// Client → server. LocalMidiEmitter 가 자기 MidiTriggered 를 받아 호출한다.
+        /// server 는 sustained 트래킹 후 RPC_RelayMidiToClients 로 룸 전체에 relay.
         /// </summary>
-        [Rpc(RpcSources.All, RpcTargets.All)]
-        public void Rpc_BroadcastMidi(
+        [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+        public void RPC_SendMidiToServer(
             ushort instrumentId,
             int note,
             float velocity,
@@ -32,30 +33,48 @@ namespace Murang.Multiplayer.Multiplay
         {
             MidiEventType eventType = (MidiEventType)type;
 
-            // ControlChange (값 3) 는 본 단계 미사용 — silent skip
+            // ControlChange is not synchronized yet.
             if (eventType == MidiEventType.ControlChange)
             {
-                Debug.Log($"[MidiNetBus] Rpc_BroadcastMidi: ControlChange skipped (instrumentId={instrumentId})");
+                Debug.Log($"[MidiNetBus] RPC_SendMidiToServer: ControlChange skipped (instrumentId={instrumentId})");
                 return;
             }
 
-            // server-side: sustained note 트래킹 (오디오 dispatch 없음)
+            Debug.Log($"[MidiNetBus] RPC_SendMidiToServer server recv: source={info.Source} instrumentId={instrumentId} note={note} velocity={velocity} type={eventType}");
+
+            TrackSustainedNote(info.Source, instrumentId, note, eventType);
+
+            // server → all clients relay (sender 정보를 payload 로 동봉해 echo 가드용)
+            RPC_RelayMidiToClients(instrumentId, note, velocity, type, channel, info.Source);
+        }
+
+        /// <summary>
+        /// Server → all clients relay. 자기 자신이 보낸 이벤트는 sourcePlayer 비교로 echo 가드.
+        /// </summary>
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        public void RPC_RelayMidiToClients(
+            ushort instrumentId,
+            int note,
+            float velocity,
+            byte type,
+            byte channel,
+            PlayerRef sourcePlayer)
+        {
+            // server 본인은 relay 단계에서 audio dispatch 안 함 (SendMidiToServer 에서 이미 처리)
             if (Runner.IsServer)
-            {
-                TrackSustainedNote(info.Source, instrumentId, note, eventType);
                 return;
-            }
+
+            MidiEventType eventType = (MidiEventType)type;
 
             // client-side: 자기 발신 echo 가드
-            if (info.Source == Runner.LocalPlayer)
+            if (sourcePlayer == Runner.LocalPlayer)
             {
-                Debug.Log($"[MidiNetBus] echo-guarded self RPC from player={info.Source} instrumentId={instrumentId} note={note}");
+                Debug.Log($"[MidiNetBus] RPC_RelayMidiToClients echo-guarded: source={sourcePlayer} instrumentId={instrumentId} note={note}");
                 return;
             }
 
-            Debug.Log($"[MidiNetBus] Rpc_BroadcastMidi received: player={info.Source} instrumentId={instrumentId} note={note} velocity={velocity} type={eventType}");
+            Debug.Log($"[MidiNetBus] RPC_RelayMidiToClients received: source={sourcePlayer} instrumentId={instrumentId} note={note} velocity={velocity} type={eventType}");
 
-            // InstrumentIdRegistry 로 로컬 InstrumentBase 조회 후 ApplyRemoteMidi
             if (!InstrumentIdRegistry.TryResolve(instrumentId, out InstrumentBase inst))
             {
                 Debug.Log($"[MidiNetBus] InstrumentBase not found for instrumentId={instrumentId}, skipping");
@@ -66,8 +85,8 @@ namespace Murang.Multiplayer.Multiplay
         }
 
         /// <summary>
-        /// 플레이어가 룸을 떠날 때 호출된다. (MidiNetBusSpawner 의 OnPlayerLeft 에서 트리거)
-        /// server-side sustained note flush — NoteOff 를 자동 발행해 다른 클라이언트의 발음을 정지.
+        /// Flush sustained notes for a player who left the room.
+        /// server 에서 직접 RPC_RelayMidiToClients(NoteOff) 발행 — 1단계로 충분.
         /// </summary>
         public void FlushSustainedNotesForPlayer(NetworkRunner runner, PlayerRef player)
         {
@@ -84,7 +103,7 @@ namespace Murang.Multiplayer.Multiplay
 
             foreach ((ushort instId, int note) in notes)
             {
-                Rpc_BroadcastMidi(instId, note, 0f, (byte)MidiEventType.NoteOff, 0);
+                RPC_RelayMidiToClients(instId, note, 0f, (byte)MidiEventType.NoteOff, 0, player);
             }
 
             _sustainedNotes.Remove(player);
