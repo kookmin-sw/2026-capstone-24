@@ -6,7 +6,7 @@ songid = nabia_001
 ticksPerQuarter = 480
 
 [Tempo]
-tick=0  bpm=120  beats=4  beatUnit=4
+tick=0  bpm=60  beats=4  beatUnit=4
 
 [Channels]
 channel=1  instrument=piano
