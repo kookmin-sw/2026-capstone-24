@@ -64,7 +64,7 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| _아직 없음_ | — | — | — |
+| 2026-05-22 | 세션 패널 멀티플레이 진입 통합 + LobbyPanel MaxPlayers 스테퍼 + 비밀번호 오버레이 | `Ready` | [`2026-05-22-namae1128-session-panel-multiplayer-entry-and-lobby-ux.md`](../plans/2026-05-22-namae1128-session-panel-multiplayer-entry-and-lobby-ux.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 

@@ -31,8 +31,19 @@ namespace Murang.Multiplayer.Presence
         [SerializeField] private TMP_InputField roomNameInput;
         [SerializeField] private Toggle passwordEnabledToggle;
         [SerializeField] private TMP_InputField passwordInput;
-        [SerializeField] private TMP_InputField maxPlayersInput;
         [SerializeField] private Button createButton;
+
+        [Header("UI — MaxPlayers stepper")]
+        [SerializeField] private TMP_Text maxPlayersDisplay;
+        [SerializeField] private Button maxPlayersMinusButton;
+        [SerializeField] private Button maxPlayersPlusButton;
+        [SerializeField] private int maxPlayersInitial = 4;
+
+        [Header("UI — Password join overlay")]
+        [SerializeField] private GameObject passwordOverlayRoot;
+        [SerializeField] private TMP_InputField passwordOverlayInput;
+        [SerializeField] private Button passwordOverlayConfirmButton;
+        [SerializeField] private Button passwordOverlayCancelButton;
 
         [Header("UI — Room list")]
         [SerializeField] private Transform roomRowParent;
@@ -50,6 +61,8 @@ namespace Murang.Multiplayer.Presence
         private readonly List<RoomRowEntry> _rowPool = new List<RoomRowEntry>();
         private bool _busy;
         private CancellationTokenSource _activeOperationCts;
+        private int _maxPlayers;
+        private RoomListEntry _pendingJoinEntry;
 
         void Awake()
         {
@@ -75,6 +88,14 @@ namespace Murang.Multiplayer.Presence
                 authGate.OnAuthenticationCompleted += HandleAuthenticationCompleted;
             }
 
+            _maxPlayers = Mathf.Clamp(maxPlayersInitial, LobbyInputValidator.MinMaxPlayers, LobbyInputValidator.MaxMaxPlayers);
+            RefreshMaxPlayersDisplay();
+            if (maxPlayersMinusButton != null) maxPlayersMinusButton.onClick.AddListener(OnMaxPlayersMinus);
+            if (maxPlayersPlusButton  != null) maxPlayersPlusButton .onClick.AddListener(OnMaxPlayersPlus);
+            if (passwordOverlayRoot != null) passwordOverlayRoot.SetActive(false);
+            if (passwordOverlayConfirmButton != null) passwordOverlayConfirmButton.onClick.AddListener(OnPasswordOverlayConfirm);
+            if (passwordOverlayCancelButton  != null) passwordOverlayCancelButton .onClick.AddListener(OnPasswordOverlayCancel);
+
             RefreshPasswordInputState();
             UpdateEmptyLabel(0);
         }
@@ -97,6 +118,10 @@ namespace Murang.Multiplayer.Presence
             {
                 authGate.OnAuthenticationCompleted -= HandleAuthenticationCompleted;
             }
+            if (maxPlayersMinusButton != null) maxPlayersMinusButton.onClick.RemoveListener(OnMaxPlayersMinus);
+            if (maxPlayersPlusButton  != null) maxPlayersPlusButton .onClick.RemoveListener(OnMaxPlayersPlus);
+            if (passwordOverlayConfirmButton != null) passwordOverlayConfirmButton.onClick.RemoveListener(OnPasswordOverlayConfirm);
+            if (passwordOverlayCancelButton  != null) passwordOverlayCancelButton .onClick.RemoveListener(OnPasswordOverlayCancel);
 
             _activeOperationCts?.Cancel();
             _activeOperationCts?.Dispose();
@@ -158,7 +183,7 @@ namespace Murang.Multiplayer.Presence
             }
 
             string roomName = roomNameInput != null ? roomNameInput.text : string.Empty;
-            int maxPlayers = ParseMaxPlayers();
+            int maxPlayers = _maxPlayers;
             bool passwordEnabled = passwordEnabledToggle != null && passwordEnabledToggle.isOn;
             string passwordRaw = passwordEnabled && passwordInput != null ? passwordInput.text : string.Empty;
 
@@ -310,17 +335,14 @@ namespace Murang.Multiplayer.Presence
                 return;
             }
 
-            string passwordRaw = passwordInput != null ? passwordInput.text : string.Empty;
-            LobbyValidationResult validation = LobbyInputValidator.ValidateJoinPassword(
-                entry.IsLocked,
-                passwordRaw);
-            if (!validation.Success)
+            if (!entry.IsLocked)
             {
-                SetStatus("Failed: " + validation.ErrorMessage);
+                await RunJoinRoomAsync(entry, null);
                 return;
             }
 
-            await RunJoinRoomAsync(entry, entry.IsLocked ? passwordRaw : null);
+            _pendingJoinEntry = entry;
+            OpenPasswordOverlay();
         }
 
         private async Task RunJoinRoomAsync(RoomListEntry entry, string passwordOrNull)
@@ -446,13 +468,51 @@ namespace Murang.Multiplayer.Presence
             return true;
         }
 
-        private int ParseMaxPlayers()
+        private void OnMaxPlayersMinus()
         {
-            if (maxPlayersInput == null || string.IsNullOrWhiteSpace(maxPlayersInput.text))
+            _maxPlayers = Mathf.Clamp(_maxPlayers - 1, LobbyInputValidator.MinMaxPlayers, LobbyInputValidator.MaxMaxPlayers);
+            RefreshMaxPlayersDisplay();
+        }
+
+        private void OnMaxPlayersPlus()
+        {
+            _maxPlayers = Mathf.Clamp(_maxPlayers + 1, LobbyInputValidator.MinMaxPlayers, LobbyInputValidator.MaxMaxPlayers);
+            RefreshMaxPlayersDisplay();
+        }
+
+        private void RefreshMaxPlayersDisplay()
+        {
+            if (maxPlayersDisplay != null) maxPlayersDisplay.text = _maxPlayers.ToString();
+            if (maxPlayersMinusButton != null) maxPlayersMinusButton.interactable = _maxPlayers > LobbyInputValidator.MinMaxPlayers;
+            if (maxPlayersPlusButton  != null) maxPlayersPlusButton .interactable = _maxPlayers < LobbyInputValidator.MaxMaxPlayers;
+        }
+
+        private void OpenPasswordOverlay()
+        {
+            if (passwordOverlayInput != null) passwordOverlayInput.text = string.Empty;
+            if (passwordOverlayRoot != null) passwordOverlayRoot.SetActive(true);
+        }
+
+        private async void OnPasswordOverlayConfirm()
+        {
+            string raw = passwordOverlayInput != null ? passwordOverlayInput.text : string.Empty;
+            LobbyValidationResult v = LobbyInputValidator.ValidateJoinPassword(locked: true, raw);
+            if (!v.Success)
             {
-                return 0;
+                SetStatus("Failed: " + v.ErrorMessage);
+                return;
             }
-            return int.TryParse(maxPlayersInput.text, out int parsed) ? parsed : 0;
+            if (passwordOverlayRoot != null) passwordOverlayRoot.SetActive(false);
+            RoomListEntry entry = _pendingJoinEntry;
+            _pendingJoinEntry = default;
+            await RunJoinRoomAsync(entry, raw);
+        }
+
+        private void OnPasswordOverlayCancel()
+        {
+            if (passwordOverlayRoot != null) passwordOverlayRoot.SetActive(false);
+            _pendingJoinEntry = default;
+            if (passwordOverlayInput != null) passwordOverlayInput.text = string.Empty;
         }
 
         private static string FormatJoinFailure(RoomJoinResult result)

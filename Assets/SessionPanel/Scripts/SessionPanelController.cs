@@ -29,6 +29,9 @@ namespace SessionPanel
         [SerializeField] private bool snapOnce = true;
         [Tooltip("InstrumentOpened 모드에서 패널을 카메라 앞 몇 미터에 배치할지.")]
         [SerializeField] private float instrumentSpawnDistance = 1f;
+
+        [Header("Multiplayer integration")]
+        [SerializeField] private GameObject _multiplayerPanelObject;
         // 양 손 NearFarInteractor + 자식 LineRenderer/CurveVisualController (런타임에 자동 수집).
         // gameObject.SetActive 대신 .enabled 토글 — ControllerInputActionManager.OnCancelTeleport 가
         // NearFar.gameObject.SetActive(true) 로 부활시키는 동작과 직교(orthogonal)하기 위함.
@@ -48,6 +51,7 @@ namespace SessionPanel
         private RhythmGameSectionController _rhythmCtrl;
         private bool _hiddenByGame;
         private Coroutine _activateInteractorsCoroutine;
+        private MultiplayerSectionController _mpCtrl;
 
         private void Awake()
         {
@@ -253,6 +257,9 @@ namespace SessionPanel
                 _rhythmCtrl.GameStarted += OnRhythmGameStarted;
                 _rhythmCtrl.GameEnded   += OnRhythmGameEnded;
             }
+
+            _mpCtrl = _panelInstance.GetComponentInChildren<MultiplayerSectionController>(true);
+            if (_mpCtrl != null) _mpCtrl.Inject(_multiplayerPanelObject);
         }
 
         private void OnRhythmGameStarted()
