@@ -1,7 +1,7 @@
 # AWS dev 토폴로지 (EC2 Spring + MariaDB, ECS Fargate room-server)
 
-**Linked Spec:** [`05-room-server-manager.md`](../specs/05-room-server-manager.md)
-**Status:** `Ready`
+**Linked Spec:** [`05-room-server-manager.md`](../../../multiplayer-network/specs/05-room-server-manager.md)
+**Status:** `Done (2026-05-25) — manual-hard 5/8 통과 (control plane 외부 도달, playerId 영속성, 룸 row + ecs_task_arn, Fargate ready callback, Quest 합류). 운영 자계 3건 (CloudWatch custom metric, MariaDB inbound 외부 차단 검증, 일 1회 mysqldump cron) 은 발표 범위 밖으로 deferred 처리 후 Done. 후속 운영 plan 으로 분리 예정.`
 
 ## Goal
 

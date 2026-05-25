@@ -1,8 +1,8 @@
 # Presence UI 인-룸 패널 (참가자 리스트 + 퇴장)
 
-**Linked Spec:** [`04-presence-ui.md`](../specs/04-presence-ui.md)
+**Linked Spec:** [`04-presence-ui.md`](../../../multiplayer-network/specs/04-presence-ui.md)
 **Caused By:** [`2026-05-16-namae1128-presence-ui-lobby-panel.md`](./2026-05-16-namae1128-presence-ui-lobby-panel.md)
-**Status:** `Ready`
+**Status:** `Done (2026-05-25) — superseded by 2026-05-18 migration-to-testscenesanyo plan (in-room 패널이 새 default 씬 TestSceneSanyo 로 마이그레이션 완료, Quest 실기기에서 참가자 리스트 동작 확인).`
 
 ## Goal
 

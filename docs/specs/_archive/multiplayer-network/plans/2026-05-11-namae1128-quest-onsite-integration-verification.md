@@ -1,8 +1,8 @@
 # Quest 실기기 멀티 plan 통합 검증
 
-**Linked Spec:** [`01-user-auth.md`](../specs/01-user-auth.md)
-**Caused By:** [`2026-05-08-namae1128-multiplayer-auth-gate.md`](../../_archive/multiplayer-network/plans/2026-05-08-namae1128-multiplayer-auth-gate.md)
-**Status:** `Ready`
+**Linked Spec:** [`01-user-auth.md`](../../../multiplayer-network/specs/01-user-auth.md)
+**Caused By:** [`2026-05-08-namae1128-multiplayer-auth-gate.md`](./2026-05-08-namae1128-multiplayer-auth-gate.md)
+**Status:** `Done (2026-05-25) — manual-hard 5건 (auth-gate, real-meta-verifier 3건, aws-dev Fargate 합류) Quest 실기기 + AWS dev backend (HTTPS api.mu-rang.com) 환경에서 통과.`
 
 ## Goal
 

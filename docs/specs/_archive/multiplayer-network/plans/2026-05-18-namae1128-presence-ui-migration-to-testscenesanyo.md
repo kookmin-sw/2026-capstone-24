@@ -1,8 +1,8 @@
 # Presence UI SampleScene → TestSceneSanyo 마이그레이션
 
-**Linked Spec:** [`04-presence-ui.md`](../specs/04-presence-ui.md)
-**Caused By:** default 씬 매핑이 `SampleScene` → `TestSceneSanyo` 로 전환된 [`decisions/01-default-scene.md`](../decisions/01-default-scene.md) 결정. SampleScene 에만 박혀 있는 multiplayer UI 4개 root GameObject 가 새 default 씬에서 누락된 정합성 차이를 닫는다.
-**Status:** `Ready`
+**Linked Spec:** [`04-presence-ui.md`](../../../multiplayer-network/specs/04-presence-ui.md)
+**Caused By:** default 씬 매핑이 `SampleScene` → `TestSceneSanyo` 로 전환된 [`decisions/01-default-scene.md`](../../../multiplayer-network/decisions/01-default-scene.md) 결정. SampleScene 에만 박혀 있는 multiplayer UI 4개 root GameObject 가 새 default 씬에서 누락된 정합성 차이를 닫는다.
+**Status:** `Done (2026-05-25) — auto-hard 6건 통과 (commit 20cf4c0), manual-hard 1건 (Quest AuthGate→인증→statusLabel) AWS dev backend (HTTPS 도메인) 실기기 검증 통과.`
 
 ## Goal
 

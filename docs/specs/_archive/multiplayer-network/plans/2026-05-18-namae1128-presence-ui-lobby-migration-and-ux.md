@@ -1,12 +1,12 @@
 # Presence UI LobbyPanel 마이그레이션 + UX 리디자인 + VR 키보드 통합
 
-**Linked Spec:** [`04-presence-ui.md`](../specs/04-presence-ui.md)
+**Linked Spec:** [`04-presence-ui.md`](../../../multiplayer-network/specs/04-presence-ui.md)
 **Caused By:**
 - [`2026-05-18-namae1128-presence-ui-migration-to-testscenesanyo.md`](./2026-05-18-namae1128-presence-ui-migration-to-testscenesanyo.md) 의 Out of Scope에서 약속한 본격 UX 리디자인 (좌표 미세 조정 ±1m/±45°만 허용했음).
 - 위 마이그레이션이 SampleScene의 4 root만 옮기고 **5번째 root `MultiplayerLobbyPanel` (adb46dc 시점 박힘)** 을 unity-scene-reader 점검 prompt 누락으로 빠뜨림.
 - 실기기 테스트에서 (1) 룸 이름 입력 시 VR 키보드 미발화 (2) 입력칸·버튼 배치 모서리 몰림 발견.
 
-**Status:** `Ready`
+**Status:** `Done (2026-05-25) — Phase A (TestSceneSanyo 마이그레이션) + Phase B (UX 리디자인) + Phase C (VR 키보드 통합) 전 단계 완료. Quest 실기기에서 LobbyPanel end-to-end (인증 → 룸 입력 → CreateButton → InRoomPanel) 동작 확인.`
 
 ## Goal
 

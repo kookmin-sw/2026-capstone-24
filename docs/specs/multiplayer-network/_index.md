@@ -19,20 +19,20 @@ VirtualMusicStudio의 핵심 경험은 여러 유저가 같은 VR 공간에서 �
 
 | 목표 | 상태 | 비고 |
 |---|---|---|
-| 초기 서버/DB 환경 만들고 실행하기 | `로컬 완료 / AWS dev control plane 완료, 합류 미검증` | 로컬 `docker-compose` 스택은 archive 로 닫혔다. EC2 + Spring + MariaDB + ECS 토폴로지는 [`aws-dev-topology-ec2-fargate`](plans/2026-05-07-namae1128-aws-dev-topology-ec2-fargate.md) plan AC #1·#2 통과 (compose syntax + 외부 actuator/health). 나머지 manual-hard 8건은 Quest 합류 검증과 묶여 있다. |
-| Meta ID로 로그인 | `백엔드 mock + real 완료 / Quest 실기기 검증 보류` | backend mock·real verifier 와 Unity 클라이언트 인증 흐름은 모두 archive 로 닫혔다. Quest 빌드 + 헤드셋 시나리오 5건은 [`quest-onsite-integration-verification`](plans/2026-05-11-namae1128-quest-onsite-integration-verification.md) plan 에 묶여 있다. |
-| 멀티플레이 룸 생성/참가/나가기 | `핵심 로직 + dedicated-server 빌드 완료 / 실기기 합류 보류` | 룸 세션 라이프사이클·dedicated-server 빌드·OpenXR 토글·로컬 docker-compose 스택 모두 archive 로 닫혔다. Quest 실기기 합류는 위 통합 검증 plan 에서 일괄 검증. docker-compose 후속 자동화였던 `stack-smoke-automation` plan 은 2026-05-25 abandon (dev 무게중심이 EC2+ECS 로 이동) 후 짝 산출물 `tools/run-room-lifecycle-automation.ps1` 도 함께 삭제. |
-| 생성된 룸 목록 확인 UI | `데이터 계층 완료 / UI plan 작성 완료 / 미구현` | `RoomListQuery` 데이터 노출 plan 은 archive 로 닫혔고, UI 바인딩은 [`2026-05-16-namae1128-presence-ui-lobby-panel`](plans/2026-05-16-namae1128-presence-ui-lobby-panel.md) plan 책임. |
-| 룸 내부 접속자 수 확인 UI | `plan 작성 완료 / 미구현 / 닉네임은 후속` | [`2026-05-16-namae1128-presence-ui-in-room-panel`](plans/2026-05-16-namae1128-presence-ui-in-room-panel.md) plan 이 1차 출시 범위에서 playerId 기반 행을 표시. nickname 채널은 후속 plan. |
-| AWS dev 환경 만들기 | `control plane 동작 / Quest 합류 미검증` | EC2 control plane 부팅과 외부 `/actuator/health` 통과까지 완료. ECS RunTask → Fargate room-server 합류는 Quest 빌드와 동시 검증 예정. |
+| 초기 서버/DB 환경 만들고 실행하기 | `Done (2026-05-25)` | 로컬 docker-compose 스택은 archive 로 닫혔고, EC2 + Spring + MariaDB + ECS 토폴로지도 Quest 실기기 합류까지 통과해 [`aws-dev-topology-ec2-fargate`](../_archive/multiplayer-network/plans/2026-05-07-namae1128-aws-dev-topology-ec2-fargate.md) plan archive 처리. 운영 자계 3건 (CloudWatch custom metric, MariaDB inbound 차단 검증, mysqldump cron) 은 발표 범위 밖으로 deferred. |
+| Meta ID로 로그인 | `Done (2026-05-25)` | backend mock·real verifier + Unity 클라이언트 인증 + Quest 실기기 시나리오 5건 모두 통과. [`quest-onsite-integration-verification`](../_archive/multiplayer-network/plans/2026-05-11-namae1128-quest-onsite-integration-verification.md) plan archive 처리. |
+| 멀티플레이 룸 생성/참가/나가기 | `Done (2026-05-25)` | 룸 세션 라이프사이클·dedicated-server 빌드·OpenXR 토글·로컬 docker-compose 스택·Quest 실기기 합류 모두 archive 로 닫혔다. docker-compose 후속 자동화였던 `stack-smoke-automation` plan 은 2026-05-25 abandon (dev 무게중심이 EC2+ECS 로 이동) 후 짝 산출물 `tools/run-room-lifecycle-automation.ps1` 도 함께 삭제. |
+| 생성된 룸 목록 확인 UI | `Done (2026-05-25)` | `RoomListQuery` 데이터 노출 + lobby 패널 UI 바인딩이 [`presence-ui-lobby-migration-and-ux`](../_archive/multiplayer-network/plans/2026-05-18-namae1128-presence-ui-lobby-migration-and-ux.md) 에서 Phase A/B/C 모두 완료. Quest 실기기에서 LobbyPanel end-to-end 동작 확인. |
+| 룸 내부 접속자 수 확인 UI | `Done (2026-05-25, 닉네임은 후속)` | [`presence-ui-migration-to-testscenesanyo`](../_archive/multiplayer-network/plans/2026-05-18-namae1128-presence-ui-migration-to-testscenesanyo.md) 가 in-room 패널을 TestSceneSanyo 로 마이그레이션, Quest 실기기 참가자 리스트 동작 확인. nickname 채널 추가는 후속 plan. |
+| AWS dev 환경 만들기 | `Done (2026-05-25)` | EC2 control plane + ECS Fargate + Caddy/Cloudflare HTTPS 종단 (api.mu-rang.com) 까지 모두 Quest 실기기 합류로 통과 확인. [`aws-dev-topology-ec2-fargate`](../_archive/multiplayer-network/plans/2026-05-07-namae1128-aws-dev-topology-ec2-fargate.md) + [`aws-dev-https-caddy-cloudflare`](../_archive/multiplayer-network/plans/2026-05-16-namae1128-aws-dev-https-caddy-cloudflare.md) 둘 다 archive 처리. |
 
-## 첫 실기기 테스트 크리티컬 패스
+## 첫 실기기 테스트 크리티컬 패스 (2026-05-25 통과)
 
-1. `Quest 빌드 device backend URL` 을 EC2 public DNS 로 설정
-2. `MURANG_META_VERIFIER_MODE=real` + 유효한 `APP_ID`/`APP_SECRET` 으로 backend 재기동
-3. Quest 빌드 + 사이드로드 후 [`quest-onsite-integration-verification`](plans/2026-05-11-namae1128-quest-onsite-integration-verification.md) 시나리오 5건 일괄 검증
-4. `aws-dev-topology-ec2-fargate` plan 의 잔여 manual-hard (Fargate RunTask, ready callback, 합류 로그, StopTask, CloudWatch, mysqldump cron) 동시 통과
-5. `04-presence-ui` 2개 plan 구현 (lobby panel + in-room panel — Quest 듀얼 사이드로드로 입퇴장 실시간 표시 검증)
+1. ✅ Quest 빌드 device backend URL 을 HTTPS 도메인 (`https://api.mu-rang.com`) 으로 설정 — Caddy + Cloudflare + Let's Encrypt 종단 동작 확인.
+2. ✅ Spring `MURANG_META_VERIFIER_MODE=real` + 유효한 `APP_ID`/`APP_SECRET` 으로 backend 재기동.
+3. ✅ Quest 빌드 + 사이드로드 후 [`quest-onsite-integration-verification`](../_archive/multiplayer-network/plans/2026-05-11-namae1128-quest-onsite-integration-verification.md) 시나리오 5건 일괄 통과.
+4. ✅ [`aws-dev-topology-ec2-fargate`](../_archive/multiplayer-network/plans/2026-05-07-namae1128-aws-dev-topology-ec2-fargate.md) 의 manual-hard 5/8 통과 (Fargate RunTask · ready callback · 합류 로그). 운영 자계 3건 (StopTask 정리, CloudWatch metric, mysqldump cron) 은 발표 범위 밖으로 deferred.
+5. ✅ `04-presence-ui` 의 lobby + in-room 패널이 [`presence-ui-migration-to-testscenesanyo`](../_archive/multiplayer-network/plans/2026-05-18-namae1128-presence-ui-migration-to-testscenesanyo.md) + [`presence-ui-lobby-migration-and-ux`](../_archive/multiplayer-network/plans/2026-05-18-namae1128-presence-ui-lobby-migration-and-ux.md) 두 plan 으로 TestSceneSanyo 마이그레이션 + UX 리디자인 + VR 키보드 통합 완료.
 
 ## Sub-Specs
 
