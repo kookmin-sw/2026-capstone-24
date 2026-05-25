@@ -7210,6 +7210,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: SessionPanel.Runtime::SessionPanel.FolderScanSongCatalog
   songsRelativePath: Songs
+  indexFileName: index.json
 --- !u!1 &1977748801
 GameObject:
   m_ObjectHideFlags: 0
