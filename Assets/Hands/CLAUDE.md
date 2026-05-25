@@ -59,3 +59,30 @@ drum_stick (root)
 7. 검증: `Tools/Hands/Validate Grip Pose Wiring` 실행 (GripPoseHand 구조·뼈 일치·PreviewMesh 점검).
 
 → DrumStick의 `Editor/DrumStickSetup.cs`를 prefab 골격 자동화 템플릿으로, `DrumKitStickAnchor.cs`를 운전 컨테이너 템플릿으로 삼는다.
+
+## 5. 멀티플레이어 hand sync (원격 손)
+
+로컬 손은 §1~§4로 끝. **원격 player 손은 Multiplayer 도메인이 본 도메인의 Ghost 단계를 캡쳐해 다른 client로 송신**한다. Hands 도메인 자체는 Multiplayer를 모른다 — 단방향 의존(Multiplayer → Hands).
+
+데이터 흐름:
+
+```
+[로컬 client]
+Ghost (VR 입력 뼈)
+    │ wrist + 25본 localRotation 추출
+    ▼
+Multiplayer/Multiplay/LocalHandPoseSource   (씬 배치, client only)
+    │ RPC_PushPose
+    ▼
+[server] NetworkedWristPose  ─ [Networked] (StateAuthority만 쓰기)
+    │
+    ▼
+[원격 client]
+PlayerHandRig.prefab 의 자식
+    └─ LeftRemoteHandRenderer.prefab / RightRemoteHandRenderer.prefab
+       (Multiplayer/Prefabs/, 본 이름 매칭으로 SkinnedMeshRenderer 갱신)
+```
+
+본 이름 매칭 규약: `Multiplayer/Scripts/Multiplay/RemoteHandBoneNames.cs:13-14` 가 25본 정렬 순서를 박제(Index→Middle→Ring→Little→Thumb→Palm, `L_`/`R_` 프리픽스). **본을 추가/이름 변경하면 양 client 의 Ghost prefab 과 RemoteHandRenderer prefab 모두에 반영해야 한다.**
+
+자세한 토폴로지 / RPC 패턴은 `Assets/Multiplayer/CLAUDE.md` 참조.
