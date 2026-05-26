@@ -9,8 +9,7 @@ namespace SessionPanel
     [AddComponentMenu("SessionPanel/Instrument Guide Panel Controller")]
     public class InstrumentGuidePanelController : MonoBehaviour
     {
-        [SerializeField] Image leftImage;
-        [SerializeField] Image rightImage;
+        [SerializeField] Image pageImage;
         [SerializeField] TextMeshProUGUI descriptionText;
         [SerializeField] TextMeshProUGUI titleLabel;
         [SerializeField] TextMeshProUGUI pageIndicator;
@@ -24,8 +23,7 @@ namespace SessionPanel
 
         struct Page
         {
-            public Sprite left;
-            public Sprite right;
+            public Sprite image;
             public string description;
         }
 
@@ -58,22 +56,19 @@ namespace SessionPanel
             _pages.Clear();
             if (string.IsNullOrEmpty(instrumentId)) return;
 
-            // sub-spec 10 §What + 09 sub-spec 박제 폴더 규약:
-            // Resources/Tutorial/<instrumentId>/<NN>/{left, right, description}
-            // NN 은 01 부터 순차 — 셋 다 null 이면 스캔 종료.
+            // 폴더 규약: Resources/Tutorial/<instrumentId>/<NN>/{page, description}
+            // NN 은 01 부터 순차 — 둘 다 null 이면 스캔 종료.
             int n = 1;
             while (true)
             {
                 string pad = n.ToString("00");
                 string folder = $"Tutorial/{instrumentId}/{pad}";
-                var left = Resources.Load<Sprite>($"{folder}/left");
-                var right = Resources.Load<Sprite>($"{folder}/right");
+                var image = Resources.Load<Sprite>($"{folder}/page");
                 var textAsset = Resources.Load<TextAsset>($"{folder}/description");
-                if (left == null && right == null && textAsset == null) break;
+                if (image == null && textAsset == null) break;
                 _pages.Add(new Page
                 {
-                    left = left,
-                    right = right,
+                    image = image,
                     description = textAsset != null ? textAsset.text : string.Empty,
                 });
                 n++;
@@ -102,15 +97,10 @@ namespace SessionPanel
             if (hasPages)
             {
                 var page = _pages[_pageIndex];
-                if (leftImage != null)
+                if (pageImage != null)
                 {
-                    leftImage.sprite = page.left;
-                    leftImage.enabled = page.left != null;
-                }
-                if (rightImage != null)
-                {
-                    rightImage.sprite = page.right;
-                    rightImage.enabled = page.right != null;
+                    pageImage.sprite = page.image;
+                    pageImage.enabled = page.image != null;
                 }
                 if (descriptionText != null)
                     descriptionText.text = page.description;
@@ -119,14 +109,13 @@ namespace SessionPanel
             }
             else
             {
-                // 콘텐츠 없음 — graceful fallback (sub-spec 10 §Out of Scope 박제).
-                if (leftImage != null) leftImage.enabled = false;
-                if (rightImage != null) rightImage.enabled = false;
+                // 콘텐츠 없음 — graceful fallback.
+                if (pageImage != null) pageImage.enabled = false;
                 if (descriptionText != null) descriptionText.text = placeholderMessage;
                 if (pageIndicator != null) pageIndicator.text = "0 / 0";
             }
 
-            // 첫/마지막 페이지에서 각 버튼 비활성 (sub-spec 10 §What 박제).
+            // 첫/마지막 페이지에서 각 버튼 비활성.
             if (prevButton != null)
                 prevButton.interactable = hasPages && _pageIndex > 0;
             if (nextButton != null)
