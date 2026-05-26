@@ -1,7 +1,7 @@
 # AWS dev 토폴로지 (EC2 Spring + MariaDB, ECS Fargate room-server)
 
-**Linked Spec:** [`05-room-server-manager.md`](../../../multiplayer-network/specs/05-room-server-manager.md)
-**Status:** `Done (2026-05-25) — manual-hard 5/8 통과 (control plane 외부 도달, playerId 영속성, 룸 row + ecs_task_arn, Fargate ready callback, Quest 합류). 운영 자계 3건 (CloudWatch custom metric, MariaDB inbound 외부 차단 검증, 일 1회 mysqldump cron) 은 발표 범위 밖으로 deferred 처리 후 Done. 후속 운영 plan 으로 분리 예정.`
+**Linked Spec:** [`05-room-server-manager.md`](../specs/05-room-server-manager.md)
+**Status:** `Ready (2026-05-26 reopen) — 2026-05-25 Done 처리는 mock 모드 검증만으로 잘못 닫은 것. manual-hard 8건 중 #1·#3·#4·#5 (control plane, 룸 row, Fargate ready callback, Quest 합류) 는 mock 으로 통과 가능 → 통과 확인. #2 (동일 metaAccountId 두 번째 로그인 동일 playerId) 는 mock 으로는 의미 있는 검증 불가, real 모드 필수로 미검증. 운영 자계 3건 (CloudWatch custom metric / MariaDB inbound 차단 / mysqldump cron) 은 발표 범위 밖으로 deferred 유지. 후속 'nickname input + real Meta 통합 시도' plan 사이클에서 AC#2 검증 예정.`
 
 ## Goal
 
