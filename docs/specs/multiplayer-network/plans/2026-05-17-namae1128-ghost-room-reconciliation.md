@@ -1,7 +1,7 @@
 # Ghost room reconciliation (heartbeat 만료 + DS terminate 콜백)
 
 **Linked Spec:** [`03-room-session.md`](../specs/03-room-session.md)
-**Status:** `Ready`
+**Status:** `Done (auto AC) — manual-hard pending`
 
 ## Goal
 
@@ -205,10 +205,27 @@
 
 ## Handoff
 
-<!-- /spec-implement 가 plan 완료 후 채움. 다음 plan 이 알아야 할 산출:
-- `RoomReconciliationProperties` 의 env 키 (`MURANG_ROOM_RECONCILIATION_HEARTBEAT_TIMEOUT` 등) 와 기본값
-- `RoomServerManager` 의 helper 두 메서드 시그니처와 호출 의미
-- `/internal/rooms/{id}/terminate` 엔드포인트의 body schema 와 idempotency 규약
-- DS `RoomServerCallbackReporter.ReportTerminated` 의 coroutine 호출 규약 (await 가능, no-op 분기)
-- 후속 ECS DescribeTasks reconciliation plan 이 본 scheduler 와 어떻게 공존할지 (예: 같은 컴포넌트에 메서드 추가 vs 별도 스케줄러)
--->
+코드/테스트는 commit `98e6fa7` (2026-05-18) 에서 일괄 반영. 2026-05-26 재검증 결과:
+
+- AC#1 컴파일: `./gradlew compileJava compileTestJava` BUILD SUCCESSFUL (UP-TO-DATE).
+- AC#2 `RoomReconciliationSchedulerTest`: 4/4 PASS (heartbeat 초과·provisioning timeout·예외 격리·Spring context bean 등록).
+- AC#3 `RoomServerManagerImplTest`: 10/10 PASS (신규 `markUnhealthyAndTerminate` 정상/멱등 + `markProvisioningTimedOut` 포함).
+- AC#4 `RoomInternalCallbackControllerTest`: 8/8 PASS (`/terminate` 정상/403/idempotent 3건 포함).
+- AC#5 Unity 컴파일/심볼: `unity-test-runner` 결과 EditMode 143/143 PASS, `Murang.Multiplayer.Room.Tests` 67/67 PASS (plan 작성 시 57건 → 10건 추가, 전부 PASS), 컴파일 에러 0건. `ReportTerminated` / `TerminateCallbackUrl` 심볼 grep 통과.
+- AC#6 `@EnableScheduling` scope: `RoomServerManagerConfiguration.java` 1곳만 부착 — grep 1 hit.
+- AC#7 scheduler bean 등록: `RoomReconciliationSchedulerTest` 의 Spring context 케이스 PASS.
+
+**Manual-hard 4건은 pending** — 모두 AWS dev 환경 (EC2 SSH + `aws ecs stop-task` + DB SELECT + CloudWatch grep) 사용자 직접 수행 항목. `aws-dev-topology-ec2-fargate` plan 의 real 모드 검증 사이클과 묶어서 수행 가능.
+
+다음 plan 이 알아야 할 산출:
+
+- `RoomReconciliationProperties` env 키: 기본값 `heartbeatTimeout=PT90S`, `provisioningTimeout=PT5M`, `scanInterval=PT30S` (Duration). **단 scheduler 의 `@Scheduled(fixedDelayString)` 는 SpEL 의존을 피해 `${murang.room.reconciliation.scan-interval-ms:30000}` ms 정수 placeholder 로 분리** — env override 시 `MURANG_ROOM_RECONCILIATION_SCAN_INTERVAL_MS` 사용 (Duration 필드와 별도 키).
+- `RoomServerManager` helper 시그니처: `void markUnhealthyAndTerminate(Long, String)` (READY/ACTIVE → UNHEALTHY 전이 후 terminate 흐름) + `void markProvisioningTimedOut(Long, String)` (PROVISIONING/SERVER_STARTING → FAILED + room.close). 둘 다 `TERMINATED`/`FAILED` 상태에 대해 멱등 가드 내장.
+- `/internal/rooms/{roomId}/terminate` 엔드포인트: body `{ "reason": "<text>" }`, header `X-Internal-Token`. 204 (idempotent: 없는 roomId 또는 이미 TERMINATED/FAILED), 403 (토큰 mismatch). 정상 경로는 `manager.terminate(roomId, "ds-callback:" + reason)` 호출.
+- DS `RoomServerCallbackReporter.ReportTerminated(string reason)` 코루틴: `IsActive==false` 또는 `TerminateCallbackUrl` null/empty 면 즉시 yield break. `_terminateReported` 가드로 중복 호출 no-op. heartbeat loop 는 호출 시 중단. 호출자는 `yield return reporter.ReportTerminated(...)` 로 완료 대기 가능.
+- `RoomAuthority.OnPlayerLeft` 의 마지막 플레이어 분기는 reporter 활성 시 `TerminateAndShutdownRoutine` 코루틴으로 콜백 발사 후 `runner.Shutdown()` 호출. 비활성 시 기존 fire-and-forget 흐름 보존.
+- **후속 plan 후보**:
+  - ECS DescribeTasks 기반 stale task reconciliation (본 plan 은 heartbeat 시각 + DS 콜백만 신호로 사용, runtime-side 사실확인은 별도).
+  - DS SIGTERM 핸들러로 terminate 콜백 발사 (idle fallback 만으로도 동작은 보장되지만 graceful 신호 추가).
+  - heartbeat/provisioning 임계값 환경별 튜닝 (운영 데이터 수집 후).
+  - `persistent-demo-room-policy` plan — scheduler 의 heartbeat-timeout 후보 추출에 `is_persistent=false` 필터 추가 필요. 본 plan 의 `RoomReconciliationScheduler` 가 진입점.
