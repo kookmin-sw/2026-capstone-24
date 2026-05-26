@@ -25,6 +25,7 @@ VirtualMusicStudio의 핵심 경험은 여러 유저가 같은 VR 공간에서 �
 | 생성된 룸 목록 확인 UI | `Done (2026-05-25)` | `RoomListQuery` 데이터 노출 + lobby 패널 UI 바인딩이 [`presence-ui-lobby-migration-and-ux`](../_archive/multiplayer-network/plans/2026-05-18-namae1128-presence-ui-lobby-migration-and-ux.md) 에서 Phase A/B/C 모두 완료. Quest 실기기에서 LobbyPanel end-to-end 동작 확인. |
 | 룸 내부 접속자 수 확인 UI | `Done (2026-05-25, 닉네임은 후속)` | [`presence-ui-migration-to-testscenesanyo`](../_archive/multiplayer-network/plans/2026-05-18-namae1128-presence-ui-migration-to-testscenesanyo.md) 가 in-room 패널을 TestSceneSanyo 로 마이그레이션, Quest 실기기 참가자 리스트 동작 확인. nickname 채널 추가는 후속 plan. |
 | AWS dev 환경 만들기 | `HTTPS 종단 동작 / EC2/Fargate mock 통과 / real 영속성 미검증` | Caddy/Cloudflare HTTPS 종단 ([`aws-dev-https-caddy-cloudflare`](../_archive/multiplayer-network/plans/2026-05-16-namae1128-aws-dev-https-caddy-cloudflare.md)) 은 archive 처리. EC2/Fargate 토폴로지 plan 은 mock 4/8 통과 후 reopen 상태 — real-meta-verifier 와 묶여 후속 plan 사이클에서 마무리. |
+| 시연용 룸 상시 유지 | `정책 박제 / 미구현` | persistent 룸 1개 한정. backend 분기 + internal endpoint. 정책 단일 진실원: [`decisions/05-persistent-demo-room-policy.md`](decisions/05-persistent-demo-room-policy.md). plan 은 `/spec-build` planner 가 작성. |
 
 ## 첫 실기기 테스트 크리티컬 패스
 

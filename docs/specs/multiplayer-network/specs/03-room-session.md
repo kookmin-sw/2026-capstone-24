@@ -18,7 +18,7 @@ Photon Fusion을 통해 룸을 생성하거나 기존 룸에 입장·퇴장할 �
 
 비밀번호가 설정된 방을 포함한 모든 입장 요청은 백엔드 승인 단계를 거친다. 백엔드는 `JWT 검증 → 비밀번호 검증 → 정원/상태 검증`을 완료한 뒤, 짧은 TTL의 1회용 `join ticket` 또는 `reservation`을 발급한다. 클라이언트는 발급된 ticket과 룸 식별자(예: Photon session name)를 사용해 Photon Cloud가 라우팅하는 동일한 Fusion 세션에 합류하고, 룸 서버는 ticket을 서버 측에서 검증·1회 소모한 뒤에만 입장을 허용한다. 유효한 ticket 없이 룸 세션에 직접 연결하려는 시도는 거부한다.
 
-룸 서버는 single-use room instance로 취급한다. 마지막 유저가 퇴장하거나 room 종료가 선언되면 해당 인스턴스는 재사용을 위해 리셋되지 않고 종료되며, 점유하던 자원만 `RoomServerManager`가 관리하는 capacity pool(ECS task 슬롯, Docker host, 향후 K8s cluster capacity 등)로 환원된다.
+룸 서버는 single-use room instance로 취급한다. 마지막 유저가 퇴장하거나 room 종료가 선언되면 해당 인스턴스는 재사용을 위해 리셋되지 않고 종료되며, 점유하던 자원만 `RoomServerManager`가 관리하는 capacity pool(ECS task 슬롯, Docker host, 향후 K8s cluster capacity 등)로 환원된다. 단, **persistent 플래그가 설정된 시연/데모 전용 룸은 본 정책의 예외**다. persistent 룸은 0명 상태에서도 종료되지 않으며 heartbeat reconciliation 의 timeout 청소 대상에서도 제외된다. 동시에 살아 있는 persistent 룸은 1개로 제한되며, 생성 권한은 운영자에게만 부여된다 (일반 룸 생성 API 의 옵션으로 노출되지 않음). 일반 룸 목록 노출·입장 admission·정원·비밀번호 정책은 일반 룸과 동일. 상세 정책은 [`decisions/05-persistent-demo-room-policy.md`](../decisions/05-persistent-demo-room-policy.md) 가 단일 진실원.
 
 유저가 보는 룸 목록의 클라이언트 진입점은 Spring 백엔드이지만, active room의 런타임 진실원은 Spring 내부 `RoomServerManager`가 가진다. Spring은 룸 목록 API를 제공하는 client-facing facade 역할을 맡고, `READY` 또는 `ACTIVE`이며 admission이 열려 있다고 `RoomServerManager`가 확인한 룸만 목록에 노출한다. Spring이 별도 캐시나 projection을 유지하더라도 이는 파생된 읽기 모델일 뿐 authoritative source가 아니다.
 
@@ -54,6 +54,14 @@ Photon Fusion을 통해 룸을 생성하거나 기존 룸에 입장·퇴장할 �
   **When** 퇴장하면
   **Then** 룸은 종료 절차에 들어가고 room instance는 `TERMINATING → TERMINATED`를 거쳐 정리되며 점유 자원은 capacity pool로 환원된다.
 
+- **Given** persistent 룸의 마지막 유저가
+  **When** 퇴장하면
+  **Then** 룸은 종료되지 않고 0명 상태로 계속 유지되며 heartbeat reconciliation 의 timeout 청소 대상에서도 제외된다.
+
+- **Given** 이미 살아 있는 persistent 룸이 있을 때
+  **When** 두 번째 persistent 룸 생성을 시도하면
+  **Then** 거절되고 충돌 사유가 전달된다.
+
 - **Given** 룸에 이미 8명이 접속해 있을 때
   **When** 추가 유저가 입장을 요청하면
   **Then** 입장이 거부되고 거부 사유가 클라이언트에 전달된다.
@@ -86,6 +94,9 @@ Photon Fusion을 통해 룸을 생성하거나 기존 룸에 입장·퇴장할 �
 - `RoomServerManager` 내부의 구현체 세부(ECS / local Docker / Kubernetes)와 와이어 프로토콜 정의 ([`05-room-server-manager.md`](05-room-server-manager.md) 책임)
 - 유저별 룸 상태(악기·오브젝트 배치 등) 영속화·복원·snapshot 직렬화 (default 씬 + 기배치 오브젝트 모델이므로 본 피처 전체 Out of Scope)
 - 룸 내부 오브젝트 추가·이동·삭제 흐름
+- 일반 유저가 클라이언트 UI 로 persistent 룸을 생성하는 흐름 (운영자 수동 채널만 지원)
+- 동시 persistent 룸 N개 운영 (1개 한정)
+- persistent 룸의 콘텐츠·배치 차이 (default 씬 + 기배치 오브젝트 그대로 — 일반 룸과 동일)
 
 ## Implementation Plans
 
