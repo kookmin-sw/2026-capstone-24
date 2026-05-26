@@ -33,6 +33,21 @@ namespace SessionPanel
             if (instrumentLabel != null)
                 instrumentLabel.text = instrument != null ? instrument.InstrumentId : "(unknown)";
 
+            if (instrumentImage != null && instrument != null)
+            {
+                var tex = Resources.Load<Texture2D>($"Thumbnails/{instrument.InstrumentId}");
+                if (tex != null)
+                {
+                    instrumentImage.sprite = Sprite.Create(
+                        tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100f);
+                    instrumentImage.enabled = true;
+                }
+                else
+                {
+                    instrumentImage.enabled = false;
+                }
+            }
+
             if (travelButton != null)
             {
                 travelButton.onClick.RemoveAllListeners();
