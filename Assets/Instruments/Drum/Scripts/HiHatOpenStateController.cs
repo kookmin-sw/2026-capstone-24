@@ -86,6 +86,18 @@ namespace Instruments
 
         void LateUpdate()
         {
+            bool attached = anchor != null && anchor.IsAttached;
+            if (!attached)
+            {
+                if (m_LastOpen)
+                {
+                    m_LastOpen = false;
+                    if (hitZone != null) hitZone.SetMidiNote(closedMidiNote);
+                    StartMoveTo(false);
+                }
+                return;
+            }
+
             float l = leftGripAction != null && leftGripAction.action != null
                 ? leftGripAction.action.ReadValue<float>() : 0f;
             float r = rightGripAction != null && rightGripAction.action != null
