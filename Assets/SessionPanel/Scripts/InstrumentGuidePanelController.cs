@@ -58,17 +58,21 @@ namespace SessionPanel
 
             // 폴더 규약: Resources/Tutorial/<instrumentId>/<NN>/{page, description}
             // NN 은 01 부터 순차 — 둘 다 null 이면 스캔 종료.
+            // Sprite 임포트 타입 없이도 동작하도록 Texture2D → Sprite.Create 경로 사용.
             int n = 1;
             while (true)
             {
                 string pad = n.ToString("00");
                 string folder = $"Tutorial/{instrumentId}/{pad}";
-                var image = Resources.Load<Sprite>($"{folder}/page");
+                var tex = Resources.Load<Texture2D>($"{folder}/page");
                 var textAsset = Resources.Load<TextAsset>($"{folder}/description");
-                if (image == null && textAsset == null) break;
+                if (tex == null && textAsset == null) break;
+                Sprite sprite = null;
+                if (tex != null)
+                    sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100f);
                 _pages.Add(new Page
                 {
-                    image = image,
+                    image = sprite,
                     description = textAsset != null ? textAsset.text : string.Empty,
                 });
                 n++;
