@@ -202,6 +202,10 @@
 - DS terminate 콜백의 `reason` 문자열은 `last-player-left` 외에도 향후 `shutdown-signal`, `crash` 등 확장 가능. backend 는 `ds-callback:` prefix 만 부여하고 reason 자체는 자유 텍스트로 받아 로그·관측에만 사용한다.
 - `room.close(now)` 가 두 번 호출되면 `closed_at` 가 덮어쓰여지지만, terminate 콜백 핸들러는 status 가 `TERMINATED`/`FAILED` 면 호출 자체를 skip 하므로 사용자 가시 동작에 영향 없음 (테스트로 검증).
 - **구현 시 SpEL 대체**: 본 plan 의 Approach 는 `@Scheduled(fixedDelayString = "#{@roomReconciliationProperties.scanInterval.toMillis()}")` 를 가정했으나, `@ConfigurationPropertiesScan` 자동 등록은 FQCN 기반 빈 이름을 만들어 SpEL `@roomReconciliationProperties` 참조가 깨진다. 실제 구현은 property placeholder `${murang.room.reconciliation.scan-interval-ms:30000}` (ms 단위 정수) 로 대체했다. 결과적으로 env override 키도 `MURANG_ROOM_RECONCILIATION_SCAN_INTERVAL_MS` (ms 정수) — `RoomReconciliationProperties.scanInterval` Duration 필드는 보존되지만 scheduler 의 `fixedDelay` 와는 분리된다.
+- **M4 (`/internal/rooms/{id}/terminate` 토큰 검증 + idempotency) manual-hard 통과** (2026-05-27 사용자 검증, EC2 `ip-10-10-1-18`, backend HEAD `1504f54`):
+  - 잘못된 토큰 (`X-Internal-Token: definitely-wrong-test`) + roomId=1 → `HTTP/2 403` + body `code: "ROOM_INTERNAL_FORBIDDEN" / detail: "내부 룸 콜백 호출 자격이 없습니다."` (x-request-id `099bf55a-c722-4752-97e8-ecc866c7f6de`).
+  - 정상 토큰 (`MURANG_ROOM_INTERNAL_CALLBACK_SHARED_SECRET`) + 존재하지 않는 roomId `99999` → `HTTP/2 204 No Content` (x-request-id `9e6c74c1-9a64-479f-beb0-e849d2907294`) — idempotent 가드 작동.
+  - M1/M2/M3 는 본 박제 시점 pending — 룸 생성 흐름이 필요해 EC2 mock 회귀 후 별도 사이클.
 
 ## Handoff
 
@@ -215,7 +219,7 @@
 - AC#6 `@EnableScheduling` scope: `RoomServerManagerConfiguration.java` 1곳만 부착 — grep 1 hit.
 - AC#7 scheduler bean 등록: `RoomReconciliationSchedulerTest` 의 Spring context 케이스 PASS.
 
-**Manual-hard 4건은 pending** — 모두 AWS dev 환경 (EC2 SSH + `aws ecs stop-task` + DB SELECT + CloudWatch grep) 사용자 직접 수행 항목. `aws-dev-topology-ec2-fargate` plan 의 real 모드 검증 사이클과 묶어서 수행 가능.
+**Manual-hard 진행 현황 (2026-05-27 갱신)**: M4 (`/internal/.../terminate` 토큰 검증 + idempotency) ✅ PASS — 자세한 evidence 는 `## Notes` 박제. M1 (ECS task 강제 종료 → heartbeat-timeout) / M2 (마지막 클라이언트 퇴장 → terminate 콜백) / M3 (잘못된 ready callback URL → provisioning-timeout) 3건 pending — 룸 생성 흐름 필요해 EC2 mock 회귀 + 별도 사이클로 진행 예정.
 
 다음 plan 이 알아야 할 산출:
 
