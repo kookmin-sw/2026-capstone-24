@@ -401,6 +401,8 @@ MonoBehaviour:
   rightPlayHandDriver: {fileID: 0}
   leftPhysicsHand: {fileID: 0}
   rightPhysicsHand: {fileID: 0}
+  leftHapticImpulsePlayer: {fileID: 0}
+  rightHapticImpulsePlayer: {fileID: 0}
 --- !u!114 &1725045638780237008
 MonoBehaviour:
   m_ObjectHideFlags: 0
