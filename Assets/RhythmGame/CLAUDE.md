@@ -30,9 +30,9 @@ RhythmGame.Runtime ──────┘
 | 위치 | 책임 |
 |---|---|
 | `Scripts/Runtime/RhythmGameHost.cs` | 차트·악기·채널별 세션을 초기화·시작·종료하는 진입점. Clock/Judge/Display/Accompaniment를 한 곳에서 조율 |
-| `Scripts/Runtime/RhythmSession.cs:33` | 악기 `InstrumentBase.MidiTriggered` 구독 → `42`에서 `judge.OnInput(midiEvent)` 라우팅. 세션 단위 수명 관리 |
-| `Scripts/Runtime/Judgment/RhythmJudge.cs:33` | 차트 노트 대기열 vs 입력 시각을 비교해 `Judged` (`Action<JudgmentEvent>`) 발행. PERFECT/GOOD/MISS 등급은 `JudgmentGrade.cs` |
-| `Scripts/Runtime/RhythmAccompaniment.cs:16` | 예약된 반주 MIDI 이벤트를 시계에 따라 채널별 악기로 자동 발화. NoteOn/Off를 직접 `TriggerMidi` 호출 |
+| `Scripts/Runtime/RhythmSession` | 악기 `InstrumentBase.MidiTriggered` 구독 → `judge.OnInput(midiEvent)` 라우팅. 세션 단위 수명 관리 |
+| `Scripts/Runtime/Judgment/RhythmJudge` | 차트 노트 대기열 vs 입력 시각을 비교해 `Judged` (`Action<JudgmentEvent>`) 발행. PERFECT/GOOD/MISS 등급은 `JudgmentGrade.cs` |
+| `Scripts/Runtime/RhythmAccompaniment` | 예약된 반주 MIDI 이벤트를 시계에 따라 채널별 악기로 자동 발화. NoteOn/Off를 직접 `TriggerMidi` 호출 |
 | `Scripts/Runtime/Clock/RhythmClock.cs` | `IRhythmClock` 구현. 리드-인 오프셋 + `ITimeProvider`(DSP/Unity 선택) 기반 currentTime 노출 |
 
 ### 데이터 흐름 (단일 통로)
@@ -41,7 +41,7 @@ RhythmGame.Runtime ──────┘
 [InstrumentBase.MidiTriggered]
         │ 모든 NoteOn/Off/Choke
         ▼
-RhythmSession  ─ 구독: RhythmSession.cs:33
+RhythmSession  ─ 구독
         │
         ▼
 RhythmJudge.OnInput(midiEvent)
@@ -50,7 +50,7 @@ RhythmJudge.OnInput(midiEvent)
 Judged 이벤트 (Action<JudgmentEvent>)
         │
         ▼
-activeNoteDisplay.OnJudged   ─ RhythmGameHost.cs:79 에서 구독
+activeNoteDisplay.OnJudged   ─ RhythmGameHost 에서 구독
         │
         ▼
 JudgmentPopup.Show + NoteVisual 제거
@@ -71,7 +71,7 @@ JudgmentPopup.Show + NoteVisual 제거
 |---|---|
 | `Scripts/Runtime/Display/INoteDisplayController.cs` | 디스플레이의 공통 계약. `Init/Tick/OnJudged/Dispose` |
 | `Scripts/Runtime/Display/NoteDisplayPanel.cs` | World Space Canvas 1장(88건반 가로 배치). 단일 악기 단일 패널에 사용. prefab: `Prefabs/NoteDisplayPanel.prefab` |
-| `Scripts/Runtime/Display/DrumNoteDisplayAdapter.cs:79` | 드럼 파츠별로 패널을 동적 `Instantiate`해 각자 다른 위치/회전에 배치 |
+| `Scripts/Runtime/Display/DrumNoteDisplayAdapter` | 드럼 파츠별로 패널을 동적 `Instantiate`해 각자 다른 위치/회전에 배치 |
 | `Scripts/Runtime/Display/TromboneNoteDisplayAdapter.cs` | 부채꼴로 5-partial 패널을 배치 + 슬라이드 색상 가이드 |
 | `NoteVisual.cs` | 낙하 오브젝트. 매 프레임 y 감소, 0 도달 시 판정 |
 | `JudgmentPopup.cs` | 결과 텍스트 팝업(PERFECT/GOOD/MISS) |
@@ -103,11 +103,11 @@ JudgmentPopup.Show + NoteVisual 제거
 - `[CHANNELS]` — channel ↔ instrumentId 매핑
 - `[TRACK#]` — 노트 목록 (channel + tick + midi + velocity)
 
-파서: `Scripts/Data/Parsing/VmSongParser.cs:22` `Parse(string text) → VmSongChart`.
+파서: `Scripts/Data/Parsing/VmSongParser.Parse(string text) → VmSongChart`.
 
 호출 지점:
-- `Scripts/Runtime/Dev/RhythmGameAutoLauncher.cs:49` `LoadChart()`
-- `Scripts/Runtime/Dev/ChartAutoPlayer.cs:67` `Start()`
+- `Scripts/Runtime/Dev/RhythmGameAutoLauncher.LoadChart`
+- `Scripts/Runtime/Dev/ChartAutoPlayer.Start`
 - `SessionPanel/Scripts/FolderScanSongCatalog.cs` 가 디스크에서 직접 읽어 전달
 
 ## 7. Dev 도구 (`Runtime.Dev` asmdef)

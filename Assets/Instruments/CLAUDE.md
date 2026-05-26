@@ -128,7 +128,7 @@ TeleportInstrumentProvider.Current 갱신 → ActiveInstrumentChanged 발행
 
 본문은 시그니처 수준에서 멈춘다. 구현 디테일이 필요하면 아래만 추가로 Read.
 
-- 입력 → MIDI 변환 분기: `_Core/Scripts/InstrumentBase.cs:117` (`TriggerMidi`)
-- 오디오 출력 파이프라인: `_Core/Scripts/InstrumentAudioOutput.cs:111` (`PlayNote`)
+- 입력 → MIDI 변환 분기: `_Core/Scripts/InstrumentBase.TriggerMidi`
+- 오디오 출력 파이프라인: `_Core/Scripts/InstrumentAudioOutput.PlayNote`
 - 레인 매핑 SO 구조: `_Core/Scripts/InstrumentLaneConfig.cs`
 - 활성 악기 전환 패턴: `_Core/Scripts/TeleportInstrumentProvider.cs`

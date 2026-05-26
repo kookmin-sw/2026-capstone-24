@@ -83,6 +83,6 @@ PlayerHandRig.prefab 의 자식
        (Multiplayer/Prefabs/, 본 이름 매칭으로 SkinnedMeshRenderer 갱신)
 ```
 
-본 이름 매칭 규약: `Multiplayer/Scripts/Multiplay/RemoteHandBoneNames.cs:13-14` 가 25본 정렬 순서를 박제(Index→Middle→Ring→Little→Thumb→Palm, `L_`/`R_` 프리픽스). **본을 추가/이름 변경하면 양 client 의 Ghost prefab 과 RemoteHandRenderer prefab 모두에 반영해야 한다.**
+본 이름 매칭 규약: `Multiplayer/Scripts/Multiplay/RemoteHandBoneNames` (`RightSide`/`LeftSide` 배열) 가 25본 정렬 순서를 박제(Index→Middle→Ring→Little→Thumb→Palm, `L_`/`R_` 프리픽스). **본을 추가/이름 변경하면 양 client 의 Ghost prefab 과 RemoteHandRenderer prefab 모두에 반영해야 한다.**
 
 자세한 토폴로지 / RPC 패턴은 `Assets/Multiplayer/CLAUDE.md` 참조.

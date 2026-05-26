@@ -37,7 +37,7 @@ VR 패널 UI 한 곳에서 **활성 악기 변경·곡 선택·난이도·반주
 ```
 
 전환 트리거:
-- **Hidden ↔ PinchOpened** — pinch `InputActionReference` (`SessionPanelController.cs:127` `OnPanelToggle`)
+- **Hidden ↔ PinchOpened** — pinch `InputActionReference` (`SessionPanelController.OnPanelToggle`)
 - **Any → Hidden** — `IActiveInstrumentProvider.ActiveInstrumentChanged` (활성 악기 바뀌면 패널을 한 번 닫는다)
 - **InstrumentOpened** — 활성 악기의 `PanelAnchor` 위치 추적
 
@@ -51,7 +51,7 @@ VR 패널 UI 한 곳에서 **활성 악기 변경·곡 선택·난이도·반주
 - `IActiveInstrument.InstanceVolume` — 볼륨 슬라이더 ↔ 악기 볼륨 양방향 동기
 
 **SessionPanel → RhythmGame**:
-- `RhythmGameSectionController.cs:472` 가 `_currentInstrument.InstrumentRoot.GetComponentInChildren<RhythmGameHost>()` 로 host를 찾아 `host.StartSession(...)` 호출(`:500`). `GetComponentInChildren`로 느슨한 결합 — host를 SessionPanel이 직접 보유하지 않는다.
+- `RhythmGameSectionController` 가 `_currentInstrument.InstrumentRoot.GetComponentInChildren<RhythmGameHost>()` 로 host를 찾아 `host.StartSession(...)` 호출. `GetComponentInChildren`로 느슨한 결합 — host를 SessionPanel이 직접 보유하지 않는다.
 
 → Instruments·RhythmGame은 SessionPanel을 모른다. 본 도메인을 통째로 다른 UI로 교체해도 두 도메인은 무영향.
 
@@ -59,7 +59,7 @@ VR 패널 UI 한 곳에서 **활성 악기 변경·곡 선택·난이도·반주
 
 | 구현 | 사용처 | 동작 |
 |---|---|---|
-| `FolderScanSongCatalog.cs:46` | 프로덕션 | `StreamingAssets/Songs/*.vmsong` 스캔. 파일명 패턴 `songname-instrument-difficulty.vmsong`. Android(`UnityWebRequest`) vs 데스크탑(`File.ReadAllText`) 분기. **`index.json` 폴백** (Android는 디렉터리 스캔 불가) |
+| `FolderScanSongCatalog` | 프로덕션 | `StreamingAssets/Songs/*.vmsong` 스캔. 파일명 패턴 `songname-instrument-difficulty.vmsong`. Android(`UnityWebRequest`) vs 데스크탑(`File.ReadAllText`) 분기. **`index.json` 폴백** (Android는 디렉터리 스캔 불가) |
 | `StubSongCatalog.cs` | 에디터/테스트 | `RhythmSongDatabase[]` 배열 직접 참조. `GetChartText(relPath)` 는 `null` 반환 (차트 텍스트 로드 안 함) |
 
 **빌드 전처리** `Editor/SongIndexBuilder.cs` — `IPreprocessBuildWithReport` 구현. 빌드 직전에 `StreamingAssets/Songs/index.json` 자동 생성 → Android 런타임의 폴더 스캔 불가 문제 해결.
@@ -68,7 +68,7 @@ VR 패널 UI 한 곳에서 **활성 악기 변경·곡 선택·난이도·반주
 
 ## 5. 볼륨 영속화
 
-- `Scripts/SessionVolume.cs:19` — `Bind(AudioMixer)` 호출 시점에 `InstanceVolumeStore.SetActive(new SessionVolumeStore())` 로 Instruments 측 store 교체. 그 이후 모든 `IActiveInstrument.InstanceVolume` 변경이 PlayerPrefs에 자동 저장.
+- `Scripts/SessionVolume.Bind(AudioMixer)` 호출 시점에 `InstanceVolumeStore.SetActive(new SessionVolumeStore())` 로 Instruments 측 store 교체. 그 이후 모든 `IActiveInstrument.InstanceVolume` 변경이 PlayerPrefs에 자동 저장.
 - `SessionVolumeBootstrap.cs` — 인스펙터 AudioMixer 참조 → `SessionVolume.Bind()` 호출만 담당. 씬에 1개.
 - PlayerPrefs 키:
   - 마스터: `SessionPanel.Volume.Master`
@@ -103,6 +103,6 @@ Dummy 사용으로 SessionPanel 테스트는 Instruments 도메인의 실제 Ins
 
 - 상태 전환 로직: `Scripts/SessionPanelController.cs`
 - 곡 로딩 분기: `Scripts/FolderScanSongCatalog.cs`
-- 볼륨 store 교체 시점: `Scripts/SessionVolume.cs:19`
+- 볼륨 store 교체 시점: `Scripts/SessionVolume.Bind`
 - 빌드 시 index.json 생성: `Editor/SongIndexBuilder.cs`
 - 회귀 테스트: `Tests/{SessionPanelWiring, RhythmGameSection*, SessionVolume, FolderScanSongCatalog}Tests.cs`
