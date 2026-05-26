@@ -19,16 +19,27 @@ VR 악기 연습 환경에서 박자감을 게임적으로 익히게 하는 학�
 | 이름 | 상태 | 링크 |
 |---|---|---|
 | Chart Format | Done | [`chart-format.md`](../_archive/rhythm-game/specs/chart-format.md) |
-| Chart Import | Draft | [`specs/chart-import.md`](specs/chart-import.md) |
-| Session Flow | Draft | [`specs/session-flow.md`](specs/session-flow.md) |
+| Chart Import | Abandoned | [`specs/chart-import.md`](specs/chart-import.md) |
+| Session Flow | Abandoned | [`specs/session-flow.md`](specs/session-flow.md) |
 | Timing Clock | Done | [`timing-clock.md`](../_archive/rhythm-game/specs/timing-clock.md) |
 | Judgment | Done | [`judgment.md`](../_archive/rhythm-game/specs/judgment.md) |
-| Accompaniment | Draft | [`specs/accompaniment.md`](specs/accompaniment.md) |
+| Accompaniment | Done | [`specs/accompaniment.md`](specs/accompaniment.md) |
 | Note Display | Done | [`note-display.md`](../_archive/rhythm-game/specs/note-display.md) |
 | Session Lead-in | Done | [`specs/01-session-lead-in.md`](specs/01-session-lead-in.md) |
-| Note Visual Fidelity | Active | [`specs/02-note-visual-fidelity.md`](specs/02-note-visual-fidelity.md) |
+| Note Visual Fidelity | Done | [`specs/02-note-visual-fidelity.md`](specs/02-note-visual-fidelity.md) |
 | Note Bottom Clipping | Done | [`03-note-bottom-clipping.md`](../_archive/rhythm-game/specs/03-note-bottom-clipping.md) |
-| Drum Note Display | Draft | [`specs/04-drum-note-display.md`](specs/04-drum-note-display.md) |
+| Drum Note Display | Done | [`specs/04-drum-note-display.md`](specs/04-drum-note-display.md) |
+| Song Catalog | Done | [`specs/05-song-catalog.md`](specs/05-song-catalog.md) |
+| Multi-File Song Catalog | Done | [`specs/06-multi-file-song-catalog.md`](specs/06-multi-file-song-catalog.md) |
+| Session Options — Instrument Toggle & Tempo | Done | [`specs/07-session-options-instrument-toggle-tempo.md`](specs/07-session-options-instrument-toggle-tempo.md) |
+| 나비야 악보 제작 & instrumentKey 버그 수정 | Done | [`specs/08-nabia-sheet-music.md`](specs/08-nabia-sheet-music.md) |
+| 나비야 플레이백 & 반주 연동 검증 | Done | [`specs/09-nabia-playback-verification.md`](specs/09-nabia-playback-verification.md) |
+| Note Panel Y Position Fix | Done | [`specs/10-note-panel-y-fix.md`](specs/10-note-panel-y-fix.md) |
+| Drum Note Panel Rotation Fix | Done | [`specs/11-drum-note-panel-rotation-fix.md`](specs/11-drum-note-panel-rotation-fix.md) |
+| Drum Session Panel Position Fix | Done | [`specs/12-drum-session-panel-position-fix.md`](specs/12-drum-session-panel-position-fix.md) |
+| Trombone Note Display | Draft | [`specs/13-trombone-note-display.md`](specs/13-trombone-note-display.md) |
+| Trombone Session Panel | Draft | [`specs/14-trombone-session-panel.md`](specs/14-trombone-session-panel.md) |
+| Trombone Slide Position Rings | Draft | [`specs/15-trombone-slide-position-rings.md`](specs/15-trombone-slide-position-rings.md) |
 
 > 상태 값: `Draft` / `Active` / `Done` / `Abandoned`
 

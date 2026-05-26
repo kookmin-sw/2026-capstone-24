@@ -1,0 +1,44 @@
+# Drum Note Panel Rotation Fix
+
+**Parent:** [`_index.md`](../_index.md)
+
+## Why
+
+드럼 리듬게임 노트 UI 패널은 현재 매 프레임 카메라 방향을 향해 회전하므로,
+사용자가 이동하면 패널이 함께 회전해 시각적으로 불안정하고 드럼 연주 위치와
+노트 레이아웃의 관계가 매 프레임 달라진다. DrumKit에는 기준 앵커(_panelAnchor)가
+존재하므로, 세션 시작 시 이 앵커 방향을 기준으로 패널 회전을 1회만 계산해
+고정하면 사용자가 이동해도 패널이 안정된 방향을 유지할 수 있다.
+
+## What
+
+- 드럼 노트 UI 패널의 회전은 세션 시작 시 DrumKit의 InstrumentBase 앵커
+  (_panelAnchor) 방향을 기준으로 1회만 계산되어 고정된다.
+- 세션 진행 중 사용자(카메라)가 이동·회전해도 각 드럼 파츠의 노트 패널은
+  회전하지 않는다.
+
+## Behavior
+
+- **Given** 드럼 리듬게임 세션이 시작될 때
+  **When** 각 드럼 파츠 위에 노트 UI 패널이 생성될 때
+  **Then** 패널이 DrumKit의 _panelAnchor 기준으로 계산된 고정 방향을 향한다
+
+- **Given** 드럼 노트 UI 패널이 화면에 표시 중인 상태에서
+  **When** 사용자(카메라)가 이동하거나 회전할 때
+  **Then** 드럼 파츠 노트 UI 패널의 방향은 변하지 않는다
+
+## Out of Scope
+
+- 피아노 노트 UI 패널의 회전 동작 변경
+- 드럼 판정선·노트 레이아웃 자체의 변경
+- BillboardUI 컴포넌트 자체를 다른 목적으로 재사용하는 경우의 동작 변경
+
+## Implementation Plans
+
+| 작성일 | 제목 | 상태 | 링크 |
+|---|---|---|---|
+| 2026-05-20 | PanelAnchor 기반 고정 회전 1회 계산 | Done | [`2026-05-20-linksky0311-drum-note-panel-rotation-fix.md`](../plans/2026-05-20-linksky0311-drum-note-panel-rotation-fix.md) |
+
+## Open Questions
+
+_현재 열린 질문 없음._

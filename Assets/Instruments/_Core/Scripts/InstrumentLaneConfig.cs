@@ -92,5 +92,33 @@ public sealed class InstrumentLaneConfig : ScriptableObject
         };
         return cfg;
     }
+
+    /// <summary>
+    /// 런타임 전용. 복수의 MIDI 노트를 모두 laneIndex=0 에 매핑하는 임시 InstrumentLaneConfig를 생성합니다.
+    /// TromboneNoteDisplayAdapter가 파셜 패널마다 슬라이드 0~6 전체 노트를 단일-레인으로 묶을 때 사용합니다.
+    /// 생명주기는 호출자가 관리하세요.
+    /// </summary>
+    public static InstrumentLaneConfig CreateSingleLane(IReadOnlyList<byte> midiNotes)
+    {
+        InstrumentLaneConfig cfg = CreateInstance<InstrumentLaneConfig>();
+        cfg.lanes = new List<LaneEntry>(midiNotes.Count);
+        for (int i = 0; i < midiNotes.Count; i++)
+            cfg.lanes.Add(new LaneEntry { laneIndex = 0, midiNote = midiNotes[i] });
+        return cfg;
+    }
+
+    /// <summary>
+    /// 런타임 전용. 각 MIDI 노트를 순서대로 laneIndex=i 에 매핑하는 임시 InstrumentLaneConfig를 생성합니다.
+    /// TromboneNoteDisplayAdapter가 슬라이드 포지션 0~N-1을 별도 레인으로 표시할 때 사용합니다.
+    /// 생명주기는 호출자가 관리하세요.
+    /// </summary>
+    public static InstrumentLaneConfig CreateMultiLane(IReadOnlyList<byte> midiNotes)
+    {
+        InstrumentLaneConfig cfg = CreateInstance<InstrumentLaneConfig>();
+        cfg.lanes = new List<LaneEntry>(midiNotes.Count);
+        for (int i = 0; i < midiNotes.Count; i++)
+            cfg.lanes.Add(new LaneEntry { laneIndex = i, midiNote = midiNotes[i] });
+        return cfg;
+    }
 }
 }

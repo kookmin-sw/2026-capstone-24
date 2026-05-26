@@ -1,0 +1,93 @@
+[Meta]
+title  = Nabia
+songid = nabia_001
+
+[Resolution]
+ticksPerQuarter = 480
+
+[Tempo]
+tick=0  bpm=120  beats=4  beatUnit=4
+
+[Channels]
+channel=1  instrument=piano
+
+[Track:1]
+# Piano Normal: melody + sustained chord root+5th
+# 8 bars (1 bar = 1920 ticks, total 0-15359)
+# Chord notes lowered by 1 octave: C chord = C3(48)+G3(55), G7 chord = G3(55)+D4(62)
+# Overlapping notes removed: Deleted note 62 from chord when melody plays 62 (D4)
+# vel=68 for chord notes, vel=92 for melody
+
+# BAR 1 (0-1919): C chord (Whole Note) | Melody G4-E4-E4(half)
+# Chord notes - Sustained for 4 beats (len=1880)
+tick=0     note=48  len=1880 vel=68
+tick=0     note=55  len=1880 vel=68
+# Melody
+tick=0     note=67  len=440  vel=92
+tick=480   note=64  len=440  vel=92
+tick=960   note=64  len=920  vel=92
+
+# BAR 2 (1920-3839): G7 chord (Whole Note) | Melody F4-D4-D4(half)
+# Chord notes - Melody has 62(D4) at tick 2400 & 2880, so chord note 62 is REMOVED to avoid overlap
+tick=1920  note=55  len=1880 vel=68
+# Melody
+tick=1920  note=65  len=440  vel=92
+tick=2400  note=62  len=440  vel=92
+tick=2880  note=62  len=920  vel=92
+
+# BAR 3 (3840-5759): C chord (Whole Note) | Melody C4-D4-E4-F4
+# Chord notes - Sustained for 4 beats (No melody overlap with 48, 55)
+tick=3840  note=48  len=1880 vel=68
+tick=3840  note=55  len=1880 vel=68
+# Melody
+tick=3840  note=60  len=440  vel=92
+tick=4320  note=62  len=440  vel=92
+tick=4800  note=64  len=440  vel=92
+tick=5280  note=65  len=440  vel=92
+
+# BAR 4 (5760-7679): C(2 beats)+G7(2 beats) (Half Notes) | Melody G4-G4-G4(half)
+# Chord notes - C chord (ticks 5760-6719), G7 chord (ticks 6720-7679, no melody overlap here)
+tick=5760  note=48  len=920  vel=68
+tick=5760  note=55  len=920  vel=68
+tick=6720  note=55  len=920  vel=68
+tick=6720  note=62  len=920  vel=68
+# Melody
+tick=5760  note=67  len=440  vel=92
+tick=6240  note=67  len=440  vel=92
+tick=6720  note=67  len=920  vel=92
+
+# BAR 5 (7680-9599): same as bar 1
+# Chord notes - Sustained for 4 beats
+tick=7680  note=48  len=1880 vel=68
+tick=7680  note=55  len=1880 vel=68
+# Melody
+tick=7680  note=67  len=440  vel=92
+tick=8160  note=64  len=440  vel=92
+tick=8640  note=64  len=920  vel=92
+
+# BAR 6 (9600-11519): same as bar 2
+# Chord notes - Melody has 62(D4), so chord note 62 is REMOVED to avoid overlap
+tick=9600  note=55  len=1880 vel=68
+# Melody
+tick=9600  note=65  len=440  vel=92
+tick=10080 note=62  len=440  vel=92
+tick=10560 note=62  len=920  vel=92
+
+# BAR 7 (11520-13439): C chord (Whole Note) | Melody C4-E4-G4-G4
+# Chord notes - Sustained for 4 beats
+tick=11520 note=48  len=1880 vel=68
+tick=11520 note=55  len=1880 vel=68
+# Melody
+tick=11520 note=60  len=440  vel=92
+tick=12000 note=64  len=440  vel=92
+tick=12480 note=67  len=440  vel=92
+tick=12960 note=67  len=440  vel=92
+
+# BAR 8 (13440-15359): C chord (Whole Note) | Melody E4-D4-C4(half)
+# Chord notes - Melody has 62(D4) at tick 13920. However, C chord notes are 48, 55 so there is no note overlap.
+tick=13440 note=48  len=1880 vel=68
+tick=13440 note=55  len=1880 vel=68
+# Melody
+tick=13440 note=64  len=440  vel=92
+tick=13920 note=64  len=440  vel=92
+tick=14400 note=64  len=920  vel=92

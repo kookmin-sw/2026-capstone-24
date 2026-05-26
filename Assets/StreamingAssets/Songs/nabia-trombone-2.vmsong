@@ -1,0 +1,59 @@
+[Meta]
+title  = Nabia
+songid = nabia_001
+
+[Resolution]
+ticksPerQuarter = 480
+
+[Tempo]
+tick=0  bpm=120  beats=4  beatUnit=4
+
+[Channels]
+channel=2  instrument=trombone
+
+[Track:2]
+# Trombone Normal: melody line (-1 octave, fits partial range P1/P2)
+# 8 bars (1 bar = 1920 ticks, total 0-15359)
+# G3=55, E3=52, F3=53, D3=50, C3=48
+
+# BAR 1 (0-1919): G3-E3-E3(half)
+tick=0     note=55  len=440  vel=92
+tick=480   note=52  len=440  vel=92
+tick=960   note=52  len=920  vel=92
+
+# BAR 2 (1920-3839): F3-D3-D3(half)
+tick=1920  note=53  len=440  vel=92
+tick=2400  note=50  len=440  vel=92
+tick=2880  note=50  len=920  vel=92
+
+# BAR 3 (3840-5759): C3-D3-E3-F3
+tick=3840  note=48  len=440  vel=92
+tick=4320  note=50  len=440  vel=92
+tick=4800  note=52  len=440  vel=92
+tick=5280  note=53  len=440  vel=92
+
+# BAR 4 (5760-7679): G3-G3-G3(half)
+tick=5760  note=55  len=440  vel=92
+tick=6240  note=55  len=440  vel=92
+tick=6720  note=55  len=920  vel=92
+
+# BAR 5 (7680-9599): same as bar 1
+tick=7680  note=55  len=440  vel=92
+tick=8160  note=52  len=440  vel=92
+tick=8640  note=52  len=920  vel=92
+
+# BAR 6 (9600-11519): same as bar 2
+tick=9600  note=53  len=440  vel=92
+tick=10080 note=50  len=440  vel=92
+tick=10560 note=50  len=920  vel=92
+
+# BAR 7 (11520-13439): C3-E3-G3-G3
+tick=11520 note=48  len=440  vel=92
+tick=12000 note=52  len=440  vel=92
+tick=12480 note=55  len=440  vel=92
+tick=12960 note=55  len=440  vel=92
+
+# BAR 8 (13440-15359): E3-E3-E3(half)
+tick=13440 note=52  len=440  vel=92
+tick=13920 note=52  len=440  vel=92
+tick=14400 note=52  len=920  vel=92

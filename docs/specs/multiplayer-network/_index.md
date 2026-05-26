@@ -44,7 +44,9 @@ VirtualMusicStudio의 핵심 경험은 여러 유저가 같은 VR 공간에서 �
 | 멀티플레이어 룸 세션 | `Active` | [03-room-session.md](specs/03-room-session.md) |
 | 접속 상태 UI | `Active` | [04-presence-ui.md](specs/04-presence-ui.md) |
 | 룸 서버 매니저 | `Active` | [05-room-server-manager.md](specs/05-room-server-manager.md) |
-| 빌드 타깃 분리 | `Active` | [06-build-targets.md](specs/06-build-targets.md) |
+| 빌드 타깃 분리 | `Draft` | [06-build-targets.md](specs/06-build-targets.md) |
+| 멀티플레이 로비 패널 UI | `Draft` | [07-lobby-panel-ui.md](specs/07-lobby-panel-ui.md) |
+
 
 > 상태 값은 `Draft` / `Active` / `Done` / `Abandoned`
 

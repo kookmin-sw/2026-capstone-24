@@ -35,7 +35,7 @@ docs/specs/
 
 ### Archive 정책
 
-- **plan 단위**: `Status: Done` 직후 `_archive/<feature>/plans/`로 자동 이동 (doc-updater가 처리).
+- **plan 단위**: `Status: Done` 후에도 본래 위치(`docs/specs/<feature>/plans/`)에 유지. feature-archive 시점에 일괄 이동.
 - **sub-spec 단위**: Done 되어도 feature 전체 Done 시점까지 `specs/` 안에 보류.
 - **feature 단위**: 모든 sub-spec Done + Open Q 0건 + 검증 pass + working tree clean 조건 충족 시 `_archive/<feature>/`로 이동. 사용자 승인 1회 (destructive 가드).
 - **archive 행 표기**: `| [<feature>](_archive/<feature>/_index.md) | Done | ... |`
@@ -58,13 +58,9 @@ docs/specs/
 | Sub-agent | 호출 주체 | 책임 |
 |---|---|---|
 | `planner` | `/spec-build` | sub-spec 한 개에 대해 plan 1개 작성 + self-check 진단 |
-| `orchestrator` | `/spec-build` | plan 1개 라이프사이클(implementer → reviewer → unity-test-runner → 자동 AC 검증) 격리 sandbox |
-| `implementer` | `orchestrator` | plan의 코드/자산 변경 적용 (Unity MCP write 권한) |
-| `reviewer` | `orchestrator` | 구현 후 git diff vs plan 의도 검증 |
-| `unity-test-runner` | `orchestrator` | EditMode·PlayMode 회귀 테스트 |
-| `doc-updater` | `/spec-build`, 메인 세션 | plan/sub-spec/feature 라이프사이클 종료 시 Status·표·링크·archive 이동 |
-| `unity-scene-reader` | `planner`, `/spec-interview` | Unity 자산 read-only 사실 추출 (Prefab Hierarchy 박제 등) |
-| `unity-scene-writer` | 메인 세션 보조 | 확정된 Unity 자산 변경 적용 |
+| `implementer` | `/spec-build` (메인) | plan의 코드/자산 변경 적용 (Unity MCP write 권한) |
+| `reviewer` | `/spec-build` (메인) | 구현 후 git diff vs plan 의도 검증 |
+| `unity-test-runner` | `/spec-build` (메인) | EditMode·PlayMode 회귀 테스트 |
 
 ## 검증 실패 시 후속 plan 시드 (3택)
 
@@ -143,7 +139,7 @@ docs/specs/
 - **컴포넌트 enum/Flags 필드 신규 셋업 plan은 의도 값 검증 AC 1건 필수.** `## Verified Structural Assumptions`에 박제된 enum 정의의 의도 값을 직렬화 grep 단일 매치로 검증. 권장 라벨 `[auto-hard]`.
 - **검증 실패에서 파생된 plan은 헤더에 `**Caused By:**` 라인.** planner가 자동 부여. 정책 단일 진실원: 위 "검증 실패 시 후속 plan 시드" 섹션.
 - **호출 API side effect 박제 강제.** Unity 자산 의존 plan이 외부 컴포넌트 public API를 호출하면, 그 API가 호출 컴포넌트의 transform·frame loop·event 구독에 미치는 모든 side effect를 `## Verified Structural Assumptions`에 박제. 부분 라인 박제 금지.
-- **(권고) 스크립트 변경 plan은 컴파일 0건 검증 AC 1건.** `.cs` 신규/수정이 포함된 plan은 `read_console(types=["error"])`가 0건임을 plan 적용 후 확인하는 AC 1건 권장. 라벨 `[auto-hard]`. 절차는 [`unity-mcp-workflow`](../../.claude/skills/unity-mcp-workflow/SKILL.md) §2.
+- **(권고) 스크립트 변경 plan은 컴파일 0건 검증 AC 1건.** `.cs` 신규/수정이 포함된 plan은 `read_console(types=["error"])`가 0건임을 plan 적용 후 확인하는 AC 1건 권장. 라벨 `[auto-hard]`. 절차는 [`unity-mcp-workflow`](../../.claude/skills/unity-mcp-workflow/SKILL.md) §1.
 - **(권고) 시각적 변화가 핵심인 plan은 screenshot 검증 AC 1건.** GameObject 배치/카메라 lens/머티리얼/UI 같이 시각으로 의도 일치를 확인해야 하는 plan은 screenshot 1장 첨부를 `[manual-hard]` AC로 1건 권장.
 
 ### ARD Spec What Coverage 룰
@@ -176,12 +172,13 @@ docs/specs/
 
 | Feature | Status | Sub-Specs | Plans (Done/Total) | 비고 |
 |---|---|---|---|---|
-| [rhythm-game](rhythm-game/_index.md) | Active | 11 | 12/13 | |
+| [rhythm-game](rhythm-game/_index.md) | Active | 22 | 26/27 | sub-spec 15 추가 |
 | [hands](hands/_index.md) | Active | 3 | 1/2 | |
 | [drum-stick](drum-stick/_index.md) | Active | 2 | 3/3 | |
-| [session-panel](session-panel/_index.md) | Active | 3 | 4/5 | |
-| [multiplayer-network](multiplayer-network/_index.md) | Active | 6 | 13/19 | |
-| [trombone](trombone/_index.md) | Draft | 3 | 0/0 | |
+| [session-panel](session-panel/_index.md) | Active | 9 | 9/9 | sub-spec 08·09 추가 |
+| [multiplayer-network](multiplayer-network/_index.md) | Active | 7 | 13/19 | sub-spec 07 추가 |
+| [multiplayer-hand-midi-sync](multiplayer-hand-midi-sync/_index.md) | Draft | 2 | 0/0 | |
+| [trombone](_archive/trombone/_index.md) | Active | 5 | 4/5 | sub-spec 05 추가 (클릭 노이즈 억제) |
 | [teleport-locomotion](_archive/teleport-locomotion/_index.md) | Done | 3 | 4/4 | |
 
-> Status 값: `Draft` / `Active` / `Done` / `Abandoned`. doc-updater가 sub-spec/feature 종료 시점에 자동 갱신.
+> Status 값: `Draft` / `Active` / `Done` / `Abandoned`. `/spec-build` 메인 세션이 sub-spec/feature 종료 시점에 갱신.

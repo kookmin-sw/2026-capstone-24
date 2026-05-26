@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1055056541254304700
+--- !u!1 &2711286954864842332
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,55 +8,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2234559292386458669}
-  - component: {fileID: 3377130962745792782}
-  m_Layer: 0
-  m_Name: BassDrum
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2234559292386458669
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1055056541254304700}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 5593871467335067807}
-  - {fileID: 889685227990885094}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3377130962745792782
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1055056541254304700}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d1b908c8d869c64eaaea8f2f1d813ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DrumPiece
---- !u!1 &1803318639314391520
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5430836517624309398}
-  - component: {fileID: 6230816100603143877}
-  - component: {fileID: 860376190814420904}
+  - component: {fileID: 7823701767412431538}
+  - component: {fileID: 2232940752572680176}
+  - component: {fileID: 7472115183180068441}
   m_Layer: 0
   m_Name: BassHeadZone
   m_TagString: Untagged
@@ -64,28 +18,28 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5430836517624309398
+--- !u!4 &7823701767412431538
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1803318639314391520}
+  m_GameObject: {fileID: 2711286954864842332}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.0038, z: -0.1509}
-  m_LocalScale: {x: 0.77645, y: 1, z: 0.74725}
+  m_LocalPosition: {x: 0, y: -0.197, z: -0.462}
+  m_LocalScale: {x: 0.14234658, y: 1, z: 0.112422265}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 889685227990885094}
+  m_Father: {fileID: 7750102569256569058}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &6230816100603143877
+--- !u!65 &2232940752572680176
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1803318639314391520}
+  m_GameObject: {fileID: 2711286954864842332}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -98,24 +52,24 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.514, y: 0.04, z: 0.514}
+  m_Size: {x: 2.790445, y: 0.21715526, z: 2.790445}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &860376190814420904
+--- !u!114 &7472115183180068441
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1803318639314391520}
+  m_GameObject: {fileID: 2711286954864842332}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c223de5ab44e29146a54163dad9b6c7e, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DrumHitZone
-  targetPiece: {fileID: 3377130962745792782}
+  m_EditorClassIdentifier: Instruments::Instruments.DrumHitZone
+  targetPiece: {fileID: 5712344472458212494}
   midiNote: 36
   panelYOffset: 0.05
-  triggerCollider: {fileID: 6230816100603143877}
+  triggerCollider: {fileID: 2232940752572680176}
   allowedLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -123,7 +77,7 @@ MonoBehaviour:
   maxImpactSpeed: 4
   retriggerCooldown: 0.05
   useFingertipVelocityFallback: 1
---- !u!1 &3994929775881374432
+--- !u!1 &4248808170808791955
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -131,47 +85,81 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5593871467335067807}
-  - component: {fileID: 8091144102102736146}
-  - component: {fileID: 8561489894117977127}
-  - component: {fileID: 1346533704092580367}
+  - component: {fileID: 7750102569256569058}
   m_Layer: 0
-  m_Name: bass_drum
+  m_Name: HitZones
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5593871467335067807
+--- !u!4 &7750102569256569058
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3994929775881374432}
+  m_GameObject: {fileID: 4248808170808791955}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.00000003774895, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.2094602, z: 0.34}
-  m_LocalScale: {x: 18.42, y: 18.42, z: 18.42}
+  m_LocalRotation: {x: 0.00000003774895, y: -0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.002094602, z: 0.0034}
+  m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
   m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2234559292386458669}
+  m_Children:
+  - {fileID: 7823701767412431538}
+  m_Father: {fileID: 7286319933712288014}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &8091144102102736146
+--- !u!1 &8835200742359306777
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7286319933712288014}
+  - component: {fileID: 7769332046483102538}
+  - component: {fileID: 5664287406869399968}
+  - component: {fileID: 5712344472458212494}
+  - component: {fileID: 1473829100200000001}
+  m_Layer: 0
+  m_Name: BassDrum
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7286319933712288014
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8835200742359306777}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0, y: 0.28606763, z: 0.23204963}
+  m_LocalScale: {x: 100, y: 100, z: 100}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7750102569256569058}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &7769332046483102538
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3994929775881374432}
-  m_Mesh: {fileID: 2534964839176971238, guid: d8af439ec07333544b46827fc4a71ac6, type: 3}
---- !u!23 &8561489894117977127
+  m_GameObject: {fileID: 8835200742359306777}
+  m_Mesh: {fileID: 9160867036340626151, guid: 01478799dc6cdbf48b380b2287c38ae9, type: 3}
+--- !u!23 &5664287406869399968
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3994929775881374432}
+  m_GameObject: {fileID: 8835200742359306777}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -190,7 +178,9 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: cc7ee2fd39c003d4fa385cfe807baa1d, type: 2}
+  - {fileID: 2100000, guid: f03f2f1ee854fa2449a067404cd16b63, type: 2}
+  - {fileID: 2100000, guid: 1728e3a6988444a4d9c45f940c885032, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -214,56 +204,33 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &1346533704092580367
-BoxCollider:
+--- !u!114 &5712344472458212494
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3994929775881374432}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
+  m_GameObject: {fileID: 8835200742359306777}
   m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.014357788, y: 0.014016758, z: 0.016943388}
-  m_Center: {x: -0.00026775384, y: -0.0004429188, z: -0.00001936989}
---- !u!1 &7360825517799855283
-GameObject:
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d1b908c8d869c64eaaea8f2f1d813ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Instruments::Instruments.DrumPiece
+--- !u!114 &1473829100200000001
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 889685227990885094}
-  m_Layer: 0
-  m_Name: HitZones
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &889685227990885094
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7360825517799855283}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.2094602, z: 0.34}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 5430836517624309398}
-  m_Father: {fileID: 2234559292386458669}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_GameObject: {fileID: 8835200742359306777}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14786d85f94f86546b02f9dbeba8e7d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Instruments::Instruments.BassDrumSelectTrigger
+  anchor: {fileID: 0}
+  targetPiece: {fileID: 5712344472458212494}
+  midiNote: 36
+  velocity: 1
+  leftSelectAction: {fileID: -5982496924579745919, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  rightSelectAction: {fileID: 83097790271614945, guid: c348712bda248c246b8c49b3db54643f, type: 3}

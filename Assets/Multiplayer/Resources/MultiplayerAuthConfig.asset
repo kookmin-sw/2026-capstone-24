@@ -16,7 +16,7 @@ MonoBehaviour:
   deviceBackendBaseUrl: https://api.mu-rang.com
   useMockMetaToken: 1
   mockMetaTokenPrefix: 
-  mockAccountId: quest-user-01
-  defaultNickname: Murang Quest User
+  mockAccountId: quest-user-02
+  defaultNickname: Murang Quest User2
   nicknameOverride: 
   nicknameAccountSuffixLength: 6

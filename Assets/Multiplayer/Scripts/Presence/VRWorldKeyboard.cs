@@ -49,7 +49,7 @@ namespace Murang.Multiplayer.Presence
             new string[] { "1","2","3","4","5","6","7","8","9","0" },
             new string[] { "Q","W","E","R","T","Y","U","I","O","P" },
             new string[] { "A","S","D","F","G","H","J","K","L" },
-            new string[] { "SHIFT","Z","X","C","V","B","N","M","⌫" },
+            new string[] { "SHIFT","Z","X","C","V","B","N","M","DEL" },
             new string[] { "SPACE","ENTER" }
         };
 
@@ -99,7 +99,7 @@ namespace Murang.Multiplayer.Presence
 
             switch (keyLabel)
             {
-                case "⌫":
+                case "DEL":
                     if (_target.text.Length > 0)
                         _target.text = _target.text.Substring(0, _target.text.Length - 1);
                     break;

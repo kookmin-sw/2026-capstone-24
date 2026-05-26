@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -26,6 +27,10 @@ namespace SessionPanel
         [SerializeField] GameObject difficultyButtonPrefab;
         [SerializeField] Button playButton;
 
+        [Header("Instrument Toggles")]
+        [SerializeField] Transform instrumentToggleContainer;
+        [SerializeField] GameObject instrumentToggleButtonPrefab;
+
         [Header("Dependencies")]
         [SerializeField] UnityEngine.Object activeInstrumentProviderObject;
         [SerializeField] UnityEngine.Object songCatalogObject;
@@ -38,16 +43,20 @@ namespace SessionPanel
         string _selectedDifficulty;
         VmSongChart _loadedChart;
 
+        // channel int -> parsed chart for that instrument (LoadChart fills, ResetSelection clears)
+        Dictionary<int, VmSongChart> _otherInstrumentCharts = new Dictionary<int, VmSongChart>();
+
         float _baseBpm = 120f;
         int _bpmOffset = 0;
         TextMeshProUGUI _bpmLabel;
         DifficultyButtonUI _selectedDiffBtn;
 
+        Dictionary<string, bool> _instrumentToggleStates =
+            new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
+
         RhythmGameHost _activeHost;
 
-        /// <summary>리듬게임 세션이 시작됐을 때 발생. SessionPanelController가 패널 전체를 숨기는 데 사용한다.</summary>
         public event System.Action GameStarted;
-        /// <summary>리듬게임 세션이 종료됐을 때 발생. SessionPanelController가 패널 전체를 복원하는 데 사용한다.</summary>
         public event System.Action GameEnded;
 
         void Awake()
@@ -70,8 +79,21 @@ namespace SessionPanel
 
         void OnEnable()
         {
+            if (_provider == null)
+                _provider = activeInstrumentProviderObject as IActiveInstrumentProvider;
+            if (_catalog == null)
+                _catalog = songCatalogObject as ISongCatalog;
+
             if (_provider != null)
+            {
+                _provider.ActiveInstrumentChanged -= OnActiveInstrumentChanged;
                 _provider.ActiveInstrumentChanged += OnActiveInstrumentChanged;
+            }
+            if (_catalog != null)
+            {
+                _catalog.Changed -= OnCatalogChanged;
+                _catalog.Changed += OnCatalogChanged;
+            }
             _currentInstrument = _provider?.Current;
             RefreshSongList();
         }
@@ -80,7 +102,11 @@ namespace SessionPanel
         {
             if (_provider != null)
                 _provider.ActiveInstrumentChanged -= OnActiveInstrumentChanged;
+            if (_catalog != null)
+                _catalog.Changed -= OnCatalogChanged;
         }
+
+        void OnCatalogChanged() => RefreshSongList();
 
         void OnActiveInstrumentChanged(IActiveInstrument instrument)
         {
@@ -142,7 +168,7 @@ namespace SessionPanel
 
             DifficultyButtonUI firstBtn = null;
             string firstDiff = null;
-            foreach (var diff in song.Difficulties)
+            foreach (var diff in song.GetDifficultiesFor(_currentInstrument.InstrumentId))
             {
                 var go = Instantiate(difficultyButtonPrefab, difficultyContainer);
                 if (go.GetComponent<CanvasRenderer>() == null)
@@ -157,12 +183,11 @@ namespace SessionPanel
                 if (btn != null)
                 {
                     btn.Setup(diff, OnDifficultyClicked, diffImg);
+                    btn.SetLabel(MapDifficultyLabel(diff));
                     if (firstBtn == null) { firstBtn = btn; firstDiff = diff; }
                 }
             }
 
-            // 첫 번째 난이도를 자동 선택해 곡 클릭 직후 Play 가능하게 함
-            // (LoadChart 내부에서 BPM 바를 빌드하므로 AutoShowBpmFromSong은 fallback으로만 사용)
             if (firstBtn != null)
                 OnDifficultyClicked(firstDiff, firstBtn);
             else
@@ -173,10 +198,12 @@ namespace SessionPanel
 
         void AutoShowBpmFromSong(ISongEntry song)
         {
-            if (song.Difficulties.Count == 0) return;
-            string path = Path.Combine(Application.streamingAssetsPath, song.GetChartPath(song.Difficulties[0]));
-            if (!File.Exists(path)) return;
-            var result = VmSongParser.Parse(File.ReadAllText(path));
+            var __diffs = song.GetDifficultiesFor(_currentInstrument?.InstrumentId ?? string.Empty);
+            if (__diffs.Count == 0) return;
+            var __firstDiff = System.Linq.Enumerable.First(__diffs);
+            string text = _catalog?.GetChartText(song.GetChartPath(_currentInstrument.InstrumentId, __firstDiff));
+            if (string.IsNullOrEmpty(text)) return;
+            var result = VmSongParser.Parse(text);
             if (result.Success) BuildBpmBar(result.chart);
         }
 
@@ -188,24 +215,161 @@ namespace SessionPanel
 
             _selectedDifficulty = difficulty;
             LoadChart();
+            BuildInstrumentToggles();
         }
 
         void LoadChart()
         {
             if (_selectedSong == null || _selectedDifficulty == null) return;
 
-            string path = Path.Combine(Application.streamingAssetsPath, _selectedSong.GetChartPath(_selectedDifficulty));
-            if (!File.Exists(path))
-            {
-                Debug.LogWarning($"[RhythmGame] Chart not found: {path}");
-                return;
-            }
+            string text = _catalog?.GetChartText(_selectedSong.GetChartPath(_currentInstrument.InstrumentId, _selectedDifficulty));
+            if (string.IsNullOrEmpty(text)) return;
 
-            var result = VmSongParser.Parse(File.ReadAllText(path));
+            var result = VmSongParser.Parse(text);
             if (!result.Success) return;
 
             _loadedChart = result.chart;
             BuildBpmBar(_loadedChart);
+
+            // Parse charts for other active instruments
+            _otherInstrumentCharts.Clear();
+            foreach (var otherId in _selectedSong.SupportedInstrumentIds)
+            {
+                if (string.Equals(otherId, _currentInstrument.InstrumentId, StringComparison.OrdinalIgnoreCase)) continue;
+                string otherRel = _selectedSong.GetChartPath(otherId, _selectedDifficulty);
+                if (string.IsNullOrEmpty(otherRel)) continue;
+                string otherText = _catalog?.GetChartText(otherRel);
+                if (string.IsNullOrEmpty(otherText)) continue;
+                var otherResult = VmSongParser.Parse(otherText);
+                if (!otherResult.Success || otherResult.chart.channelMap.entries.Count == 0) continue;
+                int firstChannel = otherResult.chart.channelMap.entries[0].channel;
+                _otherInstrumentCharts[firstChannel] = otherResult.chart;
+            }
+        }
+
+        void BuildInstrumentToggles()
+        {
+            _instrumentToggleStates.Clear();
+
+            if (_selectedSong == null || _selectedDifficulty == null || _currentInstrument == null) return;
+            if (instrumentToggleContainer == null) return;
+
+            ClearChildren(instrumentToggleContainer);
+
+            var candidates = new List<string>();
+            foreach (var otherId in _selectedSong.SupportedInstrumentIds)
+            {
+                if (string.Equals(otherId, _currentInstrument.InstrumentId, StringComparison.OrdinalIgnoreCase))
+                    continue;
+                var diffs = _selectedSong.GetDifficultiesFor(otherId);
+                bool hasDiff = false;
+                foreach (var d in diffs)
+                {
+                    if (string.Equals(d, _selectedDifficulty, StringComparison.OrdinalIgnoreCase))
+                    {
+                        hasDiff = true;
+                        break;
+                    }
+                }
+                if (hasDiff) candidates.Add(otherId);
+            }
+
+            candidates.Sort(StringComparer.Ordinal);
+
+            if (candidates.Count == 0)
+            {
+                instrumentToggleContainer.gameObject.SetActive(false);
+                return;
+            }
+
+            instrumentToggleContainer.gameObject.SetActive(true);
+
+            foreach (var instrumentId in candidates)
+            {
+                _instrumentToggleStates[instrumentId] = true;
+
+                if (instrumentToggleButtonPrefab == null) continue;
+
+                var go = Instantiate(instrumentToggleButtonPrefab, instrumentToggleContainer);
+                var le = go.GetComponent<LayoutElement>() ?? go.AddComponent<LayoutElement>();
+                le.preferredHeight = 36f;
+                var toggleBtn = go.GetComponent<InstrumentToggleButtonUI>();
+                if (toggleBtn != null)
+                    toggleBtn.Setup(instrumentId, true, OnInstrumentToggleChanged);
+            }
+        }
+
+        void OnInstrumentToggleChanged(string instrumentId, bool isOn)
+        {
+            _instrumentToggleStates[instrumentId] = isOn;
+        }
+
+        internal Dictionary<int, bool> BuildAccompanimentDict(int judgedChannel)
+        {
+            var accompaniment = new Dictionary<int, bool>();
+            if (_loadedChart == null) return accompaniment;
+            foreach (var entry in _loadedChart.channelMap.entries)
+            {
+                if (entry.channel == judgedChannel) continue;
+                bool on = true;
+                if (_instrumentToggleStates.TryGetValue(entry.instrumentKey ?? string.Empty, out var stored))
+                    on = stored;
+                accompaniment[entry.channel] = on;
+            }
+            return accompaniment;
+        }
+
+        internal Dictionary<int, bool> BuildAccompanimentDictFromChart(int judgedChannel, VmSongChart sourceChart)
+        {
+            var dict = new Dictionary<int, bool>();
+            if (sourceChart == null) return dict;
+            foreach (var entry in sourceChart.channelMap.entries)
+            {
+                if (entry.channel == judgedChannel) continue;
+                bool on = true;
+                if (_instrumentToggleStates.TryGetValue(entry.instrumentKey ?? string.Empty, out var stored))
+                    on = stored;
+                dict[entry.channel] = on;
+            }
+            return dict;
+        }
+
+        internal VmSongChart BuildMergedChartForSession(float effectiveBpm)
+        {
+            if (_loadedChart == null) return null;
+
+            // Shallow in-memory clone of player chart
+            var merged = new VmSongChart
+            {
+                title  = _loadedChart.title,
+                artist = _loadedChart.artist,
+                songId = _loadedChart.songId,
+            };
+            merged.tempoMap.ticksPerQuarter = _loadedChart.tempoMap.ticksPerQuarter;
+            foreach (var seg in _loadedChart.tempoMap.segments) merged.tempoMap.segments.Add(seg);
+            foreach (var e   in _loadedChart.channelMap.entries) merged.channelMap.entries.Add(e);
+            foreach (var t   in _loadedChart.tracks)             merged.tracks.Add(t);
+
+            // Merge active instrument charts (dedup by channel)
+            var seen = new HashSet<int>();
+            foreach (var e in merged.channelMap.entries) seen.Add(e.channel);
+            foreach (var kv in _otherInstrumentCharts)
+            {
+                foreach (var entry in kv.Value.channelMap.entries)
+                {
+                    if (seen.Add(entry.channel)) merged.channelMap.entries.Add(entry);
+                }
+                foreach (var track in kv.Value.tracks) merged.tracks.Add(track);
+            }
+
+            // Stamp effectiveBpm into the merged chart first tempo segment (struct reassignment)
+            if (merged.tempoMap.segments.Count > 0)
+            {
+                var seg = merged.tempoMap.segments[0];
+                seg.bpm = effectiveBpm;
+                merged.tempoMap.segments[0] = seg;
+            }
+            return merged;
         }
 
         void BuildBpmBar(VmSongChart chart)
@@ -229,7 +393,7 @@ namespace SessionPanel
 
         void MakeBpmOffsetBtn(int delta)
         {
-            var go = new GameObject($"BPMBtn{(delta > 0 ? "+" : "")}{delta}");
+            var go = new GameObject("BPMBtn" + (delta > 0 ? "+" : "") + delta);
             go.transform.SetParent(bpmBar, false);
             var le = go.AddComponent<LayoutElement>();
             le.preferredWidth = 36f;
@@ -279,7 +443,7 @@ namespace SessionPanel
         void UpdateBpmLabel()
         {
             if (_bpmLabel != null)
-                _bpmLabel.text = $"{_baseBpm + _bpmOffset:F0} BPM";
+                _bpmLabel.text = (_baseBpm + _bpmOffset).ToString("F0") + " BPM";
         }
 
         void HideBpmBar()
@@ -308,25 +472,15 @@ namespace SessionPanel
             var host = _currentInstrument.InstrumentRoot.GetComponentInChildren<RhythmGameHost>();
             if (host == null) return;
 
-            // FindObjectsByType<NoteDisplayPanel> fallback 제거 — host의 SerializedField에
-            // noteDisplayPanel을 직접 박제하거나, 악기 본인이 자식 INoteDisplayController를 제공한다.
-
-            // 이전 세션 구독 정리
             if (_activeHost != null)
                 _activeHost.SessionEnded -= OnSessionEnded;
             _activeHost = host;
             host.SessionEnded += OnSessionEnded;
 
-            // BPM 오프셋 적용: tempoMap 세그먼트 BPM을 사용자 선택 값으로 교체
             float effectiveBpm = _baseBpm + _bpmOffset;
-            if (_loadedChart.tempoMap.segments.Count > 0)
-            {
-                var seg = _loadedChart.tempoMap.segments[0];
-                seg.bpm = effectiveBpm;
-                _loadedChart.tempoMap.segments[0] = seg;
-            }
+            var merged = BuildMergedChartForSession(effectiveBpm);
 
-            int judgedChannel = FindJudgedChannel(_loadedChart, _currentInstrument.InstrumentId);
+            int judgedChannel = FindJudgedChannel(merged, _currentInstrument.InstrumentId);
 
             RhythmSong rhythmSong = null;
             if (host.SongDatabase != null)
@@ -341,12 +495,9 @@ namespace SessionPanel
                 }
             }
 
-            var accompaniment = new Dictionary<int, bool>();
-            foreach (var entry in _loadedChart.channelMap.entries)
-                if (entry.channel != judgedChannel)
-                    accompaniment[entry.channel] = true;
+            var accompaniment = BuildAccompanimentDictFromChart(judgedChannel, merged);
 
-            host.StartSession(_loadedChart, rhythmSong, judgedChannel, accompaniment);
+            host.StartSession(merged, rhythmSong, judgedChannel, accompaniment);
             GameStarted?.Invoke();
         }
 
@@ -364,6 +515,8 @@ namespace SessionPanel
         {
             if (_provider != null)
                 _provider.ActiveInstrumentChanged -= OnActiveInstrumentChanged;
+            if (_catalog != null)
+                _catalog.Changed -= OnCatalogChanged;
 
             activeInstrumentProviderObject = providerObj;
             songCatalogObject              = catalogObj;
@@ -371,8 +524,10 @@ namespace SessionPanel
             _catalog           = songCatalogObject as ISongCatalog;
             _currentInstrument = _provider?.Current;
 
-            if (isActiveAndEnabled && _provider != null)
+            if (_provider != null)
                 _provider.ActiveInstrumentChanged += OnActiveInstrumentChanged;
+            if (_catalog != null)
+                _catalog.Changed += OnCatalogChanged;
 
             ResetSelection();
             RefreshSongList();
@@ -385,9 +540,27 @@ namespace SessionPanel
             _loadedChart       = null;
             _bpmOffset         = 0;
             _selectedDiffBtn   = null;
+            _instrumentToggleStates.Clear();
+            _otherInstrumentCharts.Clear();
             ClearChildren(difficultyContainer);
             HideBpmBar();
+            if (instrumentToggleContainer != null)
+            {
+                ClearChildren(instrumentToggleContainer);
+                instrumentToggleContainer.gameObject.SetActive(false);
+            }
             ShowDetail(false);
+        }
+
+        static string MapDifficultyLabel(string diff)
+        {
+            switch (diff)
+            {
+                case "1": return "Easy";
+                case "2": return "Normal";
+                case "3": return "Hard";
+                default:  return diff;
+            }
         }
 
         static int FindJudgedChannel(VmSongChart chart, string instrumentId)

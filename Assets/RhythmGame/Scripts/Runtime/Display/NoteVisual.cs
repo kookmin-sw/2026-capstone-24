@@ -12,6 +12,9 @@ public class NoteVisual : MonoBehaviour
     float lifetime;
     float elapsed;
 
+    // 슬라이드 색상 추적용 (TromboneNoteDisplayAdapter가 판정선 색상 갱신에 사용)
+    public Color AssignedColor = Color.clear;
+
     /// <summary>
     /// 스폰 시 패널이 호출해 낙하 속도와 수명을 주입한다.
     /// </summary>

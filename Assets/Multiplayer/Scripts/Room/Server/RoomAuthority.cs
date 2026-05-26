@@ -105,8 +105,10 @@ namespace Murang.Multiplayer.Room.Server
             }
         }
 
-        public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
+        void INetworkRunnerCallbacks.OnPlayerJoined(NetworkRunner runner, PlayerRef player)
         {
+            Debug.Log($"[RoomAuthority] OnPlayerJoined player={player} ActivePlayers={runner.ActivePlayers.Count()} IsServer={runner.IsServer}");
+
             if (!runner.IsServer)
             {
                 return;
@@ -116,8 +118,14 @@ namespace Murang.Multiplayer.Room.Server
             byte[] connectionToken = runner.GetPlayerConnectionToken(player);
             bool tokenDecoded = RoomConnectionTokenCodec.TryDeserialize(connectionToken, out passwordHash);
 
+            // RoomServerBootstrap 이 Photon PlayerCount 에 server slot 1을 추가해 등록하므로,
+            // ActivePlayers 가 server 를 포함하든 미포함이든 _maxPlayers + 1 (server + clients)
+            // 까지 허용해야 사용자 가시 정원(_maxPlayers) 의 client 모두 입장 가능. 최악의 경우
+            // 해석 A + server 미포함이면 1명 over-provision 되지만, 정원 부족(7/8)이 사용자에게
+            // 더 심각하므로 안전 측 fail.
+            int allowedActorTotal = _maxPlayers + 1;
             RoomJoinResult validationResult = tokenDecoded
-                ? ValidateJoin(runner.ActivePlayers.Count(), _maxPlayers, _passwordHash, passwordHash)
+                ? ValidateJoin(runner.ActivePlayers.Count(), allowedActorTotal, _passwordHash, passwordHash)
                 : RoomJoinResult.CreateFailure(
                     RoomJoinFailureReason.Other,
                     string.Empty,
@@ -138,8 +146,10 @@ namespace Murang.Multiplayer.Room.Server
                 disconnectAfterSend: true);
         }
 
-        public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
+        void INetworkRunnerCallbacks.OnPlayerLeft(NetworkRunner runner, PlayerRef player)
         {
+            Debug.Log($"[RoomAuthority] OnPlayerLeft player={player} ActivePlayers={runner.ActivePlayers.Count()} IsServer={runner.IsServer}");
+
             if (!runner.IsServer)
             {
                 return;

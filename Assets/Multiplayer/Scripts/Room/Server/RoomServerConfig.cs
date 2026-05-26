@@ -14,6 +14,8 @@ namespace Murang.Multiplayer.Room.Server
         [SerializeField] private bool isVisible = true;
         [SerializeField] private string customLobbyName = string.Empty;
         [SerializeField] private bool useDefaultPhotonCloudPorts;
+        [SerializeField] private NetworkPrefabRef playerHandRigPrefab;
+        [SerializeField] private NetworkPrefabRef midiNetBusPrefab;
 
         public string RoomName
         {
@@ -48,6 +50,16 @@ namespace Murang.Multiplayer.Room.Server
         public bool UseDefaultPhotonCloudPorts
         {
             get { return useDefaultPhotonCloudPorts; }
+        }
+
+        public NetworkPrefabRef PlayerHandRigPrefab
+        {
+            get { return playerHandRigPrefab; }
+        }
+
+        public NetworkPrefabRef MidiNetBusPrefab
+        {
+            get { return midiNetBusPrefab; }
         }
 
         public Dictionary<string, SessionProperty> BuildSessionProperties()

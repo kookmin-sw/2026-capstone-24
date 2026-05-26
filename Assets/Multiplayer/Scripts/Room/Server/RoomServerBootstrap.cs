@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Fusion;
+using Murang.Multiplayer.Multiplay;
 using Murang.Multiplayer.Room.Common;
 using UnityEngine;
 
@@ -15,6 +16,12 @@ namespace Murang.Multiplayer.Room.Server
         private const string MaxPlayersArgument = "-maxPlayers";
         private const string PasswordHashArgument = "-passwordHash";
 
+        // ECS Fargate task definition container override (EcsRoomRuntimeProvider) 가
+        // 주입하는 env vars. command line argument 가 없을 때 fallback 으로 사용.
+        private const string EnvPhotonSessionName = "PHOTON_SESSION_NAME";
+        private const string EnvMaxPlayers = "MAX_PLAYERS";
+        private const string EnvPasswordHash = "ROOM_PASSWORD_HASH";
+
         [SerializeField] private RoomServerConfig config;
         [SerializeField] private bool autoStartOnAwake = true;
 
@@ -22,6 +29,8 @@ namespace Murang.Multiplayer.Room.Server
         private RoomAuthority _authority;
         private RoomServerAutomationMonitor _automationMonitor;
         private RoomServerCallbackReporter _callbackReporter;
+        private PlayerHandRigSpawner _handRigSpawner;
+        private MidiNetBusSpawner _midiNetBusSpawner;
 
         private async void Awake()
         {
@@ -47,11 +56,17 @@ namespace Murang.Multiplayer.Room.Server
             bool useDefaultPhotonCloudPorts = ResolveUseDefaultPhotonCloudPorts();
             bool isVisible = ResolveIsVisible();
 
+            // Photon Fusion 2 dedicated-server 모드는 actor slot 에 server 1개를 포함한다.
+            // 사용자 가시 정원 (maxPlayers) 명의 client 가 모두 들어올 수 있으려면 actor slot 을
+            // maxPlayers + 1 로 등록해야 안전 (RoomAuthority._maxPlayers carve-out 와 정합).
+            int photonPlayerCount = maxPlayers + 1;
+            Debug.Log($"[RoomServerBootstrap] StartGameArgs.PlayerCount={photonPlayerCount} (clientCap={maxPlayers} sessionName={roomName})");
+
             StartGameArgs startArgs = new StartGameArgs
             {
                 GameMode = GameMode.Server,
                 SessionName = roomName,
-                PlayerCount = maxPlayers,
+                PlayerCount = photonPlayerCount,
                 IsVisible = isVisible,
                 SessionProperties = BuildSessionProperties(passwordHash),
                 CustomLobbyName = customLobbyName,
@@ -66,6 +81,10 @@ namespace Murang.Multiplayer.Room.Server
             if (result.Ok)
             {
                 _callbackReporter?.ReportReady();
+
+                // OnSceneLoadDone callback 의존 없이 MidiNetBus 를 명시적 spawn — RoomServerBoot.unity 는
+                // 추가 씬 로드를 하지 않아 OnSceneLoadDone 이 안정적 trigger 가 아니다.
+                _midiNetBusSpawner?.SpawnNow(_runner);
             }
 
             return result;
@@ -111,6 +130,26 @@ namespace Murang.Multiplayer.Room.Server
             }
 
             _callbackReporter.Initialize(RoomServerCallbackConfig.FromProcessEnvironment());
+
+            _handRigSpawner = GetComponent<PlayerHandRigSpawner>();
+            if (_handRigSpawner == null)
+            {
+                _handRigSpawner = gameObject.AddComponent<PlayerHandRigSpawner>();
+            }
+
+            _handRigSpawner.Initialize(config);
+            _runner.RemoveCallbacks(_handRigSpawner);
+            _runner.AddCallbacks(_handRigSpawner);
+
+            _midiNetBusSpawner = GetComponent<MidiNetBusSpawner>();
+            if (_midiNetBusSpawner == null)
+            {
+                _midiNetBusSpawner = gameObject.AddComponent<MidiNetBusSpawner>();
+            }
+
+            _midiNetBusSpawner.Initialize(config);
+            _runner.RemoveCallbacks(_midiNetBusSpawner);
+            _runner.AddCallbacks(_midiNetBusSpawner);
         }
 
         private NetworkSceneManagerDefault GetOrAddSceneManager()
@@ -126,12 +165,26 @@ namespace Murang.Multiplayer.Room.Server
 
         private string ResolveRoomName()
         {
-            return GetOptionalArgumentValue(RoomNameArgument) ?? config.RoomName;
+            string fromArg = GetOptionalArgumentValue(RoomNameArgument);
+            if (!string.IsNullOrWhiteSpace(fromArg))
+            {
+                return fromArg;
+            }
+            string fromEnv = Environment.GetEnvironmentVariable(EnvPhotonSessionName);
+            if (!string.IsNullOrWhiteSpace(fromEnv))
+            {
+                return fromEnv;
+            }
+            return config.RoomName;
         }
 
         private int ResolveMaxPlayers()
         {
             string rawValue = GetOptionalArgumentValue(MaxPlayersArgument);
+            if (string.IsNullOrWhiteSpace(rawValue))
+            {
+                rawValue = Environment.GetEnvironmentVariable(EnvMaxPlayers);
+            }
             if (string.IsNullOrWhiteSpace(rawValue))
             {
                 return config.MaxPlayers;
@@ -147,7 +200,17 @@ namespace Murang.Multiplayer.Room.Server
 
         private string ResolvePasswordHash()
         {
-            return RoomPasswordHasher.NormalizeHash(GetOptionalArgumentValue(PasswordHashArgument) ?? config.PasswordHash);
+            string fromArg = GetOptionalArgumentValue(PasswordHashArgument);
+            if (!string.IsNullOrWhiteSpace(fromArg))
+            {
+                return RoomPasswordHasher.NormalizeHash(fromArg);
+            }
+            string fromEnv = Environment.GetEnvironmentVariable(EnvPasswordHash);
+            if (!string.IsNullOrWhiteSpace(fromEnv))
+            {
+                return RoomPasswordHasher.NormalizeHash(fromEnv);
+            }
+            return RoomPasswordHasher.NormalizeHash(config.PasswordHash);
         }
 
         private string ResolveCustomLobbyName()

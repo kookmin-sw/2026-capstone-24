@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -7,7 +7,7 @@ namespace Instruments
 [DisallowMultipleComponent]
 public class InstrumentAudioOutput : MonoBehaviour
 {
-    enum VoiceState { Idle, Active, Releasing }
+    enum VoiceState { Idle, Attacking, Active, SustainedActive, Releasing, FadingOutDsp }
 
     sealed class Voice
     {
@@ -17,6 +17,13 @@ public class InstrumentAudioOutput : MonoBehaviour
         public float StartedAt;
         public float ReleaseStartedAt;
         public float ReleaseStartVolume;
+        // Attack 단계 fade-in 목표 볼륨. PlayNoteSustained 진입 시 박제.
+        public float TargetVolume;
+        // Per-voice fade duration. NoteOn 시점에 박제돼 Attacking/Releasing 단계가 각각 사용.
+        public float FadeInDuration;
+        public float FadeOutDuration;
+        // TrySetActiveVoicePitch가 이 voice의 pitch를 따라가게 할지. release 중에는 false로 NoteOff 시점 pitch 고정.
+        public bool TrackPitch;
     }
 
     public struct AudioSourceSettings
@@ -55,6 +62,13 @@ public class InstrumentAudioOutput : MonoBehaviour
     [Tooltip("voice AudioSource에 적용할 AudioMixerGroup. SessionMixer/Master를 할당.")]
     [SerializeField] AudioMixerGroup voiceMixerGroup;
 
+    /// <summary>
+    /// voice GameObject가 생성될 때마다 발화한다 (EnsureVoicePool 내부).
+    /// 구독자는 전달된 GameObject에 외부 컴포넌트(TrombonePitchDsp 등)를 부착할 수 있다.
+    /// Trombone 외 악기는 구독하지 않으므로 동작 영향 없음.
+    /// </summary>
+    public event System.Action<GameObject> VoiceGameObjectCreated;
+
     readonly List<Voice> m_Voices = new List<Voice>();
     Transform m_VoicePoolRoot;
     AudioSourceSettings m_CurrentSettings = AudioSourceSettings.CreateDefault();
@@ -67,13 +81,47 @@ public class InstrumentAudioOutput : MonoBehaviour
         for (int i = 0; i < m_Voices.Count; i++)
         {
             Voice voice = m_Voices[i];
-            if (voice.State != VoiceState.Releasing) continue;
             if (voice.Source == null) { ResetVoice(voice); continue; }
-            if (m_CurrentSettings.ReleaseDuration <= 0f) { StopVoice(voice); continue; }
-            float elapsed = now - voice.ReleaseStartedAt;
-            if (elapsed >= m_CurrentSettings.ReleaseDuration) { StopVoice(voice); continue; }
-            float t = 1f - (elapsed / m_CurrentSettings.ReleaseDuration);
-            voice.Source.volume = voice.ReleaseStartVolume * Mathf.Clamp01(t);
+
+            if (voice.State == VoiceState.Attacking)
+            {
+                if (voice.FadeInDuration <= 0f)
+                {
+                    voice.Source.volume = voice.TargetVolume;
+                    voice.State = VoiceState.SustainedActive;
+                    continue;
+                }
+                float elapsed = now - voice.StartedAt;
+                if (elapsed >= voice.FadeInDuration)
+                {
+                    voice.Source.volume = voice.TargetVolume;
+                    voice.State = VoiceState.SustainedActive;
+                    continue;
+                }
+                float t = elapsed / voice.FadeInDuration;
+                voice.Source.volume = voice.TargetVolume * Mathf.Clamp01(t);
+            }
+            else if (voice.State == VoiceState.Releasing)
+            {
+                float fadeOut = voice.FadeOutDuration > 0f ? voice.FadeOutDuration : m_CurrentSettings.ReleaseDuration;
+                if (fadeOut <= 0f) { StopVoice(voice); continue; }
+                float elapsed = now - voice.ReleaseStartedAt;
+                if (elapsed >= fadeOut) { StopVoice(voice); continue; }
+                float t = 1f - (elapsed / fadeOut);
+                voice.Source.volume = voice.ReleaseStartVolume * Mathf.Clamp01(t);
+            }
+            else if (voice.State == VoiceState.FadingOutDsp)
+            {
+                if (voice.Source.TryGetComponent<TrombonePitchDsp>(out var dsp))
+                {
+                    if (dsp.IsStopReady)
+                        StopVoice(voice);
+                }
+                else
+                {
+                    StopVoice(voice); // 안전망: DSP가 사라진 경우
+                }
+            }
         }
     }
 
@@ -86,9 +134,10 @@ public class InstrumentAudioOutput : MonoBehaviour
         Voice voice = GetBestVoice();
         if (voice == null || voice.Source == null) return;
         StopVoice(voice);
+        float targetVolume = Mathf.Clamp01(volume);
         voice.Source.clip = clip;
         voice.Source.pitch = pitch;
-        voice.Source.volume = Mathf.Clamp01(volume);
+        voice.Source.volume = targetVolume;
         voice.Source.loop = false;
         voice.Source.Play();
         voice.Note = note;
@@ -96,16 +145,52 @@ public class InstrumentAudioOutput : MonoBehaviour
         voice.StartedAt = Time.time;
         voice.ReleaseStartedAt = 0f;
         voice.ReleaseStartVolume = 0f;
+        voice.TargetVolume = targetVolume;
+        voice.FadeInDuration = 0f;
+        voice.FadeOutDuration = 0f;
+        voice.TrackPitch = false;
+    }
+
+    public void PlayNoteSustained(int note, AudioClip clip, float pitch, float volume,
+                                  float fadeInDuration, float fadeOutDuration)
+    {
+        if (clip == null) return;
+        EnsureVoicePool();
+        Voice voice = GetBestVoice();
+        if (voice == null || voice.Source == null) return;
+        StopVoice(voice);
+        float targetVolume = Mathf.Clamp01(volume);
+        bool hasFadeIn = fadeInDuration > 0f;
+        voice.Source.clip = clip;
+        voice.Source.pitch = pitch;
+        voice.Source.volume = hasFadeIn ? 0f : targetVolume;
+        voice.Source.loop = true;
+        voice.Source.Play();
+        voice.Note = note;
+        voice.State = hasFadeIn ? VoiceState.Attacking : VoiceState.SustainedActive;
+        voice.StartedAt = Time.time;
+        voice.ReleaseStartedAt = 0f;
+        voice.ReleaseStartVolume = 0f;
+        voice.TargetVolume = targetVolume;
+        voice.FadeInDuration = Mathf.Max(0f, fadeInDuration);
+        voice.FadeOutDuration = Mathf.Max(0f, fadeOutDuration);
+        voice.TrackPitch = true;
+        // NoteOn 시 voice 재사용 직후 DSP 상태가 Idle로 reset되도록 보장.
+        // TrombonePitchDsp 미부착 voice(Piano/DrumKit)는 TryGetComponent가 null 반환 → noop.
+        if (voice.Source.TryGetComponent<TrombonePitchDsp>(out var dspReset))
+            dspReset.ResetEnvelope();
     }
 
     public void StopNote(int note)
     {
         Voice voice = GetOldestVoiceForNote(note);
         if (voice == null || voice.Source == null) return;
-        if (m_CurrentSettings.ReleaseDuration <= 0f || !voice.Source.isPlaying) { StopVoice(voice); return; }
+        float fadeOut = voice.FadeOutDuration > 0f ? voice.FadeOutDuration : m_CurrentSettings.ReleaseDuration;
+        if (fadeOut <= 0f || !voice.Source.isPlaying) { StopVoice(voice); return; }
         voice.State = VoiceState.Releasing;
         voice.ReleaseStartedAt = Time.time;
         voice.ReleaseStartVolume = voice.Source.volume;
+        voice.TrackPitch = false;
     }
 
     public void StopNoteImmediate(int note)
@@ -115,6 +200,49 @@ public class InstrumentAudioOutput : MonoBehaviour
             Voice voice = m_Voices[i];
             if (voice.Note == note && voice.State != VoiceState.Idle) StopVoice(voice);
         }
+    }
+
+    /// <summary>
+    /// Grip release 전용 DSP fade-out 요청. TrombonePitchDsp가 부착된 voice에 한해
+    /// ≤10ms DSP fade-out 후 StopVoice를 폴링으로 회수한다.
+    /// DSP 미부착 voice(Piano/DrumKit 등)는 StopNote fallback으로 처리.
+    /// Choke 경로(StopNoteImmediate)와는 별개 — ARD 06 분리 정합.
+    /// main thread에서만 호출.
+    /// </summary>
+    public void RequestGripReleaseFadeOut(int note)
+    {
+        Voice voice = GetOldestVoiceForNote(note);
+        if (voice == null || voice.Source == null) return;
+        if (voice.State == VoiceState.Idle || voice.State == VoiceState.Releasing || voice.State == VoiceState.FadingOutDsp) return;
+        if (voice.Source.TryGetComponent<TrombonePitchDsp>(out var dsp))
+        {
+            dsp.RequestFadeOut();
+            voice.State = VoiceState.FadingOutDsp;
+            voice.TrackPitch = false;
+        }
+        else
+        {
+            // DSP 미부착 voice (시블링 호출 가정 없으나 안전망)
+            StopNote(note);
+        }
+    }
+
+    public bool TrySetActiveVoicePitch(int note, float pitch)
+    {
+        bool updatedAny = false;
+        for (int i = 0; i < m_Voices.Count; i++)
+        {
+            Voice voice = m_Voices[i];
+            if (voice.Note != note || voice.Source == null) continue;
+            if (voice.State != VoiceState.Active && voice.State != VoiceState.SustainedActive && voice.State != VoiceState.Attacking) continue;
+            if (!voice.TrackPitch) continue;
+            if (voice.Source.TryGetComponent<TrombonePitchDsp>(out var dsp))
+                dsp.RequestPitchChange(pitch);
+            else
+                voice.Source.pitch = pitch;
+            updatedAny = true;
+        }
+        return updatedAny;
     }
 
     public void StopAllVoices()
@@ -166,9 +294,14 @@ public class InstrumentAudioOutput : MonoBehaviour
         }
         while (m_Voices.Count < m_CurrentSettings.MaxVoices)
         {
-            AudioSource source = m_VoicePoolRoot.gameObject.AddComponent<AudioSource>();
+            int index = m_Voices.Count;
+            GameObject voiceGo = new GameObject(string.Format("Voice_{0}", index));
+            voiceGo.transform.SetParent(m_VoicePoolRoot, false);
+            AudioSource source = voiceGo.AddComponent<AudioSource>();
             ApplySettingsToSource(source, m_CurrentSettings);
-            m_Voices.Add(new Voice { Source = source, State = VoiceState.Idle });
+            Voice voice = new Voice { Source = source, State = VoiceState.Idle };
+            m_Voices.Add(voice);
+            VoiceGameObjectCreated?.Invoke(voiceGo);
         }
     }
 
@@ -185,6 +318,10 @@ public class InstrumentAudioOutput : MonoBehaviour
         voice.StartedAt = 0f;
         voice.ReleaseStartedAt = 0f;
         voice.ReleaseStartVolume = 0f;
+        voice.TargetVolume = 0f;
+        voice.FadeInDuration = 0f;
+        voice.FadeOutDuration = 0f;
+        voice.TrackPitch = false;
     }
 
     Voice GetBestVoice()

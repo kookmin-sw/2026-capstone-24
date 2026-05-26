@@ -40,7 +40,7 @@ scene instance 구분·ScriptableObject/material/animation 자산 값 등)를 �
 작성 규칙:
 - 최소 1개 항목, 최대 ~6개 권장.
 - 각 항목 끝에 출처를 명시한다:
-  - `unity-scene-reader 보고 (YYYY-MM-DD)` — planner의 구조 가정 검증 단계에서 sub-agent로 검증한 경우. (권장)
+  - `Unity MCP (manage_prefabs.get_hierarchy / manage_scene.get_hierarchy) (YYYY-MM-DD)` — planner의 구조 가정 검증 단계에서 MCP read로 검증한 경우. (권장)
   - `Read <패키지 경로>/<파일>.cs (YYYY-MM-DD)` — enum/Flags 정의 등 패키지 소스에서 박제한 경우.
   - `MCP 미사용 — 가정` — Unity MCP 사용 불가 fallback 경로일 때만. (사용자 동의 박제)
 - 검증한 GameObject·컴포넌트·자산 경로를 plan 본문 안 어디에선가 다시 인용하므로 정확한 표기를 쓴다.
@@ -52,8 +52,8 @@ scene instance 구분·ScriptableObject/material/animation 자산 값 등)를 �
 검증 출처를 추적할 수 있다.
 -->
 
-- <검증 항목 1 — 예: "VR Player.prefab의 controller-tracked transform은 `Camera Offset/Hands/Left/LeftControllerHandRoot`(TrackedPoseDriver 부착) — `Left` 자체는 정적 컨테이너"> — `unity-scene-reader 보고 (YYYY-MM-DD)`
-- <검증 항목 2> — `unity-scene-reader 보고 (YYYY-MM-DD)`
+- <검증 항목 1 — 예: "VR Player.prefab의 controller-tracked transform은 `Camera Offset/Hands/Left/LeftControllerHandRoot`(TrackedPoseDriver 부착) — `Left` 자체는 정적 컨테이너"> — `Unity MCP (manage_prefabs.get_hierarchy / manage_scene.get_hierarchy) (YYYY-MM-DD)`
+- <검증 항목 2> — `Unity MCP (manage_prefabs.get_hierarchy / manage_scene.get_hierarchy) (YYYY-MM-DD)`
 - <enum/Flags 박제 항목 (해당 plan에서만) — 예: "`BaseTeleportationInteractable.TeleportTrigger`: `OnSelectExited=0` / `OnSelectEntered=1` / `OnActivated=2` / `OnDeactivated=3`. 본 plan 의도 값 = `0`(release 시 발동)"> — `Read Library/PackageCache/com.unity.xr.interaction.toolkit@<hash>/Runtime/Locomotion/Teleportation/BaseTeleportationInteractable.cs (YYYY-MM-DD)`
 
 ## Approach
@@ -105,4 +105,4 @@ evidence가 "파일 존재" 또는 "함수 존재" 같은 단일 사실에만 �
 
 ## Handoff
 
-<선택. `/spec-build`가 plan 완료 시 doc-updater Task로 자동 갱신한다. 다음 plan이 알아야 할 공개 API 시그니처·자산 경로·결정 사항 5~15줄. 빈 채로 둬도 OK.>
+<선택. `/spec-build`가 plan 완료 시 메인 세션에서 직접 갱신한다. 다음 plan이 알아야 할 공개 API 시그니처·자산 경로·결정 사항 5~15줄. 빈 채로 둬도 OK.>

@@ -15,6 +15,8 @@ namespace SessionPanel
         public IReadOnlyList<ISongEntry> Songs => _readOnly;
         public event System.Action Changed;
 
+        public string GetChartText(string relPath) => null;
+
         void Awake()
         {
             BuildCatalog();
@@ -60,6 +62,9 @@ namespace SessionPanel
             public IReadOnlyList<string> Difficulties => _difficulties;
             public IReadOnlyCollection<string> SupportedInstrumentIds => _instrumentIds;
             public string GetChartPath(string difficulty) => "Songs/test.vmsong";
+            public System.Collections.Generic.IReadOnlyCollection<string> GetDifficultiesFor(string instrumentId)
+                => System.Array.Empty<string>();
+            public string GetChartPath(string instrumentId, string difficulty) => null;
         }
     }
 }

@@ -28,9 +28,6 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash, Skill, Task
 - 인수가 있으면 그 내용을 컨텍스트로 받아 1단계로 진행.
 
 ### 1. 컨텍스트 파악 (필요할 때 read-only)
-
-처음부터 모든 것을 읽지 않는다. 사용자 아이디어가 잡힌 뒤, **필요할 때 필요한 만큼만** 읽는다.
-
 - 기존 피처의 sub-spec일 가능성이 보이면 → `docs/specs/`를 Glob하고 후보 root-spec(`_index.md`) 1개 정도만 읽는다.
 - 새 피처가 명백하면 이 단계를 건너뛴다.
 
@@ -81,7 +78,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Bash, Skill, Task
 
 **Prefab 구조 박제 (필수, sub-spec이 prefab 계층에 의존할 때).**
 
-- MCP 사용 가능: `unity-scene-reader` Pattern A를 1회 호출 → 반환 `data.hierarchy[]`를 Tech Spec `## Components` 또는 `## Assumptions`의 "**Prefab Hierarchy**" 서브섹션에 박제. 출처는 `unity-scene-reader Pattern A (YYYY-MM-DD)` 표기.
+- MCP 사용 가능: 메인 세션이 `manage_prefabs.get_hierarchy`를 1회 호출 → 반환 `data.items[]`(path / componentTypes / nested prefab assetPath 발췌)를 Tech Spec `## Components` 또는 `## Assumptions`의 "**Prefab Hierarchy**" 서브섹션에 박제. 출처는 `Unity MCP manage_prefabs.get_hierarchy (YYYY-MM-DD)` 표기.
 - MCP 미가용: 사용자에게 "MCP 없이 진행할까요?"를 묻고 yes면 `.prefab` YAML을 Read해 계층만 발췌 박제 + 정확도 낮음 1줄 경고. no면 인터뷰 멈춤.
 
 #### 2.5-3. ARD 후보 추출
