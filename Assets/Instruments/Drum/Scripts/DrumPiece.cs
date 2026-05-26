@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Instruments
@@ -6,6 +7,8 @@ namespace Instruments
     public class DrumPiece : MonoBehaviour
     {
         DrumKit m_DrumKit;
+
+        public event Action<float> HitOccurred;
 
         void Awake()
         {
@@ -16,6 +19,8 @@ namespace Instruments
         {
             if (m_DrumKit != null)
                 m_DrumKit.OnPieceHit(midiNote, velocity);
+
+            HitOccurred?.Invoke(velocity);
         }
     }
 }
