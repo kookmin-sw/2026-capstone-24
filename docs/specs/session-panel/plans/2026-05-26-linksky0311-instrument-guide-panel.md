@@ -1,7 +1,7 @@
 # 독립 가이드 패널 & [가이드] 버튼 연결 (sub-spec 10 plan 2/2)
 
 **Linked Spec:** [`10-instrument-travel-list.md`](../specs/10-instrument-travel-list.md)
-**Status:** `Ready`
+**Status:** `Done`
 
 ## Goal
 
