@@ -11,10 +11,12 @@ namespace SessionPanel
         [SerializeField] Transform itemContainer;          // GridLayoutGroup 부착된 자식 Content
         [SerializeField] GameObject instrumentTravelItemPrefab;
         [SerializeField] UnityEngine.Object activeInstrumentProviderObject;
+        [SerializeField] GameObject instrumentGuidePanelPrefab;
 
         IActiveInstrumentProvider _provider;
         readonly List<InstrumentTravelItem> _items = new List<InstrumentTravelItem>();
         bool _snapshotBuilt;
+        InstrumentGuidePanelController _guidePanel;
 
         void Awake()
         {
@@ -41,6 +43,8 @@ namespace SessionPanel
             // 본 sub-spec 10 §What: "패널이 열려 있는 동안 변하지 않는다 — 패널을 닫고 다시 열면 새 상태"
             // OnDisable에서 스냅 비움 → OnEnable 시 재구축.
             ClearSnapshot();
+            // 세션 패널이 닫히면 가이드 패널도 함께 비활성 (인스턴스는 보존, 다음 open 시 재사용).
+            if (_guidePanel != null) _guidePanel.gameObject.SetActive(false);
         }
 
         /// <summary>SessionPanelController.EnsurePanelInstance 가 호출.</summary>
@@ -57,10 +61,34 @@ namespace SessionPanel
                 _provider.ActiveInstrumentChanged += OnActiveInstrumentChanged;
                 if (isActiveAndEnabled)
                 {
+                    EnsureGuidePanel();
                     BuildSnapshotIfNeeded();
                     RefreshCurrentState(_provider.Current);
                 }
             }
+        }
+
+        void EnsureGuidePanel()
+        {
+            if (_guidePanel != null) return;
+            if (instrumentGuidePanelPrefab == null) return;
+
+            // 세션 패널 외부의 독립 root — 세션 패널이 닫혀도 가이드 패널이 독립 위치 유지 가능.
+            var go = Instantiate(instrumentGuidePanelPrefab);
+            _guidePanel = go.GetComponent<InstrumentGuidePanelController>();
+            go.SetActive(false);
+            PositionGuidePanel(go.transform);
+        }
+
+        void PositionGuidePanel(Transform t)
+        {
+            // SessionPanel 루트(= InstrumentTravelSectionController 의 transform.root)의
+            // 오른쪽으로 0.5m 오프셋, 동일 정면 방향 1회 스냅.
+            var sessionRoot = transform.root;
+            if (sessionRoot == null) return;
+            t.position = sessionRoot.position + sessionRoot.right * 0.5f;
+            t.rotation = sessionRoot.rotation;
+            t.localScale = new Vector3(0.001f, 0.001f, 1f);
         }
 
         void BuildSnapshotIfNeeded()
@@ -130,8 +158,12 @@ namespace SessionPanel
 
         void OnGuideRequested(InstrumentTravelItem item)
         {
-            // TODO sub-spec 10 plan 2/2: InstrumentGuidePanel 호출 경로 부착.
-            // 현재 plan에서는 무동작.
+            if (item == null || item.Instrument == null) return;
+            EnsureGuidePanel();
+            if (_guidePanel == null) return;
+            // 클릭 시점마다 위치 재스냅 — 사용자가 이동/회전했을 수 있다.
+            PositionGuidePanel(_guidePanel.transform);
+            _guidePanel.Open(item.Instrument);
         }
     }
 }

@@ -410,6 +410,7 @@ MonoBehaviour:
   itemContainer: {fileID: 9300000000000001}
   instrumentTravelItemPrefab: {fileID: 100000, guid: 2917de9c7dc9f41f3929e478aab1f9f8, type: 3}
   activeInstrumentProviderObject: {fileID: 0}
+  instrumentGuidePanelPrefab: {fileID: 8939816873765663354, guid: af2a545817ffe404e90fcec95d1faad4, type: 3}
 --- !u!1 &1125705879972558501
 GameObject:
   m_ObjectHideFlags: 0
