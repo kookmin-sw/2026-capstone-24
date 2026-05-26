@@ -18,22 +18,23 @@ public class PlanarMirror : MonoBehaviour
     [Range(0.25f, 2f)]
     [SerializeField] private float resolutionScale = 1f;
     [Range(1, 8)]
-    [SerializeField] private int msaa = 1;
+    [SerializeField] private int msaa = 4;
     [SerializeField] private bool allowHDR = true;
 
     [Header("Culling")]
     [SerializeField] private LayerMask reflectionCullingMask = ~0;
-    [SerializeField] private bool disableShadowsInReflection = true;
+    [SerializeField] private bool disableShadowsInReflection = false;
 
     private Camera reflectionCam;
-    private RenderTexture rt;
+    private RenderTexture rtArray;
+    private RenderTexture rtSingleEye;
     private Renderer rend;
     private MaterialPropertyBlock mpb;
-    private int rtW = -1, rtH = -1;
     private static bool s_isRendering;
 
     private static readonly int ID_MirrorTex = Shader.PropertyToID("_MirrorTex");
-    private static readonly int ID_MirrorVP = Shader.PropertyToID("_MirrorVP");
+    private static readonly int ID_MirrorVPLeft = Shader.PropertyToID("_MirrorVP_Left");
+    private static readonly int ID_MirrorVPRight = Shader.PropertyToID("_MirrorVP_Right");
 
     private void OnEnable()
     {
@@ -45,7 +46,7 @@ public class PlanarMirror : MonoBehaviour
     private void OnDisable()
     {
         RenderPipelineManager.beginCameraRendering -= OnBeginCameraRendering;
-        ReleaseRT();
+        ReleaseRTs();
         DestroyReflectionCam();
     }
 
@@ -59,8 +60,10 @@ public class PlanarMirror : MonoBehaviour
         if (cam.cameraType == CameraType.Preview) return;
         if (cam.cameraType == CameraType.Reflection) return;
 
-        EnsureReflectionCam(cam);
-        EnsureRT(cam);
+        bool stereo = cam.stereoEnabled;
+
+        EnsureReflectionCam();
+        EnsureRTs(cam, stereo);
 
         Vector3 planePos = transform.position;
         Vector3 planeNormal = GetPlaneNormalWS();
@@ -73,41 +76,35 @@ public class PlanarMirror : MonoBehaviour
         Matrix4x4 reflection = CalculateReflectionMatrix(planeWS);
 
         CopySettings(cam, reflectionCam);
-        reflectionCam.targetTexture = rt;
+        reflectionCam.targetTexture = rtSingleEye;
         reflectionCam.cullingMask = reflectionCullingMask;
-
-        reflectionCam.worldToCameraMatrix = cam.worldToCameraMatrix * reflection;
-
-        Vector3 reflPos = ReflectPoint(cam.transform.position, planePos, planeNormal);
-        reflectionCam.transform.position = reflPos;
-        reflectionCam.transform.forward = Vector3.Reflect(cam.transform.forward, planeNormal);
-        reflectionCam.transform.up = Vector3.Reflect(cam.transform.up, planeNormal);
-
-        if (cam.orthographic)
-        {
-            reflectionCam.orthographic = true;
-            reflectionCam.orthographicSize = cam.orthographicSize;
-        }
-        else
-        {
-            reflectionCam.orthographic = false;
-            reflectionCam.fieldOfView = cam.fieldOfView;
-        }
-        reflectionCam.aspect = cam.aspect;
         reflectionCam.nearClipPlane = cam.nearClipPlane;
         reflectionCam.farClipPlane = cam.farClipPlane;
+        reflectionCam.aspect = cam.aspect;
+        reflectionCam.orthographic = cam.orthographic;
+        if (cam.orthographic)
+            reflectionCam.orthographicSize = cam.orthographicSize;
+        else
+            reflectionCam.fieldOfView = cam.fieldOfView;
 
-        Vector4 clipPlaneCS = CameraSpacePlane(reflectionCam, planePos, planeNormal, clipPlaneOffset);
-        reflectionCam.projectionMatrix = reflectionCam.CalculateObliqueMatrix(clipPlaneCS);
+        Matrix4x4 mirrorVPLeft = Matrix4x4.identity;
+        Matrix4x4 mirrorVPRight = Matrix4x4.identity;
 
         bool prevInvert = GL.invertCulling;
         GL.invertCulling = !prevInvert;
+        s_isRendering = true;
         try
         {
-            s_isRendering = true;
-#pragma warning disable CS0618
-            UniversalRenderPipeline.RenderSingleCamera(ctx, reflectionCam);
-#pragma warning restore CS0618
+            if (stereo)
+            {
+                RenderEye(ctx, cam, Camera.StereoscopicEye.Left, planePos, planeNormal, reflection, 0, out mirrorVPLeft);
+                RenderEye(ctx, cam, Camera.StereoscopicEye.Right, planePos, planeNormal, reflection, 1, out mirrorVPRight);
+            }
+            else
+            {
+                RenderMono(ctx, cam, planePos, planeNormal, reflection, out mirrorVPLeft);
+                mirrorVPRight = mirrorVPLeft;
+            }
         }
         finally
         {
@@ -115,11 +112,61 @@ public class PlanarMirror : MonoBehaviour
             GL.invertCulling = prevInvert;
         }
 
-        Matrix4x4 mirrorVP = GL.GetGPUProjectionMatrix(reflectionCam.projectionMatrix, true) * reflectionCam.worldToCameraMatrix;
         rend.GetPropertyBlock(mpb);
-        mpb.SetTexture(ID_MirrorTex, rt);
-        mpb.SetMatrix(ID_MirrorVP, mirrorVP);
+        mpb.SetTexture(ID_MirrorTex, rtArray);
+        mpb.SetMatrix(ID_MirrorVPLeft, mirrorVPLeft);
+        mpb.SetMatrix(ID_MirrorVPRight, mirrorVPRight);
         rend.SetPropertyBlock(mpb);
+    }
+
+    private void RenderMono(ScriptableRenderContext ctx, Camera src, Vector3 planePos, Vector3 planeNormal, Matrix4x4 reflection, out Matrix4x4 mirrorVP)
+    {
+        reflectionCam.worldToCameraMatrix = src.worldToCameraMatrix * reflection;
+
+        Vector3 reflPos = ReflectPoint(src.transform.position, planePos, planeNormal);
+        reflectionCam.transform.position = reflPos;
+        reflectionCam.transform.forward = Vector3.Reflect(src.transform.forward, planeNormal);
+        reflectionCam.transform.up = Vector3.Reflect(src.transform.up, planeNormal);
+
+        Vector4 clipPlaneCS = CameraSpacePlane(reflectionCam, planePos, planeNormal, clipPlaneOffset);
+        reflectionCam.projectionMatrix = reflectionCam.CalculateObliqueMatrix(clipPlaneCS);
+
+#pragma warning disable CS0618
+        UniversalRenderPipeline.RenderSingleCamera(ctx, reflectionCam);
+#pragma warning restore CS0618
+        Graphics.Blit(rtSingleEye, rtArray, 0, 0);
+
+        mirrorVP = GL.GetGPUProjectionMatrix(reflectionCam.projectionMatrix, true) * reflectionCam.worldToCameraMatrix;
+    }
+
+    private void RenderEye(ScriptableRenderContext ctx, Camera src, Camera.StereoscopicEye eye,
+                           Vector3 planePos, Vector3 planeNormal, Matrix4x4 reflection,
+                           int slice, out Matrix4x4 mirrorVP)
+    {
+        Matrix4x4 srcView = src.GetStereoViewMatrix(eye);
+        Matrix4x4 srcProj = src.GetStereoProjectionMatrix(eye);
+
+        Matrix4x4 reflView = srcView * reflection;
+        reflectionCam.worldToCameraMatrix = reflView;
+
+        Matrix4x4 srcCamToWorld = srcView.inverse;
+        Vector3 srcCamPos = srcCamToWorld.GetColumn(3);
+        Vector3 srcFwd = -(Vector3)srcCamToWorld.GetColumn(2);
+        Vector3 srcUp = srcCamToWorld.GetColumn(1);
+
+        reflectionCam.transform.position = ReflectPoint(srcCamPos, planePos, planeNormal);
+        reflectionCam.transform.forward = Vector3.Reflect(srcFwd, planeNormal);
+        reflectionCam.transform.up = Vector3.Reflect(srcUp, planeNormal);
+
+        Vector4 clipPlaneCS = CameraSpacePlaneFromView(reflView, planePos, planeNormal, clipPlaneOffset);
+        reflectionCam.projectionMatrix = MakeObliqueProjection(srcProj, clipPlaneCS);
+
+#pragma warning disable CS0618
+        UniversalRenderPipeline.RenderSingleCamera(ctx, reflectionCam);
+#pragma warning restore CS0618
+        Graphics.Blit(rtSingleEye, rtArray, 0, slice);
+
+        mirrorVP = GL.GetGPUProjectionMatrix(reflectionCam.projectionMatrix, true) * reflectionCam.worldToCameraMatrix;
     }
 
     private Vector3 GetPlaneNormalWS()
@@ -133,7 +180,7 @@ public class PlanarMirror : MonoBehaviour
         }
     }
 
-    private void EnsureReflectionCam(Camera src)
+    private void EnsureReflectionCam()
     {
         if (reflectionCam != null) return;
 
@@ -142,6 +189,9 @@ public class PlanarMirror : MonoBehaviour
         reflectionCam = go.AddComponent<Camera>();
         reflectionCam.enabled = false;
         reflectionCam.cameraType = CameraType.Reflection;
+
+        reflectionCam.allowMSAA = msaa > 1;
+        reflectionCam.allowHDR = allowHDR;
 
         var acd = reflectionCam.GetUniversalAdditionalCameraData();
         if (acd != null)
@@ -154,35 +204,64 @@ public class PlanarMirror : MonoBehaviour
         }
     }
 
-    private void EnsureRT(Camera src)
+    private void EnsureRTs(Camera src, bool stereo)
     {
         int w = Mathf.Max(8, Mathf.RoundToInt(src.pixelWidth * resolutionScale));
         int h = Mathf.Max(8, Mathf.RoundToInt(src.pixelHeight * resolutionScale));
-
-        if (rt != null && rt.width == w && rt.height == h && rt.antiAliasing == Mathf.Max(1, msaa))
-            return;
-
-        ReleaseRT();
+        int depth = stereo ? 2 : 1;
         var fmt = allowHDR ? RenderTextureFormat.DefaultHDR : RenderTextureFormat.Default;
-        rt = new RenderTexture(w, h, 16, fmt)
+
+        if (rtSingleEye == null || rtSingleEye.width != w || rtSingleEye.height != h)
         {
-            antiAliasing = Mathf.Max(1, msaa),
-            useMipMap = false,
-            autoGenerateMips = false,
-            wrapMode = TextureWrapMode.Clamp,
-            name = $"PlanarMirrorRT_{w}x{h}"
-        };
-        rt.Create();
-        rtW = w; rtH = h;
+            ReleaseRTSingle();
+            rtSingleEye = new RenderTexture(w, h, 16, fmt)
+            {
+                antiAliasing = 1,
+                useMipMap = false,
+                autoGenerateMips = false,
+                wrapMode = TextureWrapMode.Clamp,
+                name = $"PlanarMirrorRTSingle_{w}x{h}"
+            };
+            rtSingleEye.Create();
+        }
+
+        if (rtArray == null || rtArray.width != w || rtArray.height != h || rtArray.volumeDepth != depth)
+        {
+            ReleaseRTArray();
+            rtArray = new RenderTexture(w, h, 0, fmt)
+            {
+                dimension = TextureDimension.Tex2DArray,
+                volumeDepth = depth,
+                antiAliasing = 1,
+                useMipMap = false,
+                autoGenerateMips = false,
+                wrapMode = TextureWrapMode.Clamp,
+                name = $"PlanarMirrorRTArray_{w}x{h}_d{depth}"
+            };
+            rtArray.Create();
+        }
     }
 
-    private void ReleaseRT()
+    private void ReleaseRTs()
     {
-        if (rt == null) return;
-        if (Application.isPlaying) Destroy(rt);
-        else DestroyImmediate(rt);
-        rt = null;
-        rtW = rtH = -1;
+        ReleaseRTSingle();
+        ReleaseRTArray();
+    }
+
+    private void ReleaseRTSingle()
+    {
+        if (rtSingleEye == null) return;
+        if (Application.isPlaying) Destroy(rtSingleEye);
+        else DestroyImmediate(rtSingleEye);
+        rtSingleEye = null;
+    }
+
+    private void ReleaseRTArray()
+    {
+        if (rtArray == null) return;
+        if (Application.isPlaying) Destroy(rtArray);
+        else DestroyImmediate(rtArray);
+        rtArray = null;
     }
 
     private void DestroyReflectionCam()
@@ -226,12 +305,35 @@ public class PlanarMirror : MonoBehaviour
 
     private static Vector4 CameraSpacePlane(Camera cam, Vector3 planePoint, Vector3 planeNormal, float offset)
     {
+        return CameraSpacePlaneFromView(cam.worldToCameraMatrix, planePoint, planeNormal, offset);
+    }
+
+    private static Vector4 CameraSpacePlaneFromView(Matrix4x4 worldToCamera, Vector3 planePoint, Vector3 planeNormal, float offset)
+    {
         Vector3 offsetPos = planePoint + planeNormal * offset;
-        Matrix4x4 m = cam.worldToCameraMatrix;
-        Vector3 cpos = m.MultiplyPoint(offsetPos);
-        Vector3 cnormal = m.MultiplyVector(planeNormal).normalized;
+        Vector3 cpos = worldToCamera.MultiplyPoint(offsetPos);
+        Vector3 cnormal = worldToCamera.MultiplyVector(planeNormal).normalized;
         return new Vector4(cnormal.x, cnormal.y, cnormal.z, -Vector3.Dot(cpos, cnormal));
     }
+
+    private static Matrix4x4 MakeObliqueProjection(Matrix4x4 proj, Vector4 clipPlaneCS)
+    {
+        Vector4 q;
+        q.x = (Sgn(clipPlaneCS.x) + proj[0, 2]) / proj[0, 0];
+        q.y = (Sgn(clipPlaneCS.y) + proj[1, 2]) / proj[1, 1];
+        q.z = -1f;
+        q.w = (1f + proj[2, 2]) / proj[2, 3];
+
+        Vector4 c = clipPlaneCS * (2f / Vector4.Dot(clipPlaneCS, q));
+
+        proj[2, 0] = c.x;
+        proj[2, 1] = c.y;
+        proj[2, 2] = c.z + 1f;
+        proj[2, 3] = c.w;
+        return proj;
+    }
+
+    private static float Sgn(float v) => v > 0f ? 1f : (v < 0f ? -1f : 0f);
 }
 
 internal static class PlanarMirrorURPExt

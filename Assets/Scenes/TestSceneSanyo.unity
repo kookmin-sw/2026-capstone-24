@@ -618,12 +618,12 @@ MonoBehaviour:
   customNormalWS: {x: 0, y: 1, z: 0}
   clipPlaneOffset: 0.02
   resolutionScale: 1
-  msaa: 1
+  msaa: 4
   allowHDR: 1
   reflectionCullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  disableShadowsInReflection: 1
+  disableShadowsInReflection: 0
 --- !u!1 &247458534 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2805429515459502346, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
@@ -4462,7 +4462,7 @@ Light:
   serializedVersion: 12
   m_Type: 2
   m_Color: {r: 1, g: 0.83, b: 0.65, a: 1}
-  m_Intensity: 8
+  m_Intensity: 4.5
   m_Range: 8
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -4831,7 +4831,7 @@ Light:
   serializedVersion: 12
   m_Type: 2
   m_Color: {r: 1, g: 0.83, b: 0.65, a: 1}
-  m_Intensity: 8
+  m_Intensity: 4.5
   m_Range: 8
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -4958,7 +4958,7 @@ Light:
   serializedVersion: 12
   m_Type: 2
   m_Color: {r: 1, g: 0.83, b: 0.65, a: 1}
-  m_Intensity: 8
+  m_Intensity: 4.5
   m_Range: 8
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -6247,7 +6247,7 @@ Light:
   serializedVersion: 12
   m_Type: 2
   m_Color: {r: 1, g: 0.83, b: 0.65, a: 1}
-  m_Intensity: 8
+  m_Intensity: 4.5
   m_Range: 8
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -6451,13 +6451,13 @@ Light:
   serializedVersion: 12
   m_Type: 0
   m_Color: {r: 1, g: 0.94, b: 0.85, a: 1}
-  m_Intensity: 12
+  m_Intensity: 7
   m_Range: 10
   m_SpotAngle: 60
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
   m_Shadows:
-    m_Type: 2
+    m_Type: 1
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -7593,11 +7593,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6350044881741792298, guid: fc52e515dd232414db9528626212a1da, type: 3}
       propertyPath: leftHapticImpulsePlayer
-      value:
+      value: 
       objectReference: {fileID: 2054995304}
     - target: {fileID: 6350044881741792298, guid: fc52e515dd232414db9528626212a1da, type: 3}
       propertyPath: rightHapticImpulsePlayer
-      value:
+      value: 
       objectReference: {fileID: 2054995305}
     - target: {fileID: 6792978486195072924, guid: fc52e515dd232414db9528626212a1da, type: 3}
       propertyPath: m_LocalPosition.x
