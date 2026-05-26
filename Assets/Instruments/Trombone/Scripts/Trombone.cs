@@ -38,7 +38,7 @@ namespace Instruments
         [SerializeField] float gripThreshold = 0.5f;
         [SerializeField] HapticImpulsePlayer leftHapticImpulsePlayer;
         [SerializeField] HapticImpulsePlayer rightHapticImpulsePlayer;
-        [SerializeField, Range(0f, 1f)] float hapticAmplitude = 0.4f;
+        [SerializeField, Range(0f, 1f)] float hapticAmplitude = 0.15f;
         [SerializeField, Min(0.01f)] float hapticPulseDuration = 0.1f;
         [SerializeField, Min(0.01f)] float hapticPulseInterval = 0.08f;
 
