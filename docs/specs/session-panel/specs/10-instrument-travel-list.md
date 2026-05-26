@@ -72,7 +72,7 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| _아직 없음_ | — | — | — |
+| 2026-05-26 | 악기 이동 목록 섹션 & 항목 [이동] 동작 (plan 1/2) | In Progress | [`2026-05-26-linksky0311-instrument-travel-section-and-move.md`](../plans/2026-05-26-linksky0311-instrument-travel-section-and-move.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/spec-build`가 planner sub-agent로 처리. 파일명은 날짜·작성자·slug 기반.
