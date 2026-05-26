@@ -2,6 +2,8 @@
 
 **Parent:** [`_index.md`](../_index.md)
 
+> **Status: Abandoned.** 가이드 콘텐츠 · 페이지 UI 패턴(이미지 2개 가로 + 텍스트 + Prev/Next) · `Tutorial/<악기명>/NN` 자산 폴더 규약은 모두 [`10-instrument-travel-list.md`](10-instrument-travel-list.md)가 흡수했다. 본 sub-spec은 더 이상 단독으로 구현되지 않으며, 외부 독립 가이드 패널은 10의 책임 안에 있다.
+
 ## Why
 
 VR 환경에서 악기를 처음 접하는 사용자는 연주 방법을 알기 어렵다. 인앱

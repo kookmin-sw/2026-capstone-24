@@ -28,7 +28,8 @@ VR 환경에서 사용자는 (a) 리듬게임 세션을 시작하고, (b) 자기
 | Interactive Controls Style | Done | [`specs/06-interactive-controls-style.md`](specs/06-interactive-controls-style.md) |
 | Layout Fixes | Draft | [`specs/07-layout-fixes.md`](specs/07-layout-fixes.md) |
 | Session Panel 버튼 행 확장 | Draft | [`specs/08-button-row-expansion.md`](specs/08-button-row-expansion.md) |
-| 악기 연주 방법 가이드 패널 | Draft | [`specs/09-instrument-guide-panel.md`](specs/09-instrument-guide-panel.md) |
+| 악기 연주 방법 가이드 패널 | Abandoned | [`specs/09-instrument-guide-panel.md`](specs/09-instrument-guide-panel.md) |
+| 악기 이동 목록 섹션 | Draft | [`specs/10-instrument-travel-list.md`](specs/10-instrument-travel-list.md) |
 
 > 상태 값: `Draft` / `Active` / `Done` / `Abandoned`
 
