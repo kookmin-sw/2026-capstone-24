@@ -26,12 +26,19 @@
   **When** 유저가 다시 접속하면  
   **Then** 이전 유저 정보가 그대로 유지된다.
 
+- **Given** 신규 유저가 닉네임과 함께 처음 인증할 때  
+  **When** 인증이 성공하면  
+  **Then** `users.nickname` 이 입력값으로 등록되고, 이후 같은 metaAccountId 로 다시 로그인해도 이 닉네임은 보존된다.
+
 ## Out of Scope
 
 - 유저 프로필 수정 UI
 - 유저 차단/제재 기능
 - 게임 플레이 통계 저장
 - 유저별 룸 상태(악기·오브젝트 배치 등) 영속화·복원·snapshot 모델 (룸은 default 씬에 미리 배치된 오브젝트만 사용)
+- 닉네임 변경 이력 / audit history
+- 닉네임 unique 제약 (동일 닉네임을 다수 유저가 공유 가능)
+- 욕설·모욕 필터링 (정규식 기반 규칙 검사 외 NLP·blacklist 등)
 
 ## Implementation Plans
 
