@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Inputs.Haptics;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
@@ -30,6 +31,9 @@ public sealed class DrumKitStickAnchor : MonoBehaviour
 
     [SerializeField] GameObject leftPhysicsHand;
     [SerializeField] GameObject rightPhysicsHand;
+
+    [SerializeField] HapticImpulsePlayer leftHapticImpulsePlayer;
+    [SerializeField] HapticImpulsePlayer rightHapticImpulsePlayer;
 
     const int k_PendingAttachWindowFrames = 2;
 
@@ -116,14 +120,14 @@ public sealed class DrumKitStickAnchor : MonoBehaviour
         if (rightGhostWristSource != null)
             m_RightStickInstance.transform.SetPositionAndRotation(rightGhostWristSource.position, rightGhostWristSource.rotation);
 
-        BindStickAndPushOverride(m_LeftStickInstance, leftGhostWristSource, leftPlayHandDriver, "L_Wrist");
-        BindStickAndPushOverride(m_RightStickInstance, rightGhostWristSource, rightPlayHandDriver, "R_Wrist");
+        BindStickAndPushOverride(m_LeftStickInstance, leftGhostWristSource, leftPlayHandDriver, "L_Wrist", leftHapticImpulsePlayer);
+        BindStickAndPushOverride(m_RightStickInstance, rightGhostWristSource, rightPlayHandDriver, "R_Wrist", rightHapticImpulsePlayer);
 
         SetPhysicsHandsActive(false);
         m_IsAttached = true;
     }
 
-    void BindStickAndPushOverride(GameObject stickInstance, Transform ghostWristSource, PlayHandPoseDriver driver, string wristChildName)
+    void BindStickAndPushOverride(GameObject stickInstance, Transform ghostWristSource, PlayHandPoseDriver driver, string wristChildName, HapticImpulsePlayer hapticImpulsePlayer)
     {
         if (stickInstance == null || driver == null)
             return;
@@ -139,6 +143,8 @@ public sealed class DrumKitStickAnchor : MonoBehaviour
             stickHandWristRoot = gripPoseHand.Find(wristChildName);
 
         follower.Bind(ghostWristSource, driver, stickHandWristRoot);
+
+        stickInstance.GetComponent<StickHitSweeper>()?.SetHapticImpulsePlayer(hapticImpulsePlayer);
 
         // PlayHand source override push
         // source root = GripPoseHand, source wrist root = GripPoseHand/L_Wrist (or R_Wrist)

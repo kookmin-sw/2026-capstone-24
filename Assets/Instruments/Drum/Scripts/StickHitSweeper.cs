@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit.Inputs.Haptics;
 
 namespace Instruments
 {
@@ -8,6 +9,16 @@ public sealed class StickHitSweeper : MonoBehaviour
     [SerializeField] BoxCollider stickCollider;
     [SerializeField] AnchoredStickGhostFollower ghostFollower;
     [SerializeField] LayerMask sweepLayerMask = ~0;
+
+    [SerializeField] HapticImpulsePlayer hapticImpulsePlayer;
+    [SerializeField, Range(0f, 1f)] float hapticMinAmplitude = 0.2f;
+    [SerializeField, Range(0f, 1f)] float hapticMaxAmplitude = 0.8f;
+    [SerializeField, Min(0f)] float hapticDuration = 0.08f;
+
+    public void SetHapticImpulsePlayer(HapticImpulsePlayer player)
+    {
+        hapticImpulsePlayer = player;
+    }
 
     Vector3 m_PrevCenter;
     bool m_HasPrev;
@@ -63,7 +74,15 @@ public sealed class StickHitSweeper : MonoBehaviour
             foreach (RaycastHit hit in hits)
             {
                 DrumHitZone hitZone = hit.collider.GetComponent<DrumHitZone>();
-                hitZone?.TryProcessHit(stickCollider, velocity);
+                if (hitZone == null)
+                    continue;
+                if (!hitZone.TryProcessHit(stickCollider, velocity))
+                    continue;
+                if (hapticImpulsePlayer == null)
+                    continue;
+                float normalized = hitZone.NormalizeImpactSpeed(velocity);
+                float amplitude = Mathf.Lerp(hapticMinAmplitude, hapticMaxAmplitude, normalized);
+                hapticImpulsePlayer.SendHapticImpulse(amplitude, hapticDuration);
             }
         }
 
