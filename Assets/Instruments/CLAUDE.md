@@ -31,6 +31,8 @@ VR 공간에서 사용자 입력을 MIDI 이벤트로 변환하고 오디오로 
 ```
 
 > Anchor 자식은 텔레포트 attach 모델을 쓰는 악기에 한해 추가한다. **scene root 가 아니라 악기 prefab 의 자식**으로 두어 prefab reusability 와 anchor·본체의 hierarchy 결속성을 유지한다.
+>
+> Anchor 자식에 `InstrumentTeleportColliderBinder` 가 부착되는 이유: 본체의 collider 들을 같은 GameObject 의 `TeleportationAnchor.colliders` 배열로 흡수해 **ray 가 본체 어디에 hit 해도 anchor 가 받게** 만든다. anchor·본체 관계가 prefab 안에 박혀 있어야 이 wiring이 자동으로 유지된다.
 
 ## 3. Script 추상 계약
 
@@ -64,6 +66,17 @@ Sustain loop + fade-in/fade-out envelope을 쓰려면 `TryResolveNoteOn`에서 `
 - **멀티샘플 root MIDI**: 음역대 분할 멀티샘플을 쓰는 악기는 각 클립을 root MIDI 노트와 함께 인스펙터에 등록(예: `TromboneSample { clip, rootMidiNote }`). NoteOn 시점에 가장 가까운 root sample을 선택해 pitch shift 폭을 최소화한다. 발음 중 sample 전환은 click 위험이 있어 NoteOn 시점에만 결정한다.
 
 레퍼런스: `Assets/Instruments/Trombone/Scripts/Trombone.cs` (멀티샘플 + fade envelope), `Assets/Instruments/Trombone/Sound/A0.wav` · `Ds1.wav` · `A1.wav` · `A2.wav` (클립 예시)
+
+### Drum Stick prefab 변형 모델 (오해 방지)
+
+`Assets/Instruments/Drum/Prefabs/` 에는 세 개의 stick prefab 이 있다:
+
+- `drum_stick.prefab` — mesh + collider + Rigidbody + `StickHitSweeper` 만 가진 **base prefab**
+- `drum_stick_L.prefab`, `drum_stick_R.prefab` — base 를 **prefab variant 가 아니라 nested instance 로 품은 wrapper**. 루트는 `GripPoseHand` + `L_/R_Wrist` 본 계층, 자식 어딘가에 `drum_stick` 인스턴스가 들어있다
+
+→ **base 의 mesh·collider 를 수정하면 L/R 변형에도 반영되지만, 그립 포즈 본(localPosition/Rotation) 은 L/R 각각의 wrapper 가 따로 들고 있어 base 수정으로 갱신되지 않는다.** 본 편집은 L/R 각 prefab 에서 따로 한다.
+
+`DrumKit.prefab` 과 `SampleScene.unity` 는 L/R 만 직접 참조한다 — base 단독 prefab 은 nested 용도로만 사용한다.
 
 ## 4. 데이터 흐름
 
@@ -115,7 +128,7 @@ TeleportInstrumentProvider.Current 갱신 → ActiveInstrumentChanged 발행
 
 본문은 시그니처 수준에서 멈춘다. 구현 디테일이 필요하면 아래만 추가로 Read.
 
-- 입력 → MIDI 변환 분기: `_Core/Scripts/InstrumentBase.cs:117` (`TriggerMidi`)
-- 오디오 출력 파이프라인: `_Core/Scripts/InstrumentAudioOutput.cs:111` (`PlayNote`)
+- 입력 → MIDI 변환 분기: `_Core/Scripts/InstrumentBase.TriggerMidi`
+- 오디오 출력 파이프라인: `_Core/Scripts/InstrumentAudioOutput.PlayNote`
 - 레인 매핑 SO 구조: `_Core/Scripts/InstrumentLaneConfig.cs`
 - 활성 악기 전환 패턴: `_Core/Scripts/TeleportInstrumentProvider.cs`

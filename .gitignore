@@ -20,6 +20,10 @@
 # Recordings can get excessive in size
 /[Rr]ecordings/
 
+# Unity Performance Testing Framework 자동 생성 (실행마다 갱신, 추적 불필요)
+/[Aa]ssets/[Rr]esources/PerformanceTestRun*.json
+/[Aa]ssets/[Rr]esources/PerformanceTestRun*.json.meta
+
 # Unity MCP / analysis screenshots
 /[Aa]ssets/[Ss]creenshots/
 /[Aa]ssets/[Ss]creenshots.meta
