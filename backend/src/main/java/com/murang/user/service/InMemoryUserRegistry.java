@@ -64,6 +64,27 @@ public class InMemoryUserRegistry implements UserRegistry {
     }
 
     @Override
+    public synchronized UserProfile register(String metaAccountId, String nickname) {
+        String nicknameKey = nickname.toLowerCase(Locale.ROOT);
+        String claimedBy = metaAccountIdByNicknameKey.putIfAbsent(nicknameKey, metaAccountId);
+        if (claimedBy != null && !claimedBy.equals(metaAccountId)) {
+            throw ApiException.nicknameDuplicate();
+        }
+
+        Instant now = Instant.now();
+        UserProfile created = new UserProfile(
+                sequence.getAndIncrement(),
+                PlayerIdGenerator.newPlayerId(),
+                metaAccountId,
+                nickname,
+                now,
+                now);
+        usersByMetaAccountId.put(metaAccountId, created);
+        usersByPlayerId.put(created.playerId(), created);
+        return created;
+    }
+
+    @Override
     public Optional<UserProfile> findByPlayerId(String playerId) {
         return Optional.ofNullable(usersByPlayerId.get(playerId));
     }

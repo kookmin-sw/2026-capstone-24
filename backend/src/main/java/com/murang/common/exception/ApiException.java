@@ -34,6 +34,10 @@ public class ApiException extends RuntimeException {
         return new ApiException(ErrorCode.AUTH_FORBIDDEN);
     }
 
+    public static ApiException nicknameRequired() {
+        return new ApiException(ErrorCode.AUTH_NICKNAME_REQUIRED);
+    }
+
     public static ApiException nicknameDuplicate() {
         return new ApiException(ErrorCode.AUTH_NICKNAME_DUPLICATE);
     }

@@ -50,6 +50,20 @@ public class PersistentUserRegistry implements UserRegistry {
 
     @Override
     @Transactional
+    public UserProfile register(String metaAccountId, String nickname) {
+        String nicknameKey = UserAccount.nicknameKeyOf(nickname);
+        try {
+            ensureNicknameAvailable(nicknameKey, metaAccountId);
+            UserAccount created = userAccountRepository.saveAndFlush(
+                    UserAccount.create(metaAccountId, newPlayerId(), nickname, Instant.now()));
+            return created.toProfile();
+        } catch (DataIntegrityViolationException exception) {
+            throw ApiException.nicknameDuplicate();
+        }
+    }
+
+    @Override
+    @Transactional
     public Optional<UserProfile> findByPlayerId(String playerId) {
         return userAccountRepository.findByPlayerId(playerId)
                 .map(this::ensurePlayerIdAndToProfile);

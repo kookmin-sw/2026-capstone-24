@@ -56,7 +56,7 @@ namespace Murang.Multiplayer.Auth
         {
             if (authenticateOnStart)
             {
-                _ = EnsureAuthenticatedAsync();
+                _ = EnsureAuthenticatedAsync(null);
             }
         }
 
@@ -66,7 +66,7 @@ namespace Murang.Multiplayer.Auth
             _destroyCancellationTokenSource.Dispose();
         }
 
-        public Task<AuthSession.AuthState> EnsureAuthenticatedAsync()
+        public Task<AuthSession.AuthState> EnsureAuthenticatedAsync(string nicknameOverride = null)
         {
             if (_session == null)
             {
@@ -79,15 +79,15 @@ namespace Murang.Multiplayer.Auth
                 return _authenticationTask;
             }
 
-            _authenticationTask = EnsureAuthenticatedInternalAsync(_destroyCancellationTokenSource.Token);
+            _authenticationTask = EnsureAuthenticatedInternalAsync(nicknameOverride, _destroyCancellationTokenSource.Token);
             return _authenticationTask;
         }
 
-        private async Task<AuthSession.AuthState> EnsureAuthenticatedInternalAsync(CancellationToken cancellationToken)
+        private async Task<AuthSession.AuthState> EnsureAuthenticatedInternalAsync(string nicknameOverride, CancellationToken cancellationToken)
         {
             try
             {
-                AuthSession.AuthState state = await _session.EnsureAuthenticatedAsync(cancellationToken);
+                AuthSession.AuthState state = await _session.EnsureAuthenticatedAsync(nicknameOverride, cancellationToken);
                 Debug.Log("[AuthBootstrap] Authenticated via " + state.Source + ". PlayerPrefs auth cache is ready.");
                 if (authenticated != null)
                 {
