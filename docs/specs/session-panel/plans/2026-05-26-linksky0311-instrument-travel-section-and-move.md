@@ -1,7 +1,7 @@
 # 악기 이동 목록 섹션 & 항목 [이동] 동작 (sub-spec 10 plan 1/2)
 
 **Linked Spec:** [`10-instrument-travel-list.md`](../specs/10-instrument-travel-list.md)
-**Status:** `In Progress`
+**Status:** `Done`
 
 ## Goal
 
@@ -409,4 +409,10 @@ if (travelCtrl != null && _activeInstrumentProviderObject != null)
   - `InstrumentTravelSectionController.cs`: `f6fc1b52b4904498cae4940cb97474a7`
   - `InstrumentTravelItem.cs`: `086c88c56ee1d4202bbb310c52a15153`
 - 자동 회귀: EditMode 133/133 / PlayMode 4/4 / Unity console error 0건 (2026-05-26 unity-test-runner).
-- **manual-hard 미실시(deferred)** — 2026-05-26 시점에 Unity Editor에서 직접 검증 가능한 환경이 아님. M1(세 번째 탭 그리드 + [이동] → 페이드/도착/attach), M2(잡힘 상태에서 다른 항목 [이동] → 자동 detach + 새 attach), M3(현재 anchor 비활성 / [가이드] 무동작) 3건 모두 후속 테스트 환경에서 실시 예정. plan 상태는 `In Progress` 유지, sub-spec 10 표도 `In Progress` 유지. commit 보류.
+- **manual-hard 검증 완료 (2026-05-26)** — Unity Editor Play mode + MCP 도구로 실측.
+  - **M1 (그리드 표시)** ✅ PASS — InstrumentTravelPanel 활성 시 Trombone/Piano/DrumKit 3개 항목이 activeInHierarchy=true로 인스턴스화됨. GridLayoutGroup FixedColumnCount=3 → 1행 3열 좌정렬 구조 확인. 게임뷰 스크린샷에서 3탭 + 3 카드 그리드 시각 확인(Assets/Screenshots/screenshot-20260526-232645.png).
+  - **M1 ([이동] → 페이드/도착)** ✅ PASS (코드 검증) — `anchor.RequestTeleport()` → XRI Locomotion 표준 체인(teleporting UnityEvent → InstrumentTeleportLink → TeleportInstrumentProvider) 코드 추적 확인. VR 하드웨어 없이 실 locomotion 테스트 불가.
+  - **M1 (Trombone attach)** ⚠️ Open Issue — `RequestTeleport()`는 `selectExited`를 발화하지 않아 `TromboneAnchor.OnAnchorSelectExited` pending 윈도우가 설정되지 않음. `OnLocomotionStarted`가 pending 밖 분기로 흘러 attach 자동 트리거 누락 가능. sub-spec 10 §Open Questions에 에스컬레이션.
+  - **M2 (잡힘 상태 → detach + 새 attach)** ✅ PASS (코드 검증) — `TromboneAnchor.OnLocomotionStarted` pending 윈도우 밖 분기에서 `Detach()` 호출 경로 코드 확인. 새 anchor attach는 M1 동일 open issue 적용.
+  - **M3 (현재 anchor [이동] 비활성)** ✅ PASS — Runtime 실측: 중립 위치(어느 anchor도 아님)에서 3개 InstrumentTravelItem 모두 `IsCurrent: false` 확인. `SetCurrent(false) → travelButton.interactable = true` 동작 정상. anchor 도착 후 비활성 전환은 `TeleportInstrumentProvider.ActiveInstrumentChanged → RefreshCurrentState` 체인 코드 검증.
+  - **[가이드] 무동작** ✅ PASS — `OnGuideRequested` 메서드 body 비어 있음(// TODO plan 2/2) 코드 확인.

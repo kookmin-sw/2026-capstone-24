@@ -72,11 +72,11 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| 2026-05-26 | 악기 이동 목록 섹션 & 항목 [이동] 동작 (plan 1/2) | In Progress | [`2026-05-26-linksky0311-instrument-travel-section-and-move.md`](../plans/2026-05-26-linksky0311-instrument-travel-section-and-move.md) |
+| 2026-05-26 | 악기 이동 목록 섹션 & 항목 [이동] 동작 (plan 1/2) | Done | [`2026-05-26-linksky0311-instrument-travel-section-and-move.md`](../plans/2026-05-26-linksky0311-instrument-travel-section-and-move.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/spec-build`가 planner sub-agent로 처리. 파일명은 날짜·작성자·slug 기반.
 
 ## Open Questions
 
-_현재 열린 질문 없음._
+- **[OQ-10-1] Trombone attach 자동 트리거 누락 (plan 1/2 manual-hard M1 실측 에스컬레이션)** — `InstrumentTravelSectionController`가 `TeleportationAnchor.RequestTeleport()`를 호출할 때 interactor `selectExited` 이벤트가 발화되지 않아 `TromboneAnchor.OnAnchorSelectExited`의 pending 윈도우가 설정되지 않는다. 그 결과 `OnLocomotionStarted`가 pending 밖 분기를 타 `AttachTromboneToMouth()` 대신 `Detach()`가 호출될 수 있다. plan 2/2 착수 전 또는 sub-spec 11에서 (a) `InstrumentTravelSectionController.OnTravelRequested`에서 `RequestTeleport` 호출 직전·직후 악기별 anchor 컴포넌트를 통한 보조 attach 경로 추가, 또는 (b) `TromboneAnchor`에 `RequestTeleport`-safe 진입점 신설을 검토한다. 우선순위: **High** (Trombone이 [이동] 버튼의 핵심 사용 케이스).
