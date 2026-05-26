@@ -7,8 +7,6 @@ public interface UserRegistry {
 
     UserProfile registerOrUpdate(String metaAccountId, String nickname);
 
-    UserProfile register(String metaAccountId, String nickname);
-
     Optional<UserProfile> findByPlayerId(String playerId);
 
     Optional<UserProfile> findByMetaAccountId(String metaAccountId);

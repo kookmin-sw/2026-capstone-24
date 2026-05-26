@@ -10,8 +10,6 @@ app:
     jwt:
       secret: "test-secret-for-hs512-signing-must-be-at-least-sixty-four-bytes-long-2026"
       allow-ephemeral-secret: false
-    meta:
-      verifier-mode: mock
 
 murang:
   room:

@@ -47,7 +47,7 @@ app:
       secret: ${MURANG_JWT_SECRET:}
       allow-ephemeral-secret: true
     meta:
-      verifier-mode: ${MURANG_META_VERIFIER_MODE:real}
+      verifier-mode: ${MURANG_META_VERIFIER_MODE:mock}
       mock-token-prefix: ${MURANG_META_MOCK_PREFIX:mock-meta:}
       app-id: ${MURANG_META_APP_ID:}
       app-secret: ${MURANG_META_APP_SECRET:}

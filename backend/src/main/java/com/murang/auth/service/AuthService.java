@@ -6,11 +6,13 @@ import com.murang.auth.dto.RefreshTokenRequest;
 import com.murang.common.exception.ApiException;
 import com.murang.user.domain.UserProfile;
 import com.murang.user.service.UserRegistry;
-import java.util.Optional;
+import java.util.regex.Pattern;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
+
+    private static final Pattern MULTI_SPACE = Pattern.compile("\\s+");
 
     private final MetaIdTokenVerifier metaIdTokenVerifier;
     private final UserRegistry userRegistry;
@@ -28,23 +30,12 @@ public class AuthService {
 
     public MetaLoginResponse login(MetaLoginRequest request) {
         MetaIdentity identity = metaIdTokenVerifier.verify(request.metaIdToken());
+        String normalizedNickname = normalizeNickname(request.nickname());
 
-        Optional<UserProfile> existing = userRegistry.findByMetaAccountId(identity.metaAccountId());
-        if (existing.isPresent()) {
-            UserProfile user = existing.get();
-            JwtTokenService.IssuedTokens tokens = jwtTokenService.issueTokens(user);
-            return toMetaLoginResponse(user, tokens);
-        }
+        UserProfile user = userRegistry.registerOrUpdate(identity.metaAccountId(), normalizedNickname);
+        JwtTokenService.IssuedTokens tokens = jwtTokenService.issueTokens(user);
 
-        // 신규 유저
-        String rawNickname = request.nickname();
-        if (rawNickname == null || rawNickname.isBlank()) {
-            throw ApiException.nicknameRequired();
-        }
-        String normalizedNickname = normalizeNickname(rawNickname);
-        UserProfile created = userRegistry.register(identity.metaAccountId(), normalizedNickname);
-        JwtTokenService.IssuedTokens tokens = jwtTokenService.issueTokens(created);
-        return toMetaLoginResponse(created, tokens);
+        return toMetaLoginResponse(user, tokens);
     }
 
     public MetaLoginResponse refresh(RefreshTokenRequest request) {
@@ -56,7 +47,11 @@ public class AuthService {
     }
 
     private String normalizeNickname(String rawNickname) {
-        return rawNickname.trim();
+        String trimmed = MULTI_SPACE.matcher(rawNickname.trim()).replaceAll(" ");
+        if (trimmed.isBlank()) {
+            throw ApiException.invalidNickname("닉네임은 공백만으로 구성될 수 없습니다.");
+        }
+        return trimmed;
     }
 
     private MetaLoginResponse toMetaLoginResponse(UserProfile user, JwtTokenService.IssuedTokens tokens) {

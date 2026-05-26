@@ -6,7 +6,6 @@ public enum ErrorCode {
     AUTH_INVALID_META_TOKEN(HttpStatus.UNAUTHORIZED, "Meta ID 토큰 검증에 실패했습니다."),
     AUTH_INVALID_JWT(HttpStatus.UNAUTHORIZED, "인증 토큰이 유효하지 않습니다."),
     AUTH_FORBIDDEN(HttpStatus.FORBIDDEN, "해당 리소스에 접근할 권한이 없습니다."),
-    AUTH_NICKNAME_REQUIRED(HttpStatus.BAD_REQUEST, "닉네임 등록이 필요합니다."),
     AUTH_NICKNAME_DUPLICATE(HttpStatus.CONFLICT, "이미 사용 중인 닉네임입니다."),
     VALIDATION_REQUEST(HttpStatus.BAD_REQUEST, "요청 값이 유효하지 않습니다."),
     VALIDATION_NAME(HttpStatus.BAD_REQUEST, "닉네임 형식이 유효하지 않습니다."),

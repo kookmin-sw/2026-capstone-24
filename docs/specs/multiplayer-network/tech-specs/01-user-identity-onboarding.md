@@ -32,7 +32,7 @@ Boundaries 섹션에 명시한다. -->
 
 ## Boundaries
 
-- **건드린다**: TestSceneSanyo `MultiplayerAuthGate` 자식 트리 (NicknameInput / ConfirmButton 추가), `AuthBootstrap` signature, `MultiplayerAuthConfig` (`useMockMetaToken` 기본값 false 보장 + 코드는 fallback 으로 유지), Spring `AuthController` / `AuthService` / `AuthMetaLoginRequest` DTO / `UserService.create+findByMetaAccountId` 경로 + `MURANG_META_VERIFIER_MODE` 기본값 `real` 보장, MariaDB `users` 테이블의 신규 row 생성 시 nickname 컬럼 set.
+- **건드린다**: TestSceneSanyo `MultiplayerAuthGate` 자식 트리 (NicknameInput / ConfirmButton 추가), `AuthBootstrap` signature, `MultiplayerAuthConfig` (`useMockMetaToken` 토글 유지), Spring `AuthController` / `AuthService` / `AuthMetaLoginRequest` DTO / `UserService.create+findByMetaAccountId` 경로, MariaDB `users` 테이블의 신규 row 생성 시 nickname 컬럼 set.
 - **건드리지 않는다**: `MultiplayerLobbyPanel` / `MultiplayerInRoomPanel` 자식 트리, Photon Custom Auth payload, RoomJoinTicket payload, `users.user_id` / `users.player_id` / `users.metaAccountId` 컬럼, JWT 발급 로직, refresh token 흐름, 기존 유저의 `users.nickname` 갱신 경로 (등록 후 update 안 함).
 
 ## Invariants
@@ -44,7 +44,7 @@ Boundaries 섹션에 명시한다. -->
 - 인증 최종 성공 시 세 GameObject 모두 `m_IsActive: 0` 으로 수렴.
 - ActivateButton → NicknameInput/ConfirmButton 으로의 UI transition 트리거는 **400 `NICKNAME_REQUIRED` 응답 한 가지만**. 그 외 1차 실패 (토큰 실패 / 네트워크 / 401 / 500 / `NICKNAME_REQUIRED` 이외 4xx 등) 는 transition 을 발생시키지 않음.
 - 모든 오류 응답은 사유를 StatusLabel 에 표시. 클라이언트는 사유 텍스트를 backend message 또는 표준 라벨 (`"NETWORK_ERROR"`, `"AUTH_INVALID_TOKEN"` 등) 그대로 출력.
-- `useMockMetaToken` / `MURANG_META_VERIFIER_MODE` 기본값 `false` / `real`. acceptance 검증은 Quest 실기기 + real 모드 기준. mock 코드는 회귀 보조 fallback 으로만 유지하며, `useMockMetaToken=true` 로 토글했을 때도 신규/기존 분기 흐름은 동일 (mock 도 backend 가 진실원).
+- `useMockMetaToken=true` 일 때도 동일 흐름 (mock 도 신규/기존 분기 결과 동일).
 - 인증 실패 시 NicknameInput.text 미변경.
 
 ## Assumptions

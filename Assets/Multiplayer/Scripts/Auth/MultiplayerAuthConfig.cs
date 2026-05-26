@@ -56,7 +56,6 @@ namespace Murang.Multiplayer.Auth
             get { return string.IsNullOrEmpty(defaultNickname) ? "Murang Quest User" : defaultNickname; }
         }
 
-        [Obsolete("ResolveNickname is no longer used. Nickname is now provided by the user via NicknameInput UI (MultiplayerAuthGate).")]
         public string ResolveNickname(MetaAuthenticationResult authenticationResult)
         {
             string configuredNickname = NormalizeNickname(

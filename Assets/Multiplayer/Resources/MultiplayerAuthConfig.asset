@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Murang.Multiplayer::Murang.Multiplayer.Auth.MultiplayerAuthConfig
   editorBackendBaseUrl: https://api.mu-rang.com
   deviceBackendBaseUrl: https://api.mu-rang.com
-  useMockMetaToken: 0
+  useMockMetaToken: 1
   mockMetaTokenPrefix: 
   mockAccountId: quest-user-02
   defaultNickname: Murang Quest User2

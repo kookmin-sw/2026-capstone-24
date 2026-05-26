@@ -139,7 +139,7 @@ namespace Murang.Multiplayer.Auth
             new AuthTokenStore().DeleteAll();
             _statusMessage = "저장된 토큰을 지우고 새 Meta 로그인을 시작합니다.";
 
-            AuthSession.AuthState state = await authBootstrap.Session.LoginAsync(null, cancellationToken);
+            AuthSession.AuthState state = await authBootstrap.Session.LoginAsync(cancellationToken);
             await FetchAndReportCurrentUserAsync(state, cancellationToken);
         }
 

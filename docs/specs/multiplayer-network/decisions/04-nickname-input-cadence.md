@@ -32,4 +32,3 @@
 - 신규 유저 흐름은 RTT 2회 (1차 인증 → `NICKNAME_REQUIRED` → 닉네임 입력 → 2차 인증). 기존 유저는 RTT 1회.
 - 1차 인증 호출의 모든 실패 (`NICKNAME_REQUIRED` 이외) 는 NicknameInput / ConfirmButton 노출을 트리거하지 않는다. ActivateButton 만 유지된 채 StatusLabel 에 사유가 표시되며 재시도는 동일 ActivateButton 으로.
 - 향후 재평가 trigger: 닉네임 변경 빈도 데이터로 변경 endpoint 가 필요해질 때, 또는 단일 닉네임 정책이 운영상 부담이 될 때.
-- mock 모드 토글 (`useMockMetaToken`, `MURANG_META_VERIFIER_MODE`) 은 기본값 `false` / `real`. 개발·검증 사이클은 Quest 실기기 + real 모드를 진실원으로 사용하며, mock 코드는 회귀 보조 / 임시 격리용 fallback 으로만 유지된다. Editor Play 환경에서의 acceptance 검증은 본 spec 책임 외 (2026-05-26 사용자 정책).

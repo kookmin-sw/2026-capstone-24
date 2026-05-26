@@ -42,7 +42,7 @@ class AuthControllerTest {
                         .content("""
                                 {
                                   "metaIdToken": "mock-meta:quest-user-01",
-                                  "nickname": "Murang_01"
+                                  "nickname": "Murang User 01"
                                 }
                                 """))
                 .andExpect(status().isOk())
@@ -50,68 +50,7 @@ class AuthControllerTest {
                 .andExpect(jsonPath("$.data.accessToken").isNotEmpty())
                 .andExpect(jsonPath("$.data.refreshToken").isNotEmpty())
                 .andExpect(jsonPath("$.data.user.playerId", Matchers.matchesPattern("^[0-9A-HJKMNP-TV-Z]{26}$")))
-                .andExpect(jsonPath("$.data.user.nickname").value("Murang_01"));
-    }
-
-    @Test
-    void metaLoginReturnsNicknameRequiredForUnknownMetaAccountWithoutNickname() throws Exception {
-        mockMvc.perform(post("/api/v1/auth/meta-login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                  "metaIdToken": "mock-meta:quest-user-new-01",
-                                  "nickname": null
-                                }
-                                """))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("AUTH_NICKNAME_REQUIRED"));
-    }
-
-    @Test
-    void metaLoginReturnsNicknameRequiredForUnknownMetaAccountWithBlankNickname() throws Exception {
-        mockMvc.perform(post("/api/v1/auth/meta-login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                  "metaIdToken": "mock-meta:quest-user-new-02",
-                                  "nickname": ""
-                                }
-                                """))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("AUTH_NICKNAME_REQUIRED"));
-    }
-
-    @Test
-    void metaLoginRegistersNewUserWithValidNickname() throws Exception {
-        mockMvc.perform(post("/api/v1/auth/meta-login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                  "metaIdToken": "mock-meta:quest-user-new-03",
-                                  "nickname": "NewUser_03"
-                                }
-                                """))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data.user.nickname").value("NewUser_03"));
-    }
-
-    @Test
-    void metaLoginReusesExistingUserAndIgnoresProvidedNickname() throws Exception {
-        // 최초 등록
-        TokenBundle firstLogin = login("mock-meta:quest-user-existing-01", "FirstNick");
-        // 동일 metaAccountId 재호출 (nickname 다른 값 또는 null 무관, 첫 등록 nickname 반환)
-        mockMvc.perform(post("/api/v1/auth/meta-login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                  "metaIdToken": "mock-meta:quest-user-existing-01",
-                                  "nickname": null
-                                }
-                                """))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.user.playerId").value(firstLogin.playerId()))
-                .andExpect(jsonPath("$.data.user.nickname").value("FirstNick"));
+                .andExpect(jsonPath("$.data.user.nickname").value("Murang User 01"));
     }
 
     @Test
@@ -121,7 +60,7 @@ class AuthControllerTest {
                         .content("""
                                 {
                                   "metaIdToken": "invalid-token",
-                                  "nickname": "MurangUser"
+                                  "nickname": "Murang User"
                                 }
                                 """))
                 .andExpect(status().isUnauthorized())
@@ -130,18 +69,27 @@ class AuthControllerTest {
 
     @Test
     void metaLoginRejectsDuplicateNicknameFromAnotherMetaAccount() throws Exception {
-        login("mock-meta:quest-user-11", "SharedNick");
+        login("mock-meta:quest-user-11", "Shared Nickname");
 
         mockMvc.perform(post("/api/v1/auth/meta-login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
                                   "metaIdToken": "mock-meta:quest-user-12",
-                                  "nickname": "SharedNick"
+                                  "nickname": "Shared Nickname"
                                 }
                                 """))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.code").value("AUTH_NICKNAME_DUPLICATE"));
+    }
+
+    @Test
+    void metaLoginReusesPlayerIdForSameMetaAccountAfterNicknameChange() throws Exception {
+        TokenBundle firstLogin = login("mock-meta:quest-user-17", "Original Nickname");
+        TokenBundle secondLogin = login("mock-meta:quest-user-17", "Renamed Nickname");
+
+        org.junit.jupiter.api.Assertions.assertEquals(firstLogin.playerId(), secondLogin.playerId());
+        org.junit.jupiter.api.Assertions.assertEquals("Renamed Nickname", secondLogin.nickname());
     }
 
     @Test
@@ -159,27 +107,13 @@ class AuthControllerTest {
     }
 
     @Test
-    void metaLoginRejectsNicknameLongerThanSixteenCharacters() throws Exception {
+    void metaLoginRejectsNicknameLongerThanThirtyTwoCharacters() throws Exception {
         mockMvc.perform(post("/api/v1/auth/meta-login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
                                   "metaIdToken": "mock-meta:quest-user-14",
-                                  "nickname": "12345678901234567"
-                                }
-                                """))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("VALIDATION_REQUEST"));
-    }
-
-    @Test
-    void metaLoginRejectsNicknameWithKoreanCharacters() throws Exception {
-        mockMvc.perform(post("/api/v1/auth/meta-login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                  "metaIdToken": "mock-meta:quest-user-19",
-                                  "nickname": "무랑01"
+                                  "nickname": "123456789012345678901234567890123"
                                 }
                                 """))
                 .andExpect(status().isBadRequest())
@@ -188,7 +122,7 @@ class AuthControllerTest {
 
     @Test
     void refreshReturnsNewTokensForValidRefreshToken() throws Exception {
-        TokenBundle login = login("mock-meta:quest-user-15", "RefreshUser15");
+        TokenBundle login = login("mock-meta:quest-user-15", "Refresh User 15");
 
         TokenBundle refreshed = refresh(login.refreshToken());
 
@@ -200,7 +134,7 @@ class AuthControllerTest {
 
     @Test
     void refreshAcceptsLegacyRefreshTokenSubjectWithMetaAccountId() throws Exception {
-        TokenBundle login = login("mock-meta:quest-user-18", "LegacyUser18");
+        TokenBundle login = login("mock-meta:quest-user-18", "Legacy Refresh User");
         TokenBundle refreshed = refresh(buildLegacyRefreshToken("quest-user-18"));
 
         org.junit.jupiter.api.Assertions.assertEquals(login.playerId(), refreshed.playerId());
@@ -209,7 +143,7 @@ class AuthControllerTest {
 
     @Test
     void refreshRejectsAccessTokenInRefreshTokenField() throws Exception {
-        TokenBundle login = login("mock-meta:quest-user-16", "RefreshUser16");
+        TokenBundle login = login("mock-meta:quest-user-16", "Refresh User 16");
 
         mockMvc.perform(post("/api/v1/auth/refresh")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -291,7 +225,7 @@ class AuthControllerTest {
                 .issuer("murang-backend")
                 .subject(metaAccountId)
                 .claim("userId", 1L)
-                .claim("nickname", "LegacyUser18")
+                .claim("nickname", "Legacy Refresh User")
                 .claim("tokenType", "refresh")
                 .issuedAt(now)
                 .expiration(expiresAt)

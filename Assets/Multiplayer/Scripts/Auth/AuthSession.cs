@@ -25,7 +25,7 @@ namespace Murang.Multiplayer.Auth
             _metaTokenProvider = metaTokenProvider;
         }
 
-        public async Task<AuthState> EnsureAuthenticatedAsync(string nicknameOverride, CancellationToken cancellationToken)
+        public async Task<AuthState> EnsureAuthenticatedAsync(CancellationToken cancellationToken)
         {
             if (_config.UseMockMetaToken)
             {
@@ -51,7 +51,7 @@ namespace Murang.Multiplayer.Auth
                 }
             }
 
-            return await LoginAsync(nicknameOverride, cancellationToken);
+            return await LoginAsync(cancellationToken);
         }
 
         public async Task<UserMeResponse> GetCurrentUserAsync(CancellationToken cancellationToken)
@@ -61,14 +61,13 @@ namespace Murang.Multiplayer.Auth
                 cancellationToken);
         }
 
-        public async Task<AuthState> LoginAsync(string nicknameOverride, CancellationToken cancellationToken)
+        public async Task<AuthState> LoginAsync(CancellationToken cancellationToken)
         {
             try
             {
                 MetaAuthenticationResult authenticationResult =
                     await _metaTokenProvider.GetAuthenticationResultAsync(cancellationToken);
-                // nicknameOverride が null の場合は空文字列として送信 (JsonUtility null string → "" 規約)
-                string nickname = nicknameOverride ?? string.Empty;
+                string nickname = _config.ResolveNickname(authenticationResult);
                 MetaLoginResponse response = await _backendApiClient.MetaLoginAsync(
                     authenticationResult.MetaIdToken,
                     nickname,
@@ -77,10 +76,7 @@ namespace Murang.Multiplayer.Auth
             }
             catch (ApiException exception)
             {
-                throw new AuthFailedException(
-                    BuildMetaLoginApiFailureMessage(exception),
-                    exception.Code,
-                    exception);
+                throw new AuthFailedException(BuildMetaLoginApiFailureMessage(exception), exception);
             }
             catch (InvalidOperationException exception)
             {
@@ -119,7 +115,7 @@ namespace Murang.Multiplayer.Auth
             Func<string, Task<T>> requestFunc,
             CancellationToken cancellationToken)
         {
-            AuthState state = await EnsureAuthenticatedAsync(null, cancellationToken);
+            AuthState state = await EnsureAuthenticatedAsync(cancellationToken);
 
             try
             {
@@ -136,7 +132,7 @@ namespace Murang.Multiplayer.Auth
                 }
                 catch (AuthFailedException)
                 {
-                    recoveredState = await LoginAsync(null, cancellationToken);
+                    recoveredState = await LoginAsync(cancellationToken);
                 }
 
                 return await requestFunc(recoveredState.AccessToken);
