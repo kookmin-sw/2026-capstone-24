@@ -488,10 +488,17 @@ namespace SessionPanel
             {
                 if (_readinessNoticeInstance == null && readinessNoticePrefab != null)
                 {
+                    _readinessNoticeInstance = Instantiate(readinessNoticePrefab);
                     var parentCanvas = GetComponentInParent<Canvas>();
-                    _readinessNoticeInstance = parentCanvas != null
-                        ? Instantiate(readinessNoticePrefab, parentCanvas.transform)
-                        : Instantiate(readinessNoticePrefab);
+                    if (parentCanvas != null)
+                    {
+                        var ct = parentCanvas.transform;
+                        // SessionPanel(0.4m) 오른쪽에 세로 정렬, VR scale 0.001 고정
+                        _readinessNoticeInstance.transform.SetPositionAndRotation(
+                            ct.position + ct.right * 0.5f,
+                            ct.rotation);
+                        _readinessNoticeInstance.transform.localScale = Vector3.one * 0.001f;
+                    }
                 }
                 var required = (_currentInstrument as InstrumentBase)?.RequiredInputMode ?? InputMode.Any;
                 _readinessNoticeInstance?.Show(required);
