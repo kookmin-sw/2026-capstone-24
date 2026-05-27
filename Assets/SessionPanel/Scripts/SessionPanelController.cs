@@ -253,6 +253,10 @@ namespace SessionPanel
                 _rhythmCtrl.GameStarted += OnRhythmGameStarted;
                 _rhythmCtrl.GameEnded   += OnRhythmGameEnded;
             }
+
+            var travelCtrl = _panelInstance.GetComponentInChildren<InstrumentTravelSectionController>(true);
+            if (travelCtrl != null && _activeInstrumentProviderObject != null)
+                travelCtrl.Inject(_activeInstrumentProviderObject);
         }
 
         private void OnRhythmGameStarted()

@@ -45,6 +45,9 @@ public sealed class TromboneAnchor : MonoBehaviour
         m_Anchor = GetComponent<TeleportationAnchor>();
         m_Anchor.selectExited.AddListener(OnAnchorSelectExited);
 
+        // UI [이동] 버튼 등 RequestTeleport() 직접 호출 경로에서 pending 윈도우를 설정.
+        InstrumentTeleportLink.AnyAnchorTeleported += OnAnyAnchorTeleported;
+
         // BaseTeleportationInteractable이 teleportationProvider를 OnSelectExited 시점에 lazy-resolve하므로
         // OnEnable에서는 null인 경우가 많다. 일단 한 번 시도하고, 실패하면 OnAnchorSelectExited에서 재시도.
         EnsureLocomotionSubscription();
@@ -55,6 +58,8 @@ public sealed class TromboneAnchor : MonoBehaviour
         if (m_Anchor != null)
             m_Anchor.selectExited.RemoveListener(OnAnchorSelectExited);
 
+        InstrumentTeleportLink.AnyAnchorTeleported -= OnAnyAnchorTeleported;
+
         if (m_LocomotionProvider != null)
         {
             m_LocomotionProvider.locomotionStarted -= OnLocomotionStarted;
@@ -63,6 +68,23 @@ public sealed class TromboneAnchor : MonoBehaviour
 
         if (m_IsAttached)
             SetPhysicsHandsActive(true);
+    }
+
+    /// <summary>
+    /// UI [이동] 버튼처럼 RequestTeleport()를 직접 호출하는 경로에서는 selectExited가 발화되지 않아
+    /// pending 윈도우가 설정되지 않는다. AnyAnchorTeleported 이벤트는 RequestTeleport() → teleporting
+    /// UnityEvent → InstrumentTeleportLink.OnTeleporting 체인으로 발화되므로, 이 핸들러에서 pending
+    /// 윈도우를 설정해 OnLocomotionStarted의 attach 경로를 열어준다.
+    /// </summary>
+    void OnAnyAnchorTeleported(InstrumentBase instrument)
+    {
+        var link = GetComponent<InstrumentTeleportLink>();
+        if (link == null || link.LinkedInstrument != instrument)
+            return;
+
+        // locomotionProvider가 아직 resolve되지 않았을 수 있으므로 여기서도 시도.
+        EnsureLocomotionSubscription();
+        m_PendingAttachFrame = Time.frameCount;
     }
 
     void EnsureLocomotionSubscription()
