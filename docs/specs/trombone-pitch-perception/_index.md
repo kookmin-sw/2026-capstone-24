@@ -28,7 +28,7 @@
 | 이름 | 상태 | 링크 |
 |---|---|---|
 | Trombone Body Visual Snap | Done | [`specs/01-view-snap.md`](specs/01-view-snap.md) |
-| Note Vertical Layout (Pitch-Aligned 5-Panel) | Draft | [`specs/02-note-vertical-layout.md`](specs/02-note-vertical-layout.md) |
+| Note Vertical Layout (Pitch-Aligned 5-Panel) | Done | [`specs/02-note-vertical-layout.md`](specs/02-note-vertical-layout.md) |
 
 > 상태 값: `Draft` / `Active` / `Done` / `Abandoned`
 
@@ -38,4 +38,4 @@ _현재 열린 질문 없음._
 
 ## Status
 
-`Active`
+`Done`
