@@ -52,7 +52,7 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| _아직 없음_ | — | — | — |
+| 2026-05-27 | 플레이 버튼 입력 방식 준비 확인 + 안내 UI plan | Done | [`2026-05-27-claude-input-mode-readiness.md`](../plans/2026-05-27-claude-input-mode-readiness.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 

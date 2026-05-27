@@ -51,6 +51,11 @@ public abstract class InstrumentBase : MonoBehaviour, IPlayable, IActiveInstrume
     [Tooltip("멀티플레이 원격 MIDI 동기화용 네트워크 악기 식별자 (ushort). 0 = 동기화 비활성.")]
     [SerializeField] ushort instrumentNetId = 0;
 
+    [Tooltip("이 악기를 플레이하기 위해 요구되는 XR 입력 방식. Any(기본)는 제한 없음.")]
+    [SerializeField] InputMode requiredInputMode = InputMode.Any;
+
+    public InputMode RequiredInputMode => requiredInputMode;
+
     public InstrumentLaneConfig LaneConfig => laneConfig;
 
     public string InstrumentId => instrumentId;

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -35,6 +36,10 @@ namespace SessionPanel
         [SerializeField] UnityEngine.Object activeInstrumentProviderObject;
         [SerializeField] UnityEngine.Object songCatalogObject;
 
+        [Header("Input Mode Readiness (sub-spec 17)")]
+        [SerializeField] XRInputModeProbe inputModeProbe;
+        [SerializeField] InputModeReadinessNotice readinessNoticePrefab;
+
         IActiveInstrumentProvider _provider;
         ISongCatalog _catalog;
         IActiveInstrument _currentInstrument;
@@ -56,6 +61,9 @@ namespace SessionPanel
 
         RhythmGameHost _activeHost;
 
+        InputModeReadinessNotice _readinessNoticeInstance;
+        Coroutine _readinessPollCoroutine;
+
         public event System.Action GameStarted;
         public event System.Action GameEnded;
 
@@ -63,6 +71,10 @@ namespace SessionPanel
         {
             _provider = activeInstrumentProviderObject as IActiveInstrumentProvider;
             _catalog  = songCatalogObject as ISongCatalog;
+
+            // SerializeField가 미할당인 경우 씬에서 자동 탐색 (scene wiring 대안)
+            if (inputModeProbe == null)
+                inputModeProbe = FindObjectOfType<XRInputModeProbe>();
 
             if (playButton    != null) playButton.onClick.AddListener(OnPlayButtonClicked);
             if (previewButton != null) previewButton.onClick.AddListener(OnPreviewButtonClicked);
@@ -104,6 +116,7 @@ namespace SessionPanel
                 _provider.ActiveInstrumentChanged -= OnActiveInstrumentChanged;
             if (_catalog != null)
                 _catalog.Changed -= OnCatalogChanged;
+            StopReadinessGate();
         }
 
         void OnCatalogChanged() => RefreshSongList();
@@ -111,6 +124,7 @@ namespace SessionPanel
         void OnActiveInstrumentChanged(IActiveInstrument instrument)
         {
             _currentInstrument = instrument;
+            StopReadinessGate();
             ResetSelection();
             RefreshSongList();
         }
@@ -469,6 +483,60 @@ namespace SessionPanel
             if (_currentInstrument == null || _selectedSong == null ||
                 _selectedDifficulty == null || _loadedChart == null) return;
 
+            // === readiness gate (sub-spec 17) ===
+            if (!TryGateInputMode())
+            {
+                if (_readinessNoticeInstance == null && readinessNoticePrefab != null)
+                    _readinessNoticeInstance = Instantiate(readinessNoticePrefab);
+                var required = (_currentInstrument as InstrumentBase)?.RequiredInputMode ?? InputMode.Any;
+                _readinessNoticeInstance?.Show(required);
+                if (_readinessPollCoroutine == null)
+                    _readinessPollCoroutine = StartCoroutine(PollReadinessAndAutoStart());
+                return;
+            }
+            // === gate end ===
+
+            StartSessionInternal();
+        }
+
+        bool TryGateInputMode()
+        {
+            var ib = _currentInstrument as InstrumentBase;
+            if (ib == null) return true;
+            var required = ib.RequiredInputMode;
+            if (required == InputMode.Any) return true;
+            var current = inputModeProbe != null ? inputModeProbe.Current : InputMode.Any;
+            if (current == InputMode.Any) return true; // 모드 미감지 — PASS
+            return current == required;
+        }
+
+        IEnumerator PollReadinessAndAutoStart()
+        {
+            while (true)
+            {
+                yield return null;
+                if (TryGateInputMode())
+                {
+                    _readinessNoticeInstance?.Hide();
+                    _readinessPollCoroutine = null;
+                    StartSessionInternal();
+                    yield break;
+                }
+            }
+        }
+
+        void StopReadinessGate()
+        {
+            if (_readinessPollCoroutine != null)
+            {
+                StopCoroutine(_readinessPollCoroutine);
+                _readinessPollCoroutine = null;
+            }
+            _readinessNoticeInstance?.Hide();
+        }
+
+        void StartSessionInternal()
+        {
             var host = _currentInstrument.InstrumentRoot.GetComponentInChildren<RhythmGameHost>();
             if (host == null) return;
 
