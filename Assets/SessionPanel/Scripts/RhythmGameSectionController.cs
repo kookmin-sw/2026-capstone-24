@@ -556,8 +556,8 @@ namespace SessionPanel
             var tmp = msgGO.AddComponent<TMPro.TextMeshProUGUI>();
             if (srcTmp != null) tmp.font = srcTmp.font;
             tmp.text = required == InputMode.HandTracking
-                ? "이 악기는 핸드 트래킹으로만\n연주할 수 있어요.\n\nQuest 설정에서 전환해 주세요."
-                : "이 악기는 컨트롤러로만\n연주할 수 있어요.\n\n컨트롤러를 잡아 활성화하세요.";
+                ? "This instrument requires Hand Tracking.\n\nSwitch to Hand Tracking in Quest settings."
+                : "This instrument requires Controllers.\n\nGrab your controllers to activate them.";
             tmp.alignment = TMPro.TextAlignmentOptions.Center;
             tmp.fontSize  = 24;
             tmp.color     = Color.white;
