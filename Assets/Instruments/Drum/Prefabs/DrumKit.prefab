@@ -182,6 +182,7 @@ MonoBehaviour:
   instanceVolume: 0.5
   _panelAnchor: {fileID: 5983477079722673206}
   instrumentNetId: 0
+  requiredInputMode: 2
   maxVoices: 4
   volumeGain: 2
   spatialize: 1

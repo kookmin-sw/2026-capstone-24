@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -35,6 +36,10 @@ namespace SessionPanel
         [SerializeField] UnityEngine.Object activeInstrumentProviderObject;
         [SerializeField] UnityEngine.Object songCatalogObject;
 
+        [Header("Input Mode Readiness (sub-spec 17)")]
+        [SerializeField] XRInputModeProbe inputModeProbe;
+        [SerializeField] InputModeReadinessNotice readinessNoticePrefab;
+
         IActiveInstrumentProvider _provider;
         ISongCatalog _catalog;
         IActiveInstrument _currentInstrument;
@@ -56,6 +61,10 @@ namespace SessionPanel
 
         RhythmGameHost _activeHost;
 
+        InputModeReadinessNotice _readinessNoticeInstance;
+        GameObject _readinessInlineOverlay;
+        Coroutine _readinessPollCoroutine;
+
         public event System.Action GameStarted;
         public event System.Action GameEnded;
 
@@ -63,6 +72,10 @@ namespace SessionPanel
         {
             _provider = activeInstrumentProviderObject as IActiveInstrumentProvider;
             _catalog  = songCatalogObject as ISongCatalog;
+
+            // SerializeField가 미할당인 경우 씬에서 자동 탐색 (scene wiring 대안)
+            if (inputModeProbe == null)
+                inputModeProbe = FindObjectOfType<XRInputModeProbe>();
 
             if (playButton    != null) playButton.onClick.AddListener(OnPlayButtonClicked);
             if (previewButton != null) previewButton.onClick.AddListener(OnPreviewButtonClicked);
@@ -104,6 +117,7 @@ namespace SessionPanel
                 _provider.ActiveInstrumentChanged -= OnActiveInstrumentChanged;
             if (_catalog != null)
                 _catalog.Changed -= OnCatalogChanged;
+            StopReadinessGate();
         }
 
         void OnCatalogChanged() => RefreshSongList();
@@ -111,6 +125,7 @@ namespace SessionPanel
         void OnActiveInstrumentChanged(IActiveInstrument instrument)
         {
             _currentInstrument = instrument;
+            StopReadinessGate();
             ResetSelection();
             RefreshSongList();
         }
@@ -469,6 +484,109 @@ namespace SessionPanel
             if (_currentInstrument == null || _selectedSong == null ||
                 _selectedDifficulty == null || _loadedChart == null) return;
 
+            // === readiness gate (sub-spec 17) ===
+            if (!TryGateInputMode())
+            {
+                if (_readinessInlineOverlay == null)
+                {
+                    var required = (_currentInstrument as InstrumentBase)?.RequiredInputMode ?? InputMode.Any;
+                    ShowInlineReadinessNotice(required);
+                }
+                if (_readinessPollCoroutine == null)
+                    _readinessPollCoroutine = StartCoroutine(PollReadinessAndAutoStart());
+                return;
+            }
+            // === gate end ===
+
+            StartSessionInternal();
+        }
+
+        bool TryGateInputMode()
+        {
+            var ib = _currentInstrument as InstrumentBase;
+            if (ib == null) return true;
+            var required = ib.RequiredInputMode;
+            if (required == InputMode.Any) return true;
+            var current = inputModeProbe != null ? inputModeProbe.Current : InputMode.Any;
+            if (current == InputMode.Any) return true; // 모드 미감지 — PASS
+            return current == required;
+        }
+
+        IEnumerator PollReadinessAndAutoStart()
+        {
+            while (true)
+            {
+                yield return null;
+                if (TryGateInputMode())
+                {
+                    HideInlineReadinessNotice();
+                    _readinessPollCoroutine = null;
+                    StartSessionInternal();
+                    yield break;
+                }
+            }
+        }
+
+        void ShowInlineReadinessNotice(InputMode required)
+        {
+            if (_readinessInlineOverlay != null) return;
+
+            // 패널 내 기존 TMP에서 폰트 참조 (한국어 폰트 재사용)
+            var srcTmp = GetComponentInChildren<TMPro.TextMeshProUGUI>(true);
+
+            var overlayGO = new GameObject("_ReadinessNotice");
+            overlayGO.transform.SetParent(transform, false);
+
+            var rt = overlayGO.AddComponent<RectTransform>();
+            rt.anchorMin = Vector2.zero;
+            rt.anchorMax = Vector2.one;
+            rt.offsetMin = rt.offsetMax = Vector2.zero;
+
+            overlayGO.AddComponent<CanvasRenderer>();
+            var bg = overlayGO.AddComponent<UnityEngine.UI.Image>();
+            bg.color = new Color(0.08f, 0.08f, 0.12f, 0.95f);
+
+            var msgGO = new GameObject("Msg");
+            msgGO.transform.SetParent(overlayGO.transform, false);
+            var msgRT = msgGO.AddComponent<RectTransform>();
+            msgRT.anchorMin = new Vector2(0.05f, 0.15f);
+            msgRT.anchorMax = new Vector2(0.95f, 0.85f);
+            msgRT.offsetMin = msgRT.offsetMax = Vector2.zero;
+            msgGO.AddComponent<CanvasRenderer>();
+            var tmp = msgGO.AddComponent<TMPro.TextMeshProUGUI>();
+            if (srcTmp != null) tmp.font = srcTmp.font;
+            tmp.text = required == InputMode.HandTracking
+                ? "This instrument requires Hand Tracking.\n\nSwitch to Hand Tracking in Quest settings."
+                : "This instrument requires Controllers.\n\nGrab your controllers to activate them.";
+            tmp.alignment = TMPro.TextAlignmentOptions.Center;
+            tmp.fontSize  = 24;
+            tmp.color     = Color.white;
+
+            _readinessInlineOverlay = overlayGO;
+        }
+
+        void HideInlineReadinessNotice()
+        {
+            if (_readinessInlineOverlay != null)
+            {
+                Destroy(_readinessInlineOverlay);
+                _readinessInlineOverlay = null;
+            }
+        }
+
+        void StopReadinessGate()
+        {
+            if (_readinessPollCoroutine != null)
+            {
+                StopCoroutine(_readinessPollCoroutine);
+                _readinessPollCoroutine = null;
+            }
+            HideInlineReadinessNotice();
+            _readinessNoticeInstance?.Hide();
+        }
+
+        void StartSessionInternal()
+        {
             var host = _currentInstrument.InstrumentRoot.GetComponentInChildren<RhythmGameHost>();
             if (host == null) return;
 

@@ -991,6 +991,7 @@ MonoBehaviour:
   instanceVolume: 0.5
   _panelAnchor: {fileID: 5307817778198693025}
   instrumentNetId: 0
+  requiredInputMode: 2
   tromboneAnchor: {fileID: 6798659558522323895}
   slideController: {fileID: 4069711244863020258}
   partialController: {fileID: 4932485236075849092}
