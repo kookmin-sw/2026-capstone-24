@@ -219,7 +219,9 @@ public class TromboneNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
     }
 
     /// <summary>
-    /// 패널이 PanelAnchor를 바라보며, pitch 적층 축(anchor.right)에 수직 평면으로 up을 정렬한다.
+    /// 패널이 PanelAnchor를 바라보며, panel local +y(노트 스폰 방향, NoteVisual은 y 감소로 진행)가
+    /// anchor.right(사용자 시점 오른쪽)와 정렬되도록 회전한다.
+    /// 결과: 노트가 사용자 시점에서 오른쪽 → 왼쪽으로 흘러 판정선에 도달한다.
     /// </summary>
     internal Quaternion ComputePanelRotation(Transform anchor, Vector3 panelWorldPos)
     {
@@ -227,9 +229,10 @@ public class TromboneNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
         Vector3 toAnchor = anchor.position - panelWorldPos;
         if (toAnchor.sqrMagnitude < 0.0001f) return Quaternion.identity;
         toAnchor.Normalize();
-        // 패널 up이 anchor.right와 수직 평면에 정렬되도록 보정 (pitch 적층 축 일치)
-        Vector3 panelUp = Vector3.Cross(toAnchor, anchor.right);
-        if (panelUp.sqrMagnitude < 0.0001f) panelUp = Vector3.up;
+        // panel local +y = anchor.right (NoteVisual.y 감소 → 사용자 시점 우→좌 진행)
+        Vector3 panelUp = anchor.right;
+        // toAnchor와 panelUp이 거의 평행하면 LookRotation이 불안정 → fallback
+        if (Mathf.Abs(Vector3.Dot(toAnchor, panelUp)) > 0.99f) panelUp = Vector3.up;
         return Quaternion.LookRotation(toAnchor, panelUp);
     }
 }
