@@ -172,7 +172,7 @@ docs/specs/
 
 | Feature | Status | Sub-Specs | Plans (Done/Total) | 비고 |
 |---|---|---|---|---|
-| [rhythm-game](rhythm-game/_index.md) | Active | 24 | 35/36 | spec 14 Done, spec 17 (input-mode-readiness-check) 남음 |
+| [rhythm-game](rhythm-game/_index.md) | Active | 24 | 36/37 | spec 14·17 Done. Chart Import·Session Flow Abandoned. 나머지 모두 Done |
 | [hands](hands/_index.md) | Active | 3 | 1/2 | |
 | [drum-stick](drum-stick/_index.md) | Active | 2 | 3/3 | |
 | [session-panel](session-panel/_index.md) | Active | 10 | 9/9 | sub-spec 10 추가, 09는 10에 흡수되어 Abandoned |
