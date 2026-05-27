@@ -487,7 +487,12 @@ namespace SessionPanel
             if (!TryGateInputMode())
             {
                 if (_readinessNoticeInstance == null && readinessNoticePrefab != null)
-                    _readinessNoticeInstance = Instantiate(readinessNoticePrefab);
+                {
+                    var parentCanvas = GetComponentInParent<Canvas>();
+                    _readinessNoticeInstance = parentCanvas != null
+                        ? Instantiate(readinessNoticePrefab, parentCanvas.transform)
+                        : Instantiate(readinessNoticePrefab);
+                }
                 var required = (_currentInstrument as InstrumentBase)?.RequiredInputMode ?? InputMode.Any;
                 _readinessNoticeInstance?.Show(required);
                 if (_readinessPollCoroutine == null)
