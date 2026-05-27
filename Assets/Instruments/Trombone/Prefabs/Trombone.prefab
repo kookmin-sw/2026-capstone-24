@@ -620,7 +620,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: RhythmGame.Runtime::RhythmGame.Runtime.TromboneNoteDisplayAdapter
   noteDisplayPanelPrefab: {fileID: 7000000004, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
-  centerAnchor: {fileID: 9100000000000000002}
+  centerAnchor: {fileID: 5307817778198693025}
+  partialController: {fileID: 4932485236075849092}
   partialBaseMidi: 2d34393d40
   slidePositionsPerPartial: 7
   panelRadius: 0.8
@@ -954,6 +955,7 @@ Transform:
   - {fileID: 1631298027454150780}
   - {fileID: 3580856657460150794}
   - {fileID: 8800000000000000002}
+  - {fileID: 5307817778198693025}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6855862333753624109
@@ -987,7 +989,7 @@ MonoBehaviour:
   laneConfig: {fileID: 11400000, guid: 94771330457054445811655f3f499c11, type: 2}
   instrumentId: Trombone
   instanceVolume: 0.5
-  _panelAnchor: {fileID: 9100000000000000002}
+  _panelAnchor: {fileID: 5307817778198693025}
   instrumentNetId: 0
   tromboneAnchor: {fileID: 6798659558522323895}
   slideController: {fileID: 4069711244863020258}
@@ -1120,6 +1122,37 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2407787182500616230}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3770232664706562036
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5307817778198693025}
+  m_Layer: 0
+  m_Name: PanelAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5307817778198693025
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3770232664706562036}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6792978486195072924}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3776457721087743721
 GameObject:
