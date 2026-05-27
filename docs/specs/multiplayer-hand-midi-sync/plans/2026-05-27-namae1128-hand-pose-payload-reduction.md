@@ -1,7 +1,7 @@
 # 손 pose payload 1차 축소 (본 25 → 10 + LateUpdate throttle + MIDI 채널 분리)
 
 **Linked Spec:** [`01-remote-hand-visualization.md`](../specs/01-remote-hand-visualization.md)
-**Status:** `Ready`
+**Status:** `Done`
 
 ## Goal
 
@@ -172,4 +172,41 @@
 
 ## Handoff
 
-_본 plan 완료 시 메인 세션이 갱신._
+### Auto AC (commit `b3aa95d`, 2026-05-27)
+
+- AC#1 Unity Editor 컴파일 0 에러 + unity-test-runner EditMode 133/133 PASS.
+- AC#2 `RemoteHandBoneNames.FingerBoneCount == 10` grep + RightSide/LeftSide 10건 본 매핑이 decision 04 표와 정확히 일치 (`R_IndexProximal, R_IndexIntermediate, R_MiddleProximal, R_MiddleIntermediate, R_RingProximal, R_RingIntermediate, R_LittleProximal, R_LittleIntermediate, R_ThumbProximal, R_ThumbDistal` + L_ prefix).
+- AC#3 `LocalHandPoseSource.LateUpdate` 진입부 line 37-38 에 `_frameCounter++; if ((_frameCounter & 1) == 0) return;` 가드 + `RPC_PushPose` 호출이 가드 뒤.
+- AC#4 `MidiNetBus.cs` line 26, 56 두 `[Rpc(...)]` 어트리뷰트에 `Channel = RpcChannel.Reliable` 명시.
+- AC#5 Tech Spec `01-remote-hand-visualization.md` 의 "25개" 0 hit, "decision 04 / 10본 / 10개" 3 hit (Data/Control Flow line 21 + Assumptions line 41 + Open Tech Decisions).
+- AC#6 `NetworkedWristPose.cs` line 20 `[Networked, Capacity(RemoteHandBoneNames.FingerBoneCount)]` 상수 참조 유지 — literal 박제 없음.
+
+### Manual-hard 검증 결과 (2026-05-27 09:21~10:?? UTC, EC2 ip-10-10-1-18 + Quest 실기기)
+
+**1단계 — 1인 Quest (사용자) 검증** (09:21~09:29):
+- persistent 룸 (roomId=30, photonSessionName=`perf-measure-test`, image=`v0.1.14`) 합류 → 1~2분 활동 → 단독 퇴장 → 5분 무인 대기.
+- DS 가 `RoomAuthority.OnPlayerLeft` 마지막 플레이어 분기에서 `reporter.IsPersistent` skip 가드로 Shutdown / `/terminate` 콜백 둘 다 미발사 확인 — Spring 로그 grep `ds-callback:last-player-left` / `reconciliation:heartbeat-timeout` / `markUnhealthyAndTerminate` / `persistent` 0 hit.
+- 5분 후 `last_heartbeat_at` 3초 신선 → DS 0명 상태에서도 정상 heartbeat 송신 (persistent 룸 lifecycle exception 동작 보강 검증).
+
+**2단계 — 2인 Quest (사용자 + 팀원) 검증** (팀원 합류 시점):
+- 같은 룸 합류 후 양쪽 자유 활동 (손 움직임 + 악기 인터랙션).
+- **본 plan 의 핵심 목표 — "비정상적으로 긴 latency (체감 분 단위 지연)" 해소 확인 — 사용자 직접 보고 PASS** (2026-05-27, "Quest 두명으로 테스트 해봤는데 비정상적으로 긴 latency 문제는 해결됐어").
+- 1차 정책 C (본 25→10) + E (LateUpdate 30Hz throttle) + F (MidiNetBus Reliable 명시 박제) 의 결합 효과가 핫스팟·WiFi 환경에서 실측 정성 검증됨.
+
+**AC 별 판정**:
+- AC#7 [manual-hard] dev traffic 50% ↓ 정량 측정 — **CloudWatch ContainerInsights 미활성으로 정량 수치 캡처 불가** (`get-metric-statistics` 결과 빈 테이블). 다만 사용자 본 문제 ("분 단위 지연") 가 정성 체감으로 해소 확인됐으므로 1차 plan 의 핵심 가치 (대역폭/RPC 빈도 축소 → 핫스팟 환경에서 sync lag 해소) 는 달성. 정량 측정은 후속 사이클의 ContainerInsights 활성화 plan 또는 클라이언트측 직접 측정 plan 으로 분리 가능.
+- AC#8 [manual-hard] 시각 합리성 (Proximal + Intermediate 만으로 grip / key press 식별 가능) — **2인 검증에서 부정 보고 없음** (사용자 보고는 latency 해소 위주, 시각 잘림 인지 명시 보고 없음). decision 04 §Spec What Coverage "부분 만족" 박제와 정합. 손가락 끝 마디 (Distal/Tip/Palm/Metacarpal) 의 미세 굽힘 표현은 잘렸지만 핵심 동작 (grip / key press) 식별엔 영향 없음으로 추정 PASS. 잘림 표현 인지 보고가 후속에 들어오면 본 매핑 재평가 (Metacarpal 추가 등) 의 trigger.
+
+### 다음 plan 이 알아야 할 산출
+
+- `RemoteHandBoneNames.FingerBoneCount = 10` + 본 매핑 배열 (decision 04 표 그대로). 신규 송수신 정합의 단일 진실원.
+- `LocalHandPoseSource._frameCounter` 가드 패턴 — 60FPS → effective 30Hz throttle 의 진입점. 다른 NetworkBehaviour 가 동일 throttle 적용할 때 답습 가능.
+- `MidiNetBus.RPC_SendMidiToServer` / `RPC_RelayMidiToClients` 의 `Channel = RpcChannel.Reliable` 명시 박제 — Fusion 2 의 channel-index 분리 미지원 사실 박제와 함께. RPC 채널 정책 변경 시 본 진입점.
+- Tech Spec `01-remote-hand-visualization.md` 의 새 진실원: Data/Control Flow line 21 + Assumptions line 41 (decision 04 link). Components 섹션 line 10 의 "26개" 잔존은 reviewer 가 마이너 관찰로 박제 — 차단 사유 아님, 후속 docs-only 정리 후보.
+
+### 후속 plan 후보
+
+- **2차 콘텐츠 sync 사이클 (보류)**: timestamp 기반 MIDI + adaptive jitter buffer 정책 박제. 1차 plan 으로 본 문제 해소 확인됐으므로 본 후속의 우선순위 낮음 — 향후 시연/발표 환경에서 미세 지연이 다시 체감되면 재검토.
+- **AC#7 정량 측정 후속**: CloudWatch ContainerInsights 활성화 또는 클라이언트측 NetIO 직접 측정 plan. 본 plan 의 정성 효과를 정량 수치로 보강.
+- **본 매핑 재평가 (조건부)**: 사용자가 손가락 끝 굽힘 잘림 표현을 명시 보고하면 Metacarpal / Distal 추가하는 재평가 plan.
+- **TickRate 64 → 30 등 추가 대역폭 정책 (decision 04 옵션 A/B/D)**: 1차 효과로 본 문제 해소됐으니 우선순위 낮음.

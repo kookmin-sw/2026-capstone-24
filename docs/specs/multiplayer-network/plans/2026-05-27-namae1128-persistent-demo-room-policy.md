@@ -1,7 +1,7 @@
 # Persistent 데모 룸 정책 (운영자 전용 internal endpoint + lifecycle 예외)
 
 **Linked Spec:** [`03-room-session.md`](../specs/03-room-session.md)
-**Status:** `Done (auto AC + manual-hard 2/3) — AC#11 pending DS 이미지 재빌드`
+**Status:** `Done`
 
 ## Goal
 
@@ -342,15 +342,25 @@
 
 **예상 외 확인**: AC#13 (b) 시점에 `status=READY` 였다는 건 ECS RunTask + Photon Fusion 세션 부팅 + ready callback 까지 정상 동작했단 강한 시그널 — ECS 인프라 자체는 살아있음.
 
-### Manual-hard AC#11 pending — DS 이미지 재빌드 필요
+### Manual-hard AC#11 PASS (2026-05-27 09:21~09:29 UTC, EC2 ip-10-10-1-18 + Quest 실기기)
 
-`Assets/Multiplayer/Scripts/Room/Server/RoomAuthority.cs` 의 `OnPlayerLeft` persistent skip 가드 + `RoomServerCallbackConfig.cs` 의 `EnvIsPersistent` 파싱이 DS 빌드에 들어가야 동작. 현재 ECR 의 DS 이미지는 abc2764 이전 빌드라 IsPersistent 분기 없음. 절차:
+DS 이미지 재빌드 (Unity Linux Headless Server → Docker → ECR tag `v0.1.14` → ECS task definition revision) 완료 후 검증:
 
-1. Windows dev 머신에서 Unity Linux Headless Server 빌드 (IL2CPP x86_64).
-2. 그 산출물로 Docker 이미지 빌드 (`backend/` 또는 별도 DS Dockerfile 위치 — archive plan `2026-05-01-namae1128-dedicated-server-build-pipeline.md` 참조).
-3. ECR 에 push (`murang-room-server:v0.2.0` 등 새 tag).
-4. ECS task definition 의 `image` 필드 새 tag 로 revision 추가.
-5. AC#11 cURL — persistent 룸 생성 + Editor 2개 / Quest 2대 합류 후 둘 다 퇴장 → 5분 후 DB `status=READY|ACTIVE` 유지 + ECS `lastStatus=RUNNING` + Spring 로그 `markUnhealthyAndTerminate skipped (persistent room)` 미 grep (필터에 막혀 helper 자체가 호출 안 되므로).
+- persistent 룸 `perf-measure-test` (roomId=30) 생성 직후 ECS RunTask 가 새 image (`v0.1.14`) 로 부팅, status `SERVER_STARTING` → `READY` 도달.
+- Quest 1대 합류 (JOIN_TIME=09:21:12) → 1~2분 활동 (손 움직임 + 악기 인터랙션) → 단독 퇴장 (LEAVE_TIME=09:24:04, 마지막 플레이어) → 5분 무인 대기 (09:24~09:29).
+- 5분 후 (09:29:25) 검증:
+  - `rooms.is_persistent=1, closed_at=NULL` ✓
+  - `room_server_instances.status=READY, last_heartbeat_at=09:29:22.901428` (3초 신선) → DS 0명 상태에서도 heartbeat 정상 송신 ✓
+  - ECS `lastStatus=RUNNING` ✓
+  - Spring 로그 grep `reconciliation|ds-callback|markUnhealthy|persistent` **0 hit** → 4중 가드 동시 정합:
+    - `RoomReconciliationScheduler.scan()` 의 `is_persistent=false` 필터로 룸 30 청소 후보 추출 안 됨 (backend 측 가드)
+    - DS 의 `RoomAuthority.OnPlayerLeft` 의 `reporter.IsPersistent` skip 가드로 `/terminate` 콜백 미발사 + Shutdown skip (**DS 측 IsPersistent 가드 정상 동작 — 본 plan 의 핵심 안전장치**)
+    - `markUnhealthyAndTerminate skipped (persistent room)` 0 hit → helper 자체가 호출 안 됨 (scheduler 필터 단계에서 막힘)
+    - `persistent` 키워드 자체 0 hit → reconciliation 로그가 출력 안 됨 (필터링 후 후보 0건)
+
+**2인 Quest 확장 검증** (팀원 합류 시점):
+- 사용자 + 팀원 같은 룸 합류 → 손 동기화 + MIDI sync 활성.
+- hand-pose payload 1차 축소 plan (commit `b3aa95d`) 과 합쳐 본 사이클 핵심 가치 확인 — **"비정상적으로 긴 latency 해소" 사용자 직접 보고 PASS**.
 
 ### 다음 plan 이 알아야 할 산출
 

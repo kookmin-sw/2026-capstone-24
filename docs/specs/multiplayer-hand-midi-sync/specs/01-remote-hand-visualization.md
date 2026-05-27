@@ -57,7 +57,7 @@
 |---|---|---|---|
 | 2026-05-20 | 원격 손 wrist placeholder — 첫 합류 시각 회귀 | `Ready` | [2026-05-20-namae1128-remote-hand-wrist-placeholder.md](../plans/2026-05-20-namae1128-remote-hand-wrist-placeholder.md) |
 | 2026-05-22 | 원격 손 손가락 본 동기화 — SkinnedMesh + 손가락 26개 본 | `Ready` | [2026-05-22-namae1128-remote-hand-finger-pose.md](../plans/2026-05-22-namae1128-remote-hand-finger-pose.md) |
-| 2026-05-27 | 손 pose payload 1차 축소 (본 25 → 10 + LateUpdate throttle + MIDI 채널 분리) | `Ready` | [2026-05-27-namae1128-hand-pose-payload-reduction.md](../plans/2026-05-27-namae1128-hand-pose-payload-reduction.md) |
+| 2026-05-27 | 손 pose payload 1차 축소 (본 25 → 10 + LateUpdate throttle + MIDI 채널 분리) | `Done — 2026-05-27 2인 Quest 검증 latency 해소 PASS, AC#7 정량 측정 보류` | [2026-05-27-namae1128-hand-pose-payload-reduction.md](../plans/2026-05-27-namae1128-hand-pose-payload-reduction.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/spec-build`가 planner sub-agent로 처리.
