@@ -531,6 +531,9 @@ namespace SessionPanel
         {
             if (_readinessInlineOverlay != null) return;
 
+            // 패널 내 기존 TMP에서 폰트 참조 (한국어 폰트 재사용)
+            var srcTmp = GetComponentInChildren<TMPro.TextMeshProUGUI>(true);
+
             var overlayGO = new GameObject("_ReadinessNotice");
             overlayGO.transform.SetParent(transform, false);
 
@@ -551,6 +554,7 @@ namespace SessionPanel
             msgRT.offsetMin = msgRT.offsetMax = Vector2.zero;
             msgGO.AddComponent<CanvasRenderer>();
             var tmp = msgGO.AddComponent<TMPro.TextMeshProUGUI>();
+            if (srcTmp != null) tmp.font = srcTmp.font;
             tmp.text = required == InputMode.HandTracking
                 ? "이 악기는 핸드 트래킹으로만\n연주할 수 있어요.\n\nQuest 설정에서 전환해 주세요."
                 : "이 악기는 컨트롤러로만\n연주할 수 있어요.\n\n컨트롤러를 잡아 활성화하세요.";
