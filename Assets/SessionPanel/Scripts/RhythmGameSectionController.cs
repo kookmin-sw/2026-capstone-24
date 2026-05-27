@@ -62,6 +62,7 @@ namespace SessionPanel
         RhythmGameHost _activeHost;
 
         InputModeReadinessNotice _readinessNoticeInstance;
+        GameObject _readinessInlineOverlay;
         Coroutine _readinessPollCoroutine;
 
         public event System.Action GameStarted;
@@ -486,22 +487,11 @@ namespace SessionPanel
             // === readiness gate (sub-spec 17) ===
             if (!TryGateInputMode())
             {
-                if (_readinessNoticeInstance == null && readinessNoticePrefab != null)
+                if (_readinessInlineOverlay == null)
                 {
-                    _readinessNoticeInstance = Instantiate(readinessNoticePrefab);
-                    var parentCanvas = GetComponentInParent<Canvas>();
-                    if (parentCanvas != null)
-                    {
-                        var ct = parentCanvas.transform;
-                        // SessionPanel(0.4m) 오른쪽에 세로 정렬, VR scale 0.001 고정
-                        _readinessNoticeInstance.transform.SetPositionAndRotation(
-                            ct.position + ct.right * 0.5f,
-                            ct.rotation);
-                        _readinessNoticeInstance.transform.localScale = Vector3.one * 0.001f;
-                    }
+                    var required = (_currentInstrument as InstrumentBase)?.RequiredInputMode ?? InputMode.Any;
+                    ShowInlineReadinessNotice(required);
                 }
-                var required = (_currentInstrument as InstrumentBase)?.RequiredInputMode ?? InputMode.Any;
-                _readinessNoticeInstance?.Show(required);
                 if (_readinessPollCoroutine == null)
                     _readinessPollCoroutine = StartCoroutine(PollReadinessAndAutoStart());
                 return;
@@ -529,11 +519,54 @@ namespace SessionPanel
                 yield return null;
                 if (TryGateInputMode())
                 {
-                    _readinessNoticeInstance?.Hide();
+                    HideInlineReadinessNotice();
                     _readinessPollCoroutine = null;
                     StartSessionInternal();
                     yield break;
                 }
+            }
+        }
+
+        void ShowInlineReadinessNotice(InputMode required)
+        {
+            if (_readinessInlineOverlay != null) return;
+
+            var overlayGO = new GameObject("_ReadinessNotice");
+            overlayGO.transform.SetParent(transform, false);
+
+            var rt = overlayGO.AddComponent<RectTransform>();
+            rt.anchorMin = Vector2.zero;
+            rt.anchorMax = Vector2.one;
+            rt.offsetMin = rt.offsetMax = Vector2.zero;
+
+            overlayGO.AddComponent<CanvasRenderer>();
+            var bg = overlayGO.AddComponent<UnityEngine.UI.Image>();
+            bg.color = new Color(0.08f, 0.08f, 0.12f, 0.95f);
+
+            var msgGO = new GameObject("Msg");
+            msgGO.transform.SetParent(overlayGO.transform, false);
+            var msgRT = msgGO.AddComponent<RectTransform>();
+            msgRT.anchorMin = new Vector2(0.05f, 0.15f);
+            msgRT.anchorMax = new Vector2(0.95f, 0.85f);
+            msgRT.offsetMin = msgRT.offsetMax = Vector2.zero;
+            msgGO.AddComponent<CanvasRenderer>();
+            var tmp = msgGO.AddComponent<TMPro.TextMeshProUGUI>();
+            tmp.text = required == InputMode.HandTracking
+                ? "이 악기는 핸드 트래킹으로만\n연주할 수 있어요.\n\nQuest 설정에서 전환해 주세요."
+                : "이 악기는 컨트롤러로만\n연주할 수 있어요.\n\n컨트롤러를 잡아 활성화하세요.";
+            tmp.alignment = TMPro.TextAlignmentOptions.Center;
+            tmp.fontSize  = 24;
+            tmp.color     = Color.white;
+
+            _readinessInlineOverlay = overlayGO;
+        }
+
+        void HideInlineReadinessNotice()
+        {
+            if (_readinessInlineOverlay != null)
+            {
+                Destroy(_readinessInlineOverlay);
+                _readinessInlineOverlay = null;
             }
         }
 
@@ -544,6 +577,7 @@ namespace SessionPanel
                 StopCoroutine(_readinessPollCoroutine);
                 _readinessPollCoroutine = null;
             }
+            HideInlineReadinessNotice();
             _readinessNoticeInstance?.Hide();
         }
 
