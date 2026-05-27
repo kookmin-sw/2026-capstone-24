@@ -93,8 +93,9 @@
 - **PanelAnchor 최종 path**: `Trombone/Rig/PanelAnchor` (Body, Slide, MouthPiece, NoteDisplay, SlidePositionMarkers의 형제).
 - **선행 plan invariant 모두 보존**: SerializeField wiring(`_panelAnchor`/`centerAnchor` → PanelAnchor fileID `5307817778198693025`), `tromboneRoot` → Rig fileID `9100000000000000002`, ComputePanelWorldPos 부호 반전 식, 카메라 추적 제거, rhythm-game/13 supersede 메모.
 - **검증된 사용자 시점 정합** (PlayMode `AttachTromboneToMouth()` 후):
-  - 5패널 사용자 우측 (yaw ~+86°)
+  - 5패널 사용자 우측 (yaw ~+86° 직각 — *2026-05-27 후속 미세 조정으로 yaw ~+25°로 완화*)
   - pitch -30.8° ~ +32.9° (폭 63.7° ≈ spec 의도 60°)
   - 거리 0.75~0.77m ≈ panelRadius 0.8m
   - i=0(가장 낮은 음) 시야 가장 아래, i=4(가장 높은 음) 시야 가장 위 (부호 반전 정합 유지)
-- **후속 plan 후보**: (a) NoteDisplayPanel localScale 튜닝 — 현재 패널이 캡처에서 작게 보임 (laneHeightMeters / panelScrollLengthMeters 값 점검), (b) PanelAnchor.localPosition 미세 조정으로 패널을 사용자 정면에 가깝게(yaw 86° 대신 yaw 0°에 가깝게), (c) SessionPanel(14-spec) 위치 — 통합 결정에 따라 SessionPanel도 Rig 자식 PanelAnchor로 따라옴, 시각 충돌 확인.
+- **PanelAnchor.localRotation 미세 조정 (2026-05-27)**: 본 plan reparent 후 yaw +86° (사용자가 거의 완전 우측을 봐야 5패널 정면)이 불편하다는 사용자 피드백을 반영, PanelAnchor.localRotation을 `Quaternion.Euler(0, -60, 0)`로 박제. Rig 회전(+90° yaw, attach 시 자동) + localRotation -60° = 사용자 시점 yaw +25° (살짝 우측, 머리 적게 돌리면 정면). pitch 적층 폭과 거리(0.8m)는 무변경. prefab YAML `m_LocalRotation: (0, -0.5, 0, 0.866)` + `m_LocalEulerAnglesHint: (0, -60, 0)`.
+- **후속 plan 후보**: (a) NoteDisplayPanel localScale 튜닝 — 현재 패널이 캡처에서 작게 보임 (laneHeightMeters / panelScrollLengthMeters 값 점검), (b) SessionPanel(14-spec) 위치 — 통합 결정에 따라 SessionPanel도 Rig 자식 PanelAnchor로 따라옴, 시각 충돌 확인.
