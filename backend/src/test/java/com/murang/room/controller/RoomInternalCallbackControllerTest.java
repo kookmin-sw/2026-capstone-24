@@ -9,7 +9,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.murang.common.exception.ApiException;
 import com.murang.room.domain.RoomServerInstanceStatus;
+import com.murang.room.manager.RoomProvisioningCommand;
 import com.murang.room.manager.RoomServerSnapshot;
 import java.util.Optional;
 import static org.mockito.Mockito.when;
@@ -129,5 +131,70 @@ class RoomInternalCallbackControllerTest {
                         .content(TERMINATE_BODY))
                 .andExpect(status().isNoContent());
         verify(roomServerManager, never()).terminate(anyLong(), any());
+    }
+
+    @Test
+    void terminate_persistentRoom_returnsNoContentAndDoesNotCallManager() throws Exception {
+        RoomServerSnapshot snapshot = org.mockito.Mockito.mock(RoomServerSnapshot.class);
+        when(snapshot.status()).thenReturn(RoomServerInstanceStatus.READY);
+        when(snapshot.isPersistent()).thenReturn(true);
+        when(roomServerManager.findByRoomId(42L)).thenReturn(Optional.of(snapshot));
+        mockMvc.perform(post("/internal/rooms/42/terminate")
+                        .header(RoomInternalCallbackController.INTERNAL_TOKEN_HEADER, VALID_TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(TERMINATE_BODY))
+                .andExpect(status().isNoContent());
+        verify(roomServerManager, never()).terminate(anyLong(), any());
+    }
+
+    private static final String CREATE_PERSISTENT_BODY = """
+            {
+              "ownerUserId": 1,
+              "photonSessionName": "demo-room-2026",
+              "maxPlayers": 8,
+              "roomRuntimeVersion": "v0.1.0"
+            }
+            """;
+
+    @Test
+    void createPersistent_withValidToken_returnsOkAndCallsManager() throws Exception {
+        RoomServerSnapshot snapshot = org.mockito.Mockito.mock(RoomServerSnapshot.class);
+        when(snapshot.roomId()).thenReturn(99L);
+        when(snapshot.photonSessionName()).thenReturn("demo-room-2026");
+        when(snapshot.maxPlayers()).thenReturn(8);
+        when(snapshot.status()).thenReturn(RoomServerInstanceStatus.SERVER_STARTING);
+        when(roomServerManager.provisionPersistent(any(RoomProvisioningCommand.class))).thenReturn(snapshot);
+
+        mockMvc.perform(post("/internal/rooms/persistent")
+                        .header(RoomInternalCallbackController.INTERNAL_TOKEN_HEADER, VALID_TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(CREATE_PERSISTENT_BODY))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.roomId").value(99));
+
+        verify(roomServerManager).provisionPersistent(any(RoomProvisioningCommand.class));
+    }
+
+    @Test
+    void createPersistent_missingToken_returnsForbidden() throws Exception {
+        mockMvc.perform(post("/internal/rooms/persistent")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(CREATE_PERSISTENT_BODY))
+                .andExpect(status().isForbidden());
+
+        verify(roomServerManager, never()).provisionPersistent(any());
+    }
+
+    @Test
+    void createPersistent_conflict_returnsConflict() throws Exception {
+        when(roomServerManager.provisionPersistent(any(RoomProvisioningCommand.class)))
+                .thenThrow(ApiException.persistentRoomAlreadyExists());
+
+        mockMvc.perform(post("/internal/rooms/persistent")
+                        .header(RoomInternalCallbackController.INTERNAL_TOKEN_HEADER, VALID_TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(CREATE_PERSISTENT_BODY))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code").value("PERSISTENT_ROOM_ALREADY_EXISTS"));
     }
 }

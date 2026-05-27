@@ -41,6 +41,9 @@ public class Room {
     @Column(name = "closed_at")
     private Instant closedAt;
 
+    @Column(name = "is_persistent", nullable = false)
+    private boolean isPersistent;
+
     protected Room() {
     }
 
@@ -57,6 +60,24 @@ public class Room {
         room.maxPlayers = maxPlayers;
         room.passwordHash = passwordHash;
         room.createdAt = now;
+        room.isPersistent = false;
+        return room;
+    }
+
+    public static Room openPersistent(
+            Long ownerUserId,
+            String photonSessionName,
+            int maxPlayers,
+            String passwordHash,
+            Instant now
+    ) {
+        Room room = new Room();
+        room.ownerUserId = ownerUserId;
+        room.photonSessionName = photonSessionName;
+        room.maxPlayers = maxPlayers;
+        room.passwordHash = passwordHash;
+        room.createdAt = now;
+        room.isPersistent = true;
         return room;
     }
 
@@ -100,5 +121,9 @@ public class Room {
 
     public boolean isClosed() {
         return closedAt != null;
+    }
+
+    public boolean isPersistent() {
+        return isPersistent;
     }
 }

@@ -260,4 +260,74 @@ class RoomServerManagerImplTest {
         assertThat(after.terminatedAt()).isNotNull();
         assertThat(after.closedAt()).isNotNull();
     }
+
+    @Test
+    @Transactional
+    void provisionPersistent_savesPersistentRoomWithFlag() {
+        Long ownerUserId = createOwner();
+
+        RoomServerSnapshot snapshot = manager.provisionPersistent(new RoomProvisioningCommand(
+                ownerUserId, uniqueSessionName(), 8, null, "v0.1.0"));
+
+        assertThat(snapshot.roomId()).isNotNull();
+        assertThat(snapshot.isPersistent()).isTrue();
+
+        StubRoomRuntimeProvider stub = (StubRoomRuntimeProvider) runtimeProvider;
+        assertThat(stub.lastStart).isNotNull();
+        assertThat(stub.lastStart.isPersistent()).isTrue();
+        assertThat(stub.lastStart.terminateCallbackUrl()).isNotNull();
+    }
+
+    @Test
+    @Transactional
+    void provisionPersistent_whenAnotherPersistentRoomAlive_throwsConflict() {
+        Long ownerUserId = createOwner();
+        manager.provisionPersistent(new RoomProvisioningCommand(
+                ownerUserId, uniqueSessionName(), 8, null, "v0.1.0"));
+
+        assertThatThrownBy(() -> manager.provisionPersistent(new RoomProvisioningCommand(
+                ownerUserId, uniqueSessionName(), 8, null, "v0.1.0")))
+                .isInstanceOf(com.murang.common.exception.ApiException.class)
+                .extracting(ex -> ((com.murang.common.exception.ApiException) ex).getErrorCode())
+                .isEqualTo(com.murang.common.exception.ErrorCode.PERSISTENT_ROOM_ALREADY_EXISTS);
+    }
+
+    @Test
+    @Transactional
+    void markUnhealthyAndTerminate_skipsPersistentRoom() {
+        Long ownerUserId = createOwner();
+        RoomServerSnapshot provisioned = manager.provisionPersistent(new RoomProvisioningCommand(
+                ownerUserId, uniqueSessionName(), 4, null, "v0.1.0"));
+        manager.notifyReady(provisioned.roomId(), new RoomReadySignal("10.0.0.1", 7777, "v0.1.0"));
+
+        StubRoomRuntimeProvider stub = (StubRoomRuntimeProvider) runtimeProvider;
+        stub.lastStop = null;
+
+        manager.markUnhealthyAndTerminate(provisioned.roomId(), "reconciliation:heartbeat-timeout");
+
+        // persistent room 이므로 stopTask 미호출, status 도 TERMINATED 아님
+        assertThat(stub.lastStop).isNull();
+        RoomServerSnapshot after = manager.findByRoomId(provisioned.roomId()).orElseThrow();
+        assertThat(after.status()).isNotEqualTo(RoomServerInstanceStatus.TERMINATED);
+        assertThat(after.closedAt()).isNull();
+    }
+
+    @Test
+    @Transactional
+    void markProvisioningTimedOut_skipsPersistentRoom() {
+        Long ownerUserId = createOwner();
+        RoomServerSnapshot provisioned = manager.provisionPersistent(new RoomProvisioningCommand(
+                ownerUserId, uniqueSessionName(), 4, null, "v0.1.0"));
+
+        StubRoomRuntimeProvider stub = (StubRoomRuntimeProvider) runtimeProvider;
+        stub.lastStop = null;
+
+        manager.markProvisioningTimedOut(provisioned.roomId(), "reconciliation:provisioning-timeout");
+
+        // persistent room 이므로 stopTask 미호출, status 도 FAILED 아님
+        assertThat(stub.lastStop).isNull();
+        RoomServerSnapshot after = manager.findByRoomId(provisioned.roomId()).orElseThrow();
+        assertThat(after.status()).isNotEqualTo(RoomServerInstanceStatus.FAILED);
+        assertThat(after.closedAt()).isNull();
+    }
 }

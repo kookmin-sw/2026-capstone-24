@@ -8,6 +8,8 @@ public record RoomTaskStartRequest(
         int maxPlayers,
         String roomRuntimeVersion,
         URI readyCallbackUrl,
-        URI heartbeatCallbackUrl
+        URI heartbeatCallbackUrl,
+        URI terminateCallbackUrl,
+        boolean isPersistent
 ) {
 }

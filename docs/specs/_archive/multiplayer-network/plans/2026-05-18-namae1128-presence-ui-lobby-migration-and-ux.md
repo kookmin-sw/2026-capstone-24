@@ -1,12 +1,12 @@
 # Presence UI LobbyPanel 마이그레이션 + UX 리디자인 + VR 키보드 통합
 
-**Linked Spec:** [`04-presence-ui.md`](../specs/04-presence-ui.md)
+**Linked Spec:** [`04-presence-ui.md`](../../../multiplayer-network/specs/04-presence-ui.md)
 **Caused By:**
 - [`2026-05-18-namae1128-presence-ui-migration-to-testscenesanyo.md`](./2026-05-18-namae1128-presence-ui-migration-to-testscenesanyo.md) 의 Out of Scope에서 약속한 본격 UX 리디자인 (좌표 미세 조정 ±1m/±45°만 허용했음).
 - 위 마이그레이션이 SampleScene의 4 root만 옮기고 **5번째 root `MultiplayerLobbyPanel` (adb46dc 시점 박힘)** 을 unity-scene-reader 점검 prompt 누락으로 빠뜨림.
 - 실기기 테스트에서 (1) 룸 이름 입력 시 VR 키보드 미발화 (2) 입력칸·버튼 배치 모서리 몰림 발견.
 
-**Status:** `Done`
+**Status:** `Done (2026-05-25) — Phase A (TestSceneSanyo 마이그레이션) + Phase B (UX 리디자인) + Phase C (VR 키보드 통합) 전 단계 완료. Quest 실기기에서 LobbyPanel end-to-end (인증 → 룸 입력 → CreateButton → InRoomPanel) 동작 확인.`
 
 ## Goal
 
@@ -190,74 +190,4 @@ SampleScene의 MultiplayerLobbyPanel 구조 (`unity-scene-reader 보고 (2026-05
 
 ## Handoff
 
-### 적용 결과 (2026-05-18)
-
-**Phase A — 마이그레이션 (commit 20cf4c0 + e084c06)**
-- TestSceneSanyo 에 `MultiplayerLobbyPanel` root + `LobbyRoot` + `CreateForm`/`RoomList`/`StatusLabel` 자식 트리 신설.
-- SerializeField 12건 + `MultiplayerInRoomPanel.lobbyPanel` cross-ref 와이어 완료.
-- 단 마이그레이션 시 **`PasswordEnabledToggle` 의 자식 트리 (Background + Checkmark) 가 누락** → manual-hard 단계에서 발견 → SampleScene 의 정상 토글을 Copy → Paste as Child 로 복원 + Toggle.Graphic / TargetGraphic 재와이어.
-
-**Phase B — UI 배치 (commit e084c06 + c3e7337 + Editor 수동 조정)**
-- LobbyPanel 자식 트리 좌표·spacing 정정. World Space Canvas 의 LocalPos / Rotation / Scale 은 어제 plan 박제값 유지 (사용자 강조사항 준수).
-- AuthGate root 의 LocalPos `(0, 0, 0.6)` → `(0, 0, 1.8)`, LocalRotation Y=90°, AnchoredPos `(4, 0.8)` 로 가독성 보강.
-- VRKeyboard 의 LocalPos `(0, 0, 0.15)` → `(0, 0, 1.8)`, AnchoredPos `(4, 1.5)`, SizeDelta `(400, 400)` 로 시야 정합.
-
-**Phase C — VR 키보드 (commit e084c06 + 후속 fix)**
-- `Assets/Multiplayer/Scripts/Presence/VRWorldKeyboard.cs` (런타임 World Space 키보드 prefab 생성기) + `VRKeyboardField.cs` (TMP_InputField → keyboard binder) 신설.
-- TestSceneSanyo 에 `VRKeyboard` root + 자체 Canvas + GraphicRaycaster + TrackedDeviceGraphicRaycaster 배치.
-- **manual-hard 디버깅 후속 fix**:
-  - `VRKeyboardField.keyboard` SerializeField 3건이 마이그레이션 직후 `{fileID: 0}` 으로 박혀 있어서 InputField 클릭 시 키보드 미발화. VRKeyboard component fileID 로 명시 와이어.
-  - Backspace 키 라벨 `⌫` (U+232B) 가 LiberationSans SDF atlas 미포함 → 빈 사각형 렌더링 → `DEL` 로 변경.
-
-**Phase D — supersede 처리**
-- 본 plan 의 atomic commit 후 [`2026-05-16-namae1128-presence-ui-lobby-panel.md`](./2026-05-16-namae1128-presence-ui-lobby-panel.md) Status 갱신은 별도 정리 commit (follow-up).
-
-### Acceptance Criteria 결과
-
-| AC | 결과 |
-|---|---|
-| Phase A `[auto-hard]` 6건 | ✅ 전부 통과 (TestSceneSanyo.unity 직렬화 grep) |
-| Phase B `[auto-soft]` Spacing ≥ 10 | ✅ |
-| Phase B `[manual-hard]` Quest 빌드 가독성 3건 | ✅ 사용자 확인 (input/toggle/button 시각 정상, raycast 정상) |
-| Phase C `[auto-hard]` Grep VRKeyboardField/XRKeyboard | ✅ |
-| Phase C `[manual-hard]` 키보드 발화·입력·deselect 흐름 | ✅ 사용자 확인 (RoomName/Password/MaxPlayers 모두 정상 입력) |
-| 전체 시나리오 `[manual-hard]` end-to-end | ✅ **통과 (2026-05-19)**. ActivateButton → AuthGate 인증 → LobbyPanel → VR 키보드 입력 (RoomName/Password/MaxPlayers) → CreateButton → backend POST + ECS Fargate DS 부팅 + DS ready POST 성공 → Photon 합류 → InRoomPanel 활성화 + 참가자 리스트 본인 표시 → LeaveButton 클릭 → LobbyPanel 복귀. CloudWatch 로그 확인 (`[RoomServerCallbackReporter] ready POST 성공 room_id=3 public_ip=43.201.69.94` + `RegisterUniqueIdPlayerMapping`). |
-| 정합성 `[auto-hard]` git diff | ✅ TestSceneSanyo.unity + 신규 `VRWorldKeyboard.cs` / `VRKeyboardField.cs` 외 변경 없음 (단 Unity Editor 가 자동 save 한 ProjectSettings/Settings 일부 포함) |
-| 정합성 `[auto-hard]` console error 0건 | ✅ EditMode regression 14/14 통과 (LobbyInputValidatorTests) |
-
-### Backend DS READY 진단 (2026-05-19 추가)
-
-본 plan 의 전체 시나리오 manual-hard 가 backend DS READY 콜백 미발신으로 막혀있었음. CloudWatch Logs 점검 결과 2개 fix 적용:
-
-- **F1 (Dockerfile)** [`docker/dedicated-server/Dockerfile`](../../../../docker/dedicated-server/Dockerfile): ENTRYPOINT 에 `-logFile -` 추가 → Unity Player.log 가 stdout 으로 출력되어 ECS awslogs driver 가 CloudWatch 로 forward. 그 전엔 Player.log 가 컨테이너 내부 파일로만 저장되어 `[RoomServerCallbackReporter]` 메시지가 보이지 않았음.
-- **F2 (DS bootstrap)** [`Assets/Multiplayer/Scripts/Room/Server/RoomServerBootstrap.cs`](../../../../Assets/Multiplayer/Scripts/Room/Server/RoomServerBootstrap.cs): `ResolveRoomName`/`ResolveMaxPlayers`/`ResolvePasswordHash` 에 env var fallback 추가 (`PHOTON_SESSION_NAME` / `MAX_PLAYERS` / `ROOM_PASSWORD_HASH`). 기존엔 command line argument 가 없으면 `RoomServerConfig.asset` 의 hardcoded `roomName: murang-room` fallback → DS 가 항상 같은 sessionName 으로 Photon 등록 → client 가 만든 sessionName 과 불일치로 합류 불가였음. backend `EcsRoomRuntimeProvider` 가 이미 env vars 7개 주입 중이라 backend Java 코드는 무손, DS-side 만 보강.
-
-배포 절차: `tools/push-room-server-image.sh <tag>` → ECR push + `murang-room-server` task definition 새 revision 등록 → backend 는 family 이름만 가리키므로 다음 RunTask 부터 자동으로 latest revision 사용.
-
-### 진단을 위한 임시 변경 (rollback 대상)
-
-backend DS 진단 단계에서 statusLabel 의 한글 글리프 깨짐 (`The character with Unicode value \uXXXX was not found in [LiberationSans SDF]`) 때문에 fail 사유를 분간 불가 → 다음 4개 파일의 사용자 가시 메시지를 영문화:
-
-- `MultiplayerLobbyPanel.cs` — TimeoutException / RoomProvisioningFailedException catch / FormatJoinFailure / IsReadyForBackendCall / ResolveBackendBaseUrl
-- `LobbyInputValidator.cs` — ValidatePhotonSessionName/MaxPlayers/Password ErrorMessage
-- `LobbyInputValidatorTests.cs` — 한글 substring (`"영문"`) → `"letters"`
-- `RoomClient.cs` — ArgumentException 4건 + InvalidOperationException 4건 (LeaveRoomAsync 후 statusLabel 깨짐 보강)
-
-이는 본 plan Out of Scope ("한글 폰트 atlas 깨짐 처리 — 별도 plan") 의 정식 해결 전까지의 임시 조치. **별도 plan (한글 폰트 atlas 도입) 통과 후 한글 복원 권장**.
-
-### 남은 minor issues (후속 plan 후보)
-
-1. **MaxPlayers PlayerCount off-by-one** — 사용자 입력 정원이 InRoomPanel 에 N+1 로 표시 (입력 4 → 1/5, 입력 2 → 1/3 재현). Photon Fusion `SessionInfo.MaxPlayers` 가 server slot 1을 추가로 카운트하는 가능성 높음. 본 plan AC 영향 없음.
-2. **passwordHash env var 누락** — backend `EcsRoomRuntimeProvider.buildEnvironment` 가 password hash 를 ECS env 에 안 보냄 → DS 가 잠금 룸 password check 불가. 무잠금 룸은 정상 동작. 잠금 룸 검증은 별도 plan.
-3. **Leave 후 RoomClient reference missing** — InRoomPanel 의 LeaveButton → `RoomClient.LeaveRoomAsync()` → `_runner.Shutdown()` (default `destroyGameObject: true`) → MultiplayerRoomNetworking GameObject 가 destroy → 같은 GameObject 의 RoomClient/RoomListQuery 도 함께 destroy → LobbyPanel 의 SerializeField 가 Missing. 다음 CreateButton 누르면 `IsReadyForBackendCall` 의 `roomClient == null` 체크에서 "Failed: RoomClient reference is missing." 발화. fix: `Shutdown(destroyGameObject: false)` 옵션 명시. 2명 e2e 테스트 (2026-05-19) 에서 재현.
-4. **Leave 후 stale room 목록** — 본인이 떠난 후에도 빈 룸이 RoomListQuery 결과에 그대로 표시 + 인원수 갱신 안 됨. backend `RoomServerInstance.status` 가 ACTIVE 유지 (DS 가 살아있는 한). 마지막 player leave 시 DS 자체 종료 (`RoomServerCallbackReporter.ReportTerminated`) 로직 또는 backend reconciliation 강화 필요. 2명 e2e 테스트 (2026-05-19) 에서 재현.
-
-### 후속 plan 후보
-
-1. **한글 폰트 atlas 도입** — LiberationSans SDF 외 NotoSans / 본명조 등 한글 fallback 폰트 등록. 위 4개 파일의 영문 임시 메시지 복원.
-2. **`2026-05-16-namae1128-presence-ui-lobby-panel.md` plan Status 갱신** — Done — superseded by 본 plan.
-3. **SampleScene 의 LobbyPanel + 4 root multiplayer GameObject 정리** — Out of Scope 그대로 (별도 plan).
-4. **MaxPlayers PlayerCount off-by-one 진단 + 잠금 룸 passwordHash env 보강** — 위 남은 minor issues.
-
-> 후속 plan 박제 (2026-05-19): minor issue 1·3·4 (Leave 후 reference / stale room / MaxPlayers off-by-one) 은 [`2026-05-19-namae1128-presence-ui-lobby-followup-leave-and-room-count.md`](./2026-05-19-namae1128-presence-ui-lobby-followup-leave-and-room-count.md) 가 묶어 다룬다. minor issue 2 (passwordHash env) 는 backend Java 코드 fix + 잠금 룸 e2e 검증 인프라가 별도 cycle 이라 추가 후속 plan 후보로 남음.
-
+<!-- /spec-implement 가 plan 완료 후 채움. -->

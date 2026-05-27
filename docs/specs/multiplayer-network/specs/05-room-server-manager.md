@@ -72,8 +72,8 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| 2026-05-07 | AWS dev 토폴로지 (EC2 Spring + MariaDB, ECS Fargate room-server) | `Ready` | [2026-05-07-namae1128-aws-dev-topology-ec2-fargate.md](../plans/2026-05-07-namae1128-aws-dev-topology-ec2-fargate.md) |
-| 2026-05-16 | AWS dev HTTPS 종단 (Elastic IP + Cloudflare DNS + Caddy reverse proxy + Let's Encrypt) | `Ready` | [2026-05-16-namae1128-aws-dev-https-caddy-cloudflare.md](../plans/2026-05-16-namae1128-aws-dev-https-caddy-cloudflare.md) |
+| 2026-05-07 | AWS dev 토폴로지 (EC2 Spring + MariaDB, ECS Fargate room-server) | `Ready` (2026-05-26 reopen — 4/8 mock 통과, AC#2 playerId 영속성 real 모드 필수로 미검증, 운영 자계 3건 deferred) | [2026-05-07-namae1128-aws-dev-topology-ec2-fargate.md](../plans/2026-05-07-namae1128-aws-dev-topology-ec2-fargate.md) |
+| 2026-05-16 | AWS dev HTTPS 종단 (Elastic IP + Cloudflare DNS + Caddy reverse proxy + Let's Encrypt) | `Done` (2026-05-25 — HTTPS 도메인 api.mu-rang.com 동작 확인) | [2026-05-16-namae1128-aws-dev-https-caddy-cloudflare.md](../../_archive/multiplayer-network/plans/2026-05-16-namae1128-aws-dev-https-caddy-cloudflare.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/plan-new` 사용. 파일명은 날짜·작성자·slug 기반.

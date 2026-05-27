@@ -1,7 +1,7 @@
 # Presence UI 로비 패널 (룸 생성 + 룸 목록)
 
-**Linked Spec:** [`04-presence-ui.md`](../specs/04-presence-ui.md)
-**Status:** `Done — superseded by 2026-05-18 lobby-migration-and-ux plan`
+**Linked Spec:** [`04-presence-ui.md`](../../../multiplayer-network/specs/04-presence-ui.md)
+**Status:** `Done (2026-05-25) — superseded by 2026-05-18 lobby-migration-and-ux plan (lobby 패널이 TestSceneSanyo 로 마이그레이션 + UX 리디자인 + VR 키보드 통합 모두 완료, Quest 실기기 검증 통과).`
 
 ## Goal
 

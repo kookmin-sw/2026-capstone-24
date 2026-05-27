@@ -1,10 +1,14 @@
 package com.murang.room.controller;
 
+import com.murang.common.response.ApiResponse;
 import com.murang.common.exception.ApiException;
 import com.murang.room.config.RoomInternalCallbackProperties;
+import com.murang.room.controller.dto.RoomCreatePersistentRequest;
 import com.murang.room.controller.dto.RoomReadyCallbackRequest;
+import com.murang.room.controller.dto.RoomResponse;
 import com.murang.room.controller.dto.RoomTerminateCallbackRequest;
 import com.murang.room.domain.RoomServerInstanceStatus;
+import com.murang.room.manager.RoomProvisioningCommand;
 import com.murang.room.manager.RoomReadySignal;
 import com.murang.room.manager.RoomServerManager;
 import com.murang.room.manager.RoomServerSnapshot;
@@ -15,6 +19,8 @@ import java.time.Clock;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +32,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/internal/rooms")
 public class RoomInternalCallbackController {
+
+    private static final Logger log = LoggerFactory.getLogger(RoomInternalCallbackController.class);
 
     static final String INTERNAL_TOKEN_HEADER = "X-Internal-Token";
 
@@ -73,8 +81,28 @@ public class RoomInternalCallbackController {
         if (snapshot.isEmpty() || TERMINAL_STATUSES.contains(snapshot.get().status())) {
             return ResponseEntity.noContent().build();
         }
+        // persistent 룸은 terminate 콜백을 idempotent skip — DS 측 분기가 누락되더라도 이중 안전망
+        if (snapshot.get().isPersistent()) {
+            log.info("terminate skipped (persistent room) room_id={}", roomId);
+            return ResponseEntity.noContent().build();
+        }
         roomServerManager.terminate(roomId, "ds-callback:" + request.reason());
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/persistent")
+    public ResponseEntity<ApiResponse<RoomResponse>> createPersistent(
+            @RequestHeader(value = INTERNAL_TOKEN_HEADER, required = false) String token,
+            @Valid @RequestBody RoomCreatePersistentRequest request) {
+        verifyInternalToken(token);
+        RoomServerSnapshot snapshot = roomServerManager.provisionPersistent(
+                new RoomProvisioningCommand(
+                        request.ownerUserId(),
+                        request.photonSessionName(),
+                        request.maxPlayers(),
+                        request.passwordHash(),
+                        request.roomRuntimeVersion()));
+        return ResponseEntity.ok(ApiResponse.ok(RoomResponse.of(snapshot)));
     }
 
     private void verifyInternalToken(String token) {
