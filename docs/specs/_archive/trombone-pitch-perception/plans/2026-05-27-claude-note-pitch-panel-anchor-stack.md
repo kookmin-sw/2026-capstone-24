@@ -231,10 +231,11 @@ Trombone.prefab에 신규 child `PanelAnchor` (eye 높이·trombone forward 대�
 - **후속 plan 후보**: (a) PanelAnchor localPosition 사용자 피드백 반영 미세 튜닝, (b) deprecated SerializeField 제거 cleanup, (c) SessionPanel(14-spec) 위치와 통합 anchor 충돌 시 분리 plan, (d) 부호 정합이 어긋날 경우 ARD 격상.
 - [2026-05-27]: 후속 plan `2026-05-27-claude-note-panel-pitch-sign-flip.md` 추가. 완료 후 본 plan AC10 재검증 필요.
 - [2026-05-27 완료]: 후속 plan으로 AC10 부호 정합 재검증 통과. PlayMode 자동 측정 결과 i=0 dy=-0.400 (시야 아래), i=4 dy=+0.400 (시야 위), 5단계 적층 dy=[-0.400, -0.207, 0, +0.207, +0.400]m. AC11/12/13은 본 plan 변경에 영향 없음 — 자동 검증으로 그대로 PASS. ARD 식 구조(`AngleAxis * forward * radius`) 보존.
+- [2026-05-27 추가 정정]: PanelAnchor parent 결정(Trombone root 직속)이 attach 시 사용자 mouth 추적 실패를 유발 — `TromboneAnchor.tromboneRoot`가 실은 Rig를 가리켜 Rig만 mouth로 이동하므로 root 직속 PanelAnchor가 따라오지 않음. 후속 plan `2026-05-27-claude-panel-anchor-rig-reparent.md`로 PanelAnchor를 **Rig 자식(Body 형제)** 으로 reparent하여 해결 (PlayMode 자동 검증 통과: 5패널 yaw +86°, pitch -30.8°~+32.9°, dist 0.75~0.77m).
 
 ## Handoff
 
-- **PanelAnchor child**: `Trombone/PanelAnchor`, Transform fileID `5307817778198693025`, localPosition `(0,0,0)`, localRotation identity, scale `(1,1,1)`. Trombone root 직속(Rig/TromboneAnchor/TromboneNoteDisplay/RhythmGameHost 형제). Rig 회전 영향 밖.
+- **PanelAnchor child**: `Trombone/Rig/PanelAnchor` *[2026-05-27 정정: 본 plan은 Trombone root 직속으로 박제했으나 후속 plan에서 Rig 자식(Body 형제)으로 reparent됨. attach 시 mouth 추적 정합]*, Transform fileID `5307817778198693025`, localPosition `(0,0,0)`, localRotation identity, scale `(1,1,1)`. Body·Slide·MouthPiece·NoteDisplay·SlidePositionMarkers의 형제. Body 회전 영향 밖 (Body Transform만 회전, 형제 무영향).
 - **통합 결정 박제**: `InstrumentBase._panelAnchor` ↔ `TromboneNoteDisplayAdapter.centerAnchor` 모두 동일 PanelAnchor fileID `5307817778198693025`. SessionPanel(14-spec)도 이 anchor를 공유한다. 위치가 부자연스러우면 ARD 격상 + 별도 anchor 분리 후속 plan.
 - **`TrombonePartialController.tromboneRoot` 무변경**: 기존 Rig (fileID `9100000000000000002`) 유지.
 - **`TromboneNoteDisplayAdapter` SerializeField 표면 변경**: `partialController: TrombonePartialController` 신규 추가 (prefab wiring fileID `4932485236075849092`). `verticalSpacingMeters`, `fanCenterPartialIndex`는 `[deprecated 2026-05-27]` Tooltip 유지, 후속 cleanup plan 후보.

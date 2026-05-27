@@ -61,6 +61,7 @@ i의 시점 pitch가 파셜 i의 anchor 각도와 정확히 일치하도록 수�
 |---|---|---|---|
 | 2026-05-27 | Note Panel — PanelAnchor 신규 child + pitch 수직 적층 layout 전환 | Done | [`../plans/2026-05-27-claude-note-pitch-panel-anchor-stack.md`](../plans/2026-05-27-claude-note-pitch-panel-anchor-stack.md) |
 | 2026-05-27 | Note Panel — ComputePanelWorldPos pitch 부호 반전 (사용자 시야 좌표계 정합) | Done | [`../plans/2026-05-27-claude-note-panel-pitch-sign-flip.md`](../plans/2026-05-27-claude-note-panel-pitch-sign-flip.md) |
+| 2026-05-27 | Panel Anchor — Trombone root → Rig 자식으로 reparent (attach 시 사용자 mouth 추적) | Done | [`../plans/2026-05-27-claude-panel-anchor-rig-reparent.md`](../plans/2026-05-27-claude-panel-anchor-rig-reparent.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/spec-build`가 planner sub-agent로 처리. 파일명은 날짜·작성자·slug 기반.
