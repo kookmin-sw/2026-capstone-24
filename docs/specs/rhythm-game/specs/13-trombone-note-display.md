@@ -3,7 +3,7 @@
 **Parent:** [`_index.md`](../_index.md)
 
 > **[2026-05-27 supersede]** 본 spec의 "수평 반원형" layout 가정은
-> [`docs/specs/trombone-pitch-perception/specs/02-note-vertical-layout.md`](../../trombone-pitch-perception/specs/02-note-vertical-layout.md)
+> [`docs/specs/_archive/trombone-pitch-perception/specs/02-note-vertical-layout.md`](../../_archive/trombone-pitch-perception/specs/02-note-vertical-layout.md)
 > 가 PanelAnchor 기반 pitch 수직 적층으로 대체하였다. 이하 본문은 원본을 유지하되
 > supersede 상태임을 명시한다.
 
@@ -17,7 +17,7 @@
 ## What
 
 > **[supersede 2026-05-27]** 아래 "수평 반원형" 배치는
-> [`02-note-vertical-layout`](../../trombone-pitch-perception/specs/02-note-vertical-layout.md)
+> [`02-note-vertical-layout`](../../_archive/trombone-pitch-perception/specs/02-note-vertical-layout.md)
 > 의 PanelAnchor 기반 pitch 수직 적층(-30°/-15°/0°/+15°/+30°)으로 교체되었다.
 
 트롬본 세션이 시작되면 5개의 파셜(배음) 패널이 트롬본 PanelAnchor 기준 시점 pitch
@@ -36,7 +36,7 @@
 ## Behavior
 
 > **[supersede 2026-05-27]** Behavior의 "수평 반원형" 가정은 아래와 같이 갱신된다.
-> 단일 진실원: [`02-note-vertical-layout`](../../trombone-pitch-perception/specs/02-note-vertical-layout.md)
+> 단일 진실원: [`02-note-vertical-layout`](../../_archive/trombone-pitch-perception/specs/02-note-vertical-layout.md)
 
 - **Given** 플레이어가 트롬본을 잡고 세션을 시작할 때
   **When** 세션 리드인이 시작될 때
