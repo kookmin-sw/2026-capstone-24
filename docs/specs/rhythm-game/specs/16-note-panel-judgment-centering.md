@@ -38,7 +38,9 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| _아직 없음_ | — | — | — |
+| 2026-05-27 | Trombone Note Panel — Judgment Line Centering Offset | Done | [`2026-05-27-claude-note-panel-judgment-centering.md`](../plans/2026-05-27-claude-note-panel-judgment-centering.md) |
+| 2026-05-27 | Trombone Note Panel — Judgment Line Offset 방향 반전 | Done | [`2026-05-27-claude-note-panel-judgment-centering-dir.md`](../plans/2026-05-27-claude-note-panel-judgment-centering-dir.md) |
+| 2026-05-27 | Trombone Note Panel — Judgment Line Offset 값 조정 | Done | [`2026-05-27-claude-note-panel-judgment-centering-offset.md`](../plans/2026-05-27-claude-note-panel-judgment-centering-offset.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/spec-build`가 planner sub-agent로 처리. 파일명은 날짜·작성자·slug 기반.

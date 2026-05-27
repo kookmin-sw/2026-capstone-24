@@ -45,6 +45,9 @@ public class TromboneNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
     [Tooltip("노트 스크롤 방향 패널 길이 (미터). 줄이면 전체 패널이 시야에 들어온다.")]
     [SerializeField] float panelScrollLengthMeters = 1.5f;
 
+    [Tooltip("판정선을 PanelAnchor yaw-forward 중앙에 정렬하기 위한 패널 중심 오프셋(미터, 양수=중앙 방향). 일반적으로 panelScrollLengthMeters/2.")]
+    [SerializeField] float judgmentLineOffset = 0f;
+
     readonly List<NoteDisplayPanel>     spawnedPanels  = new List<NoteDisplayPanel>();
     readonly List<InstrumentLaneConfig> runtimeConfigs = new List<InstrumentLaneConfig>();
     readonly Dictionary<byte, NoteDisplayPanel> noteToPanel = new Dictionary<byte, NoteDisplayPanel>();
@@ -218,7 +221,8 @@ public class TromboneNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
     {
         float pitchDeg = (GetCenterPartialIndex() - partialIndex) * GetAnglePerPartial();
         GetYawDirections(anchor, out Vector3 yawForward, out Vector3 yawRight);
-        return anchor.position + Quaternion.AngleAxis(pitchDeg, yawRight) * yawForward * panelRadius;
+        Vector3 basePos = anchor.position + Quaternion.AngleAxis(pitchDeg, yawRight) * yawForward * panelRadius;
+        return basePos - yawRight * judgmentLineOffset;
     }
 
     /// <summary>

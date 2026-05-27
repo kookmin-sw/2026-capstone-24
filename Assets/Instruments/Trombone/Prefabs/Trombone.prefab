@@ -629,6 +629,7 @@ MonoBehaviour:
   fanCenterPartialIndex: 2
   laneHeightMeters: 0.08
   panelScrollLengthMeters: 1.5
+  judgmentLineOffset: -0.1
 --- !u!1 &2808752052491962096
 GameObject:
   m_ObjectHideFlags: 0
