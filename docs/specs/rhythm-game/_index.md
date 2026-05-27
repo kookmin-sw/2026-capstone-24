@@ -39,7 +39,7 @@ VR 악기 연습 환경에서 박자감을 게임적으로 익히게 하는 학�
 | Drum Session Panel Position Fix | Done | [`specs/12-drum-session-panel-position-fix.md`](specs/12-drum-session-panel-position-fix.md) |
 | Trombone Note Display | Done | [`specs/13-trombone-note-display.md`](specs/13-trombone-note-display.md) |
 | Trombone Session Panel | Draft | [`specs/14-trombone-session-panel.md`](specs/14-trombone-session-panel.md) |
-| Trombone Slide Position Rings | Draft | [`specs/15-trombone-slide-position-rings.md`](specs/15-trombone-slide-position-rings.md) |
+| Trombone Slide Position Rings | Done | [`specs/15-trombone-slide-position-rings.md`](specs/15-trombone-slide-position-rings.md) |
 | Note Panel Judgment Line Centering | Draft | [`specs/16-note-panel-judgment-centering.md`](specs/16-note-panel-judgment-centering.md) |
 
 > 상태 값: `Draft` / `Active` / `Done` / `Abandoned`
