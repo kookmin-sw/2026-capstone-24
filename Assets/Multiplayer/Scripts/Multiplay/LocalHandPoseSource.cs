@@ -7,7 +7,8 @@ namespace Murang.Multiplayer.Multiplay
     /// TestSceneSanyo 의 LocalHandPoseSource GameObject 에 부착.
     /// leftWristSource / rightWristSource 를 Inspector 에서
     /// 씬 안의 LeftPlayHand/L_Wrist / RightPlayHand/R_Wrist 본 transform 에 직접 wiring.
-    /// LateUpdate 에서 자기 PlayerHandRig 의 RPC_PushPose 로 wrist + 25 손가락 본 pose 송신.
+    /// LateUpdate 에서 자기 PlayerHandRig 의 RPC_PushPose 로 wrist + 10 손가락 본 pose 송신.
+    /// decision 04 §E — 2 프레임에 1회만 발사 (60 FPS → effective 30 Hz).
     /// 다른 플레이어의 PlayerHandRig 에는 쓰지 않는다 (InputAuthority 가드).
     /// PlayerHandRig 미발견 (룸 미합류 또는 spawn 직전) 시 silent skip.
     /// </summary>
@@ -22,6 +23,9 @@ namespace Murang.Multiplayer.Multiplay
 
         private PlayerHandRig _cachedRig;
 
+        // decision 04 §E — 60 FPS → effective 30 Hz throttle.
+        private int _frameCounter;
+
         private Transform[] _cachedLeftFingerBones;
         private Transform[] _cachedRightFingerBones;
         private readonly Quaternion[] _leftFingerBuffer = new Quaternion[RemoteHandBoneNames.FingerBoneCount];
@@ -29,6 +33,10 @@ namespace Murang.Multiplayer.Multiplay
 
         private void LateUpdate()
         {
+            // decision 04 §E — odd 프레임만 RPC 발사 (effective 30 Hz @ 60 FPS).
+            _frameCounter++;
+            if ((_frameCounter & 1) == 0) return;
+
             EnsureWristSources();
 
             if (!TryGetOrRefreshRig())

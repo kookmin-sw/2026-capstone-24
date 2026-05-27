@@ -22,7 +22,8 @@ namespace Murang.Multiplayer.Multiplay
         /// Client → server. LocalMidiEmitter 가 자기 MidiTriggered 를 받아 호출한다.
         /// server 는 sustained 트래킹 후 RPC_RelayMidiToClients 로 룸 전체에 relay.
         /// </summary>
-        [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+        // decision 04 §F — MIDI = Reliable 명시 박제 (NetworkedWristPose 의 Unreliable 과 코드 진실원 레벨 구분).
+        [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Reliable)]
         public void RPC_SendMidiToServer(
             ushort instrumentId,
             int note,
@@ -51,7 +52,8 @@ namespace Murang.Multiplayer.Multiplay
         /// <summary>
         /// Server → all clients relay. 자기 자신이 보낸 이벤트는 sourcePlayer 비교로 echo 가드.
         /// </summary>
-        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        // decision 04 §F — MIDI = Reliable 명시 박제.
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All, Channel = RpcChannel.Reliable)]
         public void RPC_RelayMidiToClients(
             ushort instrumentId,
             int note,
