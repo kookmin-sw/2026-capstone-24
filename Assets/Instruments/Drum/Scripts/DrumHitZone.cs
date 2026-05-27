@@ -66,6 +66,14 @@ public sealed class DrumHitZone : MonoBehaviour
         TryProcessHit(other, sourceVelocity);
     }
 
+    public float NormalizeImpactSpeed(Vector3 sourceVelocity)
+    {
+        float impactSpeed = Mathf.Max(0f, Vector3.Dot(sourceVelocity, -transform.up));
+        if (maxImpactSpeed <= minImpactSpeed)
+            return 1f;
+        return Mathf.Clamp01(Mathf.InverseLerp(minImpactSpeed, maxImpactSpeed, impactSpeed));
+    }
+
     public bool TryProcessHit(Collider other, Vector3 sourceVelocity)
     {
         if (targetPiece == null || other == null)

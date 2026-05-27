@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.XR.Interaction.Toolkit.Inputs.Haptics;
 
 namespace Instruments
 {
@@ -35,12 +36,18 @@ namespace Instruments
         [SerializeField, Min(0f)] float fadeOutDuration = 0.15f;
         [SerializeField] InputActionReference leftGripAction;
         [SerializeField] float gripThreshold = 0.5f;
+        [SerializeField] HapticImpulsePlayer leftHapticImpulsePlayer;
+        [SerializeField] HapticImpulsePlayer rightHapticImpulsePlayer;
+        [SerializeField, Range(0f, 1f)] float hapticAmplitude = 0.15f;
+        [SerializeField, Min(0.01f)] float hapticPulseDuration = 0.1f;
+        [SerializeField, Min(0.01f)] float hapticPulseInterval = 0.08f;
 
         bool m_IsBlowing;
         int m_LastPartialIndex;
         int m_LastSlideIndex;
         int m_LastEffectiveMidi;
         TromboneSample m_SelectedSample;
+        float m_NextHapticPulseTime;
 
         public int CurrentMidiNote => Mathf.RoundToInt(ComputeEffectiveMidi());
         public bool IsBlowing => m_IsBlowing;
@@ -81,6 +88,7 @@ namespace Instruments
                 m_IsBlowing = true;
                 m_LastPartialIndex = partialController != null ? partialController.PartialIndex : 0;
                 m_LastSlideIndex = slideController != null ? slideController.SlideIndex : 0;
+                m_NextHapticPulseTime = 0f;
             }
             else if (!grip && m_IsBlowing)
             {
@@ -99,6 +107,15 @@ namespace Instruments
                 m_LastEffectiveMidi = newEffective;
                 if (partialController != null) m_LastPartialIndex = partialController.PartialIndex;
                 if (slideController != null) m_LastSlideIndex = slideController.SlideIndex;
+            }
+
+            if (m_IsBlowing && Time.unscaledTime >= m_NextHapticPulseTime)
+            {
+                if (leftHapticImpulsePlayer != null)
+                    leftHapticImpulsePlayer.SendHapticImpulse(hapticAmplitude, hapticPulseDuration);
+                if (rightHapticImpulsePlayer != null)
+                    rightHapticImpulsePlayer.SendHapticImpulse(hapticAmplitude, hapticPulseDuration);
+                m_NextHapticPulseTime = Time.unscaledTime + hapticPulseInterval;
             }
         }
 
