@@ -1700,6 +1700,8 @@ MonoBehaviour:
   majorSegments: 32
   minorSegments: 8
   lateralOffset: {x: 0, y: 0}
+  tromboneAnchor: {fileID: 6798659558522323895}
+  dimFactor: 0.3
   markerMaterialTemplate: {fileID: 0}
 --- !u!1 &4887109594454703373
 GameObject:

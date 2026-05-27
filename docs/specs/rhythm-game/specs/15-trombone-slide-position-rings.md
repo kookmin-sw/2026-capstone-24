@@ -64,7 +64,9 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| _아직 없음_ | — | — | — |
+| 2026-05-27 | Trombone 슬라이드 포지션 7링 — attach 게이팅 + HDR Grip 강조 | Done | [`2026-05-27-claude-trombone-slide-rings.md`](../plans/2026-05-27-claude-trombone-slide-rings.md) |
+| 2026-05-27 | Trombone 슬라이드 링 — HDR 강조 대신 비활성 링 dim 처리 | Done | [`2026-05-27-claude-trombone-slide-rings-dim.md`](../plans/2026-05-27-claude-trombone-slide-rings-dim.md) |
+| 2026-05-27 | Trombone 슬라이드 링 — grip OFF 상태 기본 dim | Done | [`2026-05-27-claude-trombone-slide-rings-dim2.md`](../plans/2026-05-27-claude-trombone-slide-rings-dim2.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/spec-build`가 planner sub-agent로 처리. 파일명은 날짜·작성자·slug 기반.
