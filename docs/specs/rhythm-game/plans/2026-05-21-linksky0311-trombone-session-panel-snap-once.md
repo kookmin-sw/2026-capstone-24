@@ -2,7 +2,7 @@
 
 **Linked Spec:** [`13-trombone-note-display.md`](../specs/13-trombone-note-display.md)
 **Caused By:** [`2026-05-21-linksky0311-trombone-note-display.md`](./2026-05-21-linksky0311-trombone-note-display.md)
-**Status:** `Ready`
+**Status:** `Done`
 
 ## Goal
 
@@ -145,4 +145,4 @@
 
 ## Handoff
 
-<완료 시 메인 세션이 채움. 다음 plan이 알 공개 표면: `SessionPanelController.snapOnce` SerializeField(디폴트 true), LateUpdate 안 1회 정렬 후 `_trackInstrument=false` 정책. 선행 plan manual-hard 4건 PASS 박제.>
+[2026-05-27 완료] `SessionPanelController.snapOnce = true`(디폴트) SerializeField 추가, LateUpdate에서 `PositionAtInstrument()` 1회 실행 후 `_trackInstrument = false`. 피아노/드럼 시각 변화 0 확인. 선행 plan(trombone-note-display) manual-hard 4건 사용자 재확인 통과.

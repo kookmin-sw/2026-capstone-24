@@ -27,6 +27,15 @@ namespace Instruments
         public int PartialIndex => m_PartialIndex;
         public float AnglePerPartial => anglePerPartial;
         public int PartialCount => (partialOffsetsSemitones != null) ? partialOffsetsSemitones.Length : 0;
+        public int CenterPartialIndex => centerPartialIndex;
+        public Transform TromboneRoot => tromboneRoot;
+        public float AngleSignMultiplier => angleSignMultiplier;
+
+        /// <summary>
+        /// 입력 측 부호·정규화 후의 사용자 trombone 각도. PartialIndex 산출과 동일 부호.
+        /// magnetic snap의 거리 비교용 (visualSnap이 anchor 각도와 본 값을 비교).
+        /// </summary>
+        public float UpTiltDegrees => angleSignMultiplier * NormalizeSignedAngle(tromboneRoot != null ? tromboneRoot.localEulerAngles.z : 0f);
 
         public int PartialOffsetSemitones
         {

@@ -381,6 +381,7 @@ GameObject:
   - component: {fileID: 6126437670630671465}
   - component: {fileID: 7538363250241596652}
   - component: {fileID: 6353738003302560876}
+  - component: {fileID: 2184525478538424917}
   m_Layer: 0
   m_Name: Body
   m_TagString: Untagged
@@ -462,6 +463,23 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &2184525478538424917
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2201093275828174213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ec6d64a2f99e446aa25201958264d79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Instruments::Instruments.TromboneBodyVisualSnap
+  tromboneAnchor: {fileID: 6798659558522323895}
+  partialController: {fileID: 4932485236075849092}
+  mouthPieceOnTrombone: {fileID: 5806067144585874694}
+  easeDurationSeconds: 0.1
+  easeExponent: 4
 --- !u!1 &2251217788784351574
 GameObject:
   m_ObjectHideFlags: 0
@@ -602,7 +620,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: RhythmGame.Runtime::RhythmGame.Runtime.TromboneNoteDisplayAdapter
   noteDisplayPanelPrefab: {fileID: 7000000004, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
-  centerAnchor: {fileID: 9100000000000000002}
+  centerAnchor: {fileID: 5307817778198693025}
+  partialController: {fileID: 4932485236075849092}
   partialBaseMidi: 2d34393d40
   slidePositionsPerPartial: 7
   panelRadius: 0.8
@@ -610,6 +629,7 @@ MonoBehaviour:
   fanCenterPartialIndex: 2
   laneHeightMeters: 0.08
   panelScrollLengthMeters: 1.5
+  judgmentLineOffset: -0.1
 --- !u!1 &2808752052491962096
 GameObject:
   m_ObjectHideFlags: 0
@@ -969,7 +989,7 @@ MonoBehaviour:
   laneConfig: {fileID: 11400000, guid: 94771330457054445811655f3f499c11, type: 2}
   instrumentId: Trombone
   instanceVolume: 0.5
-  _panelAnchor: {fileID: 9100000000000000002}
+  _panelAnchor: {fileID: 5307817778198693025}
   instrumentNetId: 0
   tromboneAnchor: {fileID: 6798659558522323895}
   slideController: {fileID: 4069711244863020258}
@@ -1108,6 +1128,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2407787182500616230}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3770232664706562036
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5307817778198693025}
+  m_Layer: 0
+  m_Name: PanelAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5307817778198693025
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3770232664706562036}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: -0.5, z: 0, w: 0.8660254}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9100000000000000002}
+  m_LocalEulerAnglesHint: {x: 0, y: -60, z: 0}
 --- !u!1 &3776457721087743721
 GameObject:
   m_ObjectHideFlags: 0
@@ -1655,6 +1706,8 @@ MonoBehaviour:
   majorSegments: 32
   minorSegments: 8
   lateralOffset: {x: 0, y: 0}
+  tromboneAnchor: {fileID: 6798659558522323895}
+  dimFactor: 0.3
   markerMaterialTemplate: {fileID: 0}
 --- !u!1 &4887109594454703373
 GameObject:
@@ -3020,5 +3073,6 @@ Transform:
   - {fileID: 5806067144585874694}
   - {fileID: 524896994668186971}
   - {fileID: 8309631776218164622}
+  - {fileID: 5307817778198693025}
   m_Father: {fileID: 6792978486195072924}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
