@@ -92,7 +92,8 @@ class ActiveRoomCountMetricBinderTest {
                 Instant.parse("2026-05-16T00:00:05Z"),
                 Instant.parse("2026-05-16T00:00:10Z"),
                 null,
-                null
+                null,
+                false
         );
     }
 }

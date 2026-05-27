@@ -21,7 +21,8 @@ public record RoomServerSnapshot(
         Instant readyAt,
         Instant lastHeartbeatAt,
         Instant terminatedAt,
-        Instant closedAt
+        Instant closedAt,
+        boolean isPersistent
 ) {
 
     public static RoomServerSnapshot of(Room room, RoomServerInstance instance) {
@@ -41,7 +42,8 @@ public record RoomServerSnapshot(
                 instance.getReadyAt(),
                 instance.getLastHeartbeatAt(),
                 instance.getTerminatedAt(),
-                room.getClosedAt()
+                room.getClosedAt(),
+                room.isPersistent()
         );
     }
 

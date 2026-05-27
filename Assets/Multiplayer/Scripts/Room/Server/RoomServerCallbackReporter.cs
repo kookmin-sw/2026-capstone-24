@@ -39,6 +39,8 @@ namespace Murang.Multiplayer.Room.Server
 
         public bool IsActive => _config != null;
 
+        public bool IsPersistent => _config != null && _config.IsPersistent;
+
         public void Initialize(RoomServerCallbackConfig config)
         {
             _config = config;

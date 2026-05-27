@@ -48,6 +48,8 @@ public class EcsRoomRuntimeProvider implements RoomRuntimeProvider {
     static final String ENV_ROOM_RUNTIME_VERSION = "ROOM_RUNTIME_VERSION";
     static final String ENV_READY_CALLBACK_URL = "ROOM_READY_CALLBACK_URL";
     static final String ENV_HEARTBEAT_CALLBACK_URL = "ROOM_HEARTBEAT_CALLBACK_URL";
+    static final String ENV_TERMINATE_CALLBACK_URL = "ROOM_TERMINATE_CALLBACK_URL";
+    static final String ENV_IS_PERSISTENT = "ROOM_IS_PERSISTENT";
     static final String ENV_INTERNAL_CALLBACK_SHARED_SECRET = "MURANG_ROOM_INTERNAL_CALLBACK_SHARED_SECRET";
 
     private final EcsClient ecsClient;
@@ -171,6 +173,11 @@ public class EcsRoomRuntimeProvider implements RoomRuntimeProvider {
         env.add(kv(ENV_ROOM_RUNTIME_VERSION, request.roomRuntimeVersion()));
         env.add(kv(ENV_READY_CALLBACK_URL, request.readyCallbackUrl().toString()));
         env.add(kv(ENV_HEARTBEAT_CALLBACK_URL, request.heartbeatCallbackUrl().toString()));
+
+        if (request.terminateCallbackUrl() != null) {
+            env.add(kv(ENV_TERMINATE_CALLBACK_URL, request.terminateCallbackUrl().toString()));
+        }
+        env.add(kv(ENV_IS_PERSISTENT, String.valueOf(request.isPersistent())));
 
         String sharedSecret = callbackProperties == null ? null : callbackProperties.sharedSecret();
         if (sharedSecret != null && !sharedSecret.isBlank()) {

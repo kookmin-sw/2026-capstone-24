@@ -10,4 +10,6 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     Optional<Room> findByPhotonSessionName(String photonSessionName);
 
     List<Room> findAllByClosedAtIsNull();
+
+    Optional<Room> findFirstByIsPersistentTrueAndClosedAtIsNull();
 }
