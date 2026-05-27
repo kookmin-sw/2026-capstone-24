@@ -28,6 +28,8 @@ namespace Instruments
         public float AnglePerPartial => anglePerPartial;
         public int PartialCount => (partialOffsetsSemitones != null) ? partialOffsetsSemitones.Length : 0;
         public int CenterPartialIndex => centerPartialIndex;
+        public Transform TromboneRoot => tromboneRoot;
+        public float AngleSignMultiplier => angleSignMultiplier;
 
         /// <summary>
         /// 입력 측 부호·정규화 후의 사용자 trombone 각도. PartialIndex 산출과 동일 부호.

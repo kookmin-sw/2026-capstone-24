@@ -477,7 +477,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Instruments::Instruments.TromboneBodyVisualSnap
   tromboneAnchor: {fileID: 6798659558522323895}
   partialController: {fileID: 4932485236075849092}
-  body: {fileID: 6126437670630671465}
+  mouthPieceOnTrombone: {fileID: 5806067144585874694}
   easeDurationSeconds: 0.1
   easeExponent: 4
 --- !u!1 &2251217788784351574

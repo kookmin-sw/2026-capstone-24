@@ -210,18 +210,21 @@ public class TromboneNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
 
     /// <summary>
     /// ARD 03 식: PanelAnchor 기준 pitch 수직 적층 위치 계산.
-    /// panelPos = anchor.position + AngleAxis((center - partialIndex) * anglePerPartial, anchor.right) * anchor.forward * radius
+    /// anchor.forward를 XZ 수평면에 투영한 yaw-only 방향을 사용하여
+    /// 트롬본 상하 틸트와 무관하게 패널을 고정 수직 부채꼴로 배치한다.
+    /// panelPos = anchor.position + AngleAxis(pitchDeg, yawRight) * yawForward * radius
     /// </summary>
     internal Vector3 ComputePanelWorldPos(Transform anchor, int partialIndex)
     {
         float pitchDeg = (GetCenterPartialIndex() - partialIndex) * GetAnglePerPartial();
-        return anchor.position + Quaternion.AngleAxis(pitchDeg, anchor.right) * anchor.forward * panelRadius;
+        GetYawDirections(anchor, out Vector3 yawForward, out Vector3 yawRight);
+        return anchor.position + Quaternion.AngleAxis(pitchDeg, yawRight) * yawForward * panelRadius;
     }
 
     /// <summary>
-    /// 패널이 PanelAnchor를 바라보며, panel local +y(노트 스폰 방향, NoteVisual은 y 감소로 진행)가
-    /// anchor.right(사용자 시점 오른쪽)와 정렬되도록 회전한다.
-    /// 결과: 노트가 사용자 시점에서 오른쪽 → 왼쪽으로 흘러 판정선에 도달한다.
+    /// 패널이 PanelAnchor를 바라보며, panel local +y(노트 스폰 방향)가
+    /// 수평 right(yaw-only)와 정렬되도록 회전한다.
+    /// 트롬본 상하 틸트 시 패널 방향이 변하지 않는다.
     /// </summary>
     internal Quaternion ComputePanelRotation(Transform anchor, Vector3 panelWorldPos)
     {
@@ -229,11 +232,32 @@ public class TromboneNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
         Vector3 toAnchor = anchor.position - panelWorldPos;
         if (toAnchor.sqrMagnitude < 0.0001f) return Quaternion.identity;
         toAnchor.Normalize();
-        // panel local +y = anchor.right (NoteVisual.y 감소 → 사용자 시점 우→좌 진행)
-        Vector3 panelUp = anchor.right;
-        // toAnchor와 panelUp이 거의 평행하면 LookRotation이 불안정 → fallback
+        GetYawDirections(anchor, out _, out Vector3 yawRight);
+        Vector3 panelUp = yawRight;
         if (Mathf.Abs(Vector3.Dot(toAnchor, panelUp)) > 0.99f) panelUp = Vector3.up;
         return Quaternion.LookRotation(toAnchor, panelUp);
+    }
+
+    /// <summary>
+    /// Camera.main의 forward를 XZ 수평면에 투영해 yaw-only forward/right를 반환.
+    /// 카메라를 기준으로 하면 트롬본 틸트·피치 시점 변화와 완전히 분리된다.
+    /// Camera.main이 없으면 anchor.forward XZ 투영으로 폴백.
+    /// </summary>
+    static void GetYawDirections(Transform anchor, out Vector3 yawForward, out Vector3 yawRight)
+    {
+        Camera cam = Camera.main;
+        Vector3 srcFwd = cam != null ? cam.transform.forward : anchor.forward;
+        Vector3 fwd = new Vector3(srcFwd.x, 0f, srcFwd.z);
+        if (fwd.sqrMagnitude < 0.0001f)
+        {
+            yawForward = Vector3.forward;
+            yawRight   = Vector3.right;
+        }
+        else
+        {
+            yawForward = fwd.normalized;
+            yawRight   = Vector3.Cross(Vector3.up, yawForward).normalized;
+        }
     }
 }
 }
