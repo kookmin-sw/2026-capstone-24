@@ -110,7 +110,7 @@ Photon Fusion을 통해 룸을 생성하거나 기존 룸에 입장·퇴장할 �
 | 2026-05-08 | tools/run-stack-smoke 5시나리오 자동화 (docker-compose 기반) | `Abandoned` (2026-05-25 — superseded by `RoomAuthorityValidateJoinTests` + `quest-onsite-integration-verification`. dev 무게중심이 EC2+ECS 로 이동, 짝 산출물 `tools/run-room-lifecycle-automation.ps1` 도 같은 사이클에 삭제) | [2026-05-08-namae1128-stack-smoke-automation.md](../../_archive/multiplayer-network/plans/2026-05-08-namae1128-stack-smoke-automation.md) |
 | 2026-05-09 | dedicated-server 빌드 시 Standalone OpenXR loader 임시 토글 | `Done` | [2026-05-09-namae1128-dedicated-server-build-openxr-toggle.md](../../_archive/multiplayer-network/plans/2026-05-09-namae1128-dedicated-server-build-openxr-toggle.md) |
 | 2026-05-17 | Ghost room reconciliation (heartbeat 만료 + DS terminate 콜백) | `Done (auto) — manual-hard pending` | [2026-05-17-namae1128-ghost-room-reconciliation.md](../plans/2026-05-17-namae1128-ghost-room-reconciliation.md) |
-| 2026-05-27 | Persistent 데모 룸 정책 (운영자 internal endpoint + lifecycle 예외) | `Ready` | [2026-05-27-namae1128-persistent-demo-room-policy.md](../plans/2026-05-27-namae1128-persistent-demo-room-policy.md) |
+| 2026-05-27 | Persistent 데모 룸 정책 (운영자 internal endpoint + lifecycle 예외) | `Done (auto + manual 2/3) — AC#11 pending DS 재빌드` | [2026-05-27-namae1128-persistent-demo-room-policy.md](../plans/2026-05-27-namae1128-persistent-demo-room-policy.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/plan-new` 사용.

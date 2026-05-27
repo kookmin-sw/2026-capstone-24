@@ -1,7 +1,7 @@
 # Persistent 데모 룸 정책 (운영자 전용 internal endpoint + lifecycle 예외)
 
 **Linked Spec:** [`03-room-session.md`](../specs/03-room-session.md)
-**Status:** `Ready`
+**Status:** `Done (auto AC + manual-hard 2/3) — AC#11 pending DS 이미지 재빌드`
 
 ## Goal
 
@@ -313,15 +313,56 @@
 
 ## Handoff
 
-_본 plan 완료 후 채워질 항목 — implementer 가 검증 결과를 박제한다._
+### Auto AC (commit `abc2764`, 2026-05-27)
 
-- AC#1~#10 (auto) 통과 commit hash + 테스트 결과 요약.
-- AC#11~#13 (manual-hard) 통과 시 사용자 검증 evidence (EC2 instance ID, cURL 출력, DB select 결과, ECS describe-tasks 결과).
-- 다음 plan 이 알아야 할 산출:
-  - `Room.openPersistent(...)` / `findFirstByIsPersistentTrueAndClosedAtIsNull()` 시그니처 박제.
-  - `RoomServerCallbackConfig.EnvIsPersistent` / `RoomServerCallbackReporter.IsPersistent` 신규 심볼.
-  - 운영 매뉴얼 경로 (`docs/dev/operations/persistent-demo-room.md`) — 발표/시연 사전 작업 가이드의 단일 진실원.
-- 후속 plan 후보:
-  - ECS Service 전환으로 persistent 룸 task 자동 재시작 (desired_count=1).
-  - persistent 룸 uptime CloudWatch metric.
-  - 운영자 채널 audit log (`/internal/rooms/persistent` 호출 이력 저장).
+- AC#1 Gradle compileJava + compileTestJava BUILD SUCCESSFUL.
+- AC#2 Flyway V6 적용 — 다른 테스트의 Spring context boot 가 JPA `ddl-auto=validate` 로 컬럼 매칭 강제 통과 + `V6__add_is_persistent_to_rooms.sql` 파일 존재.
+- AC#3 `RoomTest`: 2/2 PASS (`open_setsIsPersistentFalse`, `openPersistent_setsIsPersistentTrue`).
+- AC#4 `RoomServerManagerImplTest`: 14/14 (신규 4건 `provisionPersistent_savesPersistentRoomWithFlag` / `provisionPersistent_whenAnotherPersistentRoomAlive_throwsConflict` / `markUnhealthyAndTerminate_skipsPersistentRoom` / `markProvisioningTimedOut_skipsPersistentRoom` 포함).
+- AC#5 `RoomReconciliationSchedulerTest`: 6/6 (신규 2건 + 기존 4건 — 단 `fakeRoom()` 헬퍼에 `ReflectionTestUtils.setField(room, "roomId", roomId)` 추가 필요했음, `Room.roomId` 가 `@GeneratedValue(IDENTITY)` 라 fake 객체에선 null 이라 scheduler 의 `Map<Long, Room>` lookup 이 깨지는 문제).
+- AC#6 `RoomInternalCallbackControllerTest`: 12/12 (신규 4건 `/persistent` 3건 + `/terminate` persistent skip 1건 포함).
+- AC#7 `EcsRoomRuntimeProviderTest`: 12/12 (신규 `runTask_includesPersistentAndTerminateEnvVariables` 1건 포함). `ROOM_IS_PERSISTENT` + `ROOM_TERMINATE_CALLBACK_URL` 두 env 가 ContainerOverride 에 정상 주입.
+- AC#8 Unity unity-test-runner EditMode 133/133 PASS (Murang.Multiplayer.Room.Tests 포함), 컴파일 에러 0건. `RoomServerCallbackConfig.IsPersistent` / `RoomServerCallbackReporter.IsPersistent` 심볼 grep hit.
+- AC#9 `RoomCreateRequest` 에 `persistent` 키워드 0 hit.
+- AC#10 `RoomResponse` 에 `persistent` 키워드 0 hit + manual-hard AC#12 의 200 응답 body 에서도 `isPersistent` 필드 미노출 확인.
+
+### Manual-hard AC#12 / AC#13 PASS (2026-05-27 02:25~02:28 UTC, EC2 `ip-10-10-1-18`)
+
+**Pre-check**: spring 컨테이너 재빌드 (`docker compose -f docker-compose.ec2-dev.yml --env-file ~/.env.aws-dev up -d --build spring`), `Started MurangApplication in 16.69 seconds`. `POST /internal/rooms/persistent` 빈 body → `HTTP/2 400 VALIDATION_REQUEST` 으로 endpoint 노출 확인. INTERNAL_TOKEN length=64 prefix `5b369f1e...`.
+
+**AC#12** (두 번째 persistent 생성 시 409):
+- 첫 cURL `{"ownerUserId":1,"photonSessionName":"persistent-ac12-test","maxPlayers":8,"roomRuntimeVersion":"v0.1.0"}` → **HTTP/2 200** + body `{"data":{"roomId":29,"status":"SERVER_STARTING",...}}` (traceId `ef154f49-48f6-4a1c-b225-7d503adcadcd`). **추가 확인**: `RoomResponse` body 에 `isPersistent` 필드 미노출 — AC#10 wire 응답에서도 검증됨.
+- 두 번째 cURL `{"...photonSessionName":"persistent-ac12-second",...}` → **HTTP/2 409** + `{"code":"PERSISTENT_ROOM_ALREADY_EXISTS","detail":"이미 살아 있는 persistent 룸이 있습니다."}` (traceId `bc809807-63df-44fe-b4f0-a0f00fd2bbb8`).
+
+**AC#13** (매뉴얼 종료 절차 — UPDATE → /terminate → TERMINATED):
+- (보너스) SQL UPDATE *없이* `/terminate` 호출 → **HTTP/2 204** + DB 상태 `is_persistent=1, closed_at=NULL, status=READY` 유지 — `/terminate` 의 persistent 가드 idempotent skip 분기 동작 확인 (traceId `d730bd02-8792-4db7-8dfa-8450dec36445`).
+- `UPDATE rooms SET is_persistent = FALSE WHERE room_id = 29;` 실행.
+- `/terminate` 재호출 `{"reason":"ac13-cleanup"}` → **HTTP/2 204** (traceId `a2e20099-4032-438b-86f2-03ba1175c7a0`).
+- DB 최종 상태 — `rooms.is_persistent=0, closed_at=2026-05-27 02:28:41.466432`, `room_server_instances.status=TERMINATED, terminated_at=2026-05-27 02:28:41.466432`. `terminate` 가 동기 처리 (별도 대기 불필요).
+
+**예상 외 확인**: AC#13 (b) 시점에 `status=READY` 였다는 건 ECS RunTask + Photon Fusion 세션 부팅 + ready callback 까지 정상 동작했단 강한 시그널 — ECS 인프라 자체는 살아있음.
+
+### Manual-hard AC#11 pending — DS 이미지 재빌드 필요
+
+`Assets/Multiplayer/Scripts/Room/Server/RoomAuthority.cs` 의 `OnPlayerLeft` persistent skip 가드 + `RoomServerCallbackConfig.cs` 의 `EnvIsPersistent` 파싱이 DS 빌드에 들어가야 동작. 현재 ECR 의 DS 이미지는 abc2764 이전 빌드라 IsPersistent 분기 없음. 절차:
+
+1. Windows dev 머신에서 Unity Linux Headless Server 빌드 (IL2CPP x86_64).
+2. 그 산출물로 Docker 이미지 빌드 (`backend/` 또는 별도 DS Dockerfile 위치 — archive plan `2026-05-01-namae1128-dedicated-server-build-pipeline.md` 참조).
+3. ECR 에 push (`murang-room-server:v0.2.0` 등 새 tag).
+4. ECS task definition 의 `image` 필드 새 tag 로 revision 추가.
+5. AC#11 cURL — persistent 룸 생성 + Editor 2개 / Quest 2대 합류 후 둘 다 퇴장 → 5분 후 DB `status=READY|ACTIVE` 유지 + ECS `lastStatus=RUNNING` + Spring 로그 `markUnhealthyAndTerminate skipped (persistent room)` 미 grep (필터에 막혀 helper 자체가 호출 안 되므로).
+
+### 다음 plan 이 알아야 할 산출
+
+- `Room.openPersistent(...)` / `RoomRepository.findFirstByIsPersistentTrueAndClosedAtIsNull()` 시그니처 박제.
+- `RoomServerCallbackConfig.EnvIsPersistent` (`"ROOM_IS_PERSISTENT"`) / `RoomServerCallbackReporter.IsPersistent` / `RoomAuthority.OnPlayerLeft` persistent skip 가드 신규 심볼.
+- `RoomTaskStartRequest` 가 8-인자 record 로 확장됨 (`terminateCallbackUrl`, `isPersistent` 추가).
+- `EcsRoomRuntimeProvider.buildEnvironment` 가 `ROOM_IS_PERSISTENT` + `ROOM_TERMINATE_CALLBACK_URL` 두 env 주입 — ghost-room plan handoff 의 미완 잔여였던 terminate URL 도 본 plan 에서 함께 wire-up.
+- 운영 매뉴얼 경로 `docs/dev/operations/persistent-demo-room.md` — 발표/시연 사전 작업 가이드의 단일 진실원.
+
+### 후속 plan 후보
+
+- ECS Service 전환으로 persistent 룸 task 자동 재시작 (desired_count=1) — 사용자 결정으로 dev 상시 사용은 abandon, 시연 한정 정책 유지 시 본 후속도 우선순위 낮음.
+- persistent 룸 uptime CloudWatch metric.
+- 운영자 채널 audit log (`/internal/rooms/persistent` 호출 이력 저장).
+- ghost-room plan 의 manual-hard 잔여 (M1~M3 — heartbeat-timeout 청소, 정상 퇴장 콜백, provisioning-timeout) 도 본 사이클에 함께 검증 가능 — `~/.env.aws-dev` + `docker-compose.ec2-dev.yml` 환경 그대로 사용.
