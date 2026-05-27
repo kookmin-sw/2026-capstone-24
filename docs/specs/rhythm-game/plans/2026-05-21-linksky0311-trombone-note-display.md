@@ -1,7 +1,7 @@
 # Trombone 파셜 패널 5종 (반원형) 노트 디스플레이
 
 **Linked Spec:** [`13-trombone-note-display.md`](../specs/13-trombone-note-display.md)
-**Status:** `Ready`
+**Status:** `Done`
 
 ## Goal
 
@@ -113,4 +113,4 @@
 
 ## Handoff
 
-<완료 시 메인 세션이 채움. 다음 plan(sub-spec 14 등)이 알 공개 API: `TromboneNoteDisplayAdapter` SerializeField 표면(`radius/arcDegrees/panelTiltDegrees/centerAnchor`), `Trombone_LaneConfig.asset` 경로, `InstrumentLaneConfig.CreateSingleLane(IReadOnlyList<byte>)` 헬퍼.>
+[2026-05-27 완료] trombone-pitch-perception 피처에서 PanelAnchor 기반 수직 적층 layout으로 교체 구현. 공개 API: `TromboneNoteDisplayAdapter`(INoteDisplayController), `Trombone_LaneConfig.asset`(`Assets/RhythmGame/Data/`), `InstrumentLaneConfig.CreateSingleLane(IReadOnlyList<byte>)`. Trombone.prefab에 PanelAnchor child가 추가됨(`tromboneRoot` 기준 Rig 자식). manual-hard 4건 사용자 확인 완료(2026-05-27).
