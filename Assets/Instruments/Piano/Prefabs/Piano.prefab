@@ -4573,6 +4573,7 @@ MonoBehaviour:
   instrumentId: piano
   instanceVolume: 0.5
   _panelAnchor: {fileID: 1149117177022473562}
+  instrumentNetId: 0
   requiredInputMode: 1
   fingertipSwitchMargin: 0.05
 --- !u!1 &3203906738604975894
@@ -13814,11 +13815,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.045
+      value: 0.055
       objectReference: {fileID: 0}
     - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
       propertyPath: m_LocalRotation.x
@@ -13826,7 +13827,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
       propertyPath: m_LocalRotation.z
@@ -13834,11 +13835,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -0.01
+      value: -0.002
       objectReference: {fileID: 0}
     - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 1.225
+      value: 1.197
       objectReference: {fileID: 0}
     - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -13846,7 +13847,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 7000000002, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
