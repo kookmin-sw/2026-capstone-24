@@ -240,11 +240,17 @@ public abstract class InstrumentBase : MonoBehaviour, IPlayable, IActiveInstrume
         InstrumentIdRegistry.Register(this);
     }
 
+    /// <summary>이 악기에서 재생 중인 모든 voice를 즉시 정지한다(잔음 제거).</summary>
+    public virtual void SilenceAll()
+    {
+        if (audioOutput != null)
+            audioOutput.StopAllVoices();
+    }
+
     protected virtual void OnDisable()
     {
         InstrumentIdRegistry.Unregister(this);
-        if (audioOutput != null)
-            audioOutput.StopAllVoices();
+        SilenceAll();
     }
 }
 }
