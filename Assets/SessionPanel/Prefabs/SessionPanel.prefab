@@ -1317,6 +1317,9 @@ MonoBehaviour:
   instrumentToggleButtonPrefab: {fileID: 4462605354314844753, guid: 3e6f8ad48c5260c4f8fd18f5998bb146, type: 3}
   activeInstrumentProviderObject: {fileID: 0}
   songCatalogObject: {fileID: 0}
+  inputModeProbe: {fileID: 0}
+  readinessNoticePrefab: {fileID: 100100000, guid: 167884811c8c6384bbaa015937f9bc0f,
+    type: 3}
 --- !u!222 &7692012001197235033
 CanvasRenderer:
   m_ObjectHideFlags: 0

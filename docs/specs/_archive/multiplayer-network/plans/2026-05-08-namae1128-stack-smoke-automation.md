@@ -1,7 +1,7 @@
 # tools/run-stack-smoke 5시나리오 자동화 (docker-compose 기반)
 
-**Linked Spec:** [`03-room-session.md`](../specs/03-room-session.md)
-**Status:** `Ready`
+**Linked Spec:** [`03-room-session.md`](../../../multiplayer-network/specs/03-room-session.md)
+**Status:** `Abandoned (2026-05-25) — superseded by RoomAuthorityValidateJoinTests (단위 진실원) + quest-onsite-integration-verification (운영 환경 합류 회귀). dev 무게중심이 로컬 docker-compose 에서 EC2 Spring/MariaDB + ECS Fargate room-server 로 이동했고, plan 의 Out of Scope (AWS 환경 smoke / CI 통합) 두 가지가 plan ROI 를 0 에 수렴시킴. 같은 사이클에서 짝 산출물 tools/run-room-lifecycle-automation.ps1 도 삭제.`
 
 ## Goal
 

@@ -14,6 +14,7 @@ public enum ErrorCode {
     ROOM_INTERNAL_FORBIDDEN(HttpStatus.FORBIDDEN, "내부 룸 콜백 호출 자격이 없습니다."),
     ROOM_PROVISIONING_FAILED(HttpStatus.SERVICE_UNAVAILABLE, "룸 서버 인스턴스 기동에 실패했습니다."),
     ROOM_NAME_DUPLICATE(HttpStatus.CONFLICT, "이미 사용 중인 룸 세션 이름입니다."),
+    PERSISTENT_ROOM_ALREADY_EXISTS(HttpStatus.CONFLICT, "이미 살아 있는 persistent 룸이 있습니다."),
     INTERNAL_UNEXPECTED(HttpStatus.INTERNAL_SERVER_ERROR, "예상하지 못한 서버 오류가 발생했습니다.");
 
     private final HttpStatus status;

@@ -172,12 +172,13 @@ docs/specs/
 
 | Feature | Status | Sub-Specs | Plans (Done/Total) | 비고 |
 |---|---|---|---|---|
-| [rhythm-game](rhythm-game/_index.md) | Active | 22 | 26/27 | sub-spec 15 추가 |
+| [rhythm-game](rhythm-game/_index.md) | Active | 24 | 36/37 | spec 14·17 Done. Chart Import·Session Flow Abandoned. 나머지 모두 Done |
 | [hands](hands/_index.md) | Active | 3 | 1/2 | |
 | [drum-stick](drum-stick/_index.md) | Active | 2 | 3/3 | |
 | [session-panel](session-panel/_index.md) | Active | 10 | 9/9 | sub-spec 10 추가, 09는 10에 흡수되어 Abandoned |
 | [multiplayer-network](multiplayer-network/_index.md) | Active | 7 | 13/19 | sub-spec 07 추가 |
 | [multiplayer-hand-midi-sync](multiplayer-hand-midi-sync/_index.md) | Draft | 2 | 0/0 | |
+| [trombone-pitch-perception](_archive/trombone-pitch-perception/_index.md) | Done | 2 | 4/4 | 2 tech-spec, 3 ARD, retry-via-new-plan 2회 |
 | [trombone](_archive/trombone/_index.md) | Active | 5 | 4/5 | sub-spec 05 추가 (클릭 노이즈 억제) |
 | [teleport-locomotion](_archive/teleport-locomotion/_index.md) | Done | 3 | 4/4 | |
 

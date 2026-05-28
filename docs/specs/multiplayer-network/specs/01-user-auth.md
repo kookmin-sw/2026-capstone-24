@@ -56,7 +56,7 @@ Meta 계정 기반 인증 흐름을 제공한다. 클라이언트가 Meta ID 토
 | 2026-04-30 | Quest 앱 인증 브리지 후속 구현 | `Done` | [2026-04-30-namae1128-quest-app-auth-bridge.md](../../_archive/multiplayer-network/plans/2026-04-30-namae1128-quest-app-auth-bridge.md) |
 | 2026-05-08 | 인-게임 멀티플레이어 진입 게이트 | `Done` | [2026-05-08-namae1128-multiplayer-auth-gate.md](../../_archive/multiplayer-network/plans/2026-05-08-namae1128-multiplayer-auth-gate.md) |
 | 2026-05-08 | 백엔드 real Meta 토큰 verifier (Oculus Graph API) | `Done` | [2026-05-08-namae1128-real-meta-verifier.md](../../_archive/multiplayer-network/plans/2026-05-08-namae1128-real-meta-verifier.md) |
-| 2026-05-11 | Quest 실기기 멀티 plan 통합 검증 | `Ready` | [2026-05-11-namae1128-quest-onsite-integration-verification.md](../plans/2026-05-11-namae1128-quest-onsite-integration-verification.md) |
+| 2026-05-11 | Quest 실기기 멀티 plan 통합 검증 | `Ready` (2026-05-26 reopen — mock 통과만 확인, real-meta-verifier 3건 미검증) | [2026-05-11-namae1128-quest-onsite-integration-verification.md](../plans/2026-05-11-namae1128-quest-onsite-integration-verification.md) |
 
 > 상태 값은 `Ready` / `In Progress` / `Done`
 

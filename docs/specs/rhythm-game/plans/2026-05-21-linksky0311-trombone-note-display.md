@@ -1,7 +1,7 @@
 # Trombone 파셜 패널 5종 (반원형) 노트 디스플레이
 
 **Linked Spec:** [`13-trombone-note-display.md`](../specs/13-trombone-note-display.md)
-**Status:** `Ready`
+**Status:** `Done`
 
 ## Goal
 
@@ -109,7 +109,8 @@
 - `_devtest-trombone-1.vmsong`은 본 plan AC manual 검증을 위한 임시 자산이다. 본 plan 완료 후 정식 트롬본 차트가 생기면 삭제 또는 `_archive` 이동. 본 plan은 파일을 streamingAssets에 두지만 `_` prefix로 dev-only 의도를 명시.
 - 후속 plan 후보: (a) 슬라이드 X 오프셋 시각화 (NoteDisplayPanel + 어댑터에 slideIndex 시각화 hook 추가), (b) PanelAnchor child를 trombone prefab에 정식 추가하여 SessionPanel 위치를 mouthpiece 근처로 조정, (c) `_devtest-trombone-1.vmsong` 정리, (d) 파셜 인덱스 좌→우 배치 사용자 피드백 반영.
 - 후속 plan 추가됨 (2026-05-21): `2026-05-21-linksky0311-trombone-session-panel-snap-once.md` — manual-hard 4건 BLOCKED 사유(SessionPanel이 트롬본 head-tracking을 따라가 5패널 가시 차단)를 SessionPanelController `snapOnce` SerializeField로 해소. 본 plan의 manual-hard 4건은 후속 plan 마지막 manual-hard AC에서 일괄 재검증된다.
+- [2026-05-27 supersede] 본 plan의 yaw 반원형 layout(arcDegrees=120°, ±60° 호)은 `docs/specs/_archive/trombone-pitch-perception/plans/2026-05-27-claude-note-pitch-panel-anchor-stack.md`(sub-spec 02-note-vertical-layout)가 PanelAnchor 기반 pitch 수직 적층으로 교체. centerAnchor·_panelAnchor 슬롯도 신규 PanelAnchor child로 이동.
 
 ## Handoff
 
-<완료 시 메인 세션이 채움. 다음 plan(sub-spec 14 등)이 알 공개 API: `TromboneNoteDisplayAdapter` SerializeField 표면(`radius/arcDegrees/panelTiltDegrees/centerAnchor`), `Trombone_LaneConfig.asset` 경로, `InstrumentLaneConfig.CreateSingleLane(IReadOnlyList<byte>)` 헬퍼.>
+[2026-05-27 완료] trombone-pitch-perception 피처에서 PanelAnchor 기반 수직 적층 layout으로 교체 구현. 공개 API: `TromboneNoteDisplayAdapter`(INoteDisplayController), `Trombone_LaneConfig.asset`(`Assets/RhythmGame/Data/`), `InstrumentLaneConfig.CreateSingleLane(IReadOnlyList<byte>)`. Trombone.prefab에 PanelAnchor child가 추가됨(`tromboneRoot` 기준 Rig 자식). manual-hard 4건 사용자 확인 완료(2026-05-27).

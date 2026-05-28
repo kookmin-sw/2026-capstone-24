@@ -8,6 +8,8 @@ public interface RoomServerManager {
 
     RoomServerSnapshot provision(RoomProvisioningCommand command);
 
+    RoomServerSnapshot provisionPersistent(RoomProvisioningCommand command);
+
     void notifyReady(Long roomId, RoomReadySignal signal);
 
     void notifyHeartbeat(Long roomId, Instant receivedAt);

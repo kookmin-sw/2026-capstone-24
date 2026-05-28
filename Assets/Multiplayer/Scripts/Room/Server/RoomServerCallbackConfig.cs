@@ -17,6 +17,7 @@ namespace Murang.Multiplayer.Room.Server
         public const string EnvRoomRuntimeVersion = "ROOM_RUNTIME_VERSION";
         public const string EnvSharedSecret = "MURANG_ROOM_INTERNAL_CALLBACK_SHARED_SECRET";
         public const string EnvTerminateCallbackUrl = "ROOM_TERMINATE_CALLBACK_URL";
+        public const string EnvIsPersistent = "ROOM_IS_PERSISTENT";
 
         public long RoomId { get; }
         public string ReadyCallbackUrl { get; }
@@ -24,6 +25,7 @@ namespace Murang.Multiplayer.Room.Server
         public string RoomRuntimeVersion { get; }
         public string SharedSecret { get; }
         public string TerminateCallbackUrl { get; }
+        public bool IsPersistent { get; }
 
         private RoomServerCallbackConfig(
             long roomId,
@@ -31,7 +33,8 @@ namespace Murang.Multiplayer.Room.Server
             string heartbeatCallbackUrl,
             string roomRuntimeVersion,
             string sharedSecret,
-            string terminateCallbackUrl)
+            string terminateCallbackUrl,
+            bool isPersistent)
         {
             RoomId = roomId;
             ReadyCallbackUrl = readyCallbackUrl;
@@ -39,6 +42,7 @@ namespace Murang.Multiplayer.Room.Server
             RoomRuntimeVersion = roomRuntimeVersion;
             SharedSecret = sharedSecret;
             TerminateCallbackUrl = terminateCallbackUrl;
+            IsPersistent = isPersistent;
         }
 
         /// <summary>
@@ -91,13 +95,18 @@ namespace Murang.Multiplayer.Room.Server
                         EnvTerminateCallbackUrl, terminateUrl));
             }
 
+            // ROOM_IS_PERSISTENT: optional — null/empty 이면 false 로 fallback (안전 기본값)
+            string isPersistentRaw = GetTrimmedOrNull(env, EnvIsPersistent);
+            bool isPersistent = bool.TryParse(isPersistentRaw, out bool parsedPersistent) && parsedPersistent;
+
             return new RoomServerCallbackConfig(
                 roomId,
                 readyUrl,
                 heartbeatUrl,
                 runtimeVersion,
                 sharedSecret,
-                terminateUrl);
+                terminateUrl,
+                isPersistent);
         }
 
         /// <summary>

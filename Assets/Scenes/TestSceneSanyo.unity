@@ -488,6 +488,11 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &246256112 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8121941442307837655, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
+  m_PrefabInstance: {fileID: 7187747401014242035}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &247458534 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2805429515459502346, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
@@ -7025,6 +7030,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: SessionPanel.Runtime::SessionPanel.FolderScanSongCatalog
   songsRelativePath: Songs
   indexFileName: index.json
+--- !u!1 &1928446971 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1133154061211659073, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
+  m_PrefabInstance: {fileID: 7187747401014242035}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1977748801
 GameObject:
   m_ObjectHideFlags: 0
@@ -7072,6 +7082,7 @@ GameObject:
   - component: {fileID: 2039824627}
   - component: {fileID: 2039824626}
   - component: {fileID: 2039824625}
+  - component: {fileID: 2039824628}
   m_Layer: 0
   m_Name: SessionPanelController
   m_TagString: Untagged
@@ -7131,6 +7142,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2039824628
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2039824624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30b45d2dde1842f42912cc448da448f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SessionPanel.Runtime::SessionPanel.XRInputModeProbe
+  handTrackingRoot: {fileID: 1928446971}
+  controllerRoot: {fileID: 246256112}
 --- !u!1 &2045667644
 GameObject:
   m_ObjectHideFlags: 0
@@ -7281,7 +7306,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5936719583781239485, guid: 7bf49c709166cad468c62b67a3e78040, type: 3}
   m_PrefabInstance: {fileID: 7187747401014242035}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 246256112}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b734f2bd29eeddd4d85afb0c266228c3, type: 3}

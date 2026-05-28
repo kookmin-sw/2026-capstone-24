@@ -37,9 +37,11 @@ VR 악기 연습 환경에서 박자감을 게임적으로 익히게 하는 학�
 | Note Panel Y Position Fix | Done | [`specs/10-note-panel-y-fix.md`](specs/10-note-panel-y-fix.md) |
 | Drum Note Panel Rotation Fix | Done | [`specs/11-drum-note-panel-rotation-fix.md`](specs/11-drum-note-panel-rotation-fix.md) |
 | Drum Session Panel Position Fix | Done | [`specs/12-drum-session-panel-position-fix.md`](specs/12-drum-session-panel-position-fix.md) |
-| Trombone Note Display | Draft | [`specs/13-trombone-note-display.md`](specs/13-trombone-note-display.md) |
-| Trombone Session Panel | Draft | [`specs/14-trombone-session-panel.md`](specs/14-trombone-session-panel.md) |
-| Trombone Slide Position Rings | Draft | [`specs/15-trombone-slide-position-rings.md`](specs/15-trombone-slide-position-rings.md) |
+| Trombone Note Display | Done | [`specs/13-trombone-note-display.md`](specs/13-trombone-note-display.md) |
+| Trombone Session Panel | Done | [`specs/14-trombone-session-panel.md`](specs/14-trombone-session-panel.md) |
+| Trombone Slide Position Rings | Done | [`specs/15-trombone-slide-position-rings.md`](specs/15-trombone-slide-position-rings.md) |
+| Note Panel Judgment Line Centering | Done | [`specs/16-note-panel-judgment-centering.md`](specs/16-note-panel-judgment-centering.md) |
+| Input Mode Readiness Check | Done | [`specs/17-input-mode-readiness-check.md`](specs/17-input-mode-readiness-check.md) |
 
 > 상태 값: `Draft` / `Active` / `Done` / `Abandoned`
 

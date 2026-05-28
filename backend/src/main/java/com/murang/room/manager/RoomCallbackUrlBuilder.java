@@ -21,6 +21,10 @@ public class RoomCallbackUrlBuilder {
         return resolve("/internal/rooms/" + roomId + "/heartbeat");
     }
 
+    public URI terminateCallbackUrl(Long roomId) {
+        return resolve("/internal/rooms/" + roomId + "/terminate");
+    }
+
     private URI resolve(String path) {
         String base = properties.baseUrl();
         if (base == null || base.isBlank()) {

@@ -79,13 +79,16 @@ class EcsRoomRuntimeProviderTest {
                         .build()
         );
 
+        URI terminateUrl = URI.create("http://ec2.example/internal/rooms/42/terminate");
         ProvisionedRoomTask result = provider.startRoomTask(new RoomTaskStartRequest(
                 42L,
                 "murang-room-a",
                 8,
                 "v0.1.0",
                 READY_URL,
-                HEARTBEAT_URL
+                HEARTBEAT_URL,
+                terminateUrl,
+                false
         ));
 
         assertThat(result.clusterArn()).isEqualTo("arn:cluster");
@@ -119,7 +122,42 @@ class EcsRoomRuntimeProviderTest {
                 .containsEntry("ROOM_RUNTIME_VERSION", "v0.1.0")
                 .containsEntry("ROOM_READY_CALLBACK_URL", READY_URL.toString())
                 .containsEntry("ROOM_HEARTBEAT_CALLBACK_URL", HEARTBEAT_URL.toString())
-                .containsEntry("MURANG_ROOM_INTERNAL_CALLBACK_SHARED_SECRET", "test-internal-secret");
+                .containsEntry("MURANG_ROOM_INTERNAL_CALLBACK_SHARED_SECRET", "test-internal-secret")
+                .containsEntry("ROOM_TERMINATE_CALLBACK_URL", "http://ec2.example/internal/rooms/42/terminate")
+                .containsEntry("ROOM_IS_PERSISTENT", "false");
+    }
+
+    @Test
+    void runTask_includesPersistentAndTerminateEnvVariables() {
+        when(ecsClient.runTask(any(RunTaskRequest.class))).thenReturn(
+                RunTaskResponse.builder()
+                        .tasks(Task.builder()
+                                .clusterArn("arn:cluster")
+                                .taskArn("arn:task:xyz")
+                                .build())
+                        .build()
+        );
+
+        URI terminateUrl = URI.create("http://ec2.example/internal/rooms/99/terminate");
+        provider.startRoomTask(new RoomTaskStartRequest(
+                99L,
+                "demo-room",
+                8,
+                "v0.1.0",
+                URI.create("http://ec2.example/internal/rooms/99/ready"),
+                URI.create("http://ec2.example/internal/rooms/99/heartbeat"),
+                terminateUrl,
+                true
+        ));
+
+        ArgumentCaptor<RunTaskRequest> captor = ArgumentCaptor.forClass(RunTaskRequest.class);
+        verify(ecsClient).runTask(captor.capture());
+        Map<String, String> envMap = captor.getValue().overrides().containerOverrides().get(0).environment().stream()
+                .collect(Collectors.toMap(KeyValuePair::name, KeyValuePair::value));
+
+        assertThat(envMap)
+                .containsEntry("ROOM_IS_PERSISTENT", "true")
+                .containsEntry("ROOM_TERMINATE_CALLBACK_URL", terminateUrl.toString());
     }
 
     @Test
@@ -133,7 +171,8 @@ class EcsRoomRuntimeProviderTest {
                         .build()
         );
 
-        provider.startRoomTask(new RoomTaskStartRequest(1L, "s", 4, "v", READY_URL, HEARTBEAT_URL));
+        URI terminateUrlBlank = URI.create("http://ec2.example/internal/rooms/1/terminate");
+        provider.startRoomTask(new RoomTaskStartRequest(1L, "s", 4, "v", READY_URL, HEARTBEAT_URL, terminateUrlBlank, false));
 
         ArgumentCaptor<RunTaskRequest> captor = ArgumentCaptor.forClass(RunTaskRequest.class);
         verify(ecsClient).runTask(captor.capture());
@@ -156,7 +195,8 @@ class EcsRoomRuntimeProviderTest {
                         .build()
         );
 
-        provider.startRoomTask(new RoomTaskStartRequest(1L, "s", 4, "v", READY_URL, HEARTBEAT_URL));
+        URI terminateUrlAssign = URI.create("http://ec2.example/internal/rooms/1/terminate");
+        provider.startRoomTask(new RoomTaskStartRequest(1L, "s", 4, "v", READY_URL, HEARTBEAT_URL, terminateUrlAssign, false));
 
         ArgumentCaptor<RunTaskRequest> captor = ArgumentCaptor.forClass(RunTaskRequest.class);
         verify(ecsClient).runTask(captor.capture());
@@ -172,8 +212,9 @@ class EcsRoomRuntimeProviderTest {
                         .build()
         );
 
+        URI terminateUrlCap = URI.create("http://ec2.example/internal/rooms/42/terminate");
         assertThatThrownBy(() -> provider.startRoomTask(new RoomTaskStartRequest(
-                42L, "session", 4, "v0.1.0", READY_URL, HEARTBEAT_URL)))
+                42L, "session", 4, "v0.1.0", READY_URL, HEARTBEAT_URL, terminateUrlCap, false)))
                 .isInstanceOf(RoomRuntimeProviderException.class)
                 .hasMessageContaining("CAPACITY");
     }
@@ -184,8 +225,9 @@ class EcsRoomRuntimeProviderTest {
                 RunTaskResponse.builder().tasks(List.of()).build()
         );
 
+        URI terminateUrlEmpty = URI.create("http://ec2.example/internal/rooms/42/terminate");
         assertThatThrownBy(() -> provider.startRoomTask(new RoomTaskStartRequest(
-                42L, "session", 4, "v0.1.0", READY_URL, HEARTBEAT_URL)))
+                42L, "session", 4, "v0.1.0", READY_URL, HEARTBEAT_URL, terminateUrlEmpty, false)))
                 .isInstanceOf(RoomRuntimeProviderException.class)
                 .hasMessageContaining("task 를 반환하지 않았습니다");
     }
@@ -201,8 +243,9 @@ class EcsRoomRuntimeProviderTest {
                 .build();
         when(ecsClient.runTask(any(RunTaskRequest.class))).thenThrow(ex);
 
+        URI terminateUrlExc = URI.create("http://ec2.example/internal/rooms/42/terminate");
         assertThatThrownBy(() -> provider.startRoomTask(new RoomTaskStartRequest(
-                42L, "session", 4, "v0.1.0", READY_URL, HEARTBEAT_URL)))
+                42L, "session", 4, "v0.1.0", READY_URL, HEARTBEAT_URL, terminateUrlExc, false)))
                 .isInstanceOf(RoomRuntimeProviderException.class)
                 .hasMessageContaining("AccessDenied");
     }

@@ -61,4 +61,8 @@ public class ApiException extends RuntimeException {
     public static ApiException roomNameDuplicate() {
         return new ApiException(ErrorCode.ROOM_NAME_DUPLICATE);
     }
+
+    public static ApiException persistentRoomAlreadyExists() {
+        return new ApiException(ErrorCode.PERSISTENT_ROOM_ALREADY_EXISTS);
+    }
 }

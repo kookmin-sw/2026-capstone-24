@@ -158,6 +158,11 @@ namespace Murang.Multiplayer.Room.Server
             if (!runner.ActivePlayers.Any())
             {
                 RoomServerCallbackReporter reporter = GetComponent<RoomServerCallbackReporter>();
+                if (reporter != null && reporter.IsPersistent)
+                {
+                    Debug.Log("[RoomAuthority] OnPlayerLeft: persistent room, skipping Shutdown.");
+                    return;
+                }
                 if (reporter != null && reporter.IsActive)
                 {
                     StartCoroutine(TerminateAndShutdownRoutine(runner, reporter));

@@ -29,21 +29,33 @@ namespace Instruments
         [Tooltip("슬라이드 축선 대비 (y, z) 오프셋. 후속 튜닝용. 이번 단계는 (0,0).")]
         [SerializeField] Vector2 lateralOffset = Vector2.zero;
 
+        [Header("Attach Gating & Highlight")]
+        [SerializeField] TromboneAnchor tromboneAnchor;
+        [Tooltip("Grip이 눌린 동안 비활성 6개 링의 채널에 곱하는 dim 계수. 0=완전 검정, 1=원본 그대로. 기본 0.3으로 현재 링과 명확한 대비.")]
+        [SerializeField, Range(0f, 1f)] float dimFactor = 0.3f;
+
         [Header("Material")]
         [Tooltip("미할당 시 URP/Unlit 기반 fallback 머티리얼을 자동 생성한다.")]
         [SerializeField] Material markerMaterialTemplate;
 
         readonly List<GameObject> _spawned = new List<GameObject>();
+        readonly List<MeshRenderer> _spawnedRenderers = new List<MeshRenderer>();
+        readonly List<Color> _baseColors = new List<Color>();
+        bool _lastIsAttached;
+        int _lastHighlightedIndex = -1;
         Mesh _torusMesh;
         Material _fallbackTemplate;
 
         void OnEnable()
         {
+            _lastIsAttached = false;
+            _lastHighlightedIndex = -1;
             Rebuild();
         }
 
         void OnDisable()
         {
+            ApplyDimExceptActive(-1);
             ClearSpawned();
         }
 
@@ -58,6 +70,70 @@ namespace Instruments
             };
         }
 #endif
+
+        void LateUpdate()
+        {
+            if (!Application.isPlaying) return; // 에디터 모드에서는 게이팅 비활성 — prefab/scene 작업 가시성 유지
+
+            TromboneAnchor anchor = tromboneAnchor != null ? tromboneAnchor : GetComponentInParent<TromboneAnchor>();
+            bool attached = anchor != null && anchor.IsAttached;
+
+            // attach 변화 시에만 자식 SetActive 토글 (매 프레임 호출 회피)
+            if (attached != _lastIsAttached)
+            {
+                for (int i = 0; i < _spawned.Count; i++)
+                    if (_spawned[i] != null) _spawned[i].SetActive(attached);
+                _lastIsAttached = attached;
+
+                // 트롬본 놓을 때 / 집을 때 dim 상태 동기화
+                if (!attached)
+                {
+                    ApplyDimExceptActive(-1);
+                    _lastHighlightedIndex = -1;
+                }
+                else
+                {
+                    ApplyDimExceptActive(-1);
+                    _lastHighlightedIndex = -1;
+                }
+            }
+
+            if (!attached) return;
+
+            // grip 폴링 → desired highlight index 산출
+            TromboneSlideController controller = slideController != null
+                ? slideController
+                : GetComponentInParent<TromboneSlideController>();
+            int desiredIdx = (controller != null && controller.IsGripHeld) ? controller.SlideIndex : -1;
+
+            if (desiredIdx != _lastHighlightedIndex)
+            {
+                ApplyDimExceptActive(desiredIdx);
+                _lastHighlightedIndex = desiredIdx;
+            }
+        }
+
+        void ApplyDimExceptActive(int activeIdx)
+        {
+            // activeIdx가 -1(grip 해제 또는 detach)이면 모두 dim. activeIdx와 일치하는 링만 기본 색.
+            for (int i = 0; i < _spawnedRenderers.Count; i++)
+            {
+                MeshRenderer mr = _spawnedRenderers[i];
+                if (mr == null) continue;
+                Color baseC = _baseColors[i];
+                Color target;
+                if (i == activeIdx)
+                {
+                    target = baseC; // 현재 링 — 원본 색
+                }
+                else
+                {
+                    target = baseC * dimFactor;
+                    target.a = baseC.a; // 알파 보존
+                }
+                SetMaterialColor(mr.sharedMaterial, target);
+            }
+        }
 
         void Rebuild()
         {
@@ -101,6 +177,15 @@ namespace Instruments
                 mr.receiveShadows = false;
 
                 _spawned.Add(go);
+                _spawnedRenderers.Add(mr);
+                _baseColors.Add(c);
+            }
+
+            // Play 모드이고 아직 attach 전이라면 자식을 비활성으로 시작
+            if (Application.isPlaying)
+            {
+                for (int i = 0; i < _spawned.Count; i++)
+                    if (_spawned[i] != null) _spawned[i].SetActive(false);
             }
         }
 
@@ -114,6 +199,8 @@ namespace Instruments
                 else DestroyImmediate(go);
             }
             _spawned.Clear();
+            _spawnedRenderers.Clear();
+            _baseColors.Clear();
         }
 
         void EnsureTorusMesh()

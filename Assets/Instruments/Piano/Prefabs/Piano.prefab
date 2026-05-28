@@ -4573,6 +4573,7 @@ MonoBehaviour:
   instrumentId: piano
   instanceVolume: 0.5
   _panelAnchor: {fileID: 1149117177022473562}
+  requiredInputMode: 1
   fingertipSwitchMargin: 0.05
 --- !u!1 &3203906738604975894
 GameObject:

@@ -1,7 +1,7 @@
 # AWS dev HTTPS 종단 (Elastic IP + Cloudflare DNS + Caddy reverse proxy + Let's Encrypt)
 
-**Linked Spec:** [`05-room-server-manager.md`](../specs/05-room-server-manager.md)
-**Status:** `Ready`
+**Linked Spec:** [`05-room-server-manager.md`](../../../multiplayer-network/specs/05-room-server-manager.md)
+**Status:** `Done (2026-05-25) — Quest 실기기가 HTTPS 도메인 (api.mu-rang.com) 경유로 인증 + 룸 생성 + Fargate 합류 흐름 통과 확인. Caddy/Cloudflare/Let's Encrypt 종단 동작. SG 8080 inbound 제거 검증은 후속 운영 정리 사이클로 deferred.`
 
 ## Goal
 

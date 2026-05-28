@@ -2,6 +2,11 @@
 
 **Parent:** [`_index.md`](../_index.md)
 
+> **[2026-05-27 supersede]** 본 spec의 "수평 반원형" layout 가정은
+> [`docs/specs/_archive/trombone-pitch-perception/specs/02-note-vertical-layout.md`](../../_archive/trombone-pitch-perception/specs/02-note-vertical-layout.md)
+> 가 PanelAnchor 기반 pitch 수직 적층으로 대체하였다. 이하 본문은 원본을 유지하되
+> supersede 상태임을 명시한다.
+
 ## Why
 
 트롬본은 파셜(배음)과 슬라이드 포지션 두 축으로 음을 결정하므로, 기존 피아노의 단일
@@ -11,12 +16,18 @@
 
 ## What
 
-트롬본 세션이 시작되면 5개의 파셜(배음) 패널이 트롬본 앞 수평 반원형으로 나타나고,
-각 패널에 해당 파셜의 노트가 표시된다.
+> **[supersede 2026-05-27]** 아래 "수평 반원형" 배치는
+> [`02-note-vertical-layout`](../../_archive/trombone-pitch-perception/specs/02-note-vertical-layout.md)
+> 의 PanelAnchor 기반 pitch 수직 적층(-30°/-15°/0°/+15°/+30°)으로 교체되었다.
 
-- 트롬본 악기를 잡은 상태에서 리듬게임 세션이 시작되면 5개 파셜 패널이 트롬본 앞
-  수평 반원형으로 나타난다.
-- 각 패널은 파셜 하나에 대응하며(파셜 0~4), 트롬본 축에 수직하게 배치된다.
+트롬본 세션이 시작되면 5개의 파셜(배음) 패널이 트롬본 PanelAnchor 기준 시점 pitch
+-30°/-15°/0°/+15°/+30°에 1:1 수직 적층 배치되어 나타나고, 각 패널에 해당 파셜의
+노트가 표시된다.
+
+- 트롬본 악기를 잡은 상태에서 리듬게임 세션이 시작되면 5개 파셜 패널이 PanelAnchor
+  기준 pitch -30°/-15°/0°/+15°/+30°에 수직 적층 배치된다. (구: 트롬본 앞 수평 반원형)
+- 각 패널은 파셜 하나에 대응하며(파셜 0~4), PanelAnchor를 바라보는 방향으로 배치된다.
+  (구: 트롬본 축에 수직하게 배치)
 - 노트는 차트가 요구하는 슬라이드 포지션의 이론적 3D 위치에서 스폰해
   트롬본 본체(판정선)를 향해 이동한다.
 - 차트의 MIDI 노트는 InstrumentLaneConfig를 통해 파셜 인덱스(0~4)로 매핑된다.
@@ -24,9 +35,12 @@
 
 ## Behavior
 
+> **[supersede 2026-05-27]** Behavior의 "수평 반원형" 가정은 아래와 같이 갱신된다.
+> 단일 진실원: [`02-note-vertical-layout`](../../_archive/trombone-pitch-perception/specs/02-note-vertical-layout.md)
+
 - **Given** 플레이어가 트롬본을 잡고 세션을 시작할 때
   **When** 세션 리드인이 시작될 때
-  **Then** 트롬본 앞 수평 반원형으로 5개 파셜 패널이 나타나고,
+  **Then** PanelAnchor 기준 pitch -30°/-15°/0°/+15°/+30°에 5개 파셜 패널이 수직 적층되어 나타나고,
           각 파셜의 차트 노트가 해당 패널에 낙하하기 시작한다
 
 - **Given** 트롬본 세션이 진행 중일 때
@@ -54,8 +68,8 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| 2026-05-21 | Trombone 파셜 패널 5종 (반원형) 노트 디스플레이 | Ready | [`2026-05-21-linksky0311-trombone-note-display.md`](../plans/2026-05-21-linksky0311-trombone-note-display.md) |
-| 2026-05-21 | SessionPanel snap-once 모드 — 트롬본 픽업 시 SessionPanel 위치 1회 고정 | Ready | [`2026-05-21-linksky0311-trombone-session-panel-snap-once.md`](../plans/2026-05-21-linksky0311-trombone-session-panel-snap-once.md) |
+| 2026-05-21 | Trombone 파셜 패널 5종 (반원형) 노트 디스플레이 | Done | [`2026-05-21-linksky0311-trombone-note-display.md`](../plans/2026-05-21-linksky0311-trombone-note-display.md) |
+| 2026-05-21 | SessionPanel snap-once 모드 — 트롬본 픽업 시 SessionPanel 위치 1회 고정 | Done | [`2026-05-21-linksky0311-trombone-session-panel-snap-once.md`](../plans/2026-05-21-linksky0311-trombone-session-panel-snap-once.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 > Plan 추가는 `/spec-build`가 planner sub-agent로 처리. 파일명은 날짜·작성자·slug 기반.

@@ -47,17 +47,34 @@ public class RoomServerManagerImpl implements RoomServerManager {
 
     @Override @Transactional
     public RoomServerSnapshot provision(RoomProvisioningCommand command) {
+        return provisionInternal(command, false);
+    }
+
+    @Override @Transactional
+    public RoomServerSnapshot provisionPersistent(RoomProvisioningCommand command) {
+        if (roomRepository.findFirstByIsPersistentTrueAndClosedAtIsNull().isPresent()) {
+            throw ApiException.persistentRoomAlreadyExists();
+        }
+        return provisionInternal(command, true);
+    }
+
+    private RoomServerSnapshot provisionInternal(RoomProvisioningCommand command, boolean isPersistent) {
         Instant now = Instant.now(clock);
         if (roomRepository.findByPhotonSessionName(command.photonSessionName()).isPresent()) {
             throw ApiException.roomNameDuplicate();
         }
-        Room room = roomRepository.save(Room.open(command.ownerUserId(), command.photonSessionName(),
-                command.maxPlayers(), command.passwordHash(), now));
+        Room room = isPersistent
+                ? roomRepository.save(Room.openPersistent(command.ownerUserId(), command.photonSessionName(),
+                        command.maxPlayers(), command.passwordHash(), now))
+                : roomRepository.save(Room.open(command.ownerUserId(), command.photonSessionName(),
+                        command.maxPlayers(), command.passwordHash(), now));
         RoomServerInstance instance = instanceRepository.save(RoomServerInstance.provision(room.getRoomId(), now));
         RoomTaskStartRequest startRequest = new RoomTaskStartRequest(room.getRoomId(),
                 room.getPhotonSessionName(), room.getMaxPlayers(), command.roomRuntimeVersion(),
                 callbackUrlBuilder.readyCallbackUrl(room.getRoomId()),
-                callbackUrlBuilder.heartbeatCallbackUrl(room.getRoomId()));
+                callbackUrlBuilder.heartbeatCallbackUrl(room.getRoomId()),
+                callbackUrlBuilder.terminateCallbackUrl(room.getRoomId()),
+                isPersistent);
         ProvisionedRoomTask provisioned;
         try { provisioned = runtimeProvider.startRoomTask(startRequest); }
         catch (RuntimeException ex) {
@@ -99,6 +116,10 @@ public class RoomServerManagerImpl implements RoomServerManager {
         RoomServerInstance instance = maybeInstance.get();
         if (ALREADY_DONE.contains(instance.getStatus())) { return; }
         Room room = roomRepository.findById(roomId).orElseThrow(ApiException::roomNotFound);
+        if (room.isPersistent()) {
+            log.info("markUnhealthyAndTerminate skipped (persistent room) room_id={}", roomId);
+            return;
+        }
         instance.markUnhealthy(); instance.beginTermination();
         tryStopRoomTask(instance, roomId, reason);
         Instant now = Instant.now(clock);
@@ -113,6 +134,10 @@ public class RoomServerManagerImpl implements RoomServerManager {
         RoomServerInstance instance = maybeInstance.get();
         if (ALREADY_DONE.contains(instance.getStatus())) { return; }
         Room room = roomRepository.findById(roomId).orElseThrow(ApiException::roomNotFound);
+        if (room.isPersistent()) {
+            log.info("markProvisioningTimedOut skipped (persistent room) room_id={}", roomId);
+            return;
+        }
         tryStopRoomTask(instance, roomId, reason);
         Instant now = Instant.now(clock);
         instance.markFailed(now); room.close(now);
