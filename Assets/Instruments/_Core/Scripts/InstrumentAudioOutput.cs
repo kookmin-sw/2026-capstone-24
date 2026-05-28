@@ -156,6 +156,15 @@ public class InstrumentAudioOutput : MonoBehaviour
     {
         if (clip == null) return;
         EnsureVoicePool();
+        // 같은 note로 아직 살아있는(특히 Releasing fade-out 중인) voice를 먼저 정지한다.
+        // sustain loop은 NoteOff가 와야만 멈추는데, 빠른 NoteOn/NoteOff 반복 시 직전 발음이
+        // Releasing 중일 때 새 NoteOn이 별도 Idle voice를 점유하면 같은 note가 2개 공존하고,
+        // 이어지는 NoteOff(StopNote는 oldest 1개만 회수)가 새 voice를 놓쳐 loop이 영구 잔존한다.
+        for (int i = 0; i < m_Voices.Count; i++)
+        {
+            Voice existing = m_Voices[i];
+            if (existing.Note == note && existing.State != VoiceState.Idle) StopVoice(existing);
+        }
         Voice voice = GetBestVoice();
         if (voice == null || voice.Source == null) return;
         StopVoice(voice);
