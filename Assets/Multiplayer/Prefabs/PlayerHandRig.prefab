@@ -1,5 +1,52 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1632565112937876845
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7295263887395571627}
+  - component: {fileID: 5820529502633554734}
+  m_Layer: 0
+  m_Name: Head
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7295263887395571627
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1632565112937876845}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5525461278463536707}
+  m_Father: {fileID: 3860490491663657030}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5820529502633554734
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1632565112937876845}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 381cd80369a6af94ea81ede4c4fad548, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Murang.Multiplayer::Murang.Multiplayer.Multiplay.NetworkedHeadPose
+  _HeadPosition: {x: 0, y: 0, z: 0}
+  _HeadRotation: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &2162276610366649409
 GameObject:
   m_ObjectHideFlags: 0
@@ -33,6 +80,7 @@ Transform:
   m_Children:
   - {fileID: 677133934988981905}
   - {fileID: 7685506189643113337}
+  - {fileID: 7295263887395571627}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8028279415750308871
@@ -55,6 +103,7 @@ MonoBehaviour:
   - {fileID: 7053371565561948403}
   - {fileID: 1265805179376373745}
   - {fileID: 6682841539588366080}
+  - {fileID: 5820529502633554734}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &7053371565561948403
 MonoBehaviour:
@@ -158,6 +207,68 @@ MonoBehaviour:
   _WristPosition: {x: 0, y: 0, z: 0}
   _WristRotation: {x: 0, y: 0, z: 0, w: 0}
   _FingerRotations: []
+--- !u!1001 &5414690956324882856
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 7295263887395571627}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: f07d7de4c9212d84c91f7373828445b2, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f07d7de4c9212d84c91f7373828445b2, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f07d7de4c9212d84c91f7373828445b2, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f07d7de4c9212d84c91f7373828445b2, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071067
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f07d7de4c9212d84c91f7373828445b2, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f07d7de4c9212d84c91f7373828445b2, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f07d7de4c9212d84c91f7373828445b2, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f07d7de4c9212d84c91f7373828445b2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f07d7de4c9212d84c91f7373828445b2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f07d7de4c9212d84c91f7373828445b2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: f07d7de4c9212d84c91f7373828445b2, type: 3}
+      propertyPath: m_Name
+      value: HeadMesh
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f07d7de4c9212d84c91f7373828445b2, type: 3}
+--- !u!4 &5525461278463536707 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f07d7de4c9212d84c91f7373828445b2, type: 3}
+  m_PrefabInstance: {fileID: 5414690956324882856}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8188039616396858859
 PrefabInstance:
   m_ObjectHideFlags: 0
