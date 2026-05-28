@@ -55,9 +55,14 @@ public class RhythmAccompaniment : MonoBehaviour
 
     public void End()
     {
+        if (_map != null)
+            foreach (var inst in _map.Values)
+                if (inst != null) inst.SilenceAll();
+
         _playing = false;
         _clock   = null;
         _events  = null;
+        _map     = null;
         _next    = 0;
         _enabled = null;
     }

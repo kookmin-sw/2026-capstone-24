@@ -81,6 +81,11 @@ public class DrumNoteDisplayAdapter : MonoBehaviour, INoteDisplayController
             panel.transform.rotation = ComputePanelRotation(rotationTarget, worldPos);
 
             panel.SetLaneConfig(singleConfig);
+
+            // 낙하 노트 색을 이 파츠의 도넛 색과 일치시킨다.
+            if (DrumLaneColors.TryGetColor(note, out Color noteColor))
+                panel.NoteColorOverrides = new Dictionary<byte, Color> { { note, noteColor } };
+
             panel.Show(chart, judgedChannel, clock);
             spawnedPanels.Add(panel);
             noteToPanel[note] = panel;

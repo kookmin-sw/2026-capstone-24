@@ -98,6 +98,7 @@ public class RhythmGameHost : MonoBehaviour
             }
 
             accompaniment?.End();
+            instrument?.SilenceAll();
             activeSession.Stop();
             judge.Stop();
             clock.Stop();

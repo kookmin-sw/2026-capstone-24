@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Reflection;
+using Instruments;
 using NUnit.Framework;
 using RhythmGame.Data;
 using RhythmGame.Runtime;
@@ -11,6 +13,26 @@ public class RhythmAccompanimentTests
     class FakeTimeProvider : ITimeProvider
     {
         public double Now { get; set; }
+    }
+
+    /// <summary>SilenceAll 호출 횟수를 기록하는 테스트용 악기. audioOutput을 요구하지 않도록 Initialize를 비운다.</summary>
+    class SpyInstrument : InstrumentBase
+    {
+        public int SilenceCount;
+        protected override void Initialize() { }
+        public override void SilenceAll() { SilenceCount++; }
+        protected override bool TryResolveNoteOn(MidiEvent midiEvent, out NotePlayback playback)
+        {
+            playback = default;
+            return false;
+        }
+    }
+
+    static void SetInstrumentId(InstrumentBase inst, string id)
+    {
+        typeof(InstrumentBase)
+            .GetField("instrumentId", BindingFlags.NonPublic | BindingFlags.Instance)
+            .SetValue(inst, id);
     }
 
     static VmSongChart MakeMinimalChart()
@@ -57,5 +79,30 @@ public class RhythmAccompanimentTests
         Assert.IsTrue(acc.ShouldFire(2), "null enabled → channel 2 should fire (backward compat)");
 
         Object.DestroyImmediate(go);
+    }
+
+    [Test]
+    public void End_SilencesMappedAccompanimentInstruments()
+    {
+        var chart = MakeMinimalChart(); // ch1=piano, ch2=drum
+
+        // ch2(drum)에 매핑될 반주 악기를 씬에 배치
+        var spyGo = new GameObject("DrumSpy");
+        var spy   = spyGo.AddComponent<SpyInstrument>();
+        SetInstrumentId(spy, "drum");
+
+        var go    = new GameObject("AccompanimentTest");
+        var acc   = go.AddComponent<RhythmAccompaniment>();
+        var clock = new RhythmClock(new FakeTimeProvider());
+
+        // judgedChannel=1(piano) → ch2(drum)이 반주로 _map에 들어감
+        acc.Begin(chart, 1, clock);
+        Assert.AreEqual(0, spy.SilenceCount, "Begin은 아직 정지하지 않아야 한다");
+
+        acc.End();
+        Assert.AreEqual(1, spy.SilenceCount, "End()는 매핑된 반주 악기를 정확히 1회 정지해야 한다");
+
+        Object.DestroyImmediate(go);
+        Object.DestroyImmediate(spyGo);
     }
 }

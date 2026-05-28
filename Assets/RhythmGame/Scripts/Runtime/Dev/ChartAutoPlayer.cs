@@ -115,6 +115,15 @@ public class ChartAutoPlayer : MonoBehaviour
         inst.TriggerSystemMidi(new MidiEvent(ev.midiNote, ev.velocity, ev.type, (byte)(ev.channel - 1)));
     }
 
+    void OnDisable() { SilenceAllInstruments(); }
+
+    void SilenceAllInstruments()
+    {
+        if (_map == null) return;
+        foreach (var inst in _map.Values)
+            if (inst != null) inst.SilenceAll();
+    }
+
     void ResetPlaybackState()
     {
         _events  = null;

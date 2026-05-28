@@ -32,6 +32,7 @@ namespace Instruments
             IActiveInstrument next = instrument;
             if (ReferenceEquals(_current, next)) return;
 
+            (_current as InstrumentBase)?.SilenceAll();
             _current = next;
             ActiveInstrumentChanged?.Invoke(_current);
         }

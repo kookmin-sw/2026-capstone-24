@@ -208,7 +208,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: RhythmGame.Runtime::RhythmGame.Runtime.DrumNoteDisplayAdapter
   noteDisplayPanelPrefab: {fileID: 7000000004, guid: a8b4f3c2d1e04a5b9c7e8f0d2a3b4c5d, type: 3}
-  yOffset: 0.15
+  yOffset: -0.04
   panelTiltDegrees: 50
 --- !u!1 &5973783249696454927
 GameObject:
