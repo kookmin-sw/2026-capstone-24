@@ -64,7 +64,7 @@
 
 | 작성일 | 제목 | 상태 | 링크 |
 |---|---|---|---|
-| _아직 없음_ | — | — | — |
+| 2026-05-27 | 멀티플레이 로비 패널 UI 구조·상태 골격 | `Ready` | [`2026-05-27-namae1128-lobby-panel-ui.md`](../plans/2026-05-27-namae1128-lobby-panel-ui.md) |
 
 > 상태 값: `Ready` / `In Progress` / `Done`
 
