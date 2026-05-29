@@ -78,7 +78,16 @@ public sealed class AnchoredStickGhostFollower : MonoBehaviour
         m_Velocity = Vector3.zero;
     }
 
-    void FixedUpdate()
+    void LateUpdate()
+    {
+        UpdateVelocity();
+        SyncToGhost();
+    }
+
+    // ghost wrist 속도는 추적 transform이 갱신되는 렌더 cadence에서 샘플링한다.
+    // FixedUpdate(물리 50Hz)에서 읽으면 한 프레임에 fixed step이 여러 번 도는 구간에서
+    // current==prev로 속도가 0이 되어 DrumHitZone의 minImpactSpeed 게이트에 타격이 버려진다.
+    void UpdateVelocity()
     {
         if (!m_IsBound || m_GhostWristSource == null)
             return;
@@ -92,14 +101,9 @@ public sealed class AnchoredStickGhostFollower : MonoBehaviour
             return;
         }
 
-        float dt = Time.fixedDeltaTime;
+        float dt = Time.deltaTime;
         m_Velocity = dt > 0f ? (current - m_PrevGhostPos) / dt : Vector3.zero;
         m_PrevGhostPos = current;
-    }
-
-    void LateUpdate()
-    {
-        SyncToGhost();
     }
 
     void OnBeforeRender()

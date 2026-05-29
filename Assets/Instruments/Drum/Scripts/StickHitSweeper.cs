@@ -3,6 +3,9 @@ using UnityEngine.XR.Interaction.Toolkit.Inputs.Haptics;
 
 namespace Instruments
 {
+// 10006 = AnchoredStickGhostFollower(10005)의 LateUpdate SyncToGhost·UpdateVelocity 직후.
+// stick이 이번 프레임 위치로 동기화되고 Velocity가 갱신된 뒤에 sweep하도록 강제한다.
+[DefaultExecutionOrder(10006)]
 [DisallowMultipleComponent]
 public sealed class StickHitSweeper : MonoBehaviour
 {
@@ -36,7 +39,7 @@ public sealed class StickHitSweeper : MonoBehaviour
         m_HasPrev = false;
     }
 
-    void FixedUpdate()
+    void LateUpdate()
     {
         if (stickCollider == null || ghostFollower == null)
             return;
